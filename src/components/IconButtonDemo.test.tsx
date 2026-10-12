@@ -52,6 +52,7 @@ describe("IconButtonDemo", () => {
       Notifications: "swing",
       "Reload page": "spin",
       "Send message": "nudge-x",
+      "Back to top": "nudge-up",
       Like: "pop",
       "Open in a new tab": "nudge-diagonal",
     };
@@ -96,6 +97,7 @@ describe("IconButtonDemo in Spanish", () => {
       "Notificaciones",
       "Recargar página",
       "Enviar mensaje",
+      "Volver arriba",
       "Me gusta",
       "Abrir en una pestaña nueva",
     ]) {

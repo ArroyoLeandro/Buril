@@ -122,6 +122,7 @@ export const demoText = {
   Notifications: "Notificaciones",
   "Reload page": "Recargar página",
   "Send message": "Enviar mensaje",
+  "Back to top": "Volver arriba",
   Like: "Me gusta",
   "Open in a new tab": "Abrir en una pestaña nueva",
   // Input
