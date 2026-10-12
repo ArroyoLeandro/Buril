@@ -267,6 +267,25 @@ describe("link page", () => {
   });
 });
 
+describe("field page", () => {
+  const render = () => container.renderToString(componentPages["field"]!);
+
+  it("explains the render prop, the element child and what each wires", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/render prop/i);
+    expect(visible).toMatch(/aria-describedby/);
+    expect(visible).toMatch(/aria-invalid/);
+    expect(visible).toMatch(/cloneElement|single element/);
+  });
+
+  it("explains how errors are announced and how required is shown", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-live=(&quot;|")polite(&quot;|")/);
+    expect(visible).toMatch(/\(required\)/);
+    expect(visible).toMatch(/icon/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

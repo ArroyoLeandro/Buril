@@ -37,6 +37,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/link.tsx",
   },
   {
+    slug: "field",
+    name: "Field",
+    description: "Wires a label, a description and an error message to one form control.",
+    item: "field",
+    source: "registry/ui/field.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
