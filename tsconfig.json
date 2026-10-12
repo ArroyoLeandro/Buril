@@ -7,6 +7,7 @@
     "dist",
     "public/r",
     "**/*.browser.test.tsx",
+    "test/browser.ts",
     "vitest.config.ts",
     "vitest.browser.config.ts"
   ],

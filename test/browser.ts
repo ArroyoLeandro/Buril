@@ -1,4 +1,5 @@
 /** Helpers for the real-browser tests (`*.browser.test.tsx`, run with `pnpm test:browser`). */
+import { page } from "vitest/browser";
 
 export const themes = ["light", "dark"] as const;
 export type Theme = (typeof themes)[number];
@@ -109,6 +110,63 @@ function linearChannels(color: string): Channels {
 function luminance(color: string) {
   const [r, g, b] = linearChannels(color);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+const toGamma = (channel: number) =>
+  Math.round(255 * (channel <= 0.0031308 ? channel * 12.92 : 1.055 * channel ** (1 / 2.4) - 0.055));
+
+/** A computed color as 0–255 sRGB channels, whatever notation the browser reports it in. */
+export function srgb(color: string) {
+  return linearChannels(color).map(toGamma) as Channels;
+}
+
+/** Whether two colors look the same: every sRGB channel within `tolerance` (0–255). */
+export function sameColor(a: string, b: string, tolerance = 12) {
+  const [x, y] = [srgb(a), srgb(b)];
+  return x.every((channel, index) => Math.abs(channel - y[index]!) <= tolerance);
+}
+
+/**
+ * Screenshot an element as the browser painted it and read its pixels, in CSS px from the
+ * element's top-left corner. Use it where computed styles cannot show the result, such as a
+ * stroke drawn by its dash offset or a dot left by an inset shadow.
+ */
+export async function paintOf(element: Element) {
+  const base64 = await page.screenshot({ element, save: false });
+  const image = new Image();
+  image.src = `data:image/png;base64,${base64}`;
+  await image.decode();
+  const canvas = document.createElement("canvas");
+  canvas.width = image.width;
+  canvas.height = image.height;
+  const context = canvas.getContext("2d", { willReadFrequently: true })!;
+  context.drawImage(image, 0, 0);
+  const scale = image.width / element.getBoundingClientRect().width;
+  const at = (x: number, y: number) => {
+    const [r, g, b] = context.getImageData(Math.floor(x * scale), Math.floor(y * scale), 1, 1).data;
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+  /** How many pixels look like this color. */
+  const count = (color: string) => {
+    const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+    let matches = 0;
+    for (let index = 0; index < data.length; index += 4) {
+      const pixel = `rgb(${data[index]}, ${data[index + 1]}, ${data[index + 2]})`;
+      if (sameColor(pixel, color)) matches++;
+    }
+    return matches;
+  };
+  return { at, count, width: canvas.width / scale, height: canvas.height / scale };
+}
+
+/** A theme color token, such as `--primary`, resolved to its computed color. */
+export function tokenColor(name: `--${string}`) {
+  const probe = document.createElement("span");
+  probe.style.color = `var(${name})`;
+  document.body.append(probe);
+  const color = getComputedStyle(probe).color;
+  probe.remove();
+  return color;
 }
 
 /** WCAG contrast ratio between two computed colors. */
