@@ -4,9 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  // The icon sits in its own column, spaced by its own margin, so an alert without an icon has
-  // no empty gap; the title and description share the second column.
-  "relative grid w-full grid-cols-[auto_1fr] gap-y-1 rounded-lg border bg-card px-4 py-3 text-sm",
+  [
+    // The icon sits in its own column, spaced by its own margin, so an alert without an icon has
+    // no empty gap; the title and description share the second column.
+    "relative grid w-full grid-cols-[auto_1fr] gap-y-1 rounded-lg border bg-card px-4 py-3 text-sm",
+    // Fades in when inserted. Opacity is not movement, so it fades in every motion mode, and
+    // nothing around it moves.
+    "transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) starting:opacity-0",
+  ],
   {
     variants: {
       variant: {

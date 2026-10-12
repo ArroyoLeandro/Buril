@@ -30,6 +30,15 @@ describe("Spinner compiled with Tailwind", () => {
     expect(cascade.computed(svg, "animation", reducesMotion)).toBeUndefined();
   });
 
+  // A terminal spinner: the arc turns in eight 45-degree steps instead of gliding.
+  it("turns in eight steps when the user allows motion", () => {
+    expect(cascade.lastOf(svg, ["animation", "animation-timing-function"], allowsMotion)).toEqual({
+      property: "animation-timing-function",
+      value: "steps(8)",
+    });
+    expect(cascade.computed(svg, "animation-timing-function", reducesMotion)).toBeUndefined();
+  });
+
   // A frozen arc looks like a broken spinner; three dots read as "in progress" without motion.
   it("swaps the arc for three static dots under reduced motion", () => {
     expect(cascade.computed(ring, "display")).toBeUndefined();

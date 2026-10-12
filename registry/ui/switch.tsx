@@ -28,6 +28,9 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
           // A 44 by 24px track: above the 24px target size (rule 8).
           "peer col-start-1 row-start-1 h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full border border-input bg-background",
           "checked:border-primary checked:bg-primary",
+          // The track colors fade in every motion mode; outline-color is left out so the focus
+          // ring appears at once.
+          "transition-[background-color,border-color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           "aria-invalid:border-destructive",
@@ -40,15 +43,21 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
         data-thumb
         aria-hidden="true"
         className={cn(
-          // The thumb's position tells off from on, so the state is never color alone. It is a
-          // square 4px inside the track, sized from the track's height and moved to its right edge
-          // when on, so it fits and travels fully on any track size.
-          "pointer-events-none absolute top-1 left-1 col-start-1 row-start-1 aspect-square h-[calc(100%-var(--spacing)*2)] rounded-full bg-muted-foreground",
-          "peer-checked:left-[calc(100%-var(--spacing))] peer-checked:-translate-x-full peer-checked:bg-primary-foreground peer-disabled:opacity-50",
-          // Slides only when the user has not asked for reduced motion (rule 10).
-          "motion-safe:transition-[left,translate]",
-          // Forced colors replace backgrounds, which would hide the thumb; keep a system color.
-          "forced-colors:bg-[CanvasText] forced-colors:forced-color-adjust-none",
+          // The thumb's position tells off from on, so the state is never color alone. This
+          // element is the rail, 4px inside the track; its ::before is the round dot, as tall as
+          // the rail. The rail is a size container, so when on the dot moves by the rail's width
+          // (100cqw) minus its own (100%) with translate, never left: it fits and travels fully
+          // on any track size.
+          "[container-type:size] pointer-events-none absolute inset-1 col-start-1 row-start-1 flex peer-disabled:opacity-50",
+          "before:aspect-square before:h-full before:shrink-0 before:rounded-full before:bg-muted-foreground",
+          "peer-checked:before:translate-x-[calc(100cqw-100%)] peer-checked:before:bg-primary-foreground",
+          // Without container query units the translate is dropped; an auto margin moves the dot.
+          "not-supports-[width:1cqw]:peer-checked:before:ml-auto",
+          // The color fades in every motion mode; the dot slides only when the user allows motion.
+          "before:transition-[background-color] before:duration-(--buril-duration-base,180ms) before:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+          "motion-safe:before:transition-[background-color,translate] motion-safe:before:duration-(--buril-duration-base,180ms) motion-safe:before:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+          // Forced colors replace backgrounds, which would hide the dot; keep a system color.
+          "forced-colors:forced-color-adjust-none forced-colors:before:bg-[CanvasText]",
         )}
       />
       {stateLabels && (

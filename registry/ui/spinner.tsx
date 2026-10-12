@@ -13,8 +13,8 @@ type SpinnerProps = Omit<ComponentProps<"span">, "children"> & {
 
 /**
  * A loading indicator. It is a `role="status"` element with a visually hidden label, so screen
- * readers can find it and name it; the drawing is hidden from them. It spins only when the user
- * allows motion; with reduced motion it shows three static dots instead.
+ * readers can find it and name it; the drawing is hidden from them. It turns in eight steps only
+ * when the user allows motion; with reduced motion it shows three static dots instead.
  */
 function Spinner({ label = "Loading", size = "default", className, ...props }: SpinnerProps) {
   return (
@@ -32,7 +32,11 @@ function Spinner({ label = "Loading", size = "default", className, ...props }: S
         stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
-        className={cn("shrink-0 motion-safe:animate-spin", sizes[size])}
+        // A terminal spinner: it turns in eight 45-degree steps, only when motion is allowed.
+        className={cn(
+          "shrink-0 motion-safe:animate-spin motion-safe:[animation-timing-function:steps(8)]",
+          sizes[size],
+        )}
       >
         {/* A faint track and a solid arc: the arc's rotation shows progress. */}
         <g data-ring className="motion-reduce:hidden">

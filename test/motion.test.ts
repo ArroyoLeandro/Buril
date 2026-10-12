@@ -106,4 +106,14 @@ describe("component transitions", () => {
     );
     expect(broad).toEqual([]);
   });
+
+  // Layout properties repaint and reflow every frame; move with translate instead.
+  it.each(components)("in %s never transition layout properties", (_, source) => {
+    const transitioned = utilitiesIn(source)
+      .filter((name) => name.startsWith("transition-["))
+      .flatMap((name) => name.slice("transition-[".length, -1).split(","));
+    for (const property of ["left", "right", "top", "bottom", "width", "height", "inset"]) {
+      expect(transitioned).not.toContain(property);
+    }
+  });
 });

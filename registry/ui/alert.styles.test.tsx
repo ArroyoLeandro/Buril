@@ -3,6 +3,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -68,5 +75,28 @@ describe("Alert compiled with Tailwind", () => {
   it("uses the body font for the title, never the display font", () => {
     expect(cascade.computed(plain.title, "font-family")).toBeUndefined();
     expect(cascade.computed(plain.title, "font-weight")).toBe("var(--font-weight-semibold)");
+  });
+});
+
+// An alert fades in when it is inserted. Opacity is not movement, so it fades in every mode, and
+// nothing around it moves.
+describe("Alert motion", () => {
+  it.each([
+    ["default", plain],
+    ["destructive", destructive],
+  ] as const)("the %s variant fades in when it appears", (_, parts) => {
+    expect(cascade.computed(parts.root, "opacity")).toBeUndefined();
+    for (const options of [{}, motionAllowed, motionReduced]) {
+      expect(cascade.computed(parts.root, "opacity", { ...options, startingStyle: true })).toBe(
+        "0%",
+      );
+    }
+    expect(
+      cascade.computed(parts.root, "translate", { ...motionAllowed, startingStyle: true }),
+    ).toBeUndefined();
+    const transition = transitionOf(cascade.computed, parts.root);
+    expect(transition.properties).toEqual(["opacity"]);
+    expect(transition.durations).toEqual([durations.fast]);
+    expect(transition.easings).toEqual([easings.out]);
   });
 });

@@ -1,7 +1,7 @@
 import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { Avatar, initialsOf } from "./avatar";
 
@@ -28,6 +28,38 @@ describe("Avatar", () => {
       fireEvent.error(screen.getByRole("img"));
       rerender(<Avatar src="/ada.png" alt="Ada Lovelace" />);
       expect(screen.getByRole("img", { name: "Ada Lovelace" }).tagName).toBe("IMG");
+    });
+  });
+
+  describe("while the image loads", () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("keeps the image hidden over the initials, then shows it once it loads", () => {
+      const { container } = render(<Avatar src="/ada.png" alt="Ada Lovelace" />);
+      const image = screen.getByRole("img", { name: "Ada Lovelace" });
+      expect(image).toHaveAttribute("data-loading");
+      const initials = container.querySelector("img + span")!;
+      expect(initials).toHaveTextContent("AL");
+      expect(initials).toHaveAttribute("aria-hidden", "true");
+      fireEvent.load(image);
+      expect(image).not.toHaveAttribute("data-loading");
+      // The initials stay hidden from assistive technology: the image is the only name.
+      expect(screen.getAllByRole("img")).toEqual([image]);
+    });
+
+    it("shows an image that has already loaded at once", () => {
+      vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(true);
+      render(<Avatar src="/ada.png" alt="Ada Lovelace" />);
+      expect(screen.getByRole("img")).not.toHaveAttribute("data-loading");
+    });
+
+    it("hides a new src until it loads", () => {
+      const { rerender } = render(<Avatar src="/ada.png" alt="Ada Lovelace" />);
+      fireEvent.load(screen.getByRole("img"));
+      rerender(<Avatar src="/ada-2.png" alt="Ada Lovelace" />);
+      expect(screen.getByRole("img")).toHaveAttribute("data-loading");
     });
   });
 
