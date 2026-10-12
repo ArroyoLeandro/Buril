@@ -5,7 +5,7 @@ import ComponentPage from "../../../../layouts/ComponentPage.astro";
 import IconButtonDemo from "../../../../components/IconButtonDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
-import { iconKeyframesCss, iconKeyframesExample } from "../../../../utils/icon-keyframes";
+import { iconKeyframesExample } from "../../../../utils/icon-keyframes";
 
 const { sizesExample, motionExample, variantsExample } = componentExamples["icon-button"];
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
@@ -112,10 +112,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     </p>
     <p class="mt-4 text-muted-foreground">
       La CLI también agrega los keyframes de <code>motion</code> a tu CSS. Si copias el archivo a
-      mano, pégalos también en tu CSS; sin ellos, los iconos no se mueven.
+      mano, la pestaña Manual los tiene para pegar; sin ellos, los iconos no se mueven.
     </p>
-    <div class={code}>
-      <Code code={iconKeyframesCss()} lang="css" theme={codeTheme} />
-    </div>
   </Fragment>
 </ComponentPage>

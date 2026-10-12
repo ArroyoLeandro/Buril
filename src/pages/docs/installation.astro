@@ -1,7 +1,11 @@
 ---
+import { Code } from "astro:components";
+
 import DocsLayout from "../../layouts/DocsLayout.astro";
 import InstallCommand from "../../components/InstallCommand.astro";
 import { Link } from "../../../registry/ui/link";
+import { codeTheme } from "../../components/code-theme";
+import { applyFontsExample } from "../../data/snippets";
 ---
 
 <DocsLayout
@@ -11,6 +15,13 @@ import { Link } from "../../../registry/ui/link";
   <h1 class="font-display text-3xl">Installation</h1>
   <p class="mt-4 text-lg text-muted-foreground">
     Buril components install with the shadcn CLI, one component at a time, from a URL or by name.
+  </p>
+  <p class="mt-4">
+    Buril is a <dfn>registry</dfn>: a set of JSON files that the shadcn CLI reads. Each file
+    describes one <dfn>item</dfn>, such as a component or the theme, with the source files and
+    dependencies it installs. A <dfn>namespace</dfn>, such as <code>@buril</code>, is a short name
+    for the registry, so you can install items by name. A <dfn>token</dfn> is a CSS variable, such
+    as <code>--primary</code>, that components read for their colors and motion.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Requirements</h2>
@@ -23,10 +34,6 @@ import { Link } from "../../../registry/ui/link";
   <h2 class="mt-10 font-display text-xl">Install from a URL</h2>
   <p class="mt-4">Every component has its own JSON file in the registry. Pass its URL to add:</p>
   <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
-  <p class="mt-4 text-muted-foreground">
-    The domain example.com is a placeholder until the registry is hosted. The paths after it stay
-    the same.
-  </p>
 
   <h2 class="mt-10 font-display text-xl">Install by name</h2>
   <p class="mt-4">
@@ -62,8 +69,8 @@ import { Link } from "../../../registry/ui/link";
 
   <h2 class="mt-10 font-display text-xl">Optional theme</h2>
   <p class="mt-4">
-    The Buril palette, ink on paper with a red reserved for focus, decoration and destructive
-    actions, is a separate install:
+    The Buril palette, ink on paper with a red reserved for focus, decoration, the
+    <code>--accent</code> hover wash and destructive actions, is a separate install:
   </p>
   <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
   <p class="mt-4">It edits your global CSS file:</p>
@@ -73,19 +80,52 @@ import { Link } from "../../../registry/ui/link";
       variables, such as <code>--radius</code>, stay as they are.
     </li>
     <li>
-      It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font tokens.
+      It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, the font tokens
+      <code>--font-display</code> and <code>--font-body</code>, and the 10 motion tokens:
+      <code>--buril-duration-*</code> and <code>--buril-ease-*</code>.
     </li>
     <li>
       It follows the system without JavaScript, and redefines the <code>dark:</code> variant the
-      same way. <Link href="/docs/theming">Theming</Link> explains dark mode and how to change the
-      colors.
+      same way with <code>@custom-variant dark</code>. <Link href="/docs/theming">Theming</Link>
+      explains dark mode and how to change the colors.
+    </li>
+    <li>
+      It leaves the <code>--sidebar-*</code> and <code>--chart-*</code> tokens alone: Buril has no
+      sidebar or chart components, so those keep your current values.
     </li>
   </ul>
+  <p class="mt-4">
+    The theme is not the only item that edits your CSS: the <code>button</code> item appends the
+    icon gesture keyframes, named <code>buril-icon-*</code>, which IconButton's
+    <code>motion</code> prop plays.
+  </p>
 
   <h2 class="mt-10 font-display text-xl">Fonts</h2>
   <p class="mt-4">
-    Buril ships no font files. Headings use <code>--font-display</code> and body text uses
-    <code>--font-body</code>, both with system fallbacks. This site pairs Silkscreen, a pixel font
-    kept for headings only, with Inter for everything else; both are free on Google Fonts.
+    The theme defines two font tokens, <code>--font-display</code> for headings and
+    <code>--font-body</code> for text, both with system fallbacks. It does not apply them, and no
+    component uses them, so set them where you want them in your global CSS:
   </p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={applyFontsExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Buril ships no font files, so load your own fonts, then point the tokens at them, as
+    <Link href="/docs/guides/theme">Customizing the theme</Link> shows. This site pairs Silkscreen,
+    a pixel font kept for headings only, with Inter for everything else; both are free on Google
+    Fonts.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Next steps</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/docs/components">Browse the components</Link> and install the ones you need.
+    </li>
+    <li>
+      <Link href="/docs/theming">Theming</Link> explains the tokens and dark mode.
+    </li>
+    <li>
+      <Link href="/docs/guides/forms">Forms with Field</Link> builds a complete form.
+    </li>
+  </ul>
 </DocsLayout>

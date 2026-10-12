@@ -10,21 +10,30 @@ export const darkModeExample = `<html class="dark">  <!-- always dark -->
 <html class="light"> <!-- always light -->
 <html>               <!-- follows the system -->`;
 
-/** Theming: replacing the red in all three blocks the theme writes. */
+/**
+ * Theming: replacing the brand red in all three blocks the theme writes: decoration, the focus
+ * ring and the hover wash. Measured against WCAG AA in `test/docs/snippets.test.ts`.
+ */
 export const overrideRedExample = `:root {
   --decor: #1d4ed8;
   --ring: #1d4ed8;
+  --accent: #dbe4fb;
+  --accent-foreground: var(--foreground);
 }
 
 .dark {
   --decor: #60a5fa;
   --ring: #60a5fa;
+  --accent: #172554;
+  --accent-foreground: var(--foreground);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --decor: #60a5fa;
     --ring: #60a5fa;
+    --accent: #172554;
+    --accent-foreground: var(--foreground);
   }
 }`;
 
@@ -38,7 +47,10 @@ export const retuneMotionExample = `:root {
 }`;
 
 /** Guides: Field strings in another language. */
-export const fieldStringsExample = `<Field
+export const fieldStringsExample = `import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+<Field
   label="Correo electrónico"
   error={errors.email}
   required
@@ -49,7 +61,10 @@ export const fieldStringsExample = `<Field
 </Field>`;
 
 /** Guides: one element child instead of a render prop. */
-export const fieldChildGuideExample = `<Field label="Message" description="Up to 500 characters.">
+export const fieldChildGuideExample = `import { Field } from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+
+<Field label="Message" description="Up to 500 characters.">
   <Textarea name="message" maxLength={500} />
 </Field>`;
 
@@ -128,6 +143,17 @@ export const astroToggleExample = `<label for="theme">Theme</label>
   });
 </script>`;
 
+/** Dark mode guide: following the system with a shadcn theme that only reads `.dark`. */
+export const systemDarkScriptExample = `<head>
+  <script>
+    // Without @buril/theme, nothing follows the system: set .dark from the media query.
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => document.documentElement.classList.toggle("dark", media.matches);
+    apply();
+    media.addEventListener("change", apply);
+  </script>
+</head>`;
+
 /** Dark mode guide: the same script in a Vite app's index.html. */
 export const viteHeadExample = `<!doctype html>
 <html lang="en">
@@ -201,6 +227,16 @@ export const neutralPresetExample = `:root {
   --ring: #a3a3a3;
 }`;
 
+/** Installation: apply the font tokens, which the theme defines but nothing uses. */
+export const applyFontsExample = `@layer base {
+  body {
+    @apply font-body;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}`;
+
 /** Theme guide: your own fonts. */
 export const fontsExample = `@theme {
   --font-display: "Your Display Font", ui-monospace, monospace;
@@ -220,7 +256,9 @@ import { Button as BurilButton } from "@/components/buril/button";
  */
 export const componentExamples = {
   alert: {
-    insertExample: `{/* On the page from the start, empty. */}
+    insertExample: `import { Alert, AlertTitle } from "@/components/ui/alert";
+
+{/* On the page from the start, empty. */}
 <div role="status">
   {saved && (
     <Alert>
@@ -228,12 +266,18 @@ export const componentExamples = {
     </Alert>
   )}
 </div>`,
-    liveExample: `{/* Rendered before the upload starts; only its text changes. */}
+    liveExample: `import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+{/* Rendered before the upload starts; only its text changes. */}
 <Alert live="polite">
   <AlertTitle>Upload</AlertTitle>
   <AlertDescription>{progressMessage}</AlertDescription>
 </Alert>`,
-    variantsExample: `<Alert>
+    variantsExample: `import { CreditCardIcon } from "lucide-react";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+<Alert>
   <AlertTitle>New version available</AlertTitle>
   <AlertDescription>Reload the page to get the latest components.</AlertDescription>
 </Alert>
@@ -243,7 +287,9 @@ export const componentExamples = {
 <Alert icon={null}>
   <AlertTitle>Maintenance tonight from 22:00</AlertTitle>
 </Alert>`,
-    assertiveExample: `{/* An error that appears: an empty region, on the page from the start. */}
+    assertiveExample: `import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+{/* An error that appears: an empty region, on the page from the start. */}
 <div role="alert">
   {expired && (
     <Alert variant="destructive">
@@ -259,38 +305,53 @@ export const componentExamples = {
 </Alert>`,
   },
   avatar: {
-    fallbackExample: `<Avatar alt="Grace Hopper" size="sm" />
+    fallbackExample: `import { Avatar } from "@/components/ui/avatar";
+
+<Avatar alt="Grace Hopper" size="sm" />
 <Avatar alt="Grace Hopper" fallback="GMH" size="lg" />`,
-    decorativeExample: `<p className="flex items-center gap-2">
+    decorativeExample: `import { Avatar } from "@/components/ui/avatar";
+
+<p className="flex items-center gap-2">
   <Avatar src={user.photo} alt="" />
   {user.name}
 </p>`,
   },
   badge: {
-    variantsExample: `<Badge>New</Badge>
+    variantsExample: `import { Badge } from "@/components/ui/badge";
+
+<Badge>New</Badge>
 <Badge variant="secondary">Draft</Badge>
 <Badge variant="outline">Beta</Badge>
 <Badge variant="destructive">Failed</Badge>`,
-    statusExample: `<p>
+    statusExample: `import { Badge } from "@/components/ui/badge";
+
+<p>
   Order 1042 <Badge>{shipped ? "Shipped" : "Processing"}</Badge>
 </p>
 {/* Rendered from the start, empty, so the change is announced. */}
 <p role="status">{message}</p>`,
   },
   button: {
-    variantsExample: `<Button>Publish</Button>
+    variantsExample: `import { Button, buttonVariants } from "@/components/ui/button";
+
+<Button>Publish</Button>
 <Button variant="outline">Preview</Button>
 <Button variant="destructive" size="sm">Delete</Button>
 <a href="/docs" className={buttonVariants({ variant: "secondary" })}>
   Read the docs
 </a>`,
-    statusExample: `<Button type="submit" loading={saving}>
+    statusExample: `import { Button } from "@/components/ui/button";
+
+<Button type="submit" loading={saving}>
   Save changes
 </Button>
 <p role="status">{saving ? "Saving changes…" : message}</p>`,
   },
   card: {
-    decorExample: `<Card decor>
+    decorExample: `import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
+<Card decor>
   <CardHeader>
     <CardTitle as="h2">Starter plan</CardTitle>
     <CardDescription>For a single project.</CardDescription>
@@ -300,7 +361,9 @@ export const componentExamples = {
     <Button size="sm">Choose Starter</Button>
   </CardFooter>
 </Card>`,
-    linkExample: `<Card interactive>
+    linkExample: `import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+<Card interactive>
   <CardHeader>
     <CardTitle>
       <a href="/guides/forms" className="after:absolute after:inset-0">
@@ -312,17 +375,24 @@ export const componentExamples = {
 </Card>`,
   },
   checkbox: {
-    fieldExample: `<Field label="Terms" error={errors.terms}>
+    fieldExample: `import { Checkbox } from "@/components/ui/checkbox";
+import { Field } from "@/components/ui/field";
+
+<Field label="Terms" error={errors.terms}>
   <Checkbox name="terms" />
 </Field>`,
-    indeterminateExample: `<Checkbox
+    indeterminateExample: `import { Checkbox } from "@/components/ui/checkbox";
+
+<Checkbox
   checked={all}
   indeterminate={some && !all}
   onChange={() => setSelected(all ? [] : everything)}
 />`,
   },
   field: {
-    renderPropExample: `<Field
+    renderPropExample: `import { Field } from "@/components/ui/field";
+
+<Field
   label="Email"
   description="We only use it to send the newsletter."
   error={errors.email}
@@ -330,15 +400,26 @@ export const componentExamples = {
 >
   {(control) => <input type="email" {...control} />}
 </Field>`,
-    childExample: `<Field label="Message" description="Up to 500 characters.">
+    childExample: `import { Field } from "@/components/ui/field";
+
+<Field label="Message" description="Up to 500 characters.">
   <textarea id="message" aria-describedby="message-policy" />
-</Field>`,
+</Field>
+<p id="message-policy">We read every message, but cannot reply to all of them.</p>`,
   },
   "icon-button": {
-    sizesExample: `<IconButton aria-label="Edit" size="icon-sm"><PencilIcon /></IconButton>
+    sizesExample: `import { PencilIcon } from "lucide-react";
+
+import { IconButton } from "@/components/ui/button";
+
+<IconButton aria-label="Edit" size="icon-sm"><PencilIcon /></IconButton>
 <IconButton aria-label="Edit"><PencilIcon /></IconButton>
 <IconButton aria-label="Edit" size="icon-lg"><PencilIcon /></IconButton>`,
-    motionExample: `<IconButton aria-label="Close dialog" motion="rotate"><XIcon /></IconButton>
+    motionExample: `import { BellIcon, XIcon } from "lucide-react";
+
+import { IconButton } from "@/components/ui/button";
+
+<IconButton aria-label="Close dialog" motion="rotate"><XIcon /></IconButton>
 <IconButton aria-label="Notifications" motion="swing"><BellIcon /></IconButton>
 
 {/* wiggle lifts the part marked data-lid, then shakes the whole icon */}
@@ -348,7 +429,11 @@ export const componentExamples = {
     <path d="M6 7l1 13h10l1-13M10 11v6M14 11v6" />
   </svg>
 </IconButton>`,
-    variantsExample: `<IconButton aria-label="Add item"><PlusIcon /></IconButton>
+    variantsExample: `import { BookIcon, HeartIcon, PlusIcon, TrashIcon, XIcon } from "lucide-react";
+
+import { IconButton } from "@/components/ui/button";
+
+<IconButton aria-label="Add item"><PlusIcon /></IconButton>
 <IconButton aria-label="Add item" variant="secondary"><PlusIcon /></IconButton>
 <IconButton aria-label="Close panel" variant="outline"><XIcon /></IconButton>
 <IconButton aria-label="Close notice" variant="ghost"><XIcon /></IconButton>
@@ -371,15 +456,21 @@ import { Input } from "@/components/ui/input";
 <Field label="Email" error={errors.email} required>
   {(control) => <Input type="email" autoComplete="email" {...control} />}
 </Field>`,
-    standaloneExample: `<label htmlFor="promo">Promo code</label>
+    standaloneExample: `import { Input } from "@/components/ui/input";
+
+<label htmlFor="promo">Promo code</label>
 <Input id="promo" aria-invalid={expired || undefined} aria-describedby="promo-error" />
 <p id="promo-error">{expired ? "This code has expired." : ""}</p>`,
   },
   link: {
-    externalExample: `<Link href="https://example.com/changelog" external>
+    externalExample: `import { Link } from "@/components/ui/link";
+
+<Link href="https://example.com/changelog" external>
   Changelog
 </Link>`,
-    mutedExample: `<Link href="/privacy" variant="muted">
+    mutedExample: `import { Link } from "@/components/ui/link";
+
+<Link href="/privacy" variant="muted">
   Privacy policy
 </Link>`,
   },
@@ -398,7 +489,9 @@ import { Input } from "@/components/ui/input";
     Drone (unavailable)
   </RadioGroupItem>
 </RadioGroup>`,
-    requiredExample: `<RadioGroup legend="Plan" name="plan" required>
+    requiredExample: `import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+<RadioGroup legend="Plan" name="plan" required>
   <RadioGroupItem value="free">Free</RadioGroupItem>
   <RadioGroupItem value="pro">Pro</RadioGroupItem>
 </RadioGroup>
@@ -421,7 +514,10 @@ import { Select } from "@/components/ui/select";
     </Select>
   )}
 </Field>`,
-    listboxExample: `<Field label="Toppings" description="Hold Ctrl, or Cmd on a Mac, to choose several.">
+    listboxExample: `import { Field } from "@/components/ui/field";
+import { Select } from "@/components/ui/select";
+
+<Field label="Toppings" description="Hold Ctrl, or Cmd on a Mac, to choose several.">
   <Select name="toppings" multiple>
     <option value="cheese">Cheese</option>
     <option value="mushrooms">Mushrooms</option>
@@ -430,14 +526,18 @@ import { Select } from "@/components/ui/select";
 </Field>`,
   },
   separator: {
-    verticalExample: `<nav className="flex items-center gap-3">
+    verticalExample: `import { Separator } from "@/components/ui/separator";
+
+<nav className="flex items-center gap-3">
   <a href="/docs">Docs</a>
   <Separator orientation="vertical" decorative />
   <a href="/blog">Blog</a>
 </nav>`,
   },
   skeleton: {
-    regionExample: `<section aria-label="Profile" aria-busy={loading || undefined}>
+    regionExample: `import { Skeleton } from "@/components/ui/skeleton";
+
+<section aria-label="Profile" aria-busy={loading || undefined}>
   {loading ? (
     <>
       <Skeleton className="size-12 rounded-full" />
@@ -460,9 +560,13 @@ import { Select } from "@/components/ui/select";
 </body>`,
   },
   spinner: {
-    sizeExample: `<Spinner />
+    sizeExample: `import { Spinner } from "@/components/ui/spinner";
+
+<Spinner />
 <Spinner size="lg" label="Loading comments" />`,
-    resultExample: `<section aria-label="Comments" aria-busy={loading || undefined}>
+    resultExample: `import { Spinner } from "@/components/ui/spinner";
+
+<section aria-label="Comments" aria-busy={loading || undefined}>
   {loading ? <Spinner label="Loading comments" /> : <CommentList />}
 </section>
 {/* On the page from the start, empty. */}
@@ -479,8 +583,10 @@ import { Select } from "@/components/ui/select";
   />
   Wi-Fi
 </label>`,
-    sizesExample: `<Switch className="w-9" />
-<Switch />
+    sizesExample: `import { Switch } from "@/components/ui/switch";
+
+<Switch className="w-9" />
+<Switch defaultChecked />
 <Switch className="h-8 w-14" />
 <Switch className="h-10 w-16" />`,
   },
@@ -491,8 +597,11 @@ import { Textarea } from "@/components/ui/textarea";
 <Field label="Message" description="Up to 200 characters.">
   {(control) => <Textarea maxLength={200} {...control} />}
 </Field>`,
-    statesExample: `<Textarea rows={6} />
+    statesExample: `import { Textarea } from "@/components/ui/textarea";
+
+<Textarea rows={6} />
 <Textarea aria-invalid aria-describedby="message-error" />
+<p id="message-error">Write at least 20 characters.</p>
 <Textarea readOnly defaultValue="Sent on 12 October." />
 <Textarea disabled />`,
   },

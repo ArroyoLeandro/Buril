@@ -17,7 +17,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h1 class="font-display text-3xl">Theming</h1>
   <p class="mt-4 text-lg text-muted-foreground">
     Components read the standard shadcn tokens, so any shadcn theme works. The optional Buril theme
-    sets them to ink on paper, with one red for focus, decoration and destructive actions.
+    sets them to ink on paper, with one red for focus, decoration, the hover wash and destructive
+    actions.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Token layers</h2>
@@ -25,7 +26,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     <li>
       <strong>Primitives</strong>, <code>--buril-*</code>: the raw palette, such as
       <code>--buril-paper</code> and <code>--buril-ink</code>. They never change with the color
-      scheme. Only this docs site uses them; the registry theme writes the final values.
+      scheme. Only this docs site uses the palette; the registry theme writes the final color
+      values, plus the 10 motion tokens, <code>--buril-duration-*</code> and
+      <code>--buril-ease-*</code>, which components read with a fallback.
     </li>
     <li>
       <strong>shadcn variables</strong>, such as <code>--background</code> and
@@ -39,7 +42,10 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </ol>
   <p class="mt-4">
     An <code>@theme inline</code> block maps each variable to a Tailwind color, so
-    <code>bg-background</code> and <code>text-primary</code> follow the active scheme.
+    <code>bg-background</code> and <code>text-primary</code> follow the active scheme. The theme
+    also defines the font tokens and a <code>@custom-variant dark</code> rule, explained below. It
+    leaves <code>--sidebar-*</code> and <code>--chart-*</code> alone, because Buril has no sidebar
+    or chart components.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Tokens</h2>
@@ -73,9 +79,12 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 
   <h2 class="mt-10 font-display text-xl">Override the red</h2>
   <p class="mt-4">
-    The red carries meaning, so it is limited to three tokens: <code>--decor</code> for decoration,
-    <code>--ring</code> for the focus ring and <code>--destructive</code> for destructive actions
-    and errors. To use your own color, redefine them after the theme, in all three blocks:
+    The red carries meaning, so it is limited to a few tokens: <code>--decor</code> for decoration,
+    <code>--ring</code> for the focus ring, <code>--accent</code> for the hover wash behind outline
+    and ghost buttons, and <code>--destructive</code> for destructive actions and errors. To brand
+    with your own color, redefine <code>--decor</code>, <code>--ring</code>, <code>--accent</code>
+    and <code>--accent-foreground</code> after the theme, in all three blocks it writes, and keep
+    <code>--destructive</code> red:
   </p>
   <div class={code}>
     <Code code={overrideRedExample} lang="css" theme={codeTheme} />
@@ -89,6 +98,27 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       Keep <code>--destructive</code> at least 4.5:1 against <code>--background</code>, because
       error text uses it.
     </li>
+    <li>
+      Keep <code>--accent-foreground</code> at least 4.5:1 against <code>--accent</code>, and
+      <code>--ring</code> at least 3:1 against <code>--accent</code>, because hovered buttons show
+      text and focus on it.
+    </li>
     <li>Measure both schemes: a color that passes on paper can fail on the dark background.</li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Next steps</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <a href="/docs/guides/dark-mode" class="underline underline-offset-4">
+        Dark mode
+      </a>{" "}
+      adds a theme picker with next-themes, in Astro or in Vite.
+    </li>
+    <li>
+      <a href="/docs/guides/theme" class="underline underline-offset-4">
+        Customizing the theme
+      </a>
+      shows a neutral palette, your own fonts and calmer motion.
+    </li>
   </ul>
 </DocsLayout>

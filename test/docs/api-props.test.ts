@@ -13,7 +13,11 @@ import { documentedComponents } from "../../src/data/components";
  * - every prop a component declares itself, in its registry file or through its `cva` variants,
  *   must have a row (`ref` and `key` are React's and are described in prose instead);
  * - every row must name a prop that exists, own or inherited from the native element;
- * - a row whose type is a list of string literals must list exactly the literals the type allows.
+ * - a row whose type is a list of string literals must list exactly the literals the type allows;
+ * - a helper function that takes plain values, such as `initialsOf(name)`, documents its
+ *   parameters instead, one row each;
+ * - every component that merges `className` documents it, and one with `checked` documents
+ *   `defaultChecked` too, because readers need both even though the native element declares them.
  */
 const root = resolve(__dirname, "../..");
 
@@ -53,6 +57,12 @@ function propsOf(source: string, exportName: string): Map<string, PropInfo> {
   const [parameter] = signature?.getParameters() ?? [];
   if (!parameter) throw new Error(`${exportName} takes no props`);
   const propsType = checker.getNonNullableType(checker.getTypeOfSymbolAtLocation(parameter, file));
+  // A function of plain values: its parameters are its API.
+  if (
+    propsType.flags &
+    (ts.TypeFlags.StringLike | ts.TypeFlags.NumberLike | ts.TypeFlags.BooleanLike)
+  )
+    return new Map(signature!.getParameters().map(({ name }) => [name, { own: true }]));
   const variantsHelper = exportName.endsWith("Variants");
 
   const props = new Map<string, PropInfo>();
@@ -134,6 +144,17 @@ describe("API tables against the TypeScript props", () => {
         documented.filter((name) => !props.has(name)),
         "stale",
       ).toEqual([]);
+    },
+  );
+
+  it.each(tables.map((table) => [`${table.slug}: ${table.exportName}`, table] as const))(
+    "%s documents className and defaultChecked when it takes them",
+    (_, { source, exportName, api }) => {
+      const props = propsOf(source, exportName);
+      const documented = api.props.map(({ name }) => name);
+      if (props.has("className") && !exportName.endsWith("Variants"))
+        expect(documented).toContain("className");
+      if (documented.includes("checked")) expect(documented).toContain("defaultChecked");
     },
   );
 

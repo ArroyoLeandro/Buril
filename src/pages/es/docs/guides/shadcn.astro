@@ -37,6 +37,11 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       "add @buril/button --path components/buril",
     ]}
   />
+  <p class="mt-4">
+    <code>--path components/buril</code> es relativa a la raíz del proyecto. Si tu alias
+    <code>@</code> apunta a <code>src</code>, usa <code>src/components/buril</code> en su lugar,
+    para que el import de abajo siga funcionando.
+  </p>
   <p class="mt-4">Después, importa cada uno por su ruta y renómbralo donde existan los dos:</p>
   <div class={code}>
     <Code code={sideBySideExample} lang="tsx" theme={codeTheme} />
