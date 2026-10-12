@@ -308,8 +308,102 @@ export const inspectMotionDemo: BrowserCommand<[origin: string, path: string]> =
   }
 };
 
+export interface PanelsInspection {
+  viewportHeight: number;
+  headerBottom: number;
+  scrollWidth: number;
+  clientWidth: number;
+  /** The sticky sidebar and "On this page" panels, and whatever draws the sidebar's divider. */
+  sidebar: { top: number; bottom: number; height: number; borderRight: number };
+  sidebarColumnBorderRight: number;
+  toc: { top: number; bottom: number; borderLeft: number };
+  /** The first sidebar label and the content's h1, which share a top line. */
+  firstSidebarItemTop: number;
+  headingTop: number;
+  /** The last sidebar link with the panel scrolled to its end: inside it, above the fade. */
+  lastLink: { bottom: number; panelBottom: number; fade: number; scrolled: boolean };
+  /** Whether keyboard focus on the last link scrolls the panel to show it. */
+  focusedLastLinkVisible: boolean;
+}
+
+/** Opens a docs page at 1440x900 and measures the sticky sidebar and "On this page" panels. */
+export const inspectPanels: BrowserCommand<[origin: string, path: string]> = async (
+  context,
+  origin,
+  path,
+): Promise<PanelsInspection> => {
+  const page = await context.context.newPage();
+  try {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(new URL(path, origin).href, { waitUntil: "load" });
+    const alignment = await page.evaluate(() => {
+      const textTop = (element: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        return range.getBoundingClientRect().top;
+      };
+      return {
+        firstSidebarItemTop: textTop(document.querySelector("#docs-sidebar p")!),
+        headingTop: textTop(document.querySelector("main h1")!),
+      };
+    });
+    // Scrolled down a little, the panels sit in their stuck position.
+    const layout = await page.evaluate(() => {
+      window.scrollTo(0, 400);
+      const sidebar = document.querySelector<HTMLElement>("#docs-sidebar")!;
+      const toc = document.querySelector<HTMLElement>("main + nav")!;
+      const box = (element: Element) => element.getBoundingClientRect();
+      const style = (element: Element) => getComputedStyle(element);
+      return {
+        viewportHeight: window.innerHeight,
+        headerBottom: box(document.querySelector("header")!).bottom,
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        sidebar: {
+          top: box(sidebar).top,
+          bottom: box(sidebar).bottom,
+          height: box(sidebar).height,
+          borderRight: parseFloat(style(sidebar).borderRightWidth),
+        },
+        sidebarColumnBorderRight: parseFloat(style(sidebar.parentElement!).borderRightWidth),
+        toc: {
+          top: box(toc).top,
+          bottom: box(toc).bottom,
+          borderLeft: parseFloat(style(toc).borderLeftWidth),
+        },
+      };
+    });
+    const lastLink = await page.evaluate(() => {
+      const sidebar = document.querySelector<HTMLElement>("#docs-sidebar")!;
+      sidebar.scrollTop = sidebar.scrollHeight;
+      const links = sidebar.querySelectorAll("a");
+      const last = links[links.length - 1]!;
+      return {
+        bottom: last.getBoundingClientRect().bottom,
+        panelBottom: sidebar.getBoundingClientRect().bottom,
+        // The faded strip at the bottom of the panel: 2rem.
+        fade: 2 * parseFloat(getComputedStyle(document.documentElement).fontSize),
+        scrolled: sidebar.scrollTop > 0,
+      };
+    });
+    await page.evaluate(() => {
+      document.querySelector<HTMLElement>("#docs-sidebar")!.scrollTop = 0;
+    });
+    await page.locator("#docs-sidebar a").last().focus();
+    const focusedLastLinkVisible = await page.evaluate(() => {
+      const panel = document.querySelector("#docs-sidebar")!.getBoundingClientRect();
+      const link = document.activeElement!.getBoundingClientRect();
+      return link.top >= panel.top && link.bottom <= panel.bottom;
+    });
+    return { ...layout, ...alignment, lastLink, focusedLastLinkVisible };
+  } finally {
+    await page.close();
+  }
+};
+
 declare module "vitest/browser" {
   interface BrowserCommands {
+    inspectPanels: (origin: string, path: string) => Promise<PanelsInspection>;
     inspectMotionDemo: (origin: string, path: string) => Promise<MotionDemoInspection>;
     inspectPage: (origin: string, path: string, width: number) => Promise<PageInspection>;
     inspectHeader: (origin: string, path: string, width: number) => Promise<HeaderInspection>;
