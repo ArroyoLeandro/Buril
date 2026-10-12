@@ -26,6 +26,15 @@ export const overrideRedExample = `:root {
   }
 }`;
 
+/** Motion: retuning the motion tokens after the theme. */
+export const retuneMotionExample = `:root {
+  /* Calmer: state changes and entries take longer. */
+  --buril-duration-base: 520ms;
+  --buril-duration-slow: 560ms;
+  /* No spring: entries ease out without passing their target. */
+  --buril-ease-out: cubic-bezier(0.2, 0, 0, 1);
+}`;
+
 /**
  * Component pages: the code samples in each page's Examples section, by slug. The English page
  * and its Spanish twin render the same samples.

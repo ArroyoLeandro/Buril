@@ -265,8 +265,52 @@ export const inspectHeader: BrowserCommand<[origin: string, path: string, width:
   }
 };
 
+export interface MotionDemoInspection {
+  /** Whether the demo Switch's dot slides (a `translate` transition), and the Spinner's dots show. */
+  before: { slides: boolean; dots: string; stage: boolean };
+  after: { slides: boolean; dots: string; stage: boolean };
+}
+
+/**
+ * Opens the Motion page, waits for its demo to hydrate, and reads how the demo moves before and
+ * after its "Simulate reduced motion" switch is turned on with the keyboard.
+ */
+export const inspectMotionDemo: BrowserCommand<[origin: string, path: string]> = async (
+  context,
+  origin,
+  path,
+): Promise<MotionDemoInspection> => {
+  const page = await context.context.newPage();
+  try {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto(new URL(path, origin).href, { waitUntil: "load" });
+    await page.locator("[data-motion-stage]").scrollIntoViewIfNeeded();
+    await page.waitForSelector("astro-island:not([ssr]) [data-motion-stage]");
+    const read = () =>
+      page.evaluate(() => {
+        const stage = document.querySelector<HTMLElement>("[data-motion-stage]")!;
+        const carrier = stage.querySelector("[data-thumb] > span")!;
+        const properties = getComputedStyle(carrier).transitionProperty.split(",");
+        return {
+          slides: properties.map((property) => property.trim()).includes("translate"),
+          dots: getComputedStyle(stage.querySelector("[data-dots]")!).display,
+          stage: stage.hasAttribute("data-reduced-motion"),
+        };
+      });
+    const before = await read();
+    const simulate = page.getByRole("switch").first();
+    await simulate.focus();
+    await page.keyboard.press("Space");
+    return { before, after: await read() };
+  } finally {
+    await page.close();
+  }
+};
+
 declare module "vitest/browser" {
   interface BrowserCommands {
+    inspectMotionDemo: (origin: string, path: string) => Promise<MotionDemoInspection>;
     inspectPage: (origin: string, path: string, width: number) => Promise<PageInspection>;
     inspectHeader: (origin: string, path: string, width: number) => Promise<HeaderInspection>;
   }

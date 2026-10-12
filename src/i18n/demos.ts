@@ -143,6 +143,11 @@ export const demoText = {
   "Opens in a new tab": "Se abre en una pestaña nueva",
   "Buril follows the": "Buril sigue el",
   "APG link pattern": "patrón de enlace de la APG",
+  // Motion
+  "Simulate reduced motion": "Simular movimiento reducido",
+  "It applies to this demo only. If your system already asks for reduced motion, the demo stays still either way.":
+    "Solo se aplica a esta demo. Si tu sistema ya pide movimiento reducido, la demo se queda quieta en cualquier caso.",
+  "Accept the terms": "Acepto los términos",
   // Radio Group
   Delivery: "Entrega",
   Standard: "Estándar",

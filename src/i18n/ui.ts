@@ -156,6 +156,18 @@ const en = {
   "a11y.component": "Component",
   "a11y.aria": "Role and states",
   "a11y.componentsCaption": "Keyboard and screen reader behavior of every component.",
+  "docsNav.motion": "Motion",
+  "motion.value": "Value",
+  "motion.use": "Used for",
+  "motion.tokensCaption": "Motion tokens, read from `registry/styles/buril.css`.",
+  "motion.withMotion": "With motion",
+  "motion.reduced": "With reduced motion",
+  "motion.reducedCaption": "What each moving part does, with and without reduced motion.",
+  "motion.preset": "Preset",
+  "motion.for": "For",
+  "motion.gesture": "Gesture",
+  "motion.duration": "Duration",
+  "motion.presetsCaption": "The IconButton `motion` presets, timed from the tokens above.",
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -279,6 +291,19 @@ const es: Record<UiKey, string> = {
   "a11y.aria": "Rol y estados",
   "a11y.componentsCaption":
     "Comportamiento con el teclado y el lector de pantalla de cada componente.",
+  "docsNav.motion": "Movimiento",
+  "motion.value": "Valor",
+  "motion.use": "Uso",
+  "motion.tokensCaption": "Tokens de movimiento, leídos de `registry/styles/buril.css`.",
+  "motion.withMotion": "Con movimiento",
+  "motion.reduced": "Con movimiento reducido",
+  "motion.reducedCaption": "Qué hace cada parte que se mueve, con y sin movimiento reducido.",
+  "motion.preset": "Preset",
+  "motion.for": "Para",
+  "motion.gesture": "Gesto",
+  "motion.duration": "Duración",
+  "motion.presetsCaption":
+    "Los presets de `motion` del IconButton, con la duración calculada a partir de los tokens de arriba.",
 };
 
 export const ui: Record<Locale, Record<UiKey, string>> = { en, es };

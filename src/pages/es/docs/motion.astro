@@ -1,0 +1,161 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import IconPresetTable from "../../../components/docs/IconPresetTable.astro";
+import MotionDemo from "../../../components/MotionDemo";
+import MotionTokenTable from "../../../components/docs/MotionTokenTable.astro";
+import ReducedMotionTable from "../../../components/docs/ReducedMotionTable.astro";
+import { codeTheme } from "../../../components/code-theme";
+import { retuneMotionExample } from "../../../data/snippets";
+import { reducedMotionSnippet } from "../../../utils/motion";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Movimiento | Buril UI"
+  description="Cómo se mueven los componentes de Buril, los tokens de movimiento y qué conserva el movimiento reducido."
+>
+  <h1 class="font-display text-3xl">Movimiento</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril se mueve con calma, para que se pueda seguir, y se asienta con suavidad: la tinta se
+    asienta y la plancha imprime. Es CSS puro, sin bibliotecas de animación ni nada más que
+    instalar.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">De un vistazo</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Las pulsaciones y el puntero responden al instante; los cambios de estado y las entradas
+      tardan más.
+    </li>
+    <li>Lo que se mueve termina con un rebote suave que pasa su destino en un 3% y se asienta.</li>
+    <li>
+      Con movimiento reducido, nada se desplaza, cambia de tamaño ni gira. Los fundidos de color y
+      de opacidad se mantienen, porque no son movimiento.
+    </li>
+    <li>Los anillos de foco nunca se animan: aparecen al instante, con todo su contraste.</li>
+    <li>
+      Cada valor es un token en <code>:root</code>, y todos los componentes funcionan también sin el
+      tema.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Pruébalo</h2>
+  <p class="mt-4">
+    Activa el Switch, marca la casilla, pulsa el botón, y pasa el puntero o llega con Tab a los
+    botones de icono y a la tarjeta. Después activa la simulación y repítelo.
+  </p>
+  <div class="bg-paper-grid mt-4 border border-border p-6">
+    <MotionDemo locale="es" client:visible />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Personalidad</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <strong>La plancha imprime.</strong> Un clic baja el botón 1px, como una prensa tipográfica.
+    </li>
+    <li>
+      <strong>La tinta se asienta.</strong> Una marca se dibuja como el trazo de un buril, el punto
+      de un botón de opción se extiende como una gota de tinta, y las posiciones terminan con un
+      rebote suave en lugar de un salto.
+    </li>
+    <li>
+      <strong>Distancias cortas.</strong> Las cosas se mueven unos pocos píxeles; la opacidad hace
+      la mayor parte del cambio.
+    </li>
+    <li>
+      <strong>Una vez y quieto.</strong> Los gestos se reproducen una vez por cada paso del puntero
+      o del foco, y nunca se repiten en bucle.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Tokens</h2>
+  <p class="mt-4">
+    Las duraciones y las curvas están en <code>:root</code>, en el tema. No cambian con el esquema
+    de color.
+  </p>
+  <MotionTokenTable />
+
+  <h3 class="mt-8 font-display text-lg">Cambiar los tiempos</h3>
+  <p class="mt-4">
+    Cada componente escribe su token con el mismo valor como alternativa, como
+    <code>duration-(--buril-duration-fast,200ms)</code>, así que se mueve igual sin el tema. Para
+    ajustar todos los componentes a la vez, redefine los tokens después del tema:
+  </p>
+  <div class={code}>
+    <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Los valores se aplican a todos los componentes instalados. Pruébalos con el movimiento reducido
+    activado y desactivado.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Movimiento reducido</h2>
+  <p class="mt-4">
+    Cuando alguien activa el movimiento reducido en su sistema, cada componente deja de moverse:
+    todo lo que se mueve depende de la variante <code>motion-safe:</code> de Tailwind. Los fundidos
+    de color y de opacidad se mantienen, así que los cambios de estado se siguen notando. El Spinner
+    es el único componente que muestra un dibujo distinto.
+  </p>
+  <ReducedMotionTable />
+
+  <h3 class="mt-8 font-display text-lg">Una regla global para tu aplicación</h3>
+  <p class="mt-4">
+    Buril no incluye una regla global de movimiento reducido, porque también detendría los fundidos.
+    Si quieres una para tu propio código, pega esto en tu CSS. También detiene los fundidos:
+  </p>
+  <div class={code}>
+    <Code code={reducedMotionSnippet()} lang="css" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Gestos de icono</h2>
+  <p class="mt-4">
+    La prop <code>motion</code> del IconButton le da un gesto al icono. Se reproduce cuando llega el
+    puntero o el foco del teclado al botón, y solo si se permite el movimiento. Elige el preset que
+    encaje con el icono:
+  </p>
+  <IconPresetTable />
+  <p class="mt-4">
+    Los gestos son keyframes de CSS que el item del{" "}
+    <a href="/es/docs/components/icon-button" class="underline underline-offset-4">
+      Icon Button
+    </a>{" "}
+    agrega a tu CSS al instalarlo.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tarjeta interactiva</h2>
+  <p class="mt-4">
+    Una Card con <code>interactive</code> es un único enlace extendido sobre la tarjeta. Al pasar el
+    puntero, y mientras ese enlace tiene el foco del teclado, la tarjeta se eleva 4.5px durante la
+    duración base y aparece una sombra durante la rápida. La elevación necesita movimiento; la
+    sombra aparece en todos los modos. El anillo de foco del enlace sigue mostrando dónde está el
+    foco. Las tarjetas estáticas nunca se mueven.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Cómo se mueven los componentes</h2>
+  <p class="mt-4">
+    Las reglas que siguen todos los componentes, y que uno nuevo también debe seguir:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      El movimiento depende de <code>motion-safe:</code>; <code>motion-reduce:</code> solo se usa
+      para un efecto distinto, como los puntos del Spinner.
+    </li>
+    <li>
+      Las transiciones enumeran sus propiedades, como{" "}
+      <code>transition-[color,background-color,border-color]</code>. <code>transition</code>,{" "}
+      <code>transition-all</code> y <code>transition-colors</code> también animarían el contorno del
+      foco.
+    </li>
+    <li>
+      Solo se mueven la opacidad, translate, scale y rotate. El ancho, el alto, top y left nunca se
+      animan.
+    </li>
+    <li>
+      Los movimientos del foco y los cambios de estado nunca esperan a que termine una animación.
+    </li>
+    <li>Un test falla si el valor alternativo de un componente se aleja del tema.</li>
+  </ul>
+</DocsLayout>

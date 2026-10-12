@@ -39,3 +39,19 @@ export function readTokens(css: string): Token[] {
       dark: resolve(dark.get(name) ?? value, darkScope),
     }));
 }
+
+export interface MotionToken {
+  name: string;
+  value: string;
+}
+
+/**
+ * The motion tokens, `--buril-duration-*` and `--buril-ease-*`, with their values from `:root`, in
+ * the order the stylesheet declares them, so the Motion page always shows the shipped values.
+ */
+export function readMotionTokens(css: string): MotionToken[] {
+  const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  return block(withoutComments, /(^|\n):root\s*\{/)
+    .filter(([name]) => /^buril-(duration|ease)-/.test(name))
+    .map(([name, value]) => ({ name, value: value.replace(/\s+/g, " ") }));
+}

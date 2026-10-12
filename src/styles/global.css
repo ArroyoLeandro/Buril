@@ -3,6 +3,31 @@
 /* The IconButton gesture keyframes, which the button item adds to a consumer's CSS. */
 @import "../../registry/styles/icon-button.css";
 
+/*
+ * Docs site only: the Motion page's demo simulates reduced motion. Buril gates movement with
+ * `motion-safe:` and `motion-reduce:`, so these variants also treat anything inside
+ * `[data-reduced-motion]` as reduced; the components then behave as they would with the system
+ * setting on. The system setting still wins: it stops motion everywhere. Installed components keep
+ * Tailwind's own variants.
+ */
+@custom-variant motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    &:not(:where([data-reduced-motion], [data-reduced-motion] *)) {
+      @slot;
+    }
+  }
+}
+
+@custom-variant motion-reduce {
+  @media (prefers-reduced-motion: reduce) {
+    @slot;
+  }
+
+  &:where([data-reduced-motion], [data-reduced-motion] *) {
+    @slot;
+  }
+}
+
 /* Docs site fonts. Buril ships tokens only; the docs load Silkscreen and Inter. */
 @theme {
   --font-display: "Silkscreen", ui-monospace, monospace;
