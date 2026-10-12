@@ -75,8 +75,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h3 class="mt-8 font-display text-lg">Change the timing</h3>
   <p class="mt-4">
     Each component writes its token with the same value as a fallback, such as
-    <code>duration-(--buril-duration-fast,200ms)</code>, so it moves the same without the theme. To
-    retune every component at once, redefine the tokens after the theme:
+    <code data-wrap>duration-(--buril-duration-fast,200ms)</code>, so it moves the same without the
+    theme. To retune every component at once, redefine the tokens after the theme:
   </p>
   <div class={code}>
     <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
@@ -135,9 +135,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     </li>
     <li>
       Transitions list their properties, such as{" "}
-      <code>transition-[color,background-color,border-color]</code>. <code>transition</code>,{" "}
-      <code>transition-all</code> and <code>transition-colors</code> would also animate the focus
-      outline.
+      <code data-wrap>transition-[color,background-color,border-color]</code>.{" "}
+      <code>transition</code>, <code>transition-all</code> and <code>transition-colors</code> would
+      also animate the focus outline.
     </li>
     <li>
       Only opacity, translate, scale and rotate move. Width, height, top and left never transition.

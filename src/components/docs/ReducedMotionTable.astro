@@ -1,4 +1,5 @@
 ---
+import TableScroll from "./TableScroll.astro";
 import InlineCode from "../InlineCode.astro";
 import { reducedMotionBehavior } from "../../data/motion";
 import { getLocale, translator } from "../../i18n/ui";
@@ -6,12 +7,12 @@ import { getLocale, translator } from "../../i18n/ui";
 /** What each moving part does with motion, and what reduced motion keeps of it. */
 const locale = getLocale(Astro.url);
 const t = translator(locale);
-const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+const cell = "px-2 py-3 align-top sm:px-4";
 ---
 
-<div class="mt-4 border border-border">
+<TableScroll labelledby="reduced-motion-caption">
   <table class="w-full border-collapse text-left text-sm">
-    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+    <caption id="reduced-motion-caption" class="px-2 py-3 text-left text-muted-foreground sm:px-4">
       {t("motion.reducedCaption")}
     </caption>
     <thead>
@@ -30,7 +31,7 @@ const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
     <tbody>
       {reducedMotionBehavior.map((row) => (
         <tr class="border-b border-border last:border-b-0">
-          <th scope="row" class={`${cell} font-semibold sm:whitespace-nowrap`}>
+          <th scope="row" class={`${cell} font-semibold whitespace-nowrap`}>
             {row.component}
           </th>
           <td class={cell}>
@@ -43,4 +44,4 @@ const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
       ))}
     </tbody>
   </table>
-</div>
+</TableScroll>

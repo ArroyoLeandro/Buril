@@ -1,4 +1,5 @@
 ---
+import TableScroll from "./TableScroll.astro";
 import InlineCode from "../InlineCode.astro";
 import { accessibilityChecks, accessibilityRules } from "../../data/accessibility";
 import { getLocale, translator } from "../../i18n/ui";
@@ -6,12 +7,12 @@ import { getLocale, translator } from "../../i18n/ui";
 /** The 11 rules, each with its plain-words summary and how it is checked, from the shared data. */
 const locale = getLocale(Astro.url);
 const t = translator(locale);
-const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+const cell = "px-2 py-3 align-top sm:px-4";
 ---
 
-<div class="mt-4 border border-border">
+<TableScroll labelledby="rules-caption">
   <table class="w-full border-collapse text-left text-sm">
-    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+    <caption id="rules-caption" class="px-2 py-3 text-left text-muted-foreground sm:px-4">
       {t("a11y.rulesCaption")}
     </caption>
     <thead>
@@ -46,4 +47,4 @@ const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
       ))}
     </tbody>
   </table>
-</div>
+</TableScroll>

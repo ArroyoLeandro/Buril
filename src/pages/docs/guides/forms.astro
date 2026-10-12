@@ -43,7 +43,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h2 class="mt-10 font-display text-xl">The render prop</h2>
   <p class="mt-4">
     Field does not know your control. It hands you the props to put on it, as a render prop:
-    <code>{"{(control) => <Input {...control} />}"}</code>. They are:
+    <code data-wrap>{"{(control) => <Input {...control} />}"}</code>. They are:
   </p>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     <li>
@@ -125,18 +125,19 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h2 class="mt-10 font-display text-xl">Other controls</h2>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     <li>
+      An{" "}
       <a href="/docs/components/input" class="underline underline-offset-4">
         Input
-      </a>
-      ,
+      </a>{" "}
+      or a
       <a href="/docs/components/textarea" class="underline underline-offset-4">
         Textarea
       </a>{" "}
-      and
+      goes inside a Field, and a
       <a href="/docs/components/select" class="underline underline-offset-4">
         Select
       </a>{" "}
-      go inside a Field.
+      does too.
     </li>
     <li>
       A{" "}

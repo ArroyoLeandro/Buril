@@ -47,7 +47,7 @@ const { decorExample, linkExample } = componentExamples.card;
       Nunca pongas un <code>onClick</code> en la tarjeta: un <code>&lt;div&gt;</code> en el que se
       puede hacer clic no recibe el foco y no tiene rol ni nombre. Pon un enlace real en el título y
       extiéndelo sobre la tarjeta con un pseudoelemento. La tarjeta es <code>relative</code>, así
-      que <code>after:absolute after:inset-0</code> la cubre:
+      que <code data-wrap>after:absolute after:inset-0</code> la cubre:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={linkExample} lang="tsx" theme={codeTheme} />

@@ -24,13 +24,13 @@ import MigrationTable from "../../../components/docs/MigrationTable.astro";
   </ol>
   <InstallCommand id="install-replace" commands={["add @buril/checkbox --overwrite"]} />
   <p class="mt-4">
-    <code>--overwrite</code> replaces <code>components/ui/checkbox.tsx</code> without asking. Run
-    your tests and try the screens with the keyboard before moving on to the next component. To try
-    a component first without replacing anything, install it next to shadcn's: see
+    <code>--overwrite</code> replaces <code data-wrap>components/ui/checkbox.tsx</code> without
+    asking. Run your tests and try the screens with the keyboard before moving on to the next
+    component. To try a component first without replacing anything, install it next to shadcn's, as
     <a href="/docs/guides/shadcn" class="underline underline-offset-4">
       Using Buril with shadcn
     </a>
-    .
+    explains.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Component by component</h2>
@@ -42,8 +42,8 @@ import MigrationTable from "../../../components/docs/MigrationTable.astro";
       The install path, <code>components/ui/&lt;name&gt;.tsx</code>, and the import names.
     </li>
     <li>
-      Variant names, such as <code>default</code>, <code>outline</code> and <code>destructive</code>
-      .
+      Variant names, such as <code>default</code>, <code>outline</code> and
+      <code>destructive</code>.
     </li>
     <li>Your theme: components read the same shadcn tokens.</li>
     <li>
