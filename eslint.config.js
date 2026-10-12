@@ -8,7 +8,19 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig(
-  { ignores: ["dist/", ".astro/", "public/r/", "node_modules/", "pnpm-lock.yaml", ".claude/"] },
+  // Private, git-ignored folders (planning, task notes, agent tooling) are not linted.
+  {
+    ignores: [
+      "dist/",
+      ".astro/",
+      "public/r/",
+      "node_modules/",
+      "pnpm-lock.yaml",
+      ".claude/",
+      ".planning/",
+      "odd/",
+    ],
+  },
   js.configs.recommended,
   tseslint.configs.recommended,
   {
