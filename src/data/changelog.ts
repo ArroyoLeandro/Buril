@@ -50,7 +50,7 @@ export const changelog: ChangelogEntry[] = [
         "More room between the loading Button's spinner and its label.",
       ],
       es: [
-        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que pasa su destino en un 3% y se asienta.",
+        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
         "Presets de `motion` para el IconButton: rotate, spin, wiggle, swing, tres variantes de nudge y pop.",
         "Las Card `interactive` se elevan y muestran una sombra con el puntero y con el foco del teclado.",
         "Field acepta `requiredLabel` y `errorPrefix`, y Link acepta `newTabLabel`, para que el texto que escriben esté en tu idioma.",
@@ -84,7 +84,7 @@ export const changelog: ChangelogEntry[] = [
       ],
       es: [
         "Tokens de movimiento con valores alternativos literales, así que los componentes se mueven igual con o sin el tema.",
-        "Los anillos de foco aparecen al instante en lugar de fundirse.",
+        "Los anillos de foco se muestran al instante en lugar de aparecer gradualmente.",
         "Un golpe de imprenta al pulsar los botones, una marca que se dibuja, un punto de radio que se extiende como tinta y una flecha del Select que gira, todo desactivado con movimiento reducido.",
         "El indicador del Switch se mantiene dentro de su pista en todos los navegadores.",
       ],

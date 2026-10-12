@@ -20,8 +20,8 @@ const { decorExample, linkExample } = componentExamples.card;
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Nivel del encabezado.</strong> <code>CardTitle</code> renderiza un <code>h3</code>{" "}
-        por defecto. Pasa de <code>as="h2"</code> a <code>as="h6"</code> para que encaje en el
-        esquema de la página; el aspecto no cambia.
+        por defecto. Pasa a <code>as</code> un valor entre <code>"h2"</code> y <code>"h6"</code>{" "}
+        para que encaje en el esquema de la página; el aspecto no cambia.
       </li>
       <li>
         <strong>Decoración.</strong> <code>decor</code> agrega una franja rayada en la parte
@@ -85,6 +85,6 @@ const { decorExample, linkExample } = componentExamples.card;
     shadcn, <code>CardTitle</code> es un encabezado real y <code>CardDescription</code>, un párrafo.
     Solo necesita tu helper <code>cn()</code>; si tu
     <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
-    reemplazarlo, y responder que no es seguro.
+    reemplazarlo, y puedes responder que no sin problema.
   </p>
 </ComponentPage>
