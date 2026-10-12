@@ -1,0 +1,14 @@
+{
+  // Type-checks the real-browser tests and the Vitest configs apart from the jsdom tests: with
+  // browser mode installed, `vitest/config` brings in Vitest's browser matchers, whose types
+  // clash with jest-dom's (`toHaveTextContent` with a RegExp, for one).
+  "extends": "./tsconfig.json",
+  "include": [
+    ".astro/types.d.ts",
+    "**/*.browser.test.tsx",
+    "test/browser.ts",
+    "vitest.config.ts",
+    "vitest.browser.config.ts"
+  ],
+  "exclude": ["dist", "public/r", "node_modules"]
+}

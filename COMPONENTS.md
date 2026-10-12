@@ -103,6 +103,7 @@ Target: **WCAG 2.2 level AA**.
 
 - [ ] Follows its APG pattern checklist (keyboard, roles, states).
 - [ ] Automated tests with Testing Library + `axe`.
+- [ ] Anything that depends on layout or rendering (positions, sizes, colors in both themes, focus, transitions, overlays) has a real-browser test (`*.browser.test.tsx`, `pnpm test:browser`). jsdom does not lay out or paint.
 - [ ] Manual screen reader pass with NVDA (Phase 2 and 3 components).
 - [ ] Uses semantic tokens only (no hardcoded colors), so future visual styles stay cheap.
   - **Known exception:** the destructive Button uses `text-white` in light mode and `dark:text-background` in dark mode. White on the dark-mode red fails contrast, and no shadcn token is white in both modes. Any new exception needs the same kind of measured reason, written next to the class.
