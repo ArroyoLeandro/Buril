@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, type ComponentProps } from "react";
+import { useImperativeHandle, useLayoutEffect, useRef, type ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -21,8 +21,10 @@ function Checkbox({ className, indeterminate = false, ref, ...props }: CheckboxP
   const input = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => input.current!, []);
 
-  // No dependency list: after a click clears the DOM property, the next render restores the prop.
-  useEffect(() => {
+  // A layout effect, so the property is set before the browser paints and the dash never shows a
+  // frame late. No dependency list: after a click clears the DOM property, the next render
+  // restores the prop.
+  useLayoutEffect(() => {
     if (input.current) input.current.indeterminate = indeterminate;
   });
 

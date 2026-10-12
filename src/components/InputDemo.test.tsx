@@ -10,7 +10,23 @@ describe("InputDemo", () => {
     render(<InputDemo />);
     expect(screen.getByRole("textbox", { name: "Full name" })).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Username" })).toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: "Account ID" })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: "Account ID" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Promo code" })).toBeInTheDocument();
+  });
+
+  // A value people need to read or copy stays focusable: read-only, not disabled.
+  it("keeps the read-only account ID focusable and the disabled promo code out of the Tab order", async () => {
+    render(<InputDemo />);
+    const account = screen.getByRole("textbox", { name: "Account ID" });
+    expect(account).toHaveAttribute("readonly");
+    expect(account).toBeEnabled();
+    expect(screen.getByRole("textbox", { name: "Promo code" })).toBeDisabled();
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+    expect(account).toHaveFocus();
+    await userEvent.tab();
+    expect(document.body).toHaveFocus();
   });
 
   it("flags a username with spaces as invalid and clears it once fixed", async () => {

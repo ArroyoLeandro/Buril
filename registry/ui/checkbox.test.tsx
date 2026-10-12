@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef, useLayoutEffect, useRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
@@ -55,6 +55,22 @@ describe("Checkbox", () => {
       const checkbox = screen.getByRole<HTMLInputElement>("checkbox");
       expect(checkbox.indeterminate).toBe(true);
       expect(checkbox).toBePartiallyChecked();
+    });
+
+    // Layout effects run before the browser paints. A parent's runs after its children's, so it
+    // sees what the checkbox has applied by then; a passive effect would come too late.
+    it("is applied before the browser paints, so the dash never flashes in late", () => {
+      const seen: boolean[] = [];
+      function Probe({ indeterminate }: { indeterminate: boolean }) {
+        const ref = useRef<HTMLInputElement>(null);
+        useLayoutEffect(() => {
+          seen.push(ref.current!.indeterminate);
+        });
+        return <Checkbox aria-label="All toppings" ref={ref} indeterminate={indeterminate} />;
+      }
+      const { rerender } = render(<Probe indeterminate />);
+      rerender(<Probe indeterminate={false} />);
+      expect(seen).toEqual([true, false]);
     });
 
     it("clears when the prop turns off", () => {

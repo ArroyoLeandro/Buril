@@ -1,4 +1,14 @@
-import { cloneElement, useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
+"use client";
+
+import {
+  cloneElement,
+  useEffect,
+  useId,
+  useRef,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -28,7 +38,11 @@ type FieldProps = Omit<ComponentProps<"div">, "children"> & {
    * is described by the message, which shows with an icon so color is never the only signal.
    */
   error?: ReactNode;
-  /** Marks the control `required` and shows "(required)" next to the label. */
+  /**
+   * Marks the control `required` and shows "(required)" next to the label. If the rendered control
+   * ends up neither `required` nor `aria-required`, the marker joins the label's accessible name so
+   * the requirement is still announced, and development builds warn.
+   */
   required?: boolean;
   /**
    * The one control this field labels. Either a function that receives the control props to
@@ -40,6 +54,50 @@ type FieldProps = Omit<ComponentProps<"div">, "children"> & {
 
 const hasContent = (node: ReactNode) =>
   node !== undefined && node !== null && node !== false && node !== "";
+
+const isDevelopment = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
+
+/** Whether the element reports a requirement, natively or through ARIA. */
+const reportsRequired = (element: HTMLElement) =>
+  (element as HTMLInputElement).required === true ||
+  element.getAttribute("aria-required") === "true";
+
+/**
+ * The marker is hidden from screen readers because the control normally announces its own
+ * required state. When a render prop drops the `required` prop, nothing would announce it. After
+ * every commit this checks the rendered control and, if it does not report the requirement, lets
+ * screen readers read the marker as part of the label.
+ */
+function useRequirementFallback(controlId: string) {
+  const marker = useRef<HTMLSpanElement>(null);
+  const warned = useRef(false);
+
+  // No dependency list: the control is the consumer's markup and can change on any render.
+  useEffect(() => {
+    // The marker only renders when the field is required.
+    if (!marker.current) return;
+    // The root node, so it also works inside a shadow root.
+    const root = marker.current.getRootNode();
+    if (!(root instanceof Document || root instanceof ShadowRoot)) return;
+    const control = root.getElementById(controlId);
+    const lost = control !== null && !reportsRequired(control);
+    // A direct DOM update: React renders aria-hidden="true" and never changes it, so it keeps
+    // whatever this sets.
+    if (lost) marker.current.removeAttribute("aria-hidden");
+    else marker.current.setAttribute("aria-hidden", "true");
+    if (lost && isDevelopment && !warned.current) {
+      warned.current = true;
+      console.warn(
+        `Field: "required" is set, but the control with id "${controlId}" is not required. ` +
+          "Spread every prop the render function receives onto the control, including " +
+          '"required", or set "aria-required" on a custom control. Until then the label reads ' +
+          '"(required)" to screen readers.',
+      );
+    }
+  });
+
+  return marker;
+}
 
 function ErrorIcon() {
   return (
@@ -80,6 +138,7 @@ function Field({
   const errorId = `${baseId}-error`;
   const hasDescription = hasContent(description);
   const invalid = hasContent(error);
+  const requiredMarker = useRequirementFallback(controlId);
 
   const describedBy =
     [
@@ -117,8 +176,13 @@ function Field({
           <>
             {" "}
             {/* Visible text, not color. Hidden from the name because the control's native
-                required state is already announced, so screen readers do not hear it twice. */}
-            <span aria-hidden="true" className="font-normal text-muted-foreground">
+                required state is already announced, so screen readers do not hear it twice,
+                unless the control turned out not to be required. */}
+            <span
+              ref={requiredMarker}
+              aria-hidden="true"
+              className="font-normal text-muted-foreground"
+            >
               (required)
             </span>
           </>

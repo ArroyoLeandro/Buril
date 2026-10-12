@@ -33,6 +33,29 @@ describe("FieldDemo", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Subscribed ada@example.com.");
   });
 
+  it("explains a malformed address with an example", async () => {
+    render(<FieldDemo />);
+    const email = screen.getByRole("textbox", { name: "Email" });
+    await userEvent.type(email, "ada@");
+    await userEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+    expect(email).toHaveFocus();
+    expect(email).toHaveAccessibleDescription(
+      "We only use it to send the newsletter. Error: Enter an email address like name@example.com.",
+    );
+  });
+
+  it("drops an earlier confirmation when a later submit fails", async () => {
+    render(<FieldDemo />);
+    const email = screen.getByRole("textbox", { name: "Email" });
+    await userEvent.type(email, "ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Subscribed ada@example.com.");
+    await userEvent.clear(email);
+    await userEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    expect(email).toBeInvalid();
+  });
+
   it("has no axe violations, with or without an error", async () => {
     const { container } = render(<FieldDemo />);
     expect(await axe(container)).toHaveNoViolations();

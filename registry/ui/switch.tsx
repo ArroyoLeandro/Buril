@@ -18,13 +18,15 @@ type SwitchProps = Omit<ComponentProps<"input">, "type" | "role"> & {
  */
 function Switch({ className, stateLabels, ...props }: SwitchProps) {
   return (
-    <span className="relative inline-flex shrink-0 items-center gap-2 align-middle">
+    // A grid, so the track and the thumb share one cell: the thumb's percentages then resolve
+    // against the track box, whatever size the consumer gives the track.
+    <span className="relative inline-grid shrink-0 grid-flow-col items-center gap-2 align-middle">
       <input
         type="checkbox"
         role="switch"
         className={cn(
           // A 44 by 24px track: above the 24px target size (rule 8).
-          "peer h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full border border-input bg-background",
+          "peer col-start-1 row-start-1 h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full border border-input bg-background",
           "checked:border-primary checked:bg-primary",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
@@ -38,11 +40,13 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
         data-thumb
         aria-hidden="true"
         className={cn(
-          // The thumb's position tells off from on, so the state is never color alone.
-          "pointer-events-none absolute top-1/2 left-1 size-4 -translate-y-1/2 rounded-full bg-muted-foreground",
-          "peer-checked:translate-x-5 peer-checked:bg-primary-foreground peer-disabled:opacity-50",
+          // The thumb's position tells off from on, so the state is never color alone. It is a
+          // square 4px inside the track, sized from the track's height and moved to its right edge
+          // when on, so it fits and travels fully on any track size.
+          "pointer-events-none absolute top-1 left-1 col-start-1 row-start-1 aspect-square h-[calc(100%-var(--spacing)*2)] rounded-full bg-muted-foreground",
+          "peer-checked:left-[calc(100%-var(--spacing))] peer-checked:-translate-x-full peer-checked:bg-primary-foreground peer-disabled:opacity-50",
           // Slides only when the user has not asked for reduced motion (rule 10).
-          "motion-safe:transition-transform",
+          "motion-safe:transition-[left,translate]",
           // Forced colors replace backgrounds, which would hide the thumb; keep a system color.
           "forced-colors:bg-[CanvasText] forced-colors:forced-color-adjust-none",
         )}

@@ -60,6 +60,14 @@ describe("RadioGroup compiled with Tailwind", () => {
     expect(cascade.computed(dot, "outline-offset", focus)).toBe("2px");
   });
 
+  it("turns the border destructive when invalid, even while checked", () => {
+    const invalid = '[aria-invalid="true"]';
+    expect(cascade.computed(dot, "border-color", { states: [invalid] })).toBe("var(--destructive)");
+    expect(cascade.computed(dot, "border-color", { states: [":checked", invalid] })).toBe(
+      "var(--destructive)",
+    );
+  });
+
   it("dims the whole row once when its radio is disabled", () => {
     expect(cascade.computed(row, "opacity", { states: [":has(:disabled)"] })).toBe("50%");
     expect(cascade.computed(dot, "opacity", { states: [":disabled"] })).toBeUndefined();

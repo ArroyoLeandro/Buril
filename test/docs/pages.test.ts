@@ -284,6 +284,12 @@ describe("field page", () => {
     expect(visible).toMatch(/\(required\)/);
     expect(visible).toMatch(/icon/);
   });
+
+  it("explains what happens when a render prop drops required", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-required=(&quot;|")true(&quot;|")/);
+    expect(visible).toMatch(/development builds log a warning/);
+  });
 });
 
 describe("input page", () => {
@@ -330,6 +336,12 @@ describe("radio group page", () => {
     expect(visible).toMatch(/arrow keys/i);
     expect(visible).toMatch(/onValueChange/);
   });
+
+  it("explains where aria-invalid and the error description go", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|") to each item/);
+    expect(visible).toMatch(/aria-describedby/);
+  });
 });
 
 describe("switch page", () => {
@@ -341,6 +353,12 @@ describe("switch page", () => {
     expect(visible).toMatch(/immediately/);
     expect(visible).toMatch(/stateLabels/);
     expect(visible).toMatch(/reduced motion/i);
+  });
+
+  it("explains how to resize the track and the invalid state", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/h-8 w-14/);
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|")/);
   });
 });
 
