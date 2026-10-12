@@ -1,0 +1,123 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import { codeTheme } from "../../../components/code-theme";
+import {
+  fontsExample,
+  neutralPresetExample,
+  overrideRedExample,
+  retuneMotionExample,
+} from "../../../data/snippets";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Customizing the theme | Buril UI"
+  description="Change the red, use a neutral palette or retune the motion, without touching a component."
+>
+  <h1 class="font-display text-3xl">Customizing the theme</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Components read the standard shadcn tokens. Buril's own tokens, for decoration and motion,
+    always come with a fallback. Change the values in your CSS and every component follows; no
+    component file changes.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Quick path</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>
+      Open the global CSS file your <code>components.json</code> points at.
+    </li>
+    <li>
+      Below the theme, redefine the tokens you want to change, in <code>:root</code> and{" "}
+      <code>.dark</code>.
+    </li>
+    <li>Measure the contrast of what you changed, in both color schemes.</li>
+  </ol>
+  <p class="mt-4">
+    If you installed the Buril theme, it also writes the dark values in a
+    <code>@media (prefers-color-scheme: dark)</code> block, for visitors who never chose a theme.
+    Change that block too, or system dark mode keeps the old values.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Change the red</h2>
+  <p class="mt-4">
+    The red carries meaning, so the Buril theme uses it in three tokens only: <code>--decor</code>
+    for decoration, <code>--ring</code> for the focus ring and <code>--destructive</code> for
+    destructive actions and errors. To brand the decoration and the focus ring with your own color:
+  </p>
+  <div class={code}>
+    <Code code={overrideRedExample} lang="css" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      These blues measure 5.85:1 on the paper background and 7.28:1 on the dark one, above the 3:1 a
+      focus ring needs.
+    </li>
+    <li>
+      Keep <code>--destructive</code> red unless your brand has another danger color. It needs 4.5:1
+      against the background, because error text uses it, and the destructive Button puts white text
+      on it in light mode.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">A neutral palette</h2>
+  <p class="mt-4">
+    Prefer gray to paper and ink? Use this palette instead of the Buril theme. It keeps Buril's
+    contrast rules: text pairs reach 4.5:1, and borders, inputs and the focus ring reach 3:1, in
+    both schemes. A test measures every pair.
+  </p>
+  <div class={code}>
+    <Code code={neutralPresetExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    The decorative tokens, <code>--decor</code> and <code>--grid</code>, are optional: without them,
+    the Card's hatched band uses the primary color and nothing else changes.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Retune the motion</h2>
+  <p class="mt-4">
+    The motion tokens live in <code>:root</code>. Each component also carries the same values as
+    fallbacks, so redefining a token changes every component, and leaving it alone changes nothing:
+  </p>
+  <div class={code}>
+    <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    The{" "}
+    <a href="/docs/motion" class="underline underline-offset-4">
+      Motion
+    </a>{" "}
+    page lists every token, its value and what uses it.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Fonts</h2>
+  <p class="mt-4">
+    Buril ships no fonts. The theme defines two font tokens with system fallbacks; set your own:
+  </p>
+  <div class={code}>
+    <Code code={fontsExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    This site uses Silkscreen for headings and Inter for text. Keep a pixel or display font for
+    headings only: it is hard to read in labels and inputs.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Checklist</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>Text tokens reach 4.5:1 against their background.</li>
+    <li>
+      <code>--border</code>, <code>--input</code> and <code>--ring</code> reach 3:1 against the
+      background.
+    </li>
+    <li>
+      Both <code>:root</code> and <code>.dark</code> are measured, and the system dark block matches{" "}
+      <code>.dark</code>.
+    </li>
+    <li>
+      The focus ring stays visible on <code>--secondary</code> and <code>--accent</code> surfaces
+      too.
+    </li>
+  </ul>
+</DocsLayout>

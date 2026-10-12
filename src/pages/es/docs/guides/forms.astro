@@ -1,0 +1,165 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../../components/InstallCommand.astro";
+import { codeTheme } from "../../../../components/code-theme";
+import { fieldChildGuideExample, fieldStringsExample } from "../../../../data/snippets";
+import { exampleSource } from "../../../../utils/example-source";
+import signupForm from "../../../../examples/SignupForm.tsx?raw";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Formularios con Field | Buril UI"
+  description="Etiqueta, describe y valida controles de formulario con Field: la render prop, los errores, los campos obligatorios y tu propio idioma."
+>
+  <h1 class="font-display text-3xl">Formularios con Field</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Field le da a un control una etiqueta visible, un texto de ayuda y un mensaje de error, y los
+    conecta para que los lectores de pantalla lean los tres. Tú conservas tu propio estado y tu
+    validación.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Camino rápido</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>Instala Field y los controles que necesites.</li>
+    <li>Envuelve cada control en un Field y expande en el control las props que te da.</li>
+    <li>
+      Pasa el mensaje de error a <code>error</code> después de validar.
+    </li>
+  </ol>
+  <InstallCommand id="install-forms" commands={["add @buril/field @buril/input @buril/textarea"]} />
+
+  <h2 class="mt-10 font-display text-xl">Un formulario completo</h2>
+  <p class="mt-4">
+    Un formulario de registro que valida al enviarse, muestra cada error debajo de su campo y lleva
+    el foco al primer campo que hay que corregir. Este código se comprueba con TypeScript y con
+    tests junto con el sitio. El código queda en inglés, como el resto de los ejemplos.
+  </p>
+  <div class={code}>
+    <Code code={exampleSource(signupForm)} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">La render prop</h2>
+  <p class="mt-4">
+    Field no conoce tu control. Te entrega las props que debes ponerle, como render prop:
+    <code>{"{(control) => <Input {...control} />}"}</code>. Son estas:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>id</code>, al que apunta el <code>for</code> de la etiqueta.
+    </li>
+    <li>
+      <code>aria-describedby</code>, con la descripción y después el error, para que se lean en ese
+      orden después del nombre.
+    </li>
+    <li>
+      <code>aria-invalid</code>, mientras hay un error.
+    </li>
+    <li>
+      <code>required</code>, cuando el campo es obligatorio.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Expándelas todas, después de tus propias props. Con un solo elemento puedes omitir la función:
+    Field le agrega las mismas props, conserva su propio <code>id</code> y combina su
+    <code>aria-describedby</code>.
+  </p>
+  <div class={code}>
+    <Code code={fieldChildGuideExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Errores</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Pasa el mensaje a <code>error</code>. Una cadena vacía, <code>null</code> o
+      <code>undefined</code> significan que no hay error.
+    </li>
+    <li>
+      El error se muestra con un icono y texto, así que el color nunca es la única señal, y los
+      lectores de pantalla oyen "Error:" antes del mensaje.
+    </li>
+    <li>
+      Su región siempre está en la página y es cortés (<code>polite</code>), así que un error nuevo
+      se anuncia al aparecer. No necesitas tu propia región viva para los errores de los campos.
+    </li>
+    <li>
+      Agrega <code>noValidate</code> al <code>&lt;form&gt;</code> cuando validas por tu cuenta, para
+      que los globos del navegador no aparezcan encima de los errores de Field.
+    </li>
+    <li>
+      Al enviar, lleva el foco al primer campo con error. Su nombre, su descripción y su error se
+      leen juntos.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Campos obligatorios</h2>
+  <p class="mt-4">
+    <code>required</code> aplica el <code>required</code> nativo al control y muestra "(required)"
+    junto a la etiqueta. La marca está oculta para los lectores de pantalla, que ya anuncian el
+    estado nativo, así que nadie la oye dos veces.
+  </p>
+  <p class="mt-4">
+    Si tu render prop pierde <code>required</code>, Field lo detecta después de renderizar: la marca
+    vuelve a formar parte del nombre de la etiqueta, así que el requisito se sigue anunciando, y en
+    desarrollo aparece una advertencia. Un control personalizado puede indicarlo con
+    <code>aria-required</code>.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tu propio idioma</h2>
+  <p class="mt-4">Field escribe dos textos propios. Pásalos en el idioma de tu sitio:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>requiredLabel</code>, la marca visible, "(required)" por defecto.
+    </li>
+    <li>
+      <code>errorPrefix</code>, la palabra oculta antes del error, "Error:" por defecto.
+    </li>
+  </ul>
+  <div class={code}>
+    <Code code={fieldStringsExample} lang="tsx" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    El <code>newTabLabel</code> del Link funciona igual para los enlaces que abren una pestaña
+    nueva.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Otros controles</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <a href="/es/docs/components/input" class="underline underline-offset-4">
+        Input
+      </a>
+      ,
+      <a href="/es/docs/components/textarea" class="underline underline-offset-4">
+        Textarea
+      </a>{" "}
+      y
+      <a href="/es/docs/components/select" class="underline underline-offset-4">
+        Select
+      </a>{" "}
+      van dentro de un Field.
+    </li>
+    <li>
+      Un{" "}
+      <a href="/es/docs/components/checkbox" class="underline underline-offset-4">
+        Checkbox
+      </a>{" "}
+      o un
+      <a href="/es/docs/components/switch" class="underline underline-offset-4">
+        Switch
+      </a>{" "}
+      solo va dentro de un <code>&lt;label&gt;</code> con su texto; usa un Field cuando necesita
+      texto de ayuda o un error.
+    </li>
+    <li>
+      Un{" "}
+      <a href="/es/docs/components/radio-group" class="underline underline-offset-4">
+        Radio Group
+      </a>
+      es su propio campo: su <code>legend</code> es la etiqueta.
+    </li>
+  </ul>
+</DocsLayout>

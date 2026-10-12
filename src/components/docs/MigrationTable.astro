@@ -1,0 +1,47 @@
+---
+import InlineCode from "../InlineCode.astro";
+import { componentHref, documentedComponents } from "../../data/components";
+import { migrationNotes } from "../../data/guides";
+import { localizedHref } from "../../i18n/paths";
+import { getLocale, translator } from "../../i18n/ui";
+
+/** One row per documented component: what differs from its shadcn/ui counterpart. */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      {t("migration.caption")}
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("a11y.component")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("migration.changes")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {documentedComponents.map(({ slug, name }) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-normal sm:whitespace-nowrap`}>
+            <a
+              href={localizedHref(componentHref(slug), locale)}
+              class="font-semibold underline underline-offset-4"
+            >
+              {name}
+            </a>
+          </th>
+          <td class={cell}>
+            <InlineCode text={migrationNotes[slug]?.[locale] ?? ""} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

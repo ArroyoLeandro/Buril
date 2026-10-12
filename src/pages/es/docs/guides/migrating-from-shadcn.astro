@@ -1,0 +1,78 @@
+---
+import DocsLayout from "../../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../../components/InstallCommand.astro";
+import MigrationTable from "../../../../components/docs/MigrationTable.astro";
+---
+
+<DocsLayout
+  title="Migrar desde shadcn | Buril UI"
+  description="Qué cambia, componente por componente, cuando reemplazas un componente de shadcn/ui por el de Buril."
+>
+  <h1 class="font-display text-3xl">Migrar desde shadcn</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril conserva los nombres de archivo, los nombres de las variantes, los tokens y el
+    <code>cn()</code> de shadcn. Lo que cambia está debajo: elementos nativos en lugar de primitivas
+    sin estilo, así que algunas props y partes son distintas.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Camino rápido</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>Elige un componente y lee su fila más abajo.</li>
+    <li>
+      Busca en tu proyecto las props y partes que cambian, como <code>asChild</code>.
+    </li>
+    <li>Reemplaza el archivo y actualiza los lugares donde se usa:</li>
+  </ol>
+  <InstallCommand id="install-replace" commands={["add @buril/checkbox --overwrite"]} />
+  <p class="mt-4">
+    <code>--overwrite</code> reemplaza <code>components/ui/checkbox.tsx</code> sin preguntar.
+    Ejecuta tus tests y prueba las pantallas con el teclado antes de pasar al siguiente componente.
+    Para probar un componente sin reemplazar nada, instálalo junto al de shadcn: consulta
+    <a href="/es/docs/guides/shadcn" class="underline underline-offset-4">
+      Usar Buril junto a shadcn
+    </a>
+    .
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Componente por componente</h2>
+  <MigrationTable />
+
+  <h2 class="mt-10 font-display text-xl">Lo que no cambia</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      La ruta de instalación, <code>components/ui/&lt;name&gt;.tsx</code>, y los nombres que
+      importas.
+    </li>
+    <li>
+      Los nombres de las variantes, como <code>default</code>, <code>outline</code> y
+      <code>destructive</code>.
+    </li>
+    <li>Tu tema: los componentes leen los mismos tokens de shadcn.</li>
+    <li>
+      <code>className</code>, combinado con <code>cn()</code> en cada parte.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Antes de reemplazar un archivo</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Busca <code>asChild</code>: un Button o un Badge que envuelve un enlace pasa a ser un
+      <code>&lt;a&gt;</code> con <code>buttonVariants()</code> o <code>badgeVariants()</code>.
+    </li>
+    <li>
+      Busca <code>onCheckedChange</code>: Checkbox y Switch usan <code>onChange</code> y leen
+      <code>event.target.checked</code>.
+    </li>
+    <li>
+      Busca <code>size="icon"</code>: cada uno de esos botones necesita un <code>aria-label</code>,
+      o pasa a ser un <code>IconButton</code>.
+    </li>
+    <li>
+      Busca <code>data-slot</code> en tu CSS y en tus tests: el Button no tiene ninguno.
+    </li>
+    <li>
+      Comprueba el contraste de <code>--ring</code> y <code>--input</code>, como explica la guía de
+      shadcn.
+    </li>
+  </ul>
+</DocsLayout>

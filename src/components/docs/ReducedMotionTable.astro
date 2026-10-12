@@ -1,0 +1,46 @@
+---
+import InlineCode from "../InlineCode.astro";
+import { reducedMotionBehavior } from "../../data/motion";
+import { getLocale, translator } from "../../i18n/ui";
+
+/** What each moving part does with motion, and what reduced motion keeps of it. */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      {t("motion.reducedCaption")}
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("a11y.component")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.withMotion")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.reduced")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {reducedMotionBehavior.map((row) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-semibold sm:whitespace-nowrap`}>
+            {row.component}
+          </th>
+          <td class={cell}>
+            <InlineCode text={row.motion[locale]} />
+          </td>
+          <td class={cell}>
+            <InlineCode text={row.reduced[locale]} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

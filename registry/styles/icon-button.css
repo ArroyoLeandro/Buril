@@ -83,20 +83,3 @@
     scale: 0.96;
   }
 }
-
-/*
- * The same pop for a press. It has its own name so pressing starts it while the hover pop keeps
- * its place; reusing the name would not restart it.
- */
-@keyframes buril-icon-press {
-  0%,
-  100% {
-    scale: 1;
-  }
-  35% {
-    scale: 1.12;
-  }
-  65% {
-    scale: 0.96;
-  }
-}

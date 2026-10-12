@@ -6,7 +6,7 @@ import SwitchDemo from "../../../components/SwitchDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
 
-const { example } = componentExamples.switch;
+const { example, sizesExample } = componentExamples.switch;
 ---
 
 <ComponentPage slug="switch">
@@ -60,6 +60,15 @@ const { example } = componentExamples.switch;
     <h3 class="mt-8 font-display text-lg">With state labels</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Sizes</h3>
+    <p class="mt-4 text-muted-foreground">
+      The track is 44 by 24px. Set another size with <code>className</code>: the dot stays 4px
+      inside the track at any size. Keep the track at least 24px tall, the minimum target size.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={sizesExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

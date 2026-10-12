@@ -1,0 +1,125 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import { codeTheme } from "../../../components/code-theme";
+import {
+  astroHeadExample,
+  astroToggleExample,
+  darkModeExample,
+  nextThemesLayoutExample,
+  themeSelectExample,
+  viteHeadExample,
+  viteMainExample,
+} from "../../../data/snippets";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Dark mode | Buril UI"
+  description="Switch between light, dark and the system setting with next-themes, in Astro or in Vite, without a flash."
+>
+  <h1 class="font-display text-3xl">Dark mode</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril's theme reads one class on <code>&lt;html&gt;</code>. Any tool that sets it works:
+    next-themes in React apps, or a few lines of script anywhere else.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">How the theme decides</h2>
+  <div class={code}>
+    <Code code={darkModeExample} lang="html" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>.dark</code> turns dark mode on; <code>.light</code> forces light mode.
+    </li>
+    <li>
+      With neither class, a <code>prefers-color-scheme</code> media query follows the system, so the
+      page is right even before any JavaScript runs.
+    </li>
+    <li>
+      The theme also redefines Tailwind's <code>dark:</code> variant with the same rule, so
+      <code>dark:</code> utilities always agree with the tokens.
+    </li>
+  </ul>
+  <p class="mt-4">
+    One consequence: to force light mode on a dark system, set <code>.light</code>. Removing
+    <code>.dark</code> only returns to the system setting.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Next.js with next-themes</h2>
+  <p class="mt-4">
+    next-themes stores the choice, follows the system and adds a script that sets the class before
+    the page paints. Set <code>attribute="class"</code>, because by default it writes a
+    <code>data-theme</code> attribute, which Buril does not read. With the class, it sets
+    <code>light</code> or <code>dark</code> on <code>&lt;html&gt;</code>, and for "system" the one
+    that matches the system.
+  </p>
+  <div class={code}>
+    <Code code={nextThemesLayoutExample} lang="tsx" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    A picker can be a Field and a Select. <code>useTheme</code> only knows the stored theme in the
+    browser, so the picker waits until it has mounted:
+  </p>
+  <div class={code}>
+    <Code code={themeSelectExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Astro</h2>
+  <p class="mt-4">
+    Each React island is a separate root, so a React provider cannot reach the whole page. Use a
+    small script instead. First, apply the stored choice before the page paints, at the top of
+    <code>&lt;head&gt;</code>. <code>is:inline</code> keeps Astro from bundling it, so it runs at
+    once:
+  </p>
+  <div class={code}>
+    <Code code={astroHeadExample} lang="astro" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Then a picker that sets the classes and stores the choice. "System" removes both classes and the
+    stored value, so the media query decides:
+  </p>
+  <div class={code}>
+    <Code code={astroToggleExample} lang="astro" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    This site does the same, with the key <code>buril-theme</code> and an icon button on small
+    screens.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Vite</h2>
+  <p class="mt-4">
+    next-themes is plain React, so it also works in a Vite app. In a single-page app nothing renders
+    until the bundle loads, so put the same no-flash script in <code>index.html</code>; it keeps the
+    page background from flashing while the bundle downloads. It reads <code>theme</code>, the key
+    next-themes uses by default.
+  </p>
+  <div class={code}>
+    <Code code={viteHeadExample} lang="html" theme={codeTheme} />
+  </div>
+  <div class={code}>
+    <Code code={viteMainExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">The no-flash script</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      It must run before the first paint, so it is inline at the top of <code>&lt;head&gt;</code>,
+      not in a bundle.
+    </li>
+    <li>
+      It sets <code>.dark</code> or <code>.light</code> for a stored choice and nothing for
+      "system": the media query handles that case without JavaScript.
+    </li>
+    <li>
+      It is wrapped in <code>try</code>, because reading storage can throw when site data is
+      blocked.
+    </li>
+    <li>
+      The key must match the one your toggle writes: <code>theme</code> for next-themes, or your
+      own.
+    </li>
+  </ul>
+</DocsLayout>

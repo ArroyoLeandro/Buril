@@ -159,11 +159,14 @@ const iconMotion = {
     "[--buril-nudge-x:3.75px] rtl:[--buril-nudge-x:-3.75px] [--buril-nudge-y:-3.75px]",
     nudge,
   ],
-  // Like: grows, dips and settles; a press plays it again on top of the hover one.
+  // Like: grows, dips and settles. A press squeezes the icon at once and the release springs it
+  // back. The press is a transition, not a second animation: CSS stops an animation the moment
+  // :active ends, which snapped the icon back mid-pop, while a transition runs to its end.
   pop: [
     "[--buril-icon-gesture:buril-icon-pop_calc(var(--buril-duration-slow,460ms)*1.4)_var(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))]",
     gestureTrigger,
-    "motion-safe:group-active/icon-button:animate-[var(--buril-icon-gesture),buril-icon-press_calc(var(--buril-duration-slow,460ms)*1.4)_var(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))]",
+    "motion-safe:transition-[transform] motion-safe:duration-[calc(var(--buril-duration-slow,460ms)*1.4)] motion-safe:ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
+    "motion-safe:group-active/icon-button:[transform:scale(0.88)] motion-safe:group-active/icon-button:duration-(--buril-duration-instant,100ms)",
   ],
 };
 
@@ -181,8 +184,9 @@ type IconButtonProps = Omit<ButtonProps, "size" | "aria-label" | "children"> & {
   /**
    * A one-shot gesture the icon plays on hover and keyboard focus: `rotate` (close), `spin`
    * (refresh), `wiggle` (delete; mark the lid with `data-lid` to lift it), `swing` (bell),
-   * `nudge-x`, `nudge-up` and `nudge-diagonal` (arrows, send, external links) or `pop` (like,
-   * also on press). It only runs when the user allows motion.
+   * `nudge-x`, `nudge-up` and `nudge-diagonal` (arrows, send, external links) or `pop` (like;
+   * a press also squeezes the icon, which springs back on release). It only runs when the user
+   * allows motion.
    */
   motion?: IconButtonMotion;
 };

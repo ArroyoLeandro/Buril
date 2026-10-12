@@ -1,0 +1,101 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import ChecksTable from "../../../components/docs/ChecksTable.astro";
+import ComponentA11yTable from "../../../components/docs/ComponentA11yTable.astro";
+import InlineCode from "../../../components/InlineCode.astro";
+import RulesTable from "../../../components/docs/RulesTable.astro";
+import { knownLimits } from "../../../data/accessibility";
+import { githubUrl } from "../../../data/site";
+---
+
+<DocsLayout
+  title="Accesibilidad | Buril UI"
+  description="Las reglas de accesibilidad que sigue cada componente de Buril, cómo se comprueba cada una y los límites conocidos."
+>
+  <h1 class="font-display text-3xl">Accesibilidad</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Todos los componentes apuntan a WCAG 2.2 nivel AA y siguen su patrón de la guía de prácticas de
+    autoría de WAI-ARIA. Once reglas se aplican a todos; esta página explica cómo se comprueba cada
+    una y qué todavía no está cubierto.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">De un vistazo</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <strong>Objetivo:</strong> WCAG 2.2 nivel AA.
+    </li>
+    <li>
+      <strong>Lo comprueba la suite de tests:</strong> tests de comportamiento, axe, TypeScript,
+      lint, estilos compilados, contraste de los tokens y tests en navegador real con Chromium.
+    </li>
+    <li>
+      <strong>Prueba manual con lector de pantalla:</strong> pendiente. Todavía no está registrada
+      para ningún componente.
+    </li>
+    <li>
+      <strong>Tu parte:</strong> dale a cada control una etiqueta visible, mantén el contraste si
+      cambias el tema y elige los niveles de encabezado que encajen en tu página.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Las 11 reglas</h2>
+  <p class="mt-4">
+    Son las reglas de <code>COMPONENTS.md</code>, en pocas palabras. Un componente no está terminado
+    hasta que las cumple todas.
+  </p>
+  <RulesTable />
+
+  <h2 class="mt-10 font-display text-xl">Cómo funcionan las comprobaciones</h2>
+  <p class="mt-4">
+    Cada tipo de comprobación responde a una pregunta distinta. Los tests en jsdom comprueban lo que
+    se anuncia; los de estilos compilados y los de navegador ven lo que se pinta.
+  </p>
+  <ChecksTable />
+
+  <h2 class="mt-10 font-display text-xl">Componentes</h2>
+  <p class="mt-4">
+    Qué hace cada componente con el teclado y qué oyen los lectores de pantalla. Cada página tiene
+    la tabla de teclado completa y las notas de accesibilidad.
+  </p>
+  <ComponentA11yTable />
+
+  <h2 class="mt-10 font-display text-xl">Límites conocidos</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {knownLimits.map((limit) => (
+      <li>
+        <InlineCode text={limit.es} />
+      </li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Tu parte</h2>
+  <p class="mt-4">
+    Los componentes tienen un alcance limitado. En tu aplicación, algunas cosas dependen de ti:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Dale a cada control una etiqueta visible: pon los campos en un <code>Field</code>, y las
+      casillas y los Switch en un <code>&lt;label&gt;</code>.
+    </li>
+    <li>
+      Describe la acción en el <code>aria-label</code> de un <code>IconButton</code>, como "Cerrar
+      diálogo", no el dibujo.
+    </li>
+    <li>
+      Anuncia el progreso y los resultados desde una región <code>role="status"</code> que ya esté
+      en la página.
+    </li>
+    <li>
+      Ajusta <code>as</code> en <code>CardTitle</code> para que los niveles de encabezado de la
+      página no salten ninguno.
+    </li>
+    <li>Mide el contraste en los dos esquemas de color si cambias la paleta.</li>
+  </ul>
+  <p class="mt-4">
+    ¿Encontraste una barrera?{" "}
+    <a href={`${githubUrl}/issues`} class="underline underline-offset-4">
+      Abre un issue en GitHub
+    </a>{" "}
+    con el componente, el navegador y la tecnología de apoyo que usaste.
+  </p>
+</DocsLayout>

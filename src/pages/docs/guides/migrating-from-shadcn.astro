@@ -1,0 +1,77 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../components/InstallCommand.astro";
+import MigrationTable from "../../../components/docs/MigrationTable.astro";
+---
+
+<DocsLayout
+  title="Migrating from shadcn | Buril UI"
+  description="What changes, component by component, when you replace a shadcn/ui component with Buril's."
+>
+  <h1 class="font-display text-3xl">Migrating from shadcn</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril keeps shadcn's file names, variant names, tokens and <code>cn()</code>. What changes is
+    underneath: native elements instead of headless primitives, so some props and parts differ.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Quick path</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>Pick one component and read its row below.</li>
+    <li>
+      Search your project for the props and parts that change, such as <code>asChild</code>.
+    </li>
+    <li>Replace the file, then update the call sites:</li>
+  </ol>
+  <InstallCommand id="install-replace" commands={["add @buril/checkbox --overwrite"]} />
+  <p class="mt-4">
+    <code>--overwrite</code> replaces <code>components/ui/checkbox.tsx</code> without asking. Run
+    your tests and try the screens with the keyboard before moving on to the next component. To try
+    a component first without replacing anything, install it next to shadcn's: see
+    <a href="/docs/guides/shadcn" class="underline underline-offset-4">
+      Using Buril with shadcn
+    </a>
+    .
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Component by component</h2>
+  <MigrationTable />
+
+  <h2 class="mt-10 font-display text-xl">What stays the same</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      The install path, <code>components/ui/&lt;name&gt;.tsx</code>, and the import names.
+    </li>
+    <li>
+      Variant names, such as <code>default</code>, <code>outline</code> and <code>destructive</code>
+      .
+    </li>
+    <li>Your theme: components read the same shadcn tokens.</li>
+    <li>
+      <code>className</code>, merged with <code>cn()</code> on every part.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Before you replace a file</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Search for <code>asChild</code>: a Button or a Badge that wraps a link becomes an
+      <code>&lt;a&gt;</code> with <code>buttonVariants()</code> or <code>badgeVariants()</code>.
+    </li>
+    <li>
+      Search for <code>onCheckedChange</code>: Checkbox and Switch use <code>onChange</code> and
+      read
+      <code>event.target.checked</code>.
+    </li>
+    <li>
+      Search for <code>size="icon"</code>: each of those buttons needs an <code>aria-label</code>,
+      or becomes an <code>IconButton</code>.
+    </li>
+    <li>
+      Search for <code>data-slot</code> in your CSS and tests: the Button has none.
+    </li>
+    <li>
+      Check your <code>--ring</code> and <code>--input</code> contrast, as the shadcn guide
+      explains.
+    </li>
+  </ul>
+</DocsLayout>

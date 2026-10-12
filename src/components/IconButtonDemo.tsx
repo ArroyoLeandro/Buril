@@ -39,6 +39,7 @@ const icons = {
   trashCan: "M6 7l1 13h10l1-13M10 11v6M14 11v6",
   bell: "M12 3v1.5M18 16.5V11a6 6 0 0 0-12 0v5.5L4.5 18.5h15zM10 21a2.2 2.2 0 0 0 4 0",
   send: "M4 4l17 8-17 8 3-8zM7 12h6",
+  arrowUp: "M12 19V5M6 11l6-6 6 6",
   heart:
     "M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z",
   external:
@@ -145,6 +146,9 @@ export default function IconButtonDemo({ locale = "en" }: Props) {
           </IconButton>
           <IconButton variant="ghost" motion="nudge-x" aria-label={t("Send message")}>
             <Icon path={icons.send} />
+          </IconButton>
+          <IconButton variant="ghost" motion="nudge-up" aria-label={t("Back to top")}>
+            <Icon path={icons.arrowUp} />
           </IconButton>
           <IconButton
             variant="ghost"

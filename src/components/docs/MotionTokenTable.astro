@@ -1,0 +1,54 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import InlineCode from "../InlineCode.astro";
+import { motionTokenUses } from "../../data/motion";
+import { getLocale, translator } from "../../i18n/ui";
+import { readMotionTokens } from "../../utils/tokens";
+
+/**
+ * The motion tokens with their values, read from the file the registry ships, so the table never
+ * drifts from the real values. Read from the project root, like the Theming page's token table.
+ */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const tokens = readMotionTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
+const cell = "px-2 py-3 align-top wrap-anywhere sm:px-4";
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      <InlineCode text={t("motion.tokensCaption")} />
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("tokens.token")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.value")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.use")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {tokens.map(({ name, value }) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-normal sm:whitespace-nowrap`}>
+            <code>--{name}</code>
+          </th>
+          <td class={cell}>
+            <code>{value}</code>
+          </td>
+          <td class={cell}>
+            <InlineCode text={motionTokenUses[name]?.[locale] ?? ""} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

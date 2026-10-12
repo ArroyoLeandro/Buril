@@ -7,7 +7,7 @@ import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 import { iconKeyframesCss, iconKeyframesExample } from "../../../../utils/icon-keyframes";
 
-const { sizesExample, motionExample } = componentExamples["icon-button"];
+const { sizesExample, motionExample, variantsExample } = componentExamples["icon-button"];
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 ---
 
@@ -78,7 +78,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
         lectura.
       </li>
       <li>
-        <code>pop</code>: un me gusta crece y se asienta, y vuelve a hacerlo al pulsarlo.
+        <code>pop</code>: un me gusta crece y se asienta. Al pulsarlo se encoge, y al soltarlo
+        vuelve con un rebote suave y se asienta.
       </li>
     </ul>
     <div class={code}>
@@ -91,6 +92,16 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     </p>
     <div class={code}>
       <Code code={iconKeyframesExample()} lang="css" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Variantes y botones de alternancia</h3>
+    <p class="mt-4 text-muted-foreground">
+      Todas las variantes del Button funcionan en un IconButton. Para una acción de activar y
+      desactivar, como Me gusta, pasa <code>aria-pressed</code>: el nombre no cambia y los lectores
+      de pantalla anuncian el estado presionado.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

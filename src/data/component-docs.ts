@@ -30,10 +30,21 @@ export interface KeyDoc {
   action: string;
 }
 
+/** What assistive technology gets: the role, the states it reports and one short note. */
+export interface AriaDoc {
+  /** The role screen readers announce, and the element it comes from. */
+  role: string;
+  /** The states and properties it exposes, if any. */
+  states?: string;
+  /** The one thing to remember, shown in the Accessibility page's summary. */
+  note: string;
+}
+
 export interface ComponentDocs {
   usage: string;
   api: ApiDoc[];
   keyboard?: KeyDoc[];
+  aria: AriaDoc;
   accessibility: string[];
 }
 
@@ -104,6 +115,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       { key: "Enter", action: "Activates the button." },
       { key: "Space", action: "Activates the button." },
     ],
+    aria: {
+      role: "`button`, from the native `<button>`",
+      states: "`aria-busy` and `aria-disabled` while `loading`; native `disabled`",
+      note: "It stays focusable while loading.",
+    },
     accessibility: [
       "It is a native `<button>`, so it is focusable and announced as a button.",
       'While loading it sets `aria-busy` and `aria-disabled` and stays focusable; announce progress from a `role="status"` region outside it.',
@@ -149,7 +165,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "motion",
             type: '"rotate" | "spin" | "wiggle" | "swing" | "nudge-x" | "nudge-up" | "nudge-diagonal" | "pop"',
             description:
-              "A gesture the icon plays once on hover and keyboard focus (`pop` also on press). `wiggle` lifts a lid marked with `data-lid`.",
+              "A gesture the icon plays once on hover and keyboard focus. `pop` also squeezes the icon on press and lets it spring back on release; `wiggle` lifts a lid marked with `data-lid`.",
           },
         ],
       },
@@ -158,6 +174,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       { key: "Enter", action: "Activates the button." },
       { key: "Space", action: "Activates the button." },
     ],
+    aria: {
+      role: "`button`, from the native `<button>`",
+      states: "As the Button; pass `aria-pressed` for a toggle, such as Like",
+      note: "`aria-label` is required by its type.",
+    },
     accessibility: [
       "`aria-label` is required by its type, because an icon has no text.",
       "The icon sits in an `aria-hidden` span, so it never adds to the name.",
@@ -202,8 +223,24 @@ export const componentDocs: Record<string, ComponentDocs> = {
           className,
         ],
       },
+      {
+        component: "linkVariants()",
+        description: "The same classes as a string, for an element that is already a link.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "muted"',
+            default: '"default"',
+            description: "The same variants as the Link.",
+          },
+        ],
+      },
     ],
     keyboard: [{ key: "Enter", action: "Follows the link." }],
+    aria: {
+      role: "`link`, from the native `<a href>`",
+      note: "A new tab adds `newTabLabel` to the name.",
+    },
     accessibility: [
       "It is always a real `<a href>`, announced as a link and reachable with Tab.",
       "The underline stays in every state, so color is never the only signal.",
@@ -258,7 +295,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
           },
           {
             name: "children",
-            type: "(control) => ReactNode | ReactElement",
+            type: "((control: FieldControlProps) => ReactNode) | ReactElement",
             description: "Required. A render prop that spreads the control props, or one element.",
           },
           className,
@@ -266,6 +303,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       },
     ],
     keyboard: fieldKeyboard,
+    aria: {
+      role: "None: it renders the control's `<label>`",
+      states: "On the control: `aria-describedby`, `aria-invalid` with an error, native `required`",
+      note: "The error region is a polite live region, always present.",
+    },
     accessibility: [
       "Clicking the label focuses the control, because the label's `for` matches its id.",
       "Screen readers read the description, then the error, after the name.",
@@ -298,6 +340,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       },
     ],
     keyboard: fieldKeyboard,
+    aria: {
+      role: "`textbox`, from the native `<input>`",
+      states: "Native `required` and `disabled`; `aria-invalid` from a Field",
+      note: "Give it a visible label, such as a Field.",
+    },
     accessibility: [
       "It needs a visible label: put it in a Field.",
       "The border has at least 3:1 contrast, and focus shows the ring outline.",
@@ -328,6 +375,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       },
     ],
     keyboard: fieldKeyboard,
+    aria: {
+      role: "`textbox` (multi-line), from the native `<textarea>`",
+      states: "Native `required` and `disabled`; `aria-invalid` from a Field",
+      note: "Give it a visible label, such as a Field.",
+    },
     accessibility: [
       "It needs a visible label: put it in a Field.",
       "It resizes vertically, so people can enlarge it to read long text.",
@@ -361,6 +413,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       },
     ],
     keyboard: [{ key: "Space", action: "Checks or unchecks it." }],
+    aria: {
+      role: "`checkbox`, from the native `<input>`",
+      states: "Native checked; mixed with `indeterminate`",
+      note: "Wrap it in a `<label>` or a Field.",
+    },
     accessibility: [
       "It is a native checkbox, so its state is announced without extra ARIA.",
       "`indeterminate` is announced as mixed.",
@@ -447,6 +504,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       { key: "Arrow keys", action: "Move focus and the choice, skipping disabled radios." },
       { key: "Space", action: "Checks the focused radio if none is checked." },
     ],
+    aria: {
+      role: "`group` (the `<fieldset>`) of native `radio` inputs",
+      states: "Native checked; `required` and `disabled` from the group",
+      note: "The `<legend>` names the group.",
+    },
     accessibility: [
       "The `<legend>` names the group, so screen readers announce the question with each radio.",
       "The group is one Tab stop, managed by the browser.",
@@ -480,6 +542,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       },
     ],
     keyboard: [{ key: "Space", action: "Turns it on or off." }],
+    aria: {
+      role: "`switch`, on a native checkbox",
+      states: "On or off, from the native checked state",
+      note: "The state text is hidden from screen readers.",
+    },
     accessibility: [
       'It has `role="switch"`, so screen readers announce it as on or off.',
       "The thumb's position shows the state, so it is never color alone.",
@@ -518,6 +585,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
       { key: "Arrow keys", action: "Change the option, or move through an open picker." },
       { key: "Letters", action: "Jump to a matching option." },
     ],
+    aria: {
+      role: "`combobox`, or `listbox` with `multiple` or a `size` above 1, from the native `<select>`",
+      states: "Native: the selected option, `required`, `disabled`",
+      note: "The platform draws the picker.",
+    },
     accessibility: [
       "It is a native `<select>`, so the keyboard, touch and screen reader behavior are the platform's.",
       "The chevron is `aria-hidden` and ignores clicks. In forced-colors mode the native arrow returns.",
@@ -587,6 +659,10 @@ export const componentDocs: Record<string, ComponentDocs> = {
         props: [className],
       },
     ],
+    aria: {
+      role: "None: a `<div>`; `CardTitle` is a heading",
+      note: "Make it a link with one stretched link, never `onClick`.",
+    },
     accessibility: [
       "It is a plain `<div>` with no role, so it is not focusable and adds no landmark.",
       "`CardTitle` is a real heading, `h3` by default; set `as` so the page outline skips no level.",
@@ -626,6 +702,10 @@ export const componentDocs: Record<string, ComponentDocs> = {
         ],
       },
     ],
+    aria: {
+      role: "None: a `<span>` read with the text around it",
+      note: "Announce a change from a status region.",
+    },
     accessibility: [
       "It is a `<span>` with no role, read inline with the text around it.",
       "It is not focusable. For something people can act on, use a Button or a Link.",
@@ -670,7 +750,23 @@ export const componentDocs: Record<string, ComponentDocs> = {
           className,
         ],
       },
+      {
+        component: "avatarVariants()",
+        description: "The same classes as a string, for your own avatar markup.",
+        props: [
+          {
+            name: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description: "The same sizes as the Avatar.",
+          },
+        ],
+      },
     ],
+    aria: {
+      role: "`img`: the `<img>`, or the initials named by `alt`",
+      note: '`alt=""` hides it next to a visible name.',
+    },
     accessibility: [
       "`alt` is required by its type, so every avatar either has a name or is marked decorative.",
       'The initials fallback has `role="img"` named by `alt`, and the letters are `aria-hidden`, so screen readers hear the name, not letters.',
@@ -706,6 +802,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
         ],
       },
     ],
+    aria: {
+      role: "`separator`: an `<hr>`, or a `<div>` when vertical",
+      states: '`aria-orientation="vertical"` when vertical',
+      note: "`decorative` hides it.",
+    },
     accessibility: [
       "A horizontal separator is a native `<hr>`, announced as a separator.",
       'A vertical one is a `<div>` with `role="separator"` and `aria-orientation="vertical"`.',
@@ -761,7 +862,23 @@ export const componentDocs: Record<string, ComponentDocs> = {
           className,
         ],
       },
+      {
+        component: "alertVariants()",
+        description: "The same classes as a string, for your own callout markup.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description: "The same variants as the Alert.",
+          },
+        ],
+      },
     ],
+    aria: {
+      role: 'None by default; `status` with `live="polite"`, `alert` with `live="assertive"`',
+      note: "Render a live alert before its text changes.",
+    },
     accessibility: [
       "By default it has no role: text that is on the page from the start needs no announcement.",
       '`live="assertive"` gives it `role="alert"`, which interrupts the screen reader; use `live="polite"` for most messages.',
@@ -794,6 +911,10 @@ export const componentDocs: Record<string, ComponentDocs> = {
         ],
       },
     ],
+    aria: {
+      role: "`status`",
+      note: "Named by its hidden `label`.",
+    },
     accessibility: [
       'It is a `role="status"` element named by a visually hidden `label`; the drawing is `aria-hidden`.',
       "It is not focusable.",
@@ -818,6 +939,10 @@ export const componentDocs: Record<string, ComponentDocs> = {
         ],
       },
     ],
+    aria: {
+      role: "None: `aria-hidden`",
+      note: "Mark the loading region with `aria-busy`.",
+    },
     accessibility: [
       "It is `aria-hidden`: a placeholder block means nothing to a screen reader.",
       'Mark the loading region with `aria-busy="true"`, and announce completion from a `role="status"` region that is already on the page.',
@@ -855,6 +980,10 @@ export const componentDocs: Record<string, ComponentDocs> = {
       { key: "Tab", action: "From the top of the page, shows the link." },
       { key: "Enter", action: "Moves focus to the main content." },
     ],
+    aria: {
+      role: "`link`, from the native `<a href>`",
+      note: "It shows only on keyboard focus.",
+    },
     accessibility: [
       "It is clipped, not removed, so screen readers still find it.",
       "On focus it appears above sticky headers, so focus is never hidden (WCAG 2.4.11).",
@@ -876,6 +1005,7 @@ interface SpanishDocs {
   api: Record<string, SpanishApiDoc>;
   /** By key as written in English; `key` gives the key's Spanish name when it has one. */
   keyboard?: Record<string, { key?: string; action: string }>;
+  aria: AriaDoc;
   /** In the same order as the English notes. */
   accessibility: string[];
 }
@@ -911,6 +1041,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: buttonKeyboardEs,
+    aria: {
+      role: "`button`, del `<button>` nativo",
+      states: "`aria-busy` y `aria-disabled` mientras está en `loading`; `disabled` nativo",
+      note: "Sigue pudiendo recibir el foco mientras carga.",
+    },
     accessibility: [
       "Es un `<button>` nativo, así que puede recibir el foco y se anuncia como botón.",
       'Mientras carga, aplica `aria-busy` y `aria-disabled` y sigue pudiendo recibir el foco; anuncia el progreso desde una región `role="status"` fuera del botón.',
@@ -930,11 +1065,16 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: buttonVariantEs,
           loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
           motion:
-            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado (`pop`, también al pulsar). `wiggle` levanta una tapa marcada con `data-lid`.",
+            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado. `pop` además encoge el icono al pulsar y lo deja volver con un rebote suave al soltar; `wiggle` levanta una tapa marcada con `data-lid`.",
         },
       },
     },
     keyboard: buttonKeyboardEs,
+    aria: {
+      role: "`button`, del `<button>` nativo",
+      states: "Como el Button; pasa `aria-pressed` para un botón de alternancia, como Me gusta",
+      note: "`aria-label` es obligatoria según su tipo.",
+    },
     accessibility: [
       "`aria-label` es obligatoria según su tipo, porque un icono no tiene texto.",
       "El icono va dentro de un span con `aria-hidden`, así que nunca se suma al nombre.",
@@ -956,8 +1096,16 @@ const spanishDocs: Record<string, SpanishDocs> = {
           className: classNameEs,
         },
       },
+      "linkVariants()": {
+        description: "Las mismas clases como cadena, para un elemento que ya es un enlace.",
+        props: { variant: "Las mismas variantes que el Link." },
+      },
     },
     keyboard: { Enter: { action: "Abre el enlace." } },
+    aria: {
+      role: "`link`, del `<a href>` nativo",
+      note: "Una pestaña nueva agrega `newTabLabel` al nombre.",
+    },
     accessibility: [
       "Siempre es un `<a href>` real, que se anuncia como enlace y se alcanza con Tab.",
       "El subrayado se mantiene en todos los estados, así que el color nunca es la única señal.",
@@ -984,6 +1132,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: fieldKeyboardEs,
+    aria: {
+      role: "Ninguno: renderiza el `<label>` del control",
+      states: "En el control: `aria-describedby`, `aria-invalid` con un error, `required` nativo",
+      note: "La región de error es una región viva `polite` que siempre está presente.",
+    },
     accessibility: [
       "Hacer clic en la etiqueta enfoca el control, porque el `for` de la etiqueta coincide con su id.",
       "Los lectores de pantalla leen la descripción y luego el error, después del nombre.",
@@ -1003,6 +1156,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: fieldKeyboardEs,
+    aria: {
+      role: "`textbox`, del `<input>` nativo",
+      states: "`required` y `disabled` nativos; `aria-invalid` desde un Field",
+      note: "Dale una etiqueta visible, por ejemplo con un Field.",
+    },
     accessibility: [
       visibleLabelEs,
       "El borde tiene un contraste de al menos 3:1, y el foco muestra el anillo.",
@@ -1021,6 +1179,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: fieldKeyboardEs,
+    aria: {
+      role: "`textbox` (varias líneas), del `<textarea>` nativo",
+      states: "`required` y `disabled` nativos; `aria-invalid` desde un Field",
+      note: "Dale una etiqueta visible, por ejemplo con un Field.",
+    },
     accessibility: [
       visibleLabelEs,
       "Se redimensiona en vertical, así que se puede agrandar para leer textos largos.",
@@ -1038,6 +1201,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: { Space: { key: "Espacio", action: "La marca o la desmarca." } },
+    aria: {
+      role: "`checkbox`, del `<input>` nativo",
+      states: "Marcado nativo; mixto con `indeterminate`",
+      note: "Envuélvelo en un `<label>` o en un Field.",
+    },
     accessibility: [
       "Es una casilla nativa, así que su estado se anuncia sin ARIA adicional.",
       "`indeterminate` se anuncia como mixto.",
@@ -1077,6 +1245,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
       Space: { key: "Espacio", action: "Marca el botón enfocado si no hay ninguno marcado." },
     },
+    aria: {
+      role: "`group` (el `<fieldset>`) de inputs `radio` nativos",
+      states: "Marcado nativo; `required` y `disabled` desde el grupo",
+      note: "La `<legend>` da nombre al grupo.",
+    },
     accessibility: [
       "La `<legend>` da nombre al grupo, así que los lectores de pantalla anuncian la pregunta con cada botón.",
       "El grupo es una sola parada de Tab, gestionada por el navegador.",
@@ -1096,6 +1269,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
     },
     keyboard: { Space: { key: "Espacio", action: "Lo activa o lo desactiva." } },
+    aria: {
+      role: "`switch`, sobre una casilla nativa",
+      states: "Activado o desactivado, según el estado marcado nativo",
+      note: "El texto del estado está oculto para los lectores de pantalla.",
+    },
     accessibility: [
       'Tiene `role="switch"`, así que los lectores de pantalla lo anuncian como activado o desactivado.',
       "La posición del indicador muestra el estado, así que nunca depende solo del color.",
@@ -1120,6 +1298,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
       },
       "Arrow keys": { key: "Flechas", action: "Cambian la opción o recorren el selector abierto." },
       Letters: { key: "Letras", action: "Saltan a una opción que coincida." },
+    },
+    aria: {
+      role: "`combobox`, o `listbox` con `multiple` o un `size` mayor que 1, del `<select>` nativo",
+      states: "Nativos: la opción elegida, `required`, `disabled`",
+      note: "El selector lo dibuja la plataforma.",
     },
     accessibility: [
       "Es un `<select>` nativo, así que el comportamiento con teclado, pantalla táctil y lector de pantalla es el de la plataforma.",
@@ -1154,6 +1337,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
         props: { className: classNameEs },
       },
     },
+    aria: {
+      role: "Ninguno: un `<div>`; `CardTitle` es un encabezado",
+      note: "Para que sea un enlace, extiende un único enlace; nunca uses `onClick`.",
+    },
     accessibility: [
       "Es un `<div>` simple sin rol, así que no recibe el foco ni agrega un punto de referencia.",
       "`CardTitle` es un encabezado real, `h3` por defecto; ajusta `as` para que el esquema de la página no salte ningún nivel.",
@@ -1176,6 +1363,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
         props: { variant: "Las mismas variantes que el Badge." },
       },
     },
+    aria: {
+      role: "Ninguno: un `<span>` que se lee con el texto que lo rodea",
+      note: "Anuncia los cambios desde una región de estado.",
+    },
     accessibility: [
       "Es un `<span>` sin rol, que se lee junto con el texto que lo rodea.",
       "No recibe el foco. Para algo con lo que se pueda interactuar, usa un Button o un Link.",
@@ -1197,6 +1388,14 @@ const spanishDocs: Record<string, SpanishDocs> = {
         },
         defaultTexts: { fallback: "iniciales de `alt`" },
       },
+      "avatarVariants()": {
+        description: "Las mismas clases como cadena, para tu propio marcado de avatar.",
+        props: { size: "Los mismos tamaños que el Avatar." },
+      },
+    },
+    aria: {
+      role: "`img`: la `<img>`, o las iniciales con `alt` como nombre",
+      note: '`alt=""` lo oculta junto a un nombre visible.',
     },
     accessibility: [
       "`alt` es obligatoria según su tipo, así que todo avatar tiene un nombre o está marcado como decorativo.",
@@ -1216,6 +1415,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
           className: classNameEs,
         },
       },
+    },
+    aria: {
+      role: "`separator`: un `<hr>`, o un `<div>` si es vertical",
+      states: '`aria-orientation="vertical"` si es vertical',
+      note: "`decorative` lo oculta.",
     },
     accessibility: [
       "Un separador horizontal es un `<hr>` nativo, que se anuncia como separador.",
@@ -1245,6 +1449,14 @@ const spanishDocs: Record<string, SpanishDocs> = {
           className: classNameEs,
         },
       },
+      "alertVariants()": {
+        description: "Las mismas clases como cadena, para tu propio marcado de aviso destacado.",
+        props: { variant: "Las mismas variantes que la Alert." },
+      },
+    },
+    aria: {
+      role: 'Ninguno por defecto; `status` con `live="polite"`, `alert` con `live="assertive"`',
+      note: "Renderiza una alerta viva antes de que cambie su texto.",
     },
     accessibility: [
       "Por defecto no tiene rol: el texto que está en la página desde el principio no necesita anunciarse.",
@@ -1265,6 +1477,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
         },
       },
     },
+    aria: {
+      role: "`status`",
+      note: "Su nombre es el `label` oculto.",
+    },
     accessibility: [
       'Es un elemento `role="status"` con un `label` visualmente oculto como nombre; el dibujo tiene `aria-hidden`.',
       "No recibe el foco.",
@@ -1278,6 +1494,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
         description: "Todas las demás props van al `<div>`. No admite contenido.",
         props: { className: "Tamaño y forma, como `h-4 w-36`, combinados con `cn()`." },
       },
+    },
+    aria: {
+      role: "Ninguno: `aria-hidden`",
+      note: "Marca la región que carga con `aria-busy`.",
     },
     accessibility: [
       "Tiene `aria-hidden`: un bloque de relleno no significa nada para un lector de pantalla.",
@@ -1300,6 +1520,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
     keyboard: {
       Tab: { action: "Desde el principio de la página, muestra el enlace." },
       Enter: { action: "Mueve el foco al contenido principal." },
+    },
+    aria: {
+      role: "`link`, del `<a href>` nativo",
+      note: "Solo aparece con el foco del teclado.",
     },
     accessibility: [
       "Está recortado, no eliminado, así que los lectores de pantalla lo siguen encontrando.",
@@ -1352,6 +1576,11 @@ export function localizedComponentDocs(slug: string, locale: Locale): ComponentD
         action: required(text?.action, `${slug} key ${key}`),
       };
     }),
+    aria: {
+      role: required(spanish.aria.role, `${slug} ARIA role`),
+      states: docs.aria.states && required(spanish.aria.states, `${slug} ARIA states`),
+      note: required(spanish.aria.note, `${slug} ARIA note`),
+    },
     accessibility: docs.accessibility.map((_, index) =>
       required(spanish.accessibility[index], `${slug} accessibility note ${index + 1}`),
     ),

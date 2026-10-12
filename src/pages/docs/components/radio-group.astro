@@ -6,7 +6,7 @@ import RadioGroupDemo from "../../../components/RadioGroupDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
 
-const { example } = componentExamples["radio-group"];
+const { example, requiredExample } = componentExamples["radio-group"];
 ---
 
 <ComponentPage slug="radio-group">
@@ -57,6 +57,15 @@ const { example } = componentExamples["radio-group"];
     <h3 class="mt-8 font-display text-lg">Controlled, with a disabled option</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Required, or disabled as a whole</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>required</code> marks every radio required, so a form cannot submit without a choice.{" "}
+      <code>disabled</code> on the group disables every radio through the fieldset.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={requiredExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

@@ -73,6 +73,20 @@ describe("IconButton motion in a real browser", () => {
     const icon = button.querySelector<HTMLElement>("[data-motion]")!;
     return { button, icon };
   }
+  /**
+   * Records every gesture that starts on the icon. A gesture can be over before a hover or a key
+   * press sent from the test runner returns, but its start event is never lost, so the tests wait
+   * for the event instead of hoping the animation is still running.
+   */
+  function recordStarts(icon: Element) {
+    const names: string[] = [];
+    icon.addEventListener("animationstart", (event) => {
+      names.push((event as AnimationEvent).animationName);
+    });
+    return names;
+  }
+  /** A computed time, such as `0.648s` or `200ms`, in ms. */
+  const ms = (time: string) => parseFloat(time) * (time.endsWith("ms") ? 1 : 1000);
   const gesturesOn = (icon: Element) =>
     icon
       .getAnimations()
@@ -95,17 +109,19 @@ describe("IconButton motion in a real browser", () => {
     async ({ motion, name, duration, delay }) => {
       await setReducedMotion(false);
       const { button, icon } = await renderButton(motion);
+      const started = recordStarts(icon);
       expect(gesturesOn(icon)).toEqual([]);
       await userEvent.hover(button);
-      const [gesture, ...others] = gesturesOn(icon);
-      expect(others).toEqual([]);
-      expect(gesture?.animationName).toBe(name);
-      const timing = gesture!.effect!.getTiming();
-      expect(timing.duration).toBeCloseTo(duration, 6);
-      expect(timing.delay).toBe(delay);
+      await expect.poll(() => started).toEqual([name]);
+      // The timing, from the hovered icon's computed style, which stays after the gesture ends.
+      const style = getComputedStyle(icon);
+      expect(style.animationName).toBe(name);
+      expect(ms(style.animationDuration)).toBeCloseTo(duration, 6);
+      expect(ms(style.animationDelay)).toBe(delay);
       // One-shot: never a loop.
-      expect(timing.iterations).toBe(1);
+      expect(style.animationIterationCount).toBe("1");
       await settle();
+      expect(started).toEqual([name]);
       expect(gesturesOn(icon).filter(({ playState }) => playState === "running")).toEqual([]);
     },
   );
@@ -113,19 +129,22 @@ describe("IconButton motion in a real browser", () => {
   it.each(gestures)("plays $motion when keyboard focus arrives", async ({ motion, name }) => {
     await setReducedMotion(false);
     const { button, icon } = await renderButton(motion);
+    const started = recordStarts(icon);
     await userEvent.tab();
     expect(button.matches(":focus-visible")).toBe(true);
-    expect(gesturesOn(icon).map(({ animationName }) => animationName)).toEqual([name]);
+    await expect.poll(() => started).toEqual([name]);
   });
 
   it("plays the gesture again on the next hover", async () => {
     await setReducedMotion(false);
     const { button, icon } = await renderButton("swing");
+    const started = recordStarts(icon);
     await userEvent.hover(button);
+    await expect.poll(() => started).toHaveLength(1);
     await settle();
     await userEvent.unhover(button);
     await userEvent.hover(button);
-    expect(gesturesOn(icon).map(({ playState }) => playState)).toEqual(["running"]);
+    await expect.poll(() => started).toEqual(["buril-icon-swing", "buril-icon-swing"]);
   });
 
   it("settles spins, nudges and pops with the soft spring", async () => {
@@ -160,17 +179,29 @@ describe("IconButton motion in a real browser", () => {
     expect(getComputedStyle(rtl.icon).getPropertyValue("--buril-nudge-x")).toBe("-3.75px");
   });
 
-  // Space holds the button :active, like a pointer press that has not been released yet.
-  it("pops again when pressed, without restarting the first pop", async () => {
+  // Space holds the button :active, like a pointer press that has not been released yet. CSS
+  // cannot keep an animation running once :active ends, so the press is a transition: it squeezes
+  // the icon at once, and on release the transition back runs to its end and settles.
+  it("squeezes the pop icon while pressed and lets it settle with the spring on release", async () => {
     await setReducedMotion(false);
     const { icon } = await renderButton("pop");
+    const started = recordStarts(icon);
     await userEvent.tab();
-    const [focusPop] = gesturesOn(icon);
+    await expect.poll(() => started).toEqual(["buril-icon-pop"]);
+    const release = transitionTiming(icon, "transform");
+    expect(release?.duration).toBeCloseTo(644, 6);
+    expect(isSoftSpring(release!.easing), release!.easing).toBe(true);
+
     await userEvent.keyboard("{Space>}");
-    const names = gesturesOn(icon).map(({ animationName }) => animationName);
-    expect(names).toEqual(["buril-icon-pop", "buril-icon-press"]);
-    expect(gesturesOn(icon)[0]).toBe(focusPop);
+    expect(transitionTiming(icon, "transform")?.duration).toBe(100);
+    await settle();
+    // The press starts no animation of its own, so releasing never cuts one off half-way.
+    expect(started).toEqual(["buril-icon-pop"]);
+    expect(getComputedStyle(icon).transform).toBe("matrix(0.88, 0, 0, 0.88, 0, 0)");
+
     await userEvent.keyboard("{/Space}");
+    await settle();
+    expect(getComputedStyle(icon).transform).toBe("none");
   });
 
   it("turns the close icon 90° with the soft spring while hovered, and back after", async () => {
@@ -205,6 +236,7 @@ describe("IconButton motion in a real browser", () => {
       await userEvent.hover(button);
       expect(gesturesOn(icon)).toEqual([]);
       expect(transitionTiming(icon, "rotate")).toBeUndefined();
+      expect(transitionTiming(icon, "transform")).toBeUndefined();
       await settle();
       expect(getComputedStyle(icon).rotate).toBe("none");
       expect(getComputedStyle(icon.querySelector("[data-lid]")!).translate).toBe("none");

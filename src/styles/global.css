@@ -3,6 +3,31 @@
 /* The IconButton gesture keyframes, which the button item adds to a consumer's CSS. */
 @import "../../registry/styles/icon-button.css";
 
+/*
+ * Docs site only: the Motion page's demo simulates reduced motion. Buril gates movement with
+ * `motion-safe:` and `motion-reduce:`, so these variants also treat anything inside
+ * `[data-reduced-motion]` as reduced; the components then behave as they would with the system
+ * setting on. The system setting still wins: it stops motion everywhere. Installed components keep
+ * Tailwind's own variants.
+ */
+@custom-variant motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    &:not(:where([data-reduced-motion], [data-reduced-motion] *)) {
+      @slot;
+    }
+  }
+}
+
+@custom-variant motion-reduce {
+  @media (prefers-reduced-motion: reduce) {
+    @slot;
+  }
+
+  &:where([data-reduced-motion], [data-reduced-motion] *) {
+    @slot;
+  }
+}
+
 /* Docs site fonts. Buril ships tokens only; the docs load Silkscreen and Inter. */
 @theme {
   --font-display: "Silkscreen", ui-monospace, monospace;
@@ -13,6 +38,8 @@
   /* Height of the header row. From lg up the header is sticky and the docs panels sit below it. */
   :root {
     --header-height: 4rem;
+    /* The space between the header and the docs panels, and below them; also the content's top. */
+    --docs-panel-gap: 2rem;
   }
 
   /* Anchors and focused elements stop below the sticky header instead of behind it. */
@@ -33,18 +60,26 @@
 }
 
 /*
- * Docs sidebar and "On this page" list: sticky below the header and as tall as the rest of the
- * viewport. A long list scrolls inside the panel (wheel, touch, and Tab moving focus to a link
- * out of view), but the panel draws no scrollbar, so the page scrollbar is the only one visible.
- * Overscroll stays in the panel instead of scrolling the page.
+ * Docs sidebar and "On this page" list: sticky panels that float a gap below the header and stop
+ * the same gap above the bottom of the viewport. A long list scrolls inside the panel (wheel,
+ * touch, and Tab moving focus to a link out of view), but the panel draws no scrollbar, so the
+ * page scrollbar is the only one visible. Overscroll stays in the panel instead of scrolling the
+ * page. The last 2rem fade out, so a cut-off list reads as "more below"; the bottom padding is as
+ * tall as the fade, so the last link scrolls clear of it. Forced colors drop the mask.
  */
 @utility docs-panel {
   position: sticky;
-  top: var(--header-height);
-  max-height: calc(100svh - var(--header-height));
+  top: calc(var(--header-height) + var(--docs-panel-gap));
+  max-height: calc(100svh - var(--header-height) - 2 * var(--docs-panel-gap));
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
+  padding-bottom: 2rem;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
+
+  @media (forced-colors: active) {
+    mask-image: none;
+  }
 
   &::-webkit-scrollbar {
     display: none;

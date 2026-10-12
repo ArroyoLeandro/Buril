@@ -1,0 +1,31 @@
+---
+import InlineCode from "../InlineCode.astro";
+import { faq } from "../../data/faq";
+import { localizedHref } from "../../i18n/paths";
+import { getLocale, translator } from "../../i18n/ui";
+
+/** Every FAQ item as a section: the question as an h2 with a stable id, then the answer. */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+---
+
+{faq.map((item) => (
+  <>
+    <h2 id={item.id} class="mt-10 font-display text-xl">
+      <InlineCode text={item.question[locale]} />
+    </h2>
+    {item.answer[locale].map((paragraph) => (
+      <p class="mt-4">
+        <InlineCode text={paragraph} />
+      </p>
+    ))}
+    {item.link && (
+      <p class="mt-4 text-muted-foreground">
+        {t("faq.readMore")}{" "}
+        <a href={localizedHref(item.link.href, locale)} class="underline underline-offset-4">
+          {item.link.label[locale]}
+        </a>
+      </p>
+    )}
+  </>
+))}

@@ -173,7 +173,9 @@ describe("Switch motion in a real browser", () => {
       expect(timing?.duration, property).toBe(420);
       expect(isSoftSpring(timing!.easing), timing!.easing).toBe(true);
     }
-    await screen.getByRole("switch").click();
+    // Toggle it in this task and look straight away: getAnimations() flushes the style change, so
+    // the slide exists and has not ended. A round trip to the test runner could outlast it.
+    (screen.getByRole("switch").element() as HTMLInputElement).click();
     expect(slides(carrier)).toBe(true);
   });
 
@@ -182,7 +184,7 @@ describe("Switch motion in a real browser", () => {
     const { screen, track, carrier } = await renderSwitch();
     expect(transitionTiming(carrier, "translate")).toBeUndefined();
     expect(transitionTiming(track, "background-color")?.duration).toBe(420);
-    await screen.getByRole("switch").click();
+    (screen.getByRole("switch").element() as HTMLInputElement).click();
     expect(slides(carrier)).toBe(false);
   });
 });

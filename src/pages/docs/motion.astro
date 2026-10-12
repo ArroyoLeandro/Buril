@@ -1,0 +1,148 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import IconPresetTable from "../../components/docs/IconPresetTable.astro";
+import MotionDemo from "../../components/MotionDemo";
+import MotionTokenTable from "../../components/docs/MotionTokenTable.astro";
+import ReducedMotionTable from "../../components/docs/ReducedMotionTable.astro";
+import { codeTheme } from "../../components/code-theme";
+import { retuneMotionExample } from "../../data/snippets";
+import { reducedMotionSnippet } from "../../utils/motion";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Motion | Buril UI"
+  description="How Buril components move, the motion tokens, and what reduced motion keeps."
+>
+  <h1 class="font-display text-3xl">Motion</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril moves slowly enough to follow and settles softly: ink settles, the plate presses. It is
+    plain CSS, with no animation library and nothing extra to install.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">At a glance</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>Presses and hover answer at once; state changes and entries take longer.</li>
+    <li>Things that move end on a soft spring that passes its target by about 3% and settles.</li>
+    <li>
+      With reduced motion, nothing moves, resizes or rotates. Color and opacity fades stay, because
+      they are not movement.
+    </li>
+    <li>Focus rings never animate: they appear at once, at full contrast.</li>
+    <li>
+      Every value is a token in <code>:root</code>, and every component also works without the
+      theme.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Try it</h2>
+  <p class="mt-4">
+    Flip the switch, check the box, press the button, and hover or Tab to the icon buttons and the
+    card. Then turn on the simulation and do it again.
+  </p>
+  <div class="bg-paper-grid mt-4 border border-border p-6">
+    <MotionDemo client:visible />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Personality</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <strong>The plate presses.</strong> A click nudges a button 1px down, like a letterpress.
+    </li>
+    <li>
+      <strong>Ink settles.</strong> A check draws like a burin stroke, a radio dot spreads like a
+      drop of ink, and positions end on a soft spring instead of a bounce.
+    </li>
+    <li>
+      <strong>Small distances.</strong> Things move a few pixels; opacity carries most of the
+      change.
+    </li>
+    <li>
+      <strong>Once, then still.</strong> Gestures play once per hover or focus and never loop.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Tokens</h2>
+  <p class="mt-4">
+    Durations and easings live in <code>:root</code> in the theme. They do not change with the color
+    scheme.
+  </p>
+  <MotionTokenTable />
+
+  <h3 class="mt-8 font-display text-lg">Change the timing</h3>
+  <p class="mt-4">
+    Each component writes its token with the same value as a fallback, such as
+    <code>duration-(--buril-duration-fast,200ms)</code>, so it moves the same without the theme. To
+    retune every component at once, redefine the tokens after the theme:
+  </p>
+  <div class={code}>
+    <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    The values apply to every installed component. Try them with reduced motion both on and off.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Reduced motion</h2>
+  <p class="mt-4">
+    When someone turns on reduced motion in their system, each component drops its movement:
+    everything that moves sits behind Tailwind's <code>motion-safe:</code> variant. Fades in color
+    and opacity stay, so state changes are still easy to notice. The Spinner is the one component
+    that swaps in a different picture.
+  </p>
+  <ReducedMotionTable />
+
+  <h3 class="mt-8 font-display text-lg">A global rule for your app</h3>
+  <p class="mt-4">
+    Buril ships no global reduced-motion rule, because it would also stop the fades. If you want one
+    for your own code, paste this into your CSS. It stops the fades too:
+  </p>
+  <div class={code}>
+    <Code code={reducedMotionSnippet()} lang="css" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Icon gestures</h2>
+  <p class="mt-4">
+    The IconButton's <code>motion</code> prop gives the icon a gesture. It plays when the pointer
+    arrives or keyboard focus lands on the button, and only when motion is allowed. Pick the preset
+    that matches the icon:
+  </p>
+  <IconPresetTable />
+  <p class="mt-4">
+    The gestures are CSS keyframes that the{" "}
+    <a href="/docs/components/icon-button" class="underline underline-offset-4">
+      Icon Button
+    </a>{" "}
+    item adds to your CSS when you install it.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Interactive card</h2>
+  <p class="mt-4">
+    A Card with <code>interactive</code> is one link stretched over the card. On hover, and while
+    that link has keyboard focus, the card lifts 4.5px over the base duration and a shadow fades in
+    over the fast one. The lift needs motion; the shadow fades in every mode. The link's own focus
+    ring still shows where focus is. Static cards never move.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">How components move</h2>
+  <p class="mt-4">The rules every component follows, and that a new one must follow too:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Movement waits for <code>motion-safe:</code>; <code>motion-reduce:</code> is only for a
+      different effect, such as the Spinner's dots.
+    </li>
+    <li>
+      Transitions list their properties, such as{" "}
+      <code>transition-[color,background-color,border-color]</code>. <code>transition</code>,{" "}
+      <code>transition-all</code> and <code>transition-colors</code> would also animate the focus
+      outline.
+    </li>
+    <li>
+      Only opacity, translate, scale and rotate move. Width, height, top and left never transition.
+    </li>
+    <li>Focus moves and state changes never wait for an animation to end.</li>
+    <li>A test fails if a component's fallback value drifts from the theme.</li>
+  </ul>
+</DocsLayout>
