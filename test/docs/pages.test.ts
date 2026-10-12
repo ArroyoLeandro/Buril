@@ -344,6 +344,18 @@ describe("switch page", () => {
   });
 });
 
+describe("select page", () => {
+  const render = () => container.renderToString(componentPages["select"]!);
+
+  it("explains why it stays native and how to size it", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/&lt;select&gt;|<select>/);
+    expect(visible).toMatch(/Field/);
+    expect(visible).toMatch(/full width/i);
+    expect(visible).toMatch(/forced-colors/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

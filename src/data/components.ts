@@ -81,6 +81,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/switch.tsx",
   },
   {
+    slug: "select",
+    name: "Select",
+    description: "A styled native select with its own chevron, which keeps the platform's picker.",
+    item: "select",
+    source: "registry/ui/select.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
