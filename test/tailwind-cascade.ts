@@ -52,15 +52,42 @@ function addDeclaration(node: Node, text: string) {
   }
 }
 
-const escape = (name: string) => `.${name.replace(/[:/[\].*='(),&>%+#]/g, "\\$&")}`;
+const escape = (name: string) => `.${name.replace(/[:/[\].*='(),&>%+#@]/g, "\\$&")}`;
 
 export interface CascadeOptions {
   /** Also apply rules inside `@media (forced-colors: active)`. */
   forcedColors?: boolean;
   /** Pseudo-classes the element matches, such as `[":focus", ":focus-visible"]`. */
   states?: string[];
-  /** Other media queries that match, such as `["(prefers-reduced-motion: no-preference)"]`. */
+  /**
+   * Other media queries that match, such as `["(prefers-reduced-motion: no-preference)"]`.
+   * Spacing does not matter, and `not (prefers-reduced-motion: reduce)` is the same query as
+   * `(prefers-reduced-motion: no-preference)`.
+   */
   media?: string[];
+  /** `@supports` conditions that hold, such as `["(overlay: auto)"]` or `["not (width: 1cqw)"]`. */
+  supports?: string[];
+  /**
+   * Resolve the starting style instead: rules in `@starting-style` apply on top of the others, as
+   * when the browser starts a transition for an element that was just inserted.
+   */
+  startingStyle?: boolean;
+}
+
+/** Spacing in a condition is not significant, so `(a: b)` and `(a:b)` compare equal. */
+const normalize = (condition: string) => condition.replace(/\s+/g, "");
+
+/** Queries that a browser evaluates the same way. */
+const equivalentMedia = [
+  ["(prefers-reduced-motion: no-preference)", "not (prefers-reduced-motion: reduce)"],
+].map((group) => group.map(normalize));
+
+function matchingMedia(media: string[]) {
+  const matching = new Set(media.map(normalize));
+  for (const group of equivalentMedia) {
+    if (group.some((query) => matching.has(query))) group.forEach((query) => matching.add(query));
+  }
+  return matching;
 }
 
 export async function createCascade() {
@@ -85,27 +112,42 @@ export async function createCascade() {
   function lastOf(
     classes: string[],
     properties: string[],
-    { forcedColors = false, states = [], media = [] }: CascadeOptions = {},
+    {
+      forcedColors = false,
+      states = [],
+      media = [],
+      supports = [],
+      startingStyle = false,
+    }: CascadeOptions = {},
   ) {
     const selectors = new Set(
       classes.flatMap((name) => [escape(name), ...states.map((state) => escape(name) + state)]),
     );
+    const mediaThatMatch = matchingMedia(media);
+    const supportsThatHold = new Set(supports.map(normalize));
+    /** Whether the rules inside an at-rule apply, so `visit` goes into it. */
+    const applies = (prelude: string) => {
+      if (prelude === "@starting-style") return startingStyle;
+      if (prelude.startsWith("@supports ")) {
+        return supportsThatHold.has(normalize(prelude.slice("@supports ".length)));
+      }
+      if (prelude === "@media (forced-colors: active)") return forcedColors;
+      // Tailwind only applies hover: on devices that can hover.
+      if (prelude === "@media (hover: hover)") return states.includes(":hover");
+      if (prelude.startsWith("@media ")) {
+        return mediaThatMatch.has(normalize(prelude.slice("@media ".length)));
+      }
+      return false;
+    };
     const layer = parse(build(classes)).find((node) => node.prelude === "@layer utilities");
     if (!layer) throw new Error("No utilities layer in the generated CSS");
     let winner: { property: string; value: string } | undefined;
+    // Depth first in source order, so at-rules nested at any depth keep their place in the
+    // cascade. Starting styles come last in Tailwind's output, so they win when they apply.
     const visit = (nodes: Node[]) => {
       for (const node of nodes) {
-        if (node.prelude === "@media (forced-colors: active)") {
-          if (forcedColors) visit(node.children);
-          continue;
-        }
-        // Tailwind only applies hover: on devices that can hover.
-        if (node.prelude === "@media (hover: hover)") {
-          if (states.includes(":hover")) visit(node.children);
-          continue;
-        }
-        if (node.prelude.startsWith("@media ")) {
-          if (media.includes(node.prelude.slice("@media ".length))) visit(node.children);
+        if (node.prelude.startsWith("@")) {
+          if (applies(node.prelude)) visit(node.children);
           continue;
         }
         if (!selectors.has(node.prelude)) continue;
