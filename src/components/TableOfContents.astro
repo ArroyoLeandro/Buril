@@ -1,0 +1,30 @@
+---
+import type { Heading } from "../utils/headings";
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+---
+
+{headings.length > 0 && (
+  <nav
+    aria-label="On this page"
+    class="hidden border-l border-border px-6 py-8 xl:sticky xl:top-0 xl:block xl:max-h-dvh xl:self-start xl:overflow-y-auto"
+  >
+    <p class="font-display text-sm">On this page</p>
+    <ul class="mt-3 flex flex-col gap-2 text-sm">
+      {headings.map(({ depth, id, text }) => (
+        <li class={depth === 3 ? "ps-4" : undefined}>
+          <a
+            href={`#${id}`}
+            class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            {text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

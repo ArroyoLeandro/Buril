@@ -98,14 +98,11 @@ describe.each(pages)("%s page layout", (_, page) => {
   it("has a header with the main navigation", async () => {
     const html = await render();
     const header = /<header[\s\S]*?<\/header>/.exec(html)?.[0] ?? "";
+    // The wordmark links home; the component links live in the docs sidebar (shell.test.ts).
+    expect(header).toMatch(/<a[^>]+href="\/"[^>]*>[\s\S]*?Buril UI[\s\S]*?<\/a>/);
     const nav = /<nav[^>]*aria-label="Main"[\s\S]*?<\/nav>/.exec(header)?.[0] ?? "";
-    expect(nav).toMatch(/<a[^>]+href="\/"[^>]*>\s*Home\s*<\/a>/);
-    expect(text(nav)).toMatch(/Components/);
-    for (const { slug, name } of documentedComponents) {
-      expect(nav).toMatch(
-        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
-      );
-    }
+    expect(nav).toMatch(/<a[^>]+href="\/docs"[^>]*>\s*Docs\s*<\/a>/);
+    expect(nav).toMatch(/<a[^>]+href="\/docs\/components"[^>]*>\s*Components\s*<\/a>/);
   });
 
   it("has a theme toggle with light, dark and system choices", async () => {
