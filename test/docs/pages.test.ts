@@ -44,18 +44,27 @@ describe("button page", () => {
     expectWellFormedPage(await container.renderToString(ButtonPage));
   });
 
-  it("renders the Install section exactly once with its code block", async () => {
+  it("renders the Install section exactly once with URL and namespaced commands", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Install<\/h2>/g)).toBe(1);
+    expect(count(text(html), /shadcn@latest add https:\/\/example\.com\/r\/button\.json/g)).toBe(1);
     expect(count(text(html), /registry add @buril=https:\/\/example\.com/g)).toBe(1);
     expect(count(text(html), /shadcn@latest add @buril\/button/g)).toBe(1);
+  });
+
+  it("documents the theme as a separate opt-in install and its dark-mode behavior", async () => {
+    const html = await container.renderToString(ButtonPage);
+    expect(count(html, />Optional theme<\/h2>/g)).toBe(1);
+    expect(count(text(html), /shadcn@latest add @buril\/theme/g)).toBe(1);
+    expect(text(html)).toMatch(/does not change your theme/);
+    expect(text(html)).toMatch(/prefers-color-scheme: dark/);
+    expect(text(html)).toMatch(/class="light"|class=&quot;light&quot;/);
   });
 
   it("renders the Source section exactly once with the component source", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Source<\/h2>/g)).toBe(1);
     expect(count(text(html), /const buttonVariants = cva\(/g)).toBe(1);
-    expect(count(html, /class="astro-code/g)).toBe(2);
   });
 
   it("renders the demo as a single island", async () => {

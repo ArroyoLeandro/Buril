@@ -5,8 +5,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import ButtonDemo from "../../components/ButtonDemo";
 import source from "../../../registry/ui/button.tsx?raw";
 
-const installCommands = `npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+const urlInstall = "npx shadcn@latest add https://example.com/r/button.json";
+const namespaceInstall = `npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
 npx shadcn@latest add @buril/button`;
+const themeInstall = "npx shadcn@latest add @buril/theme";
 ---
 
 <BaseLayout title="Button | Buril UI">
@@ -28,12 +30,51 @@ npx shadcn@latest add @buril/button`;
     </div>
 
     <h2 class="mt-10 font-display text-xl">Install</h2>
+    <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={urlInstall} lang="bash" theme="github-dark" />
+    </div>
+    <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={namespaceInstall} lang="bash" theme="github-dark" />
+    </div>
     <p class="mt-4 text-muted-foreground">
-      Add the Buril registry once, then install the component:
+      The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have,
+      so installing it does not change your theme. It creates
+      <code>components/ui/button.tsx</code> and adds <code>class-variance-authority</code>. If your
+      <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before
+      replacing it; answering no is safe, because the button only needs <code>cn()</code>.
+    </p>
+
+    <h2 class="mt-10 font-display text-xl">Optional theme</h2>
+    <p class="mt-4 text-muted-foreground">
+      The Buril palette (ink primary, red lacquer for focus, decoration and destructive actions) is
+      a separate install:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={installCommands} lang="bash" theme="github-dark" />
+      <Code code={themeInstall} lang="bash" theme="github-dark" />
     </div>
+    <p class="mt-4 text-muted-foreground">It edits your global CSS file:</p>
+    <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        It replaces your shadcn color tokens in <code>:root</code> and <code>.dark</code>. Other
+        variables, such as <code>--radius</code>, stay as they are.
+      </li>
+      <li>
+        It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font
+        tokens.
+      </li>
+      <li>
+        It follows the system without JavaScript: under <code>prefers-color-scheme: dark</code>, the
+        dark palette applies unless <code>&lt;html&gt;</code> has the <code>light</code> class.
+      </li>
+      <li>
+        It redefines the <code>dark:</code> variant the same way, so <code>dark:</code> utilities
+        also follow the system. A theme toggle must set <code>class="light"</code> on
+        <code>&lt;html&gt;</code> to force light mode; removing <code>dark</code> is not enough.
+        With next-themes, <code>attribute="class"</code> already does this.
+      </li>
+    </ul>
 
     <h2 class="mt-10 font-display text-xl">Source</h2>
     <p class="mt-4 text-muted-foreground">
