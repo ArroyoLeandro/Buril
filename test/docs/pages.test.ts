@@ -393,6 +393,23 @@ describe("card page", () => {
   });
 });
 
+describe("badge page", () => {
+  const render = () => container.renderToString(componentPages["badge"]!);
+
+  it("explains that the text carries the meaning and badges are not interactive", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/never color alone|not its color/i);
+    expect(visible).toMatch(/not focusable/i);
+    expect(visible).toMatch(/Button|Link/);
+  });
+
+  it("explains how to announce a status badge that changes", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/announce/i);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

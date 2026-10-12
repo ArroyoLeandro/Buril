@@ -95,6 +95,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/card.tsx",
   },
   {
+    slug: "badge",
+    name: "Badge",
+    description: "A small, non-interactive label whose text, not its color, carries the meaning.",
+    item: "badge",
+    source: "registry/ui/badge.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
