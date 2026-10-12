@@ -1,0 +1,161 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../components/InstallCommand.astro";
+import { codeTheme } from "../../../components/code-theme";
+import { fieldChildGuideExample, fieldStringsExample } from "../../../data/snippets";
+import { exampleSource } from "../../../utils/example-source";
+import signupForm from "../../../examples/SignupForm.tsx?raw";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Forms with Field | Buril UI"
+  description="Label, describe and validate form controls with Field: the render prop, errors, required fields and your own language."
+>
+  <h1 class="font-display text-3xl">Forms with Field</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Field gives one control a visible label, help text and an error message, and wires them so
+    screen readers read all three. You keep your own state and validation.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Quick path</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>Install Field and the controls you need.</li>
+    <li>Wrap each control in a Field and spread the props it gives you onto the control.</li>
+    <li>
+      Pass the error message to <code>error</code> after you validate.
+    </li>
+  </ol>
+  <InstallCommand id="install-forms" commands={["add @buril/field @buril/input @buril/textarea"]} />
+
+  <h2 class="mt-10 font-display text-xl">A complete form</h2>
+  <p class="mt-4">
+    A sign-up form that validates on submit, shows each error under its field and moves focus to the
+    first field to fix. This code is type-checked and tested with the site.
+  </p>
+  <div class={code}>
+    <Code code={exampleSource(signupForm)} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">The render prop</h2>
+  <p class="mt-4">
+    Field does not know your control. It hands you the props to put on it, as a render prop:
+    <code>{"{(control) => <Input {...control} />}"}</code>. They are:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>id</code>, which the label's <code>for</code> points at.
+    </li>
+    <li>
+      <code>aria-describedby</code>, listing the description and then the error, so they are read in
+      that order after the name.
+    </li>
+    <li>
+      <code>aria-invalid</code>, while there is an error.
+    </li>
+    <li>
+      <code>required</code>, when the field is required.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Spread all of them, after your own props. With a single element you can skip the function: Field
+    adds the same props, keeps the element's own <code>id</code> and merges its
+    <code>aria-describedby</code>.
+  </p>
+  <div class={code}>
+    <Code code={fieldChildGuideExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Errors</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Pass the message to <code>error</code>. An empty string, <code>null</code> or
+      <code>undefined</code> means no error.
+    </li>
+    <li>
+      The error shows with an icon and text, so color is never the only signal, and screen readers
+      hear "Error:" before it.
+    </li>
+    <li>
+      Its region is always on the page and polite, so a new error is announced when it appears. You
+      do not need your own live region for field errors.
+    </li>
+    <li>
+      Add <code>noValidate</code> to the <code>&lt;form&gt;</code> when you validate yourself, so
+      the browser's own bubbles do not appear on top of Field's errors.
+    </li>
+    <li>
+      On submit, move focus to the first field with an error. Its name, description and error are
+      read together.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Required fields</h2>
+  <p class="mt-4">
+    <code>required</code> sets the native <code>required</code> on the control and shows
+    "(required)" next to the label. The marker is hidden from screen readers, which already announce
+    the native state, so nobody hears it twice.
+  </p>
+  <p class="mt-4">
+    If your render prop drops <code>required</code>, Field notices after rendering: the marker
+    becomes part of the label's name again, so the requirement is still announced, and development
+    builds print a warning. A custom control can report it with <code>aria-required</code> instead.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Your own language</h2>
+  <p class="mt-4">Field writes two strings of its own. Pass them in your site's language:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>requiredLabel</code>, the visible marker, "(required)" by default.
+    </li>
+    <li>
+      <code>errorPrefix</code>, the hidden word before the error, "Error:" by default.
+    </li>
+  </ul>
+  <div class={code}>
+    <Code code={fieldStringsExample} lang="tsx" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    The Link's <code>newTabLabel</code> works the same way for links that open a new tab.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Other controls</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <a href="/docs/components/input" class="underline underline-offset-4">
+        Input
+      </a>
+      ,
+      <a href="/docs/components/textarea" class="underline underline-offset-4">
+        Textarea
+      </a>{" "}
+      and
+      <a href="/docs/components/select" class="underline underline-offset-4">
+        Select
+      </a>{" "}
+      go inside a Field.
+    </li>
+    <li>
+      A{" "}
+      <a href="/docs/components/checkbox" class="underline underline-offset-4">
+        Checkbox
+      </a>{" "}
+      or a
+      <a href="/docs/components/switch" class="underline underline-offset-4">
+        Switch
+      </a>{" "}
+      on its own goes inside a <code>&lt;label&gt;</code> with its text; use a Field when it needs
+      help text or an error.
+    </li>
+    <li>
+      A{" "}
+      <a href="/docs/components/radio-group" class="underline underline-offset-4">
+        Radio Group
+      </a>{" "}
+      is its own field: its <code>legend</code> is the label.
+    </li>
+  </ul>
+</DocsLayout>

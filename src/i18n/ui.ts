@@ -157,6 +157,9 @@ const en = {
   "a11y.aria": "Role and states",
   "a11y.componentsCaption": "Keyboard and screen reader behavior of every component.",
   "docsNav.motion": "Motion",
+  "docsNav.guides": "Guides",
+  "migration.caption": "What changes from the shadcn/ui component, for each Buril component.",
+  "migration.changes": "What changes",
   "motion.value": "Value",
   "motion.use": "Used for",
   "motion.tokensCaption": "Motion tokens, read from `registry/styles/buril.css`.",
@@ -292,6 +295,10 @@ const es: Record<UiKey, string> = {
   "a11y.componentsCaption":
     "Comportamiento con el teclado y el lector de pantalla de cada componente.",
   "docsNav.motion": "Movimiento",
+  "docsNav.guides": "Guías",
+  "migration.caption":
+    "Qué cambia respecto del componente de shadcn/ui, para cada componente de Buril.",
+  "migration.changes": "Qué cambia",
   "motion.value": "Valor",
   "motion.use": "Uso",
   "motion.tokensCaption": "Tokens de movimiento, leídos de `registry/styles/buril.css`.",

@@ -7,6 +7,7 @@ import {
   type ComponentStatus,
   type DocumentedComponent,
 } from "./components";
+import { guideHref, guides } from "./guides";
 import { localizedHref } from "../i18n/paths";
 import { translator, type Locale } from "../i18n/ui";
 
@@ -17,6 +18,8 @@ export interface NavItem {
 }
 
 export interface NavGroup {
+  /** A stable, ASCII id for the pages groups, such as `guides`; component groups have none. */
+  id?: string;
   /** Translated group title. */
   title: string;
   /** The catalog category the group lists; Getting Started has none. */
@@ -36,8 +39,16 @@ export function gettingStarted(locale: Locale = "en"): NavItem[] {
   ];
 }
 
+/** The guides, in the order of `guides.ts`, with titles and links in `locale`. */
+export function guideItems(locale: Locale = "en"): NavItem[] {
+  return guides.map(({ slug, title }) => ({
+    name: title[locale],
+    href: localizedHref(guideHref(slug), locale),
+  }));
+}
+
 /**
- * The docs sidebar: Getting Started, then one group per catalog category that has documented
+ * The docs sidebar: Getting Started, the Guides, then one group per catalog category that has documented
  * components, in catalog order. Components keep their order from `components.ts`. Group titles and
  * links follow `locale`; component names are code identifiers and stay in English.
  */
@@ -60,5 +71,9 @@ export function docsNav(
         })),
     }))
     .filter(({ items }) => items.length > 0);
-  return [{ title: t("docsNav.gettingStarted"), items: gettingStarted(locale) }, ...groups];
+  return [
+    { id: "getting-started", title: t("docsNav.gettingStarted"), items: gettingStarted(locale) },
+    { id: "guides", title: t("docsNav.guides"), items: guideItems(locale) },
+    ...groups,
+  ];
 }

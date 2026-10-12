@@ -1,0 +1,127 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../../layouts/DocsLayout.astro";
+import { codeTheme } from "../../../../components/code-theme";
+import {
+  astroHeadExample,
+  astroToggleExample,
+  darkModeExample,
+  nextThemesLayoutExample,
+  themeSelectExample,
+  viteHeadExample,
+  viteMainExample,
+} from "../../../../data/snippets";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Modo oscuro | Buril UI"
+  description="Cambia entre claro, oscuro y la configuración del sistema con next-themes, en Astro o en Vite, sin parpadeos."
+>
+  <h1 class="font-display text-3xl">Modo oscuro</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    El tema de Buril lee una clase en <code>&lt;html&gt;</code>. Sirve cualquier herramienta que la
+    ponga: next-themes en aplicaciones de React, o unas pocas líneas de script en cualquier otro
+    lugar.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Cómo decide el tema</h2>
+  <div class={code}>
+    <Code code={darkModeExample} lang="html" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <code>.dark</code> activa el modo oscuro; <code>.light</code> fuerza el modo claro.
+    </li>
+    <li>
+      Sin ninguna de las dos clases, una media query <code>prefers-color-scheme</code> sigue al
+      sistema, así que la página se ve bien incluso antes de que se ejecute JavaScript.
+    </li>
+    <li>
+      El tema también redefine la variante <code>dark:</code> de Tailwind con la misma regla, así
+      que las utilidades <code>dark:</code> siempre coinciden con los tokens.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Una consecuencia: para forzar el modo claro en un sistema oscuro, pon <code>.light</code>.
+    Quitar
+    <code>.dark</code> solo vuelve a la configuración del sistema.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Next.js con next-themes</h2>
+  <p class="mt-4">
+    next-themes guarda la elección, sigue al sistema y agrega un script que pone la clase antes de
+    que se pinte la página. Usa <code>attribute="class"</code>: por defecto usa un atributo
+    <code>data-theme</code>, que Buril no lee. Así pone <code>light</code> o <code>dark</code> en
+    <code>&lt;html&gt;</code> y, para "system", la que coincide con el sistema.
+  </p>
+  <div class={code}>
+    <Code code={nextThemesLayoutExample} lang="tsx" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    El selector puede ser un Field con un Select. <code>useTheme</code> solo conoce el tema guardado
+    en el navegador, así que el selector espera a estar montado:
+  </p>
+  <div class={code}>
+    <Code code={themeSelectExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Astro</h2>
+  <p class="mt-4">
+    Cada island de React es una raíz independiente, así que un provider de React no alcanza a toda
+    la página. Usa un script pequeño. Primero, aplica la elección guardada antes de que se pinte la
+    página, al principio de <code>&lt;head&gt;</code>. <code>is:inline</code> evita que Astro lo
+    empaquete, así que se ejecuta de inmediato:
+  </p>
+  <div class={code}>
+    <Code code={astroHeadExample} lang="astro" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Después, un selector que pone las clases y guarda la elección. "System" quita las dos clases y
+    el valor guardado, así que decide la media query:
+  </p>
+  <div class={code}>
+    <Code code={astroToggleExample} lang="astro" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Este sitio hace lo mismo, con la clave <code>buril-theme</code> y un botón de icono en pantallas
+    pequeñas.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Vite</h2>
+  <p class="mt-4">
+    next-themes es React puro, así que también funciona en una aplicación de Vite. En una aplicación
+    de una sola página no se renderiza nada hasta que carga el bundle, así que pon el mismo script
+    en
+    <code>index.html</code>: evita que el fondo de la página parpadee mientras se descarga el
+    bundle. Lee <code>theme</code>, la clave que next-themes usa por defecto.
+  </p>
+  <div class={code}>
+    <Code code={viteHeadExample} lang="html" theme={codeTheme} />
+  </div>
+  <div class={code}>
+    <Code code={viteMainExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">El script contra el parpadeo</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Debe ejecutarse antes del primer pintado, así que va en línea al principio de
+      <code>&lt;head&gt;</code>, no en un bundle.
+    </li>
+    <li>
+      Pone <code>.dark</code> o <code>.light</code> para una elección guardada y nada para "system":
+      ese caso lo resuelve la media query sin JavaScript.
+    </li>
+    <li>
+      Está dentro de un <code>try</code>, porque leer el almacenamiento puede fallar cuando los
+      datos del sitio están bloqueados.
+    </li>
+    <li>
+      La clave debe coincidir con la que escribe tu selector: <code>theme</code> para next-themes, o
+      la tuya.
+    </li>
+  </ul>
+</DocsLayout>
