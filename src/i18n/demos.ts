@@ -42,6 +42,10 @@ export const demoText = {
   // Component demos: shared
   Variants: "Variantes",
   Sizes: "Tamaños",
+  // Text that Field and Link write themselves
+  "(required)": "(obligatorio)",
+  "Error:": "Error:",
+  "(opens in a new tab)": "(se abre en una pestaña nueva)",
   // Alert
   "New version available": "Nueva versión disponible",
   "Reload the page to get the latest components.":

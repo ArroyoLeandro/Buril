@@ -44,6 +44,8 @@ describe("SignInPanel", () => {
   it("speaks Spanish on Spanish pages: labels, errors and the result", async () => {
     render(<SignInPanel delay={0} locale="es" />);
     const user = userEvent.setup();
+    expect(screen.getAllByText("(obligatorio)")).toHaveLength(2);
+    expect(screen.queryByText("(required)")).toBeNull();
     expect(
       screen.getByRole("checkbox", { name: "Mantener la sesión iniciada" }),
     ).toBeInTheDocument();

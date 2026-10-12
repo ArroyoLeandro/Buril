@@ -40,6 +40,8 @@ export default function SelectDemo({ locale = "en" }: Props) {
         description={t("See the size chart for measurements.")}
         error={error}
         required
+        requiredLabel={t("(required)")}
+        errorPrefix={t("Error:")}
       >
         {(control) => (
           <Select

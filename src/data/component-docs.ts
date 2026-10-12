@@ -192,6 +192,13 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description:
               'Opens a new tab with `rel="noopener noreferrer"` and says so to every user.',
           },
+          {
+            name: "newTabLabel",
+            type: "string",
+            default: '"(opens in a new tab)"',
+            description:
+              "The hidden hint screen readers hear on a link that opens a new tab. Pass it in your site's language.",
+          },
           className,
         ],
       },
@@ -200,7 +207,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
     accessibility: [
       "It is always a real `<a href>`, announced as a link and reachable with Tab.",
       "The underline stays in every state, so color is never the only signal.",
-      'A new tab adds "(opens in a new tab)" to the accessible name, even with `aria-label`.',
+      'A new tab adds `newTabLabel`, "(opens in a new tab)" by default, to the accessible name, even with `aria-label`.',
     ],
   },
   field: {
@@ -233,7 +240,21 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "required",
             type: "boolean",
             default: "false",
-            description: 'Sets the native `required` and shows "(required)".',
+            description: "Sets the native `required` and shows `requiredLabel` next to the label.",
+          },
+          {
+            name: "requiredLabel",
+            type: "string",
+            default: '"(required)"',
+            description:
+              "The visible required marker, read as part of the name when the control does not report the requirement. Pass it in your site's language.",
+          },
+          {
+            name: "errorPrefix",
+            type: "string",
+            default: '"Error:"',
+            description:
+              "Hidden text screen readers hear before the error. Pass it in your site's language.",
           },
           {
             name: "children",
@@ -930,6 +951,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: "Color del texto. Las dos conservan el subrayado.",
           external:
             'Abre una pestaña nueva con `rel="noopener noreferrer"` y se lo indica a todos los usuarios.',
+          newTabLabel:
+            "El aviso oculto que oyen los lectores de pantalla en un enlace que abre una pestaña nueva. Pásalo en el idioma de tu sitio.",
           className: classNameEs,
         },
       },
@@ -938,7 +961,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
     accessibility: [
       "Siempre es un `<a href>` real, que se anuncia como enlace y se alcanza con Tab.",
       "El subrayado se mantiene en todos los estados, así que el color nunca es la única señal.",
-      'Una pestaña nueva agrega "(opens in a new tab)" al nombre accesible, incluso con `aria-label`.',
+      'Una pestaña nueva agrega `newTabLabel` al nombre accesible, incluso con `aria-label`; en español, pasa "(se abre en una pestaña nueva)".',
     ],
   },
   field: {
@@ -949,7 +972,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
           label: "Obligatoria. Se renderiza como el `<label>` del control.",
           description: "Texto de ayuda, vinculado con `aria-describedby`.",
           error: "Texto del error. Mientras tiene valor, el control recibe `aria-invalid`.",
-          required: 'Aplica el `required` nativo y muestra "(required)".',
+          required: "Aplica el `required` nativo y muestra `requiredLabel` junto a la etiqueta.",
+          requiredLabel:
+            "La marca visible de obligatorio, que se lee como parte del nombre si el control no indica el requisito. Pásala en el idioma de tu sitio.",
+          errorPrefix:
+            "Texto oculto que los lectores de pantalla oyen antes del error. Pásalo en el idioma de tu sitio.",
           children:
             "Obligatoria. Una render prop que expande las props del control, o un solo elemento.",
           className: classNameEs,

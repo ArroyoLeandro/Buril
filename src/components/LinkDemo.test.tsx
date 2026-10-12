@@ -31,4 +31,13 @@ describe("LinkDemo in Spanish", () => {
       screen.getByRole("heading", { name: "Se abre en una pestaña nueva" }),
     ).toBeInTheDocument();
   });
+
+  it("warns about the new tab in Spanish", () => {
+    render(<LinkDemo locale="es" />);
+    expect(screen.getByRole("link", { name: /\(se abre en una pestaña nueva\)$/ })).toHaveAttribute(
+      "target",
+      "_blank",
+    );
+    expect(screen.queryByText("(opens in a new tab)")).toBeNull();
+  });
 });

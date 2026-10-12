@@ -47,7 +47,9 @@ const { variantsExample, statusExample } = componentExamples.button;
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have, so
     installing it does not change your theme. It creates
-    <code>components/ui/button.tsx</code> and adds <code>class-variance-authority</code>. If your
+    <code>components/ui/button.tsx</code>, adds <code>class-variance-authority</code> and appends
+    the icon <code>motion</code> keyframes (<code>@keyframes buril-icon-*</code>) to your CSS;
+    nothing else in your CSS changes. If your
     <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
     it; answering no is safe, because the button only needs <code>cn()</code>.
   </p>

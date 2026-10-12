@@ -253,6 +253,11 @@ describe("icon button page", () => {
 describe("link page", () => {
   const render = () => container.renderToString(componentPages["link"]!);
 
+  it("explains how to put the new-tab hint in another language", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("newTabLabel");
+  });
+
   it("explains the new-tab behavior and why href is required", async () => {
     const visible = text(await render());
     expect(visible).toMatch(/opens in a new tab/);
@@ -271,6 +276,12 @@ describe("link page", () => {
 
 describe("field page", () => {
   const render = () => container.renderToString(componentPages["field"]!);
+
+  it("explains how to put the required marker and the error prefix in another language", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("requiredLabel");
+    expect(visible).toContain("errorPrefix");
+  });
 
   it("explains the render prop, the element child and what each wires", async () => {
     const visible = text(await render());

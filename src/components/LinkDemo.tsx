@@ -36,7 +36,11 @@ export default function LinkDemo({ locale = "en" }: Props) {
         </h3>
         <p>
           {t("Buril follows the")}{" "}
-          <Link href="https://www.w3.org/WAI/ARIA/apg/patterns/link/" external>
+          <Link
+            href="https://www.w3.org/WAI/ARIA/apg/patterns/link/"
+            external
+            newTabLabel={t("(opens in a new tab)")}
+          >
             {t("APG link pattern")}
           </Link>
           .

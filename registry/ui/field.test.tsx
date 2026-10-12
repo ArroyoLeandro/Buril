@@ -203,10 +203,59 @@ describe("Field", () => {
       });
     });
 
+    // The marker and the error prefix are text people read or hear, so a site in another language
+    // passes its own.
+    describe("in another language", () => {
+      it("shows the requiredLabel instead of (required)", () => {
+        render(
+          <Field label="Correo" required requiredLabel="(obligatorio)">
+            {(control) => <input {...control} />}
+          </Field>,
+        );
+        expect(screen.getByText("(obligatorio)")).toHaveAttribute("aria-hidden", "true");
+        expect(screen.queryByText("(required)")).toBeNull();
+        expect(screen.getByRole("textbox", { name: "Correo" })).toBeRequired();
+      });
+
+      it("reads the requiredLabel in the name when the control loses required", () => {
+        const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+        render(
+          <Field label="Correo" required requiredLabel="(obligatorio)">
+            {(control) => <input {...control} required={undefined} />}
+          </Field>,
+        );
+        expect(screen.getByRole("textbox", { name: "Correo (obligatorio)" })).not.toBeRequired();
+        expect(warn.mock.calls[0]![0]).toContain('"(obligatorio)"');
+      });
+    });
+
     it("does not warn when the field is not required", () => {
       const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
       render(<Field label="Email">{(control) => <input {...control} />}</Field>);
       expect(warn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("error prefix", () => {
+    it("starts the error's description with Error: by default", () => {
+      render(
+        <Field label="Email" error="Enter an email address.">
+          {(control) => <input {...control} />}
+        </Field>,
+      );
+      expect(screen.getByRole("textbox")).toHaveAccessibleDescription(
+        "Error: Enter an email address.",
+      );
+    });
+
+    it("uses the errorPrefix it is given, hidden from sight like the default", () => {
+      render(
+        <Field label="Correo" error="Escribe un correo." errorPrefix="Fehler:">
+          {(control) => <input {...control} />}
+        </Field>,
+      );
+      expect(screen.getByRole("textbox")).toHaveAccessibleDescription("Fehler: Escribe un correo.");
+      expect(screen.getByText("Fehler:")).toHaveClass("sr-only");
     });
   });
 
