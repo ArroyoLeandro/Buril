@@ -52,6 +52,7 @@ describe("registry items", () => {
     ["input", "registry/ui/input.tsx"],
     ["textarea", "registry/ui/textarea.tsx"],
     ["checkbox", "registry/ui/checkbox.tsx"],
+    ["radio-group", "registry/ui/radio-group.tsx"],
   ])("%s is a standalone component that needs only utils", (name, path) => {
     const item = byName.get(name) as Item & { files?: { path: string; type: string }[] };
     expect(item?.type).toBe("registry:ui");

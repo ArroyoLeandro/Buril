@@ -320,6 +320,18 @@ describe("checkbox page", () => {
   });
 });
 
+describe("radio group page", () => {
+  const render = () => container.renderToString(componentPages["radio-group"]!);
+
+  it("explains the legend, the single Tab stop and the arrow keys", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/legend/);
+    expect(visible).toMatch(/one Tab stop/i);
+    expect(visible).toMatch(/arrow keys/i);
+    expect(visible).toMatch(/onValueChange/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 
