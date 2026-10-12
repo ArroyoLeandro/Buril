@@ -5,8 +5,10 @@ import ComponentPage from "../../../../layouts/ComponentPage.astro";
 import IconButtonDemo from "../../../../components/IconButtonDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
+import { iconKeyframesCss, iconKeyframesExample } from "../../../../utils/icon-keyframes";
 
-const { sizesExample } = componentExamples["icon-button"];
+const { sizesExample, motionExample } = componentExamples["icon-button"];
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 ---
 
 <ComponentPage slug="icon-button">
@@ -38,7 +40,7 @@ const { sizesExample } = componentExamples["icon-button"];
       24px. Un icono sin su propia clase <code>size-*</code> se escala con el botón. Los mismos
       tamaños funcionan en <code>Button</code> y en <code>buttonVariants()</code>.
     </p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <div class={code}>
       <Code code={sizesExample} lang="tsx" theme={codeTheme} />
     </div>
 
@@ -48,10 +50,61 @@ const { sizesExample } = componentExamples["icon-button"];
       conserva su nombre y el foco. Como con el Button, anuncia el progreso desde una región
       <code>role="status"</code> fuera del botón.
     </p>
+
+    <h3 class="mt-8 font-display text-lg">Movimiento</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>motion</code> le da un gesto al icono. Se reproduce una vez cada vez que el puntero o el
+      foco del teclado llega al botón, nunca se repite en bucle y solo se ejecuta si el usuario no
+      pidió movimiento reducido. Los colores y el anillo de foco no se mueven.
+    </p>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <code>rotate</code>: una cruz de cierre gira un cuarto de vuelta mientras tiene el puntero
+        encima o el foco.
+      </li>
+      <li>
+        <code>spin</code>: una flecha de actualizar da una vuelta.
+      </li>
+      <li>
+        <code>wiggle</code>: una papelera se sacude una vez. Marca su tapa con <code>data-lid</code>
+        y la tapa se levanta primero.
+      </li>
+      <li>
+        <code>swing</code>: una campana se balancea desde arriba, un poco menos en cada pasada.
+      </li>
+      <li>
+        <code>nudge-x</code>, <code>nudge-up</code> y <code>nudge-diagonal</code>: una flecha o un
+        icono de enviar o de enlace externo sale y vuelve. Hacia delante sigue la dirección de
+        lectura.
+      </li>
+      <li>
+        <code>pop</code>: un me gusta crece y se asienta, y vuelve a hacerlo al pulsarlo.
+      </li>
+    </ul>
+    <div class={code}>
+      <Code code={motionExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <p class="mt-4 text-muted-foreground">
+      Los gestos son keyframes de CSS, así que al instalar el botón con la CLI también se agregan a
+      tu archivo CSS. Solo se agregan estos, con el prefijo <code>buril-icon-</code>, y tus tokens y
+      variantes quedan intactos:
+    </p>
+    <div class={code}>
+      <Code code={iconKeyframesExample()} lang="css" theme={codeTheme} />
+    </div>
   </Fragment>
 
-  <p slot="install-notes" class="mt-4 text-muted-foreground">
-    <code>IconButton</code> viene en el mismo item del registry que el Button, en
-    <code>components/ui/button.tsx</code>, así que al instalar cualquiera de los dos tienes ambos.
-  </p>
+  <Fragment slot="install-notes">
+    <p class="mt-4 text-muted-foreground">
+      <code>IconButton</code> viene en el mismo item del registry que el Button, en
+      <code>components/ui/button.tsx</code>, así que al instalar cualquiera de los dos tienes ambos.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      La CLI también agrega los keyframes de <code>motion</code> a tu CSS. Si copias el archivo a
+      mano, pégalos también en tu CSS; sin ellos, los iconos no se mueven.
+    </p>
+    <div class={code}>
+      <Code code={iconKeyframesCss()} lang="css" theme={codeTheme} />
+    </div>
+  </Fragment>
 </ComponentPage>

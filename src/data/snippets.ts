@@ -126,6 +126,16 @@ export const componentExamples = {
     sizesExample: `<IconButton aria-label="Edit" size="icon-sm"><PencilIcon /></IconButton>
 <IconButton aria-label="Edit"><PencilIcon /></IconButton>
 <IconButton aria-label="Edit" size="icon-lg"><PencilIcon /></IconButton>`,
+    motionExample: `<IconButton aria-label="Close dialog" motion="rotate"><XIcon /></IconButton>
+<IconButton aria-label="Notifications" motion="swing"><BellIcon /></IconButton>
+
+{/* wiggle lifts the part marked data-lid, then shakes the whole icon */}
+<IconButton aria-label="Delete draft" motion="wiggle">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <g data-lid><path d="M4 7h16M9 7V4h6v3" /></g>
+    <path d="M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+  </svg>
+</IconButton>`,
   },
   input: {
     usageExample: `import { Field } from "@/components/ui/field";

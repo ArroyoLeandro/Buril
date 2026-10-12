@@ -229,6 +229,25 @@ describe("icon button page", () => {
     expect(visible).toMatch(/32, 40 and 48px/);
     expect(visible).toMatch(/same registry item as the Button/);
   });
+
+  it("documents every motion preset, the lid marker, reduced motion and the added keyframes", async () => {
+    const visible = text(await render());
+    for (const preset of [
+      "rotate",
+      "spin",
+      "wiggle",
+      "swing",
+      "nudge-x",
+      "nudge-up",
+      "nudge-diagonal",
+      "pop",
+    ])
+      expect(visible).toContain(preset);
+    expect(visible).toContain("data-lid");
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/once/);
+    expect(visible).toContain("@keyframes buril-icon-");
+  });
 });
 
 describe("link page", () => {
