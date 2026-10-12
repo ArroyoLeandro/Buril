@@ -12,7 +12,7 @@ const groups = docsNav(locale);
 const statusLabels = { new: t("status.new"), beta: t("status.beta") };
 ---
 
-<div class="border-b border-border px-4 py-3 sm:px-6 lg:border-r lg:border-b-0 lg:p-0">
+<div class="border-b border-border px-4 py-3 sm:px-6 lg:border-b-0 lg:p-0 lg:pt-(--docs-panel-gap)">
   {/*
     Small screens: a disclosure button. It starts hidden and the sidebar starts open, so the
     links work without JavaScript; the script shows the button and collapses the sidebar.
@@ -42,7 +42,7 @@ const statusLabels = { new: t("status.new"), beta: t("status.beta") };
   <nav
     id="docs-sidebar"
     aria-label={t("docsNav.label")}
-    class="pt-4 max-lg:data-collapsed:hidden lg:docs-panel lg:px-3 lg:py-6"
+    class="pt-4 max-lg:data-collapsed:hidden lg:docs-panel lg:border-r lg:border-border lg:px-3 lg:pt-0"
   >
     {groups.map((group) => {
       // Ids stay ASCII and stable across languages: the group's own id, or its category.
