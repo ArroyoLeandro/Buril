@@ -24,7 +24,7 @@ The second line downloads the headless Chromium that `pnpm test:browser` runs in
 | `pnpm dev`            | Docs site with live reload.                                                            |
 | `pnpm test`           | Runs every jsdom Vitest suite once (`pnpm test:watch` keeps it running).               |
 | `pnpm test:browser`   | Runs the real-browser tests (`*.browser.test.tsx`) in headless Chromium.               |
-| `pnpm check`          | `astro check`, `tsc --noEmit` and `shadcn registry validate`.                          |
+| `pnpm check`          | `astro check`, `tsc --noEmit` (twice, see below) and `shadcn registry validate`.       |
 | `pnpm lint`           | ESLint, including the `jsx-a11y` rules.                                                |
 | `pnpm format`         | Prettier, with class sorting from `prettier-plugin-tailwindcss`.                       |
 | `pnpm format:check`   | Prettier without writing.                                                              |
@@ -53,7 +53,7 @@ Vitest runs everything. Each kind of test answers a different question:
 - **Compiled styles** (`registry/ui/*.styles.test.ts`): jsdom does not apply CSS, so class-name assertions cannot catch cascade bugs. These tests compile the real stylesheet with Tailwind's `compile()` API and check which rule wins, including forced-colors mode.
 - **Tokens** (`test/tokens.test.ts`): parses `buril.css`, resolves `var()` and `color-mix()`, and measures every WCAG contrast pair in light and dark mode. It also checks that the registry theme ships the same values.
 - **Registry contract** (`test/registry.test.ts`): components must not depend on a theme, and their dependencies must not use a namespace, so URL installs work.
-- **Real browser** (`*.browser.test.tsx`, `pnpm test:browser`): Vitest browser mode with Playwright and headless Chromium, with the compiled Tailwind stylesheet and the Buril theme loaded (`test/browser.css`). Use it for what jsdom and the compiled-style tests cannot see: geometry (`getBoundingClientRect()`), computed colors in light and dark mode, real focus, transitions and `@starting-style` entries, and overlays. `test/browser.ts` switches the theme; every test starts in light mode.
+- **Real browser** (`*.browser.test.tsx`, `pnpm test:browser`): Vitest browser mode with Playwright and headless Chromium, with the compiled Tailwind stylesheet and the Buril theme loaded (`test/browser.css`). Use it for what jsdom and the compiled-style tests cannot see: geometry (`getBoundingClientRect()`), computed colors in light and dark mode, real focus, transitions and `@starting-style` entries, and overlays. `test/browser.ts` switches the theme (every test starts in light mode), waits for transitions to settle, measures pseudo-elements, which have no `getBoundingClientRect()`, and reads painted pixels from a screenshot. Vitest's browser matchers and jest-dom type the same matchers differently, so the browser tests, their helper and the Vitest configs are type-checked on their own with `tsconfig.browser.json`.
 - **Docs pages** (`test/docs/`): renders each page with Astro's container API and checks landmarks, the skip link, the theme toggle, install commands and code-block contrast.
 
 The project uses test-driven development: write a failing test first, watch it fail, then make it pass.
