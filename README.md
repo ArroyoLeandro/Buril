@@ -4,7 +4,7 @@
 
 Accessible, copy-paste React components with an engraved-print look. Built from scratch, styled with Tailwind CSS, and distributed as source code you own.
 
-> **Status: early planning.** No components are published yet. This repository currently holds the component catalog and the accessibility rules every component will follow.
+> **Status: early development.** Button is the first component, with tests and a docs page. The registry is not hosted yet: the commands below use the placeholder domain `example.com`, which changes once the site is live.
 
 ## Why Buril
 
@@ -16,21 +16,41 @@ Accessible, copy-paste React components with an engraved-print look. Built from 
 | **Built from scratch** | No headless UI primitives. Behavior (focus, keyboard, ARIA) is written and tested here. |
 | **Themeable** | Components use semantic design tokens only. Swap the palette without touching a component. |
 
-## Planned usage
+## Install
 
-Buril will be a [shadcn-compatible registry](https://ui.shadcn.com/docs/registry). Install a component and its dependencies with the package manager you already use:
+Buril is a [shadcn-compatible registry](https://ui.shadcn.com/docs/registry). In a project set up with shadcn (it has a `components.json`), install the Button from its URL:
 
 ```bash
-npx shadcn@latest add <buril-registry-url>/button.json
+npx shadcn@latest add https://example.com/r/button.json
 ```
 
-Each component will also have a copy button in the docs, generated from the same source file.
+Or register the `@buril` namespace once and install components by name:
+
+```bash
+npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+npx shadcn@latest add @buril/button
+```
+
+The examples use npx. With other package managers, replace `npx` with `pnpm dlx`, `yarn dlx` or `bunx --bun`.
+
+Components use the standard shadcn tokens and the `cn()` helper your project already has, so installing one does not change your theme. The docs show each component's source, read from the same file the registry ships.
+
+### Optional theme
+
+The Buril palette is a separate install:
+
+```bash
+npx shadcn@latest add @buril/theme
+```
+
+It replaces your shadcn color tokens with the Buril values for light and dark mode and adds two decorative tokens, `--decor` and `--grid`. It also follows the system color scheme without JavaScript: the dark palette applies under `prefers-color-scheme: dark` unless `<html>` has the `light` class, and the `dark:` variant follows the same rule. To force light mode, your theme toggle must set `class="light"` on `<html>`; next-themes with `attribute="class"` already does this.
 
 ## Visual style
 
 The default theme pairs engraved print with a terminal:
 
-- A single vermilion ink on raw paper, split into a decorative accent and a stronger accent that passes AA for text.
+- Ink on raw paper. The primary color is ink in light mode and bone in dark mode.
+- Red lacquer is reserved for the focus ring, decoration and destructive actions, so red always carries meaning.
 - A pixel display font for headings and a neutral sans-serif for body text.
 - Thin grid lines, pill-shaped buttons and optional CSS hatching.
 
@@ -46,12 +66,12 @@ Light and dark modes ship from the first release. Decorative elements stay optio
 
 React comes first. An Angular version is planned for a later stage.
 
-See [COMPONENTS.md](./COMPONENTS.md) for the full catalog, the mandatory accessibility rules and the definition of done.
+See [COMPONENTS.md](./COMPONENTS.md) for the full catalog, the mandatory accessibility rules and the definition of done, and [CONTRIBUTING.md](./CONTRIBUTING.md) for the local setup, scripts and tests.
 
 ## Tech stack
 
 - **Components:** React, TypeScript, Tailwind CSS v4
-- **Positioning:** [Floating UI](https://floating-ui.com/) (`@floating-ui/dom`) for tooltips, popovers and menus
+- **Positioning:** [Floating UI](https://floating-ui.com/) (`@floating-ui/dom`) for tooltips, popovers and menus (planned)
 - **Docs site:** [Astro](https://astro.build/) with live React demos
 - **Testing:** Vitest, Testing Library and axe
 

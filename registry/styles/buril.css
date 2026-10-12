@@ -1,5 +1,8 @@
 /*
- * Buril UI design tokens (decision 016 palette, decision 018 names).
+ * Buril UI design tokens: ink on warm paper, with red lacquer reserved for decoration, the focus
+ * ring and destructive actions. Semantic names follow shadcn, so Buril components work with any
+ * shadcn theme and this palette installs as a regular shadcn theme. Every contrast pair is
+ * measured against WCAG 2.2 AA in `test/tokens.test.ts`.
  *
  * Three layers:
  *   1. Primitives, `--buril-*`: the raw palette. Mode independent, declared once in :root.
