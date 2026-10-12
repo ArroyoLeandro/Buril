@@ -52,7 +52,7 @@ function addDeclaration(node: Node, text: string) {
   }
 }
 
-const escape = (name: string) => `.${name.replace(/[:/[\].*='(),&>]/g, "\\$&")}`;
+const escape = (name: string) => `.${name.replace(/[:/[\].*='(),&>%+#]/g, "\\$&")}`;
 
 export interface CascadeOptions {
   /** Also apply rules inside `@media (forced-colors: active)`. */
