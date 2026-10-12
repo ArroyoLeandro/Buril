@@ -332,6 +332,18 @@ describe("radio group page", () => {
   });
 });
 
+describe("switch page", () => {
+  const render = () => container.renderToString(componentPages["switch"]!);
+
+  it("explains the role, the immediate effect and the state not shown by color alone", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")switch(&quot;|")/);
+    expect(visible).toMatch(/immediately/);
+    expect(visible).toMatch(/stateLabels/);
+    expect(visible).toMatch(/reduced motion/i);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

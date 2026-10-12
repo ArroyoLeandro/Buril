@@ -216,6 +216,19 @@
       ]
     },
     {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Native checkbox with the switch role, a sliding thumb and optional on/off text.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skip-link",
       "type": "registry:ui",
       "title": "Skip Link",
