@@ -4,7 +4,7 @@
 
 Componentes de React accesibles, listos para copiar y pegar, con una estética de grabado sobre papel. Construidos desde cero, estilizados con Tailwind CSS y distribuidos como código fuente que te pertenece.
 
-> **Estado: desarrollo inicial.** Button, Icon Button, Link y Skip Link están disponibles, con tests y páginas de documentación. El registry todavía no está publicado: los comandos de abajo usan el dominio de ejemplo `example.com`, que cambiará cuando el sitio esté en línea.
+> **Estado: desarrollo inicial.** Button, Icon Button, Link, Skip Link y Field están disponibles, con tests y páginas de documentación. El registry todavía no está publicado: los comandos de abajo usan el dominio de ejemplo `example.com`, que cambiará cuando el sitio esté en línea.
 
 ## Por qué Buril
 

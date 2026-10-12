@@ -151,6 +151,19 @@
       ]
     },
     {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Label, description and error message wired to one form control, with the error announced politely.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skip-link",
       "type": "registry:ui",
       "title": "Skip Link",

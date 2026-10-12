@@ -48,6 +48,7 @@ describe("registry items", () => {
   it.each([
     ["link", "registry/ui/link.tsx"],
     ["skip-link", "registry/ui/skip-link.tsx"],
+    ["field", "registry/ui/field.tsx"],
   ])("%s is a standalone component that needs only utils", (name, path) => {
     const item = byName.get(name) as Item & { files?: { path: string; type: string }[] };
     expect(item?.type).toBe("registry:ui");
