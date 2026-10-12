@@ -167,14 +167,7 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       );
     });
 
-    it("has Demo, Install and Source sections in that order", async () => {
-      const html = await render();
-      const order = ["Demo", "Install", "Source"].map((title) => {
-        expect(count(html, new RegExp(`>${title}</h2>`, "g"))).toBe(1);
-        return html.indexOf(`>${title}</h2>`);
-      });
-      expect(order).toEqual([...order].sort((a, b) => a - b));
-    });
+    // Section order and the Preview/Code and CLI/Manual tabs: component-page.test.ts.
 
     it("renders the demo as a single island", async () => {
       expect(count(await render(), /<astro-island/g)).toBe(1);
@@ -188,14 +181,22 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
 
     it("notes that shadcn's utils item can add the cn npm package", async () => {
       const html = await render();
-      const install = text(html.slice(html.indexOf(">Install</h2>"), html.indexOf(">Source</h2>")));
+      const install = text(
+        html.slice(
+          html.indexOf(">Installation</h2>"),
+          html.indexOf('id="installation-panel-manual"'),
+        ),
+      );
       expect(install).toMatch(/re-exports\s+cn\(\)\s+from\s+the\s+cn\s+npm\s+package/);
       expect(install).toMatch(/also\s+adds\s+cn\s+to\s+your\s+dependencies/);
     });
 
     it("shows the source file it documents, read at build time", async () => {
       const html = await render();
-      const source = html.slice(html.indexOf(">Source</h2>"));
+      const source = html.slice(
+        html.indexOf('id="installation-panel-manual"'),
+        html.indexOf(">Usage</h2>"),
+      );
       expect(text(source)).toContain(entry.source);
       // The export line is plain text in the highlighted output, so it proves the real file.
       const file = readFileSync(resolve(__dirname, "../..", entry.source), "utf8");
@@ -484,7 +485,7 @@ describe("button page", () => {
 
   it("renders the Install section exactly once with URL and namespaced commands", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Install<\/h2>/g)).toBe(1);
+    expect(count(html, />Installation<\/h2>/g)).toBe(1);
     expect(
       count(text(html), /npx shadcn@latest add https:\/\/example\.com\/r\/button\.json/g),
     ).toBe(1);
@@ -552,9 +553,11 @@ describe("button page", () => {
     expect(text(html)).toMatch(/class="light"|class=&quot;light&quot;/);
   });
 
-  it("renders the Source section exactly once with the component source", async () => {
+  it("shows the component source exactly once, in the Manual installation tab", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Source<\/h2>/g)).toBe(1);
+    const manual = html.indexOf('id="installation-panel-manual"');
+    expect(manual).toBeGreaterThan(-1);
+    expect(count(text(html.slice(manual)), /const buttonVariants = cva\(/g)).toBe(1);
     expect(count(text(html), /const buttonVariants = cva\(/g)).toBe(1);
   });
 
@@ -573,7 +576,8 @@ describe("button page", () => {
 
   it("documents announcing progress with a status region outside the button", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Loading<\/h2>/g)).toBe(1);
+    // The demo island has its own "Loading" h3; the page section is the one with id="loading".
+    expect(count(html, /<h3[^>]*id="loading"[^>]*>\s*Loading\s*<\/h3>/g)).toBe(1);
     expect(text(html)).toMatch(/role=(&quot;|")status(&quot;|")/);
     expect(html).toMatch(/<[a-z]+[^>]*role="status"/);
   });

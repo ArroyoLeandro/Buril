@@ -5,7 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SkipLinkDemo from "../../../components/SkipLinkDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { SkipLink } from "@/components/ui/skip-link";
+const example = `import { SkipLink } from "@/components/ui/skip-link";
 
 <body>
   <SkipLink />
@@ -22,10 +22,6 @@ const usageExample = `import { SkipLink } from "@/components/ui/skip-link";
   <SkipLinkDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Place it first</strong> in <code>&lt;body&gt;</code>, so it is the first thing a
@@ -51,6 +47,13 @@ const usageExample = `import { SkipLink } from "@/components/ui/skip-link";
         also moves focus to the target itself, for browsers that only scroll.
       </li>
     </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Page layout</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

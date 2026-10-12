@@ -1,0 +1,57 @@
+---
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "../../registry/ui/button";
+
+/**
+ * Docs-site tabs (APG Tabs). Each tab's content comes from the slot named after its id. The
+ * first tab is selected on the server, so its panel shows without JavaScript.
+ */
+interface Props {
+  /** Unique on the page; prefixes the tab and panel ids. */
+  id: string;
+  /** Accessible name of the tab list. */
+  label: string;
+  tabs: { id: string; label: string }[];
+}
+
+const { id, label, tabs } = Astro.props;
+const panels = await Promise.all(tabs.map((tab) => Astro.slots.render(tab.id)));
+---
+
+<div data-tabs class="mt-4">
+  <div role="tablist" aria-label={label} class="flex flex-wrap gap-1">
+    {tabs.map((tab, index) => (
+      <button
+        type="button"
+        role="tab"
+        id={`${id}-tab-${tab.id}`}
+        aria-selected={index === 0 ? "true" : "false"}
+        aria-controls={`${id}-panel-${tab.id}`}
+        tabindex={index === 0 ? 0 : -1}
+        class={cn(
+          buttonVariants({ variant: "ghost", size: "sm" }),
+          "px-3 aria-selected:border-border aria-selected:bg-secondary aria-selected:text-secondary-foreground",
+        )}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+  {tabs.map((tab, index) => (
+    <div
+      role="tabpanel"
+      id={`${id}-panel-${tab.id}`}
+      aria-labelledby={`${id}-tab-${tab.id}`}
+      hidden={index !== 0}
+      class="mt-2 min-w-0"
+    >
+      <Fragment set:html={panels[index]} />
+    </div>
+  ))}
+</div>
+
+<script>
+  import { initTabs } from "../scripts/tabs";
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-tabs]")) initTabs(root);
+</script>

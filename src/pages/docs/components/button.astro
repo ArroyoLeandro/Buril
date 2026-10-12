@@ -6,6 +6,13 @@ import ButtonDemo from "../../../components/ButtonDemo";
 import InstallCommand from "../../../components/InstallCommand.astro";
 import { codeTheme } from "../../../components/code-theme";
 
+const variantsExample = `<Button>Publish</Button>
+<Button variant="outline">Preview</Button>
+<Button variant="destructive" size="sm">Delete</Button>
+<a href="/docs" className={buttonVariants({ variant: "secondary" })}>
+  Read the docs
+</a>`;
+
 const statusExample = `<Button type="submit" loading={saving}>
   Save changes
 </Button>
@@ -19,8 +26,18 @@ const statusExample = `<Button type="submit" loading={saving}>
 
   <ButtonDemo slot="demo" client:visible />
 
-  <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Loading</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Variants and sizes</h3>
+    <p class="mt-4 text-muted-foreground">
+      The Preview tab shows every variant and size. Use one <code>default</code> button for the main
+      action of a view, <code>outline</code> or <code>ghost</code> for the others, and
+      <code>destructive</code> only for actions that delete or cannot be undone.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Loading</h3>
     <p class="mt-4 text-muted-foreground">
       <code>loading</code> shows a spinner and blocks every activation path, including implicit form
       submission. The button keeps its accessible name and stays focusable, so keyboard and screen

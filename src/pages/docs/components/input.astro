@@ -22,14 +22,19 @@ import { Input } from "@/components/ui/input";
   <InputDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
     <p class="mt-4 text-muted-foreground">
       An input always needs a visible label. Put it in a Field, which renders the label and wires
-      the description, the error and <code>aria-invalid</code> for you:
+      the description, the error and <code>aria-invalid</code> for you.
     </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={usageExample} lang="tsx" theme={codeTheme} />
     </div>
+
+    <h3 class="mt-8 font-display text-lg">States</h3>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Visible border and focus.</strong> The border uses the <code>input</code> token,

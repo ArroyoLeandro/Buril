@@ -5,13 +5,6 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import CheckboxDemo from "../../../components/CheckboxDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const labelExample = `import { Checkbox } from "@/components/ui/checkbox";
-
-<label className="flex min-h-6 items-center gap-2">
-  <Checkbox name="terms" required />
-  I accept the terms
-</label>`;
-
 const fieldExample = `<Field label="Terms" error={errors.terms}>
   <Checkbox name="terms" />
 </Field>`;
@@ -32,24 +25,24 @@ const indeterminateExample = `<Checkbox
   <CheckboxDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Labels</h2>
     <p class="mt-4 text-muted-foreground">
-      The checkbox has no text of its own. Wrap it and its text in a <code>&lt;label&gt;</code>, so
-      the text names it and clicking the text toggles it:
+      The checkbox has no text of its own. Wrap it and its text in a <code>&lt;label&gt;</code>, as
+      above, so the text names it and clicking the text toggles it.
     </p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={labelExample} lang="tsx" theme={codeTheme} />
-    </div>
     <p class="mt-4 text-muted-foreground">
       The box is 20px. With <code>min-h-6</code> on the label row, the whole row is a click target
       at least 24px tall, above the 24px minimum target size. For a description or an error message,
-      put it in a Field instead, which labels it above the box:
+      put it in a Field instead, which labels it above the box.
     </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={fieldExample} lang="tsx" theme={codeTheme} />
     </div>
 
-    <h2 class="mt-10 font-display text-xl">Indeterminate</h2>
+    <h3 class="mt-8 font-display text-lg">Indeterminate</h3>
     <p class="mt-4 text-muted-foreground">
       <code>indeterminate</code> shows a dash and reports a "mixed" state to screen readers, for an
       option that controls a partly checked group, as in the demo. HTML has no attribute for it, so
@@ -60,7 +53,7 @@ const indeterminateExample = `<Checkbox
       <Code code={indeterminateExample} lang="tsx" theme={codeTheme} />
     </div>
 
-    <h2 class="mt-10 font-display text-xl">States</h2>
+    <h3 class="mt-8 font-display text-lg">States</h3>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Checked and mixed</strong> fill the box with the primary color and draw a check or a

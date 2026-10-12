@@ -5,7 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import TextareaDemo from "../../../components/TextareaDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Field } from "@/components/ui/field";
+const example = `import { Field } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 
 <Field label="Message" description="Up to 200 characters.">
@@ -22,10 +22,6 @@ import { Textarea } from "@/components/ui/textarea";
   <TextareaDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Label it.</strong> Put it in a Field, as with the Input, so it gets a visible label,
@@ -41,6 +37,13 @@ import { Textarea } from "@/components/ui/textarea";
         every keystroke.
       </li>
     </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
