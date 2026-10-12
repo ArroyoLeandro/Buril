@@ -67,6 +67,7 @@ Motion is unhurried and settles softly: "ink settles, the plate presses". Press 
 - **Reduced motion.** Movement (translate, scale, rotate, size) goes behind `motion-safe:`. Color and opacity may change in every mode. See rule 10 in [COMPONENTS.md](./COMPONENTS.md).
 - **Focus.** Never transition `outline-color` or any other part of a focus indicator. List the properties, such as `transition-[color,background-color,border-color]`; `transition`, `transition-all` and `transition-colors` include `outline-color`.
 - **Performance.** Animate opacity, translate, scale and rotate. Never transition `left`, `top`, `width` or `height`.
+- **Icon gestures.** The IconButton `motion` presets play CSS keyframes from `registry/styles/icon-button.css`. The `button` registry item ships the same keyframes in its `css` field, so the CLI adds them to the consumer's CSS; `test/registry.test.ts` keeps both copies equal. Gestures play once per hover or focus and never loop.
 - **No waiting.** Focus moves and state changes never wait for `transitionend` or `animationend`.
 - **Tests.** Compiled-style tests check the transition properties, the token values and that movement only applies under `(prefers-reduced-motion: no-preference)`. The cascade helper resolves `@starting-style` (`startingStyle: true`) and `@supports` (`supports: [...]`). Real entry transitions, end states and positions are checked in browser tests.
 
