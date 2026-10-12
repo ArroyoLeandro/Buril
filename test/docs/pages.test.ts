@@ -308,6 +308,18 @@ describe("textarea page", () => {
   });
 });
 
+describe("checkbox page", () => {
+  const render = () => container.renderToString(componentPages["checkbox"]!);
+
+  it("explains labels, the target size, indeterminate and forced colors", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/<label>|&lt;label&gt;/);
+    expect(visible).toMatch(/24px/);
+    expect(visible).toMatch(/indeterminate/);
+    expect(visible).toMatch(/forced-colors/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

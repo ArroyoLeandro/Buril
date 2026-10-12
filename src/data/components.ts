@@ -58,6 +58,14 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/textarea.tsx",
   },
   {
+    slug: "checkbox",
+    name: "Checkbox",
+    description:
+      "A native checkbox with a drawn check, an indeterminate state and a clickable label.",
+    item: "checkbox",
+    source: "registry/ui/checkbox.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",

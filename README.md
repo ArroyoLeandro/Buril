@@ -4,7 +4,7 @@
 
 Accessible, copy-paste React components with an engraved-print look. Built from scratch, styled with Tailwind CSS, and distributed as source code you own.
 
-> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input and Textarea are available, with tests and docs pages. The registry is not hosted yet: the commands below use the placeholder domain `example.com`, which changes once the site is live.
+> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea and Checkbox are available, with tests and docs pages. The registry is not hosted yet: the commands below use the placeholder domain `example.com`, which changes once the site is live.
 
 ## Why Buril
 

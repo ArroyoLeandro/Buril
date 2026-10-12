@@ -1,0 +1,87 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../layouts/ComponentPage.astro";
+import CheckboxDemo from "../../components/CheckboxDemo";
+import { codeTheme } from "../../components/code-theme";
+
+const labelExample = `import { Checkbox } from "@/components/ui/checkbox";
+
+<label className="flex min-h-6 items-center gap-2">
+  <Checkbox name="terms" required />
+  I accept the terms
+</label>`;
+
+const fieldExample = `<Field label="Terms" error={errors.terms}>
+  <Checkbox name="terms" />
+</Field>`;
+
+const indeterminateExample = `<Checkbox
+  checked={all}
+  indeterminate={some && !all}
+  onChange={() => setSelected(all ? [] : everything)}
+/>`;
+---
+
+<ComponentPage slug="checkbox">
+  <Fragment slot="lead">
+    It is a real <code>&lt;input type="checkbox"&gt;</code>, so Space, form submission, reset and
+    the <code>checked</code> state all work natively.
+  </Fragment>
+
+  <CheckboxDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <h2 class="mt-10 font-display text-xl">Labels</h2>
+    <p class="mt-4 text-muted-foreground">
+      The checkbox has no text of its own. Wrap it and its text in a <code>&lt;label&gt;</code>, so
+      the text names it and clicking the text toggles it:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={labelExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <p class="mt-4 text-muted-foreground">
+      The box is 20px. With <code>min-h-6</code> on the label row, the whole row is a click target
+      at least 24px tall, above the 24px minimum target size. For a description or an error message,
+      put it in a Field instead, which labels it above the box:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={fieldExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h2 class="mt-10 font-display text-xl">Indeterminate</h2>
+    <p class="mt-4 text-muted-foreground">
+      <code>indeterminate</code> shows a dash and reports a "mixed" state to screen readers, for an
+      option that controls a partly checked group, as in the demo. HTML has no attribute for it, so
+      the component sets the DOM property. A click clears it, as browsers do, and the component
+      applies the prop again on the next render, so compute it from your state.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={indeterminateExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h2 class="mt-10 font-display text-xl">States</h2>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Checked and mixed</strong> fill the box with the primary color and draw a check or a
+        dash, so the state is a shape, not only a color.
+      </li>
+      <li>
+        <strong>Focus</strong> shows the ring outline. <code>aria-invalid="true"</code> turns the
+        border destructive, even while checked. <code>disabled</code> dims it.
+      </li>
+      <li>
+        <strong>forced-colors</strong> mode replaces custom fills, so there the checkbox switches
+        back to the native control, which the system draws with its own checked and mixed states.
+      </li>
+    </ul>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/checkbox.tsx</code>, the same path as shadcn's Checkbox. Unlike
+    shadcn's, it is a native input: <code>onChange</code> replaces <code>onCheckedChange</code>, and
+    <code>indeterminate</code> replaces <code>checked="indeterminate"</code>. It needs only your
+    <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
+    version, the CLI asks before replacing it, and answering no is safe.
+  </p>
+</ComponentPage>
