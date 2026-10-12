@@ -45,8 +45,8 @@ const statusLabels = { new: t("status.new"), beta: t("status.beta") };
     class="pt-4 max-lg:data-collapsed:hidden lg:docs-panel lg:px-3 lg:py-6"
   >
     {groups.map((group) => {
-      // Ids stay ASCII and stable across languages: the category, or Getting Started.
-      const id = `docs-nav-${slugify(group.category ?? "getting-started")}`;
+      // Ids stay ASCII and stable across languages: the group's own id, or its category.
+      const id = `docs-nav-${slugify(group.id ?? group.category ?? "other")}`;
       return (
         <div class="mb-5 last:mb-0">
           <p id={id} class="px-2 py-1 font-display text-xs text-muted-foreground">

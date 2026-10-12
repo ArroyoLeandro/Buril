@@ -1,0 +1,126 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../../layouts/DocsLayout.astro";
+import { codeTheme } from "../../../../components/code-theme";
+import {
+  fontsExample,
+  neutralPresetExample,
+  overrideRedExample,
+  retuneMotionExample,
+} from "../../../../data/snippets";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Personalizar el tema | Buril UI"
+  description="Cambia el rojo, usa una paleta neutra o ajusta el movimiento sin tocar ningún componente."
+>
+  <h1 class="font-display text-3xl">Personalizar el tema</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Los componentes leen los tokens estándar de shadcn. Los tokens propios de Buril, de decoración y
+    de movimiento, siempre tienen un valor alternativo. Cambia los valores en tu CSS y todos los
+    componentes los siguen; no cambia ningún archivo de componente.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Camino rápido</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>
+      Abre el archivo CSS global al que apunta tu <code>components.json</code>.
+    </li>
+    <li>
+      Debajo del tema, redefine los tokens que quieras cambiar, en <code>:root</code> y en
+      <code>.dark</code>.
+    </li>
+    <li>Mide el contraste de lo que cambiaste, en los dos esquemas de color.</li>
+  </ol>
+  <p class="mt-4">
+    Si instalaste el tema de Buril, también escribe los valores oscuros en un bloque
+    <code>@media (prefers-color-scheme: dark)</code>, para quien nunca eligió un tema. Cambia
+    también ese bloque, o el modo oscuro del sistema conservará los valores anteriores.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Cambiar el rojo</h2>
+  <p class="mt-4">
+    El rojo tiene un significado, así que el tema de Buril lo usa solo en tres tokens:
+    <code>--decor</code> para la decoración, <code>--ring</code> para el anillo de foco y
+    <code>--destructive</code> para las acciones destructivas y los errores. Para darle tu color a
+    la decoración y al anillo de foco:
+  </p>
+  <div class={code}>
+    <Code code={overrideRedExample} lang="css" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Estos azules miden 5.85:1 sobre el fondo de papel y 7.28:1 sobre el oscuro, por encima del 3:1
+      que necesita un anillo de foco.
+    </li>
+    <li>
+      Mantén <code>--destructive</code> en rojo, salvo que tu marca tenga otro color de peligro.
+      Necesita 4.5:1 frente al fondo, porque lo usa el texto de los errores, y el Button destructivo
+      pone texto blanco sobre él en modo claro.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Una paleta neutra</h2>
+  <p class="mt-4">
+    ¿Prefieres gris en lugar de papel y tinta? Usa esta paleta en lugar del tema de Buril. Mantiene
+    las reglas de contraste de Buril: los pares de texto llegan a 4.5:1, y los bordes, los campos y
+    el anillo de foco llegan a 3:1, en los dos esquemas. Un test mide cada par.
+  </p>
+  <div class={code}>
+    <Code code={neutralPresetExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Los tokens decorativos, <code>--decor</code> y <code>--grid</code>, son opcionales: sin ellos,
+    la franja rayada de la Card usa el color primario y nada más cambia.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Ajustar el movimiento</h2>
+  <p class="mt-4">
+    Los tokens de movimiento están en <code>:root</code>. Cada componente también lleva los mismos
+    valores como alternativa, así que redefinir un token cambia todos los componentes, y no tocarlo
+    no cambia nada:
+  </p>
+  <div class={code}>
+    <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    La página de{" "}
+    <a href="/es/docs/motion" class="underline underline-offset-4">
+      Movimiento
+    </a>
+    enumera cada token, su valor y qué lo usa.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Fuentes</h2>
+  <p class="mt-4">
+    Buril no incluye fuentes. El tema define dos tokens de fuente con alternativas del sistema; pon
+    las tuyas:
+  </p>
+  <div class={code}>
+    <Code code={fontsExample} lang="css" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Este sitio usa Silkscreen para los títulos e Inter para el texto. Usa una fuente pixelada o
+    decorativa solo en los títulos: cuesta leerla en etiquetas y campos.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Lista de comprobación</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>Los tokens de texto llegan a 4.5:1 frente a su fondo.</li>
+    <li>
+      <code>--border</code>, <code>--input</code> y <code>--ring</code> llegan a 3:1 frente al
+      fondo.
+    </li>
+    <li>
+      Se miden <code>:root</code> y <code>.dark</code>, y el bloque oscuro del sistema coincide con
+      <code>.dark</code>.
+    </li>
+    <li>
+      El anillo de foco sigue visible también sobre las superficies <code>--secondary</code> y
+      <code>--accent</code>.
+    </li>
+  </ul>
+</DocsLayout>

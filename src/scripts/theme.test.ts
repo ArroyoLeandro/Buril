@@ -7,6 +7,7 @@ import {
   initThemeToggle,
   nextTheme,
   noFlashScript,
+  noFlashScriptFor,
   readTheme,
 } from "./theme";
 
@@ -197,6 +198,13 @@ describe("noFlashScript", () => {
     localStorage.setItem(THEME_KEY, "dark");
     run();
     expect([...root.classList]).toEqual(["dark"]);
+  });
+
+  it("can read another storage key, such as next-themes' `theme`", () => {
+    localStorage.setItem("theme", "light");
+    new Function(noFlashScriptFor("theme"))();
+    expect([...root.classList]).toEqual(["light"]);
+    expect(noFlashScriptFor(THEME_KEY)).toBe(noFlashScript);
   });
 
   it("does nothing for system and never throws when storage is blocked", () => {

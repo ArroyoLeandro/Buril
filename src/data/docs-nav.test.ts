@@ -44,7 +44,7 @@ describe("docsNav", () => {
   });
 
   it("groups every documented component under its catalog category, in catalog order", () => {
-    const groups = docsNav().slice(1);
+    const groups = docsNav().slice(2);
     expect(groups.map(({ title }) => title)).toEqual([
       "Actions",
       "Forms",
@@ -68,7 +68,7 @@ describe("docsNav", () => {
       entry({ slug: "button", name: "Button" }),
       entry({ slug: "card", name: "Card", status: "new" }),
       entry({ slug: "mystery", name: "Mystery" }),
-    ]).slice(1);
+    ]).slice(2);
     expect(groups.map(({ title }) => title)).toEqual(["Actions", "Content", "Other"]);
     expect(groups[1]!.items[0]).toMatchObject({ name: "Card", status: "new" });
     expect(groups[0]!.items[0]!.status).toBeUndefined();

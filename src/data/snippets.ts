@@ -1,3 +1,5 @@
+import { noFlashScriptFor } from "../scripts/theme";
+
 /**
  * Code samples shown on more than one page, such as an English page and its Spanish twin. Code
  * stays in English in every language, so each sample lives here once and never drifts.
@@ -34,6 +36,183 @@ export const retuneMotionExample = `:root {
   /* No spring: entries ease out without passing their target. */
   --buril-ease-out: cubic-bezier(0.2, 0, 0, 1);
 }`;
+
+/** Guides: Field strings in another language. */
+export const fieldStringsExample = `<Field
+  label="Correo electrónico"
+  error={errors.email}
+  required
+  requiredLabel="(obligatorio)"
+  errorPrefix="Error:"
+>
+  {(control) => <Input type="email" {...control} />}
+</Field>`;
+
+/** Guides: one element child instead of a render prop. */
+export const fieldChildGuideExample = `<Field label="Message" description="Up to 500 characters.">
+  <Textarea name="message" maxLength={500} />
+</Field>`;
+
+/** Dark mode guide: next-themes in a Next.js App Router layout. */
+export const nextThemesLayoutExample = `import { ThemeProvider } from "next-themes";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    // next-themes sets the class before React hydrates, so React must not warn about it.
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class">{children}</ThemeProvider>
+      </body>
+    </html>
+  );
+}`;
+
+/** Dark mode guide: a theme picker built from Field and Select. */
+export const themeSelectExample = `"use client";
+
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+
+import { Field } from "@/components/ui/field";
+import { Select } from "@/components/ui/select";
+
+export function ThemeSelect() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  // The stored theme is only known in the browser, so render nothing on the server.
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return (
+    <Field label="Theme">
+      <Select value={theme} onChange={(event) => setTheme(event.target.value)}>
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </Select>
+    </Field>
+  );
+}`;
+
+/** Indents every line of `code` by `spaces`. */
+const indent = (code: string, spaces: number) =>
+  code
+    .split("\n")
+    .map((line) => " ".repeat(spaces) + line)
+    .join("\n");
+
+/** Dark mode guide: the no-flash script in Astro's <head>, for the choice stored as `theme`. */
+export const astroHeadExample = `<head>
+  <script is:inline>
+${indent(noFlashScriptFor("theme"), 4)}
+  </script>
+</head>`;
+
+/** Dark mode guide: an Astro theme picker that sets the classes and stores the choice. */
+export const astroToggleExample = `<label for="theme">Theme</label>
+<select id="theme">
+  <option value="system">System</option>
+  <option value="light">Light</option>
+  <option value="dark">Dark</option>
+</select>
+
+<script>
+  const select = document.querySelector<HTMLSelectElement>("#theme")!;
+  select.value = localStorage.getItem("theme") ?? "system";
+  select.addEventListener("change", () => {
+    const choice = select.value;
+    document.documentElement.classList.toggle("dark", choice === "dark");
+    document.documentElement.classList.toggle("light", choice === "light");
+    if (choice === "system") localStorage.removeItem("theme");
+    else localStorage.setItem("theme", choice);
+  });
+</script>`;
+
+/** Dark mode guide: the same script in a Vite app's index.html. */
+export const viteHeadExample = `<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+${indent(noFlashScriptFor("theme"), 6)}
+    </script>
+    <!-- … -->
+  </head>
+</html>`;
+
+/** Dark mode guide: next-themes around a Vite app. */
+export const viteMainExample = `import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { ThemeProvider } from "next-themes";
+
+import App from "./App";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <ThemeProvider attribute="class">
+      <App />
+    </ThemeProvider>
+  </StrictMode>,
+);`;
+
+/**
+ * Theme guide: a neutral palette for the shadcn tokens, measured against WCAG AA in
+ * `test/docs/guides.test.ts`.
+ */
+export const neutralPresetExample = `:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary: #171717;
+  --primary-foreground: #fafafa;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #525252;
+  --accent: #f5f5f5;
+  --accent-foreground: #171717;
+  --destructive: #dc2626;
+  --border: #8a8a8a;
+  --input: #8a8a8a;
+  --ring: #525252;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #0a0a0a;
+  --card-foreground: #fafafa;
+  --popover: #0a0a0a;
+  --popover-foreground: #fafafa;
+  --primary: #e5e5e5;
+  --primary-foreground: #171717;
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --border: #737373;
+  --input: #737373;
+  --ring: #a3a3a3;
+}`;
+
+/** Theme guide: your own fonts. */
+export const fontsExample = `@theme {
+  --font-display: "Your Display Font", ui-monospace, monospace;
+  --font-body: "Your Text Font", system-ui, sans-serif;
+}`;
+
+/** shadcn guide: Buril's Button next to shadcn's. */
+export const sideBySideExample = `import { Button } from "@/components/ui/button";
+import { Button as BurilButton } from "@/components/buril/button";
+
+<Button>shadcn</Button>
+<BurilButton>Buril</BurilButton>`;
 
 /**
  * Component pages: the code samples in each page's Examples section, by slug. The English page

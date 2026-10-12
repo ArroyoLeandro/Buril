@@ -183,6 +183,7 @@ describe("Spanish docs sidebar", () => {
   it("translates the group titles", () => {
     expect(docsNav("es").map(({ title }) => title)).toEqual([
       "Primeros pasos",
+      "Guías",
       "Acciones",
       "Formularios",
       "Contenido",

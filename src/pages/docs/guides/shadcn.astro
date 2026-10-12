@@ -1,0 +1,112 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../components/InstallCommand.astro";
+import { codeTheme } from "../../../components/code-theme";
+import { sideBySideExample } from "../../../data/snippets";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Using Buril with shadcn | Buril UI"
+  description="Add Buril components to a project that already has shadcn/ui, without losing your theme or your components."
+>
+  <h1 class="font-display text-3xl">Using Buril with shadcn</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril is a shadcn registry. Its components read your shadcn tokens and import the
+    <code>cn()</code> you already have, so they fit a shadcn project as it is.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Quick path</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>
+      Your project needs a <code>components.json</code>, which <code>shadcn init</code> creates.
+    </li>
+    <li>Register the Buril namespace once.</li>
+    <li>
+      Install into its own folder with <code>--path</code>, so it never replaces a shadcn file with
+      the same name.
+    </li>
+  </ol>
+  <InstallCommand
+    id="install-side-by-side"
+    commands={[
+      "registry add @buril=https://example.com/r/{name}.json",
+      "add @buril/button --path components/buril",
+    ]}
+  />
+  <p class="mt-4">Then import each one by its path, renaming it where both exist:</p>
+  <div class={code}>
+    <Code code={sideBySideExample} lang="tsx" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">What installing changes</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>It writes the component file, and adds any npm dependency it needs.</li>
+    <li>
+      The Button item also appends its icon gesture keyframes, named <code>buril-icon-*</code>, to
+      your CSS. Nothing else in your CSS changes.
+    </li>
+    <li>
+      If your <code>lib/utils.ts</code> differs from shadcn's current one, the CLI asks before
+      replacing it. Answering no is safe: Buril only needs <code>cn()</code>.
+    </li>
+    <li>Your theme stays as it is. The Buril theme is a separate install.</li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Same names, different files</h2>
+  <p class="mt-4">
+    Most Buril components share their file name with a shadcn component: <code>button.tsx</code>,
+    <code>input.tsx</code>, <code>select.tsx</code> and so on. Without <code>--path</code>, the CLI
+    asks before replacing an existing file. Their APIs differ, so replace a shadcn file only on
+    purpose: the{" "}
+    <a href="/docs/guides/migrating-from-shadcn" class="underline underline-offset-4">
+      migration guide
+    </a>{" "}
+    lists the changes for each component.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Your theme, Buril's contrast</h2>
+  <p class="mt-4">
+    Buril components look like the rest of your app because they use your tokens. They also rely on
+    a few of them for accessibility, and shadcn's default neutral theme sets them light:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <strong>Focus.</strong> Buril shows focus as a 2px outline in <code>--ring</code>. shadcn's
+      default neutral ring, a light gray, measures about 2.6:1 on white, under the 3:1 a focus
+      indicator needs.
+    </li>
+    <li>
+      <strong>Field borders.</strong> Input, Select, Checkbox and the others draw their edge with
+      <code>--input</code>. A very light gray makes the field hard to find.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Darken <code>--ring</code> and <code>--input</code> until they reach 3:1 against the background,
+    or use the neutral palette from{" "}
+    <a href="/docs/guides/theme" class="underline underline-offset-4">
+      Customizing the theme
+    </a>
+    . Your shadcn components keep working with the new values.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Dark mode</h2>
+  <p class="mt-4">
+    Buril's components switch with the same <code>.dark</code> class shadcn uses, so your current
+    toggle already works for them. See{" "}
+    <a href="/docs/guides/dark-mode" class="underline underline-offset-4">
+      Dark mode
+    </a>{" "}
+    for next-themes and the no-flash script.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">The Buril theme in a shadcn project</h2>
+  <p class="mt-4">
+    <code>npx shadcn@latest add @buril/theme</code> replaces your color tokens with Buril's, so your
+    shadcn components take on the ink and paper look as well. Other variables, such as
+    <code>--radius</code>, stay as they are. Skip it to keep your palette.
+  </p>
+</DocsLayout>

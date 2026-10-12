@@ -118,14 +118,18 @@ export function initThemeCycle(button: HTMLButtonElement, status: HTMLElement) {
 }
 
 /**
- * Inline <head> script that applies the stored choice before first paint, so a stored "light"
- * on a dark system does not flash dark. It must be self-contained: it runs before any bundle.
+ * Inline <head> script that applies the choice stored under `key` before first paint, so a stored
+ * "light" on a dark system does not flash dark. It must be self-contained: it runs before any
+ * bundle. "system", or nothing stored, sets no class, and the theme's media query decides.
  */
-export const noFlashScript = `(function () {
+export const noFlashScriptFor = (key: string) => `(function () {
   try {
-    var choice = localStorage.getItem(${JSON.stringify(THEME_KEY)});
+    var choice = localStorage.getItem(${JSON.stringify(key)});
     var root = document.documentElement;
     root.classList.toggle("dark", choice === "dark");
     root.classList.toggle("light", choice === "light");
   } catch (error) {}
 })();`;
+
+/** This site's no-flash script, for the choice stored under `buril-theme`. */
+export const noFlashScript = noFlashScriptFor(THEME_KEY);
