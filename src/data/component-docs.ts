@@ -532,6 +532,13 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description:
               "Adds a hatched band across the top: hidden from assistive technology and removed in forced-colors mode.",
           },
+          {
+            name: "interactive",
+            type: "boolean",
+            default: "false",
+            description:
+              "For a card that is one stretched link: it lifts and shows a shadow on hover and on keyboard focus. The lift needs motion; the shadow fades in every mode.",
+          },
           className,
         ],
       },
@@ -564,6 +571,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
       "`CardTitle` is a real heading, `h3` by default; set `as` so the page outline skips no level.",
       "The `decor` band is `aria-hidden` and removed in forced-colors mode.",
       "To make the whole card a link, stretch one real link in the title over the card; never put `onClick` on the card.",
+      "An `interactive` card gives keyboard focus the same lift and shadow as hover, lifts only when reduced motion is off, and leaves the link's focus ring untouched.",
     ],
   },
   badge: {
@@ -1098,6 +1106,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
         props: {
           decor:
             "Agrega una franja rayada en la parte superior, oculta para las tecnologías de apoyo y eliminada en el modo de colores forzados.",
+          interactive:
+            "Para una tarjeta que es un solo enlace extendido: se eleva y muestra una sombra al pasar el puntero y con el foco del teclado. La elevación necesita movimiento; la sombra aparece en todos los modos.",
           className: classNameEs,
         },
       },
@@ -1122,6 +1132,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
       "`CardTitle` es un encabezado real, `h3` por defecto; ajusta `as` para que el esquema de la página no salte ningún nivel.",
       "La franja de `decor` tiene `aria-hidden` y se elimina en el modo de colores forzados.",
       "Para que toda la tarjeta sea un enlace, extiende un enlace real del título sobre la tarjeta; nunca pongas `onClick` en la tarjeta.",
+      "Una tarjeta `interactive` da al foco del teclado la misma elevación y sombra que al puntero, solo se eleva si no se pidió movimiento reducido y no toca el anillo de foco del enlace.",
     ],
   },
   badge: {

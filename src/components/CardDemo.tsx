@@ -38,8 +38,9 @@ export default function CardDemo({ locale = "en" }: Props) {
         </CardFooter>
       </Card>
 
-      {/* The whole card is clickable through one real link, stretched from the title. */}
-      <Card className="hover:bg-muted">
+      {/* The whole card is clickable through one real link, stretched from the title; it lifts on
+          hover and on keyboard focus. */}
+      <Card interactive>
         <CardHeader>
           <CardTitle>
             <a

@@ -65,6 +65,15 @@ const { decorExample, linkExample } = componentExamples.card;
         Keep long text out of a linked card.
       </li>
     </ul>
+
+    <h3 class="mt-8 font-display text-lg">Hover</h3>
+    <p class="mt-4 text-muted-foreground">
+      Pass <code>interactive</code> to a card that is one link. On hover, and while its link has
+      keyboard focus, the card lifts 4.5px and a soft shadow fades in under it. The lift moves the
+      card, so it only runs when the user has not asked for reduced motion; the shadow fades in
+      every mode. The shadow is an overlay whose opacity changes, never an animated
+      <code>box-shadow</code>, and it lets clicks through to the link. Static cards never move.
+    </p>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
