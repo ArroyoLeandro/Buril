@@ -1,0 +1,34 @@
+---
+import { componentDescription, documentedComponents } from "../../data/components";
+import { docsNav } from "../../data/docs-nav";
+import { getLocale } from "../../i18n/ui";
+
+/** Every documented component, grouped and ordered as in the sidebar, with its description. */
+const locale = getLocale(Astro.url);
+const entries = new Map(documentedComponents.map((entry) => [entry.name, entry] as const));
+const groups = docsNav(locale)
+  .filter(({ category }) => category !== undefined)
+  .map(({ title, items }) => ({
+    title,
+    items: items.map((item) => {
+      const entry = entries.get(item.name);
+      return { ...item, description: entry ? componentDescription(entry, locale) : "" };
+    }),
+  }));
+---
+
+{groups.map(({ title, items }) => (
+  <section>
+    <h2 class="mt-10 font-display text-xl">{title}</h2>
+    <ul class="mt-4 grid border-t border-l border-border sm:grid-cols-2">
+      {items.map(({ name, href, description }) => (
+        <li class="border-r border-b border-border">
+          <a href={href} class="block h-full p-5 hover:bg-secondary">
+            <span class="font-semibold underline underline-offset-4">{name}</span>
+            <span class="mt-2 block text-sm text-muted-foreground">{description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+))}

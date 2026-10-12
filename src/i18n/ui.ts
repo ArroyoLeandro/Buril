@@ -94,6 +94,8 @@ const en = {
   "landing.requirementBody":
     "Your project needs a `components.json` file. If it does not have one, run `npx shadcn@latest init` first.",
   "landing.guide": "Read the installation guide",
+  "tokens.token": "Token",
+  "tokens.caption": "Buril values for each token, read from `registry/styles/buril.css`.",
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -164,6 +166,8 @@ const es: Record<UiKey, string> = {
   "landing.requirementBody":
     "Tu proyecto necesita un archivo `components.json`. Si no lo tiene, ejecuta primero `npx shadcn@latest init`.",
   "landing.guide": "Lee la guía de instalación",
+  "tokens.token": "Token",
+  "tokens.caption": "Valores de Buril para cada token, leídos de `registry/styles/buril.css`.",
 };
 
 export const ui: Record<Locale, Record<UiKey, string>> = { en, es };

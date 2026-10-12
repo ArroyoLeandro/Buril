@@ -1,36 +1,11 @@
 ---
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { Code } from "astro:components";
 
 import DocsLayout from "../../layouts/DocsLayout.astro";
+import TokenTable from "../../components/docs/TokenTable.astro";
 import { codeTheme } from "../../components/code-theme";
+import { darkModeExample, overrideRedExample } from "../../data/snippets";
 import { noFlashScript } from "../../scripts/theme";
-import { readTokens } from "../../utils/tokens";
-// Read from the file the registry ships, so the table never drifts from the real values. A `?raw`
-// CSS import would be empty under Vitest (`css: false`), so read it from the project root.
-const tokens = readTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
-
-const darkExample = `<html class="dark">  <!-- always dark -->
-<html class="light"> <!-- always light -->
-<html>               <!-- follows the system -->`;
-
-const overrideExample = `:root {
-  --decor: #1d4ed8;
-  --ring: #1d4ed8;
-}
-
-.dark {
-  --decor: #60a5fa;
-  --ring: #60a5fa;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --decor: #60a5fa;
-    --ring: #60a5fa;
-  }
-}`;
 
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 ---
@@ -68,50 +43,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </p>
 
   <h2 class="mt-10 font-display text-xl">Tokens</h2>
-  {/* Values wrap anywhere, so the table fits a 320px screen without scrolling sideways. */}
-  <div class="mt-4 border border-border">
-    <table class="w-full border-collapse text-left text-sm">
-      <caption id="tokens-caption" class="px-4 py-3 text-left text-muted-foreground">
-        {/* An expression keeps the space: Prettier drops a plain one before <code> here. */}
-        {"Buril values for each token, read from "}
-        <code>registry/styles/buril.css</code>.
-      </caption>
-      <thead>
-        <tr class="border-y border-border">
-          <th scope="col" class="px-4 py-2 font-semibold">
-            Token
-          </th>
-          <th scope="col" class="px-4 py-2 font-semibold">
-            Light
-          </th>
-          <th scope="col" class="px-4 py-2 font-semibold">
-            Dark
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {tokens.map(({ name, light, dark }) => (
-          <tr class="border-b border-border last:border-b-0">
-            <th scope="row" class="px-4 py-2 font-normal wrap-anywhere">
-              <code>--{name}</code>
-            </th>
-            {[light, dark].map((value) => (
-              <td class="px-4 py-2">
-                <span class="flex items-center gap-2">
-                  <span
-                    aria-hidden="true"
-                    class="size-4 shrink-0 rounded-full border border-border"
-                    style={`background: ${value}`}
-                  />
-                  <code class="min-w-0 wrap-anywhere">{value}</code>
-                </span>
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+  <TokenTable />
 
   <h2 class="mt-10 font-display text-xl">Dark mode</h2>
   <p class="mt-4">
@@ -121,7 +53,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     setting without JavaScript.
   </p>
   <div class={code}>
-    <Code code={darkExample} lang="html" theme={codeTheme} />
+    <Code code={darkModeExample} lang="html" theme={codeTheme} />
   </div>
   <p class="mt-4">
     The theme redefines Tailwind's <code>dark:</code> variant with the same rule, so
@@ -146,7 +78,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     and errors. To use your own color, redefine them after the theme, in all three blocks:
   </p>
   <div class={code}>
-    <Code code={overrideExample} lang="css" theme={codeTheme} />
+    <Code code={overrideRedExample} lang="css" theme={codeTheme} />
   </div>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     <li>

@@ -1,4 +1,5 @@
 import { catalogCategory, type ComponentCategory } from "./catalog";
+import type { Locale } from "../i18n/ui";
 
 export type { ComponentCategory } from "./catalog";
 
@@ -168,4 +169,42 @@ export function findComponent(slug: string): DocumentedComponent {
   const found = documentedComponents.find((entry) => entry.slug === slug);
   if (!found) throw new Error(`No documented component with the slug "${slug}"`);
   return found;
+}
+
+/** Spanish page leads and meta descriptions, by slug. Component names stay in English. */
+const spanishDescriptions: Readonly<Record<string, string>> = {
+  button: "Un botón nativo con variantes, tamaños y un estado de carga.",
+  "icon-button": "Un botón cuadrado que muestra solo un icono y requiere un aria-label.",
+  link: "Un enlace de texto subrayado, con foco visible y una forma segura de abrir una pestaña nueva.",
+  field:
+    "Conecta una etiqueta, una descripción y un mensaje de error con un control de formulario.",
+  input: "Un campo de texto nativo con borde visible, anillo de foco y estado no válido.",
+  textarea: "Un campo de texto nativo de varias líneas, con el mismo estilo que el Input.",
+  checkbox:
+    "Una casilla de verificación nativa con una marca dibujada, un estado indeterminado y una etiqueta en la que se puede hacer clic.",
+  "radio-group":
+    "Botones de opción nativos en un fieldset: una sola parada de Tab, flechas para elegir y una leyenda como nombre.",
+  switch:
+    "Un control de encendido y apagado: una casilla nativa con el rol switch y un indicador deslizante.",
+  select:
+    "Un select nativo con estilo y su propia flecha, que conserva el selector de la plataforma.",
+  card: "Un contenedor con borde, con título, descripción, contenido y pie.",
+  badge: "Una etiqueta pequeña y no interactiva cuyo significado lo da el texto, no el color.",
+  avatar: "Una imagen redonda de una persona que muestra sus iniciales cuando no hay imagen.",
+  separator: "Una línea horizontal o vertical entre grupos de contenido, semántica o decorativa.",
+  alert:
+    "Un aviso destacado con icono, título y descripción, estático salvo que lo conviertas en región viva.",
+  spinner: "Un indicador de carga giratorio con una etiqueta oculta, anunciado como estado.",
+  skeleton:
+    "Un bloque de relleno que se muestra mientras carga el contenido, oculto para las tecnologías de apoyo.",
+  "skip-link":
+    "Un enlace que permite a quienes usan el teclado saltar el encabezado e ir directo al contenido principal.",
+};
+
+/** The entry's one-sentence description in `locale`. */
+export function componentDescription(entry: DocumentedComponent, locale: Locale): string {
+  if (locale === "en") return entry.description;
+  const spanish = spanishDescriptions[entry.slug];
+  if (spanish === undefined) throw new Error(`No Spanish description for "${entry.slug}"`);
+  return spanish;
 }

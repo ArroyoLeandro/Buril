@@ -1,0 +1,97 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import InstallCommand from "../../../components/InstallCommand.astro";
+import { Link } from "../../../../registry/ui/link";
+---
+
+<DocsLayout
+  title="Instalación | Buril UI"
+  description="Instala los componentes de Buril con la CLI de shadcn, desde una URL o por nombre."
+>
+  <h1 class="font-display text-3xl">Instalación</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Los componentes de Buril se instalan con la CLI de shadcn, uno a uno, desde una URL o por
+    nombre.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Requisitos</h2>
+  <p class="mt-4">
+    Un proyecto de React 19 con Tailwind CSS v4 configurado para shadcn, es decir, con un archivo
+    <code>components.json</code>. Si no lo tiene, ejecuta primero el comando <code>init</code> de la
+    CLI:
+  </p>
+  <InstallCommand id="install-init" commands={["init"]} />
+
+  <h2 class="mt-10 font-display text-xl">Instalar desde una URL</h2>
+  <p class="mt-4">
+    Cada componente tiene su propio archivo JSON en el registry. Pasa su URL al comando
+    <code>add</code>:
+  </p>
+  <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
+  <p class="mt-4 text-muted-foreground">
+    El dominio example.com es provisional hasta que el registry esté publicado. Las rutas que siguen
+    al dominio no cambian.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Instalar por nombre</h2>
+  <p class="mt-4">
+    Registra el namespace <code>@buril</code> una sola vez. La CLI lo guarda en
+    <code>components.json</code> y, a partir de ahí, cada componente se instala por nombre:
+  </p>
+  <InstallCommand
+    id="install-namespace"
+    commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
+  />
+
+  <h2 class="mt-10 font-display text-xl">Qué agrega la CLI</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      El archivo del componente en <code>components/ui/</code>, en la misma ruta que usa shadcn. Si
+      ya existe un archivo ahí, la CLI pregunta antes de reemplazarlo.
+    </li>
+    <li>
+      Sus dependencias de npm, como <code>class-variance-authority</code> en el caso del Button.
+    </li>
+    <li>
+      Los componentes usan los tokens estándar de shadcn y tu helper <code>cn()</code>, así que
+      instalar uno no cambia tu tema.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Todos los componentes importan <code>cn()</code> del item <code>utils</code> de shadcn. La
+    versión actual de ese item reexporta <code>cn()</code> desde el paquete de npm <code>cn</code>,
+    así que, cuando la CLI instala o actualiza <code>lib/utils.ts</code>, también agrega{" "}
+    <code>cn</code> a tus dependencias. Si tu <code>lib/utils.ts</code> es distinto, la CLI pregunta
+    antes de reemplazarlo; responder que no es seguro.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tema opcional</h2>
+  <p class="mt-4">
+    La paleta de Buril, tinta sobre papel con un rojo reservado para el foco, la decoración y las
+    acciones destructivas, se instala por separado:
+  </p>
+  <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
+  <p class="mt-4">Modifica tu archivo CSS global:</p>
+  <ul class="mt-2 list-disc space-y-2 pl-6">
+    <li>
+      Reemplaza tus tokens de color de shadcn en <code>:root</code> y <code>.dark</code>. Las demás
+      variables, como <code>--radius</code>, no cambian.
+    </li>
+    <li>
+      Agrega dos tokens decorativos, <code>--decor</code> y <code>--grid</code>, y tokens de fuente.
+    </li>
+    <li>
+      Sigue el esquema del sistema sin JavaScript y redefine la variante <code>dark:</code> de la
+      misma forma. En <Link href="/es/docs/theming">Temas</Link> se explica el modo oscuro y cómo
+      cambiar los colores.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Fuentes</h2>
+  <p class="mt-4">
+    Buril no incluye archivos de fuentes. Los títulos usan <code>--font-display</code> y el cuerpo
+    de texto usa <code>--font-body</code>, ambos con alternativas del sistema. Este sitio combina
+    Silkscreen, una fuente pixel reservada para los títulos, con Inter para todo lo demás; las dos
+    son gratuitas en Google Fonts.
+  </p>
+</DocsLayout>
