@@ -112,7 +112,8 @@ const ratio = (tokens: Tokens, fg: string, bg: string) =>
   contrast(resolveColor(tokens, `--${fg}`), resolveColor(tokens, `--${bg}`));
 
 // [foreground token, background token, minimum ratio, expected ratio (1 decimal tolerance)]
-const pairs = {
+type Pair = [foreground: string, background: string, minimum: number, expected: number];
+const pairs: Record<"light" | "dark", Pair[]> = {
   light: [
     ["foreground", "background", 4.5, 15.58],
     ["muted-foreground", "background", 4.5, 7.52],
@@ -141,7 +142,7 @@ const pairs = {
     ["ring", "background", 3, 6.02],
     ["input", "background", 3, 3.35],
   ],
-} as const;
+};
 
 describe.each([
   ["light", light],

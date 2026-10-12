@@ -5,8 +5,9 @@ import reactHooks from "eslint-plugin-react-hooks";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import astro from "eslint-plugin-astro";
 import globals from "globals";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
+export default defineConfig(
   { ignores: ["dist/", ".astro/", "public/r/", "node_modules/", "pnpm-lock.yaml"] },
   js.configs.recommended,
   tseslint.configs.recommended,
