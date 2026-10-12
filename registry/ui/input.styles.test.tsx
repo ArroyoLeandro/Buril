@@ -3,6 +3,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Input } from "./input";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -59,5 +65,17 @@ describe("Input compiled with Tailwind", () => {
     expect(cascade.computed(classes, "opacity", disabled)).toBe("50%");
     expect(cascade.computed(classes, "cursor", disabled)).toBe("not-allowed");
     expect(cascade.computed(classes, "opacity")).toBeUndefined();
+  });
+});
+
+describe("Input motion", () => {
+  it("fades its border and colors with the fast token, never the focus ring", () => {
+    for (const states of [[], [":focus", ":focus-visible"], ['[aria-invalid="true"]']]) {
+      const transition = transitionOf(cascade.computed, classes, { states });
+      expectInstantFocusRing(transition.properties);
+      expect(transition.properties).toEqual(["color", "background-color", "border-color"]);
+      expect(transition.durations).toEqual([durations.fast]);
+      expect(transition.easings).toEqual([easings.out]);
+    }
   });
 });

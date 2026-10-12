@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 const linkVariants = cva(
   [
     // Color alone never marks a link (WCAG 1.4.1), so the underline stays in every state.
-    "rounded-xs underline underline-offset-4 transition-colors hover:decoration-2",
+    "rounded-xs underline underline-offset-4 hover:decoration-2",
+    // The color and the underline fade; outline-color is left out so the focus ring appears at once.
+    "transition-[color,text-decoration-color,text-decoration-thickness] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
     // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
   ],

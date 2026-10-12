@@ -2,6 +2,12 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { buttonVariants } from "./button";
 
 // Compiled with Tailwind so the cascade is checked, including a raw <a> styled with
@@ -106,5 +112,33 @@ describe("buttonVariants compiled with Tailwind", () => {
       String.raw`svg:not\(\[class\*=['"]?size-['"]?\]\)\s*\{[^}]*width: calc\(var\(--spacing\) \* ${units}\)`,
     );
     expect(css).toMatch(rule);
+  });
+});
+
+describe("buttonVariants motion", () => {
+  const focus = { states: [":focus", ":focus-visible"] };
+
+  it.each(variants)(
+    "the %s variant fades its colors with the fast token, never the focus ring",
+    (variant) => {
+      for (const options of [{}, focus]) {
+        const transition = transitionOf(computed, classesOf({ variant }), options);
+        expectInstantFocusRing(transition.properties);
+        expect(transition.properties).toEqual([
+          "color",
+          "background-color",
+          "border-color",
+          "text-decoration-color",
+        ]);
+        expect(transition.durations).toEqual([durations.fast]);
+        expect(transition.easings).toEqual([easings.out]);
+      }
+    },
+  );
+
+  it("the icon sizes keep the same transition", () => {
+    const transition = transitionOf(computed, classesOf({ size: "icon" }));
+    expectInstantFocusRing(transition.properties);
+    expect(transition.durations).toEqual([durations.fast]);
   });
 });
