@@ -6,7 +6,10 @@ import ButtonsPanel from "../components/showcase/ButtonsPanel";
 import SettingsPanel from "../components/showcase/SettingsPanel";
 import SignInPanel from "../components/showcase/SignInPanel";
 import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "../../registry/ui/alert";
+import { Badge } from "../../registry/ui/badge";
 import { buttonVariants } from "../../registry/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../registry/ui/card";
 import { Link } from "../../registry/ui/link";
 
 const principles = [
@@ -30,8 +33,15 @@ const principles = [
 
 const container = "mx-auto w-full max-w-6xl px-4 sm:px-6";
 const sectionTitle = "font-display text-2xl";
-const panel = "flex min-w-0 flex-col border border-border bg-background";
-const panelTitle = "border-b border-border px-5 py-3 font-display text-base";
+const panels = [
+  { id: "panel-sign-in", title: "Sign in", uses: ["Field", "Input", "Checkbox", "Button"] },
+  {
+    id: "panel-settings",
+    title: "Notifications",
+    uses: ["Field", "Switch", "Radio Group", "Select"],
+  },
+  { id: "panel-buttons", title: "Buttons", uses: ["Button"] },
+] as const;
 ---
 
 <BaseLayout title="Buril UI">
@@ -83,30 +93,29 @@ const panelTitle = "border-b border-border px-5 py-3 font-display text-base";
         control has a visible focus ring and a label, and each change is announced.
       </p>
       <div class="mt-8 grid gap-6 lg:grid-cols-3">
-        <section aria-labelledby="panel-sign-in" class={panel}>
-          <h3 id="panel-sign-in" class={panelTitle}>
-            Sign in
-          </h3>
-          <div class="p-5">
-            <SignInPanel client:visible />
-          </div>
-        </section>
-        <section aria-labelledby="panel-settings" class={panel}>
-          <h3 id="panel-settings" class={panelTitle}>
-            Notifications
-          </h3>
-          <div class="p-5">
-            <SettingsPanel client:visible />
-          </div>
-        </section>
-        <section aria-labelledby="panel-buttons" class={panel}>
-          <h3 id="panel-buttons" class={panelTitle}>
-            Buttons
-          </h3>
-          <div class="p-5">
-            <ButtonsPanel client:visible />
-          </div>
-        </section>
+        {panels.map(({ id, title, uses }) => (
+          <Card decor className="min-w-0">
+            <CardHeader>
+              <CardTitle id={id} className="font-display text-base">
+                {title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {id === "panel-sign-in" && <SignInPanel client:visible />}
+              {id === "panel-settings" && <SettingsPanel client:visible />}
+              {id === "panel-buttons" && <ButtonsPanel client:visible />}
+            </CardContent>
+            <CardFooter className="mt-auto">
+              <ul aria-label="Components used" class="flex flex-wrap gap-2">
+                {uses.map((name) => (
+                  <li>
+                    <Badge variant="outline">{name}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </CardFooter>
+          </Card>
+        ))}
       </div>
     </div>
   </section>
@@ -120,6 +129,13 @@ const panelTitle = "border-b border-border px-5 py-3 font-display text-base";
       name.
     </p>
     <div class="max-w-3xl">
+      <Alert className="mt-6">
+        <AlertTitle>Needs a shadcn project</AlertTitle>
+        <AlertDescription>
+          Your project needs a <code>components.json</code> file. If it does not have one, run
+          <code>npx shadcn@latest init</code> first.
+        </AlertDescription>
+      </Alert>
       <InstallCommand
         id="install-landing"
         commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}

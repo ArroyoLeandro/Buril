@@ -79,6 +79,51 @@ describe("landing page", () => {
     expect(html).toMatch(/<button[^>]+type="submit"/);
   });
 
+  it("frames each live panel in a real Card with a heading and the engraved band", async () => {
+    const html = section(main(await render()), "Components at work");
+    const cards = html.split(/(?=<div[^>]*data-slot="card")/).slice(1);
+    expect(cards).toHaveLength(3);
+    for (const card of cards) {
+      expect(card).toMatch(/^<div[^>]*class="[^"]*\bborder-border\b/);
+      expect(card).toMatch(/<div[^>]*data-decor[^>]*aria-hidden="true"/);
+      expect(card).toMatch(/<h3[^>]*data-slot="card-title"/);
+      // The island sits in the card's content, so the panel reads as one unit.
+      expect(card).toMatch(/data-slot="card-content"[\s\S]*<astro-island/);
+    }
+    const titles = cards.map((card) => text(/<h3[^>]*>[\s\S]*?<\/h3>/.exec(card)![0]));
+    expect(titles).toEqual(["Sign in", "Notifications", "Buttons"]);
+  });
+
+  it("names the components each panel uses with badges, not links or buttons", async () => {
+    const html = section(main(await render()), "Components at work");
+    const badges = [...html.matchAll(/<span[^>]*data-slot="badge"[^>]*>([\s\S]*?)<\/span>/g)];
+    expect(badges.map(([, label]) => text(label!))).toEqual([
+      "Field",
+      "Input",
+      "Checkbox",
+      "Button",
+      "Field",
+      "Switch",
+      "Radio Group",
+      "Select",
+      "Button",
+    ]);
+    for (const [badge] of badges) expect(badge).not.toMatch(/tabindex|role=/);
+    expect(html.match(/<ul[^>]*aria-label="Components used"/g)).toHaveLength(3);
+  });
+
+  it("states the shadcn requirement in a static Alert before the commands", async () => {
+    const html = section(main(await render()), "Install");
+    const alert = /<div[^>]*data-slot="alert"[^>]*>/.exec(html);
+    expect(alert).not.toBeNull();
+    // Static content on load: no live role that would announce it.
+    expect(alert![0]).not.toMatch(/role=/);
+    expect(alert!.index).toBeLessThan(html.indexOf("data-install-tabs"));
+    const callout = text(html.slice(alert!.index));
+    expect(callout).toMatch(/components\.json/);
+    expect(callout).toMatch(/npx shadcn@latest init/);
+  });
+
   it("ends with the install commands and a link to the guide", async () => {
     const html = section(main(await render()), "Install");
     expect(html).toMatch(/data-install-tabs/);
