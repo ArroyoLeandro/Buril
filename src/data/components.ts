@@ -44,6 +44,20 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/field.tsx",
   },
   {
+    slug: "input",
+    name: "Input",
+    description: "A native text input with a visible border, focus ring and invalid state.",
+    item: "input",
+    source: "registry/ui/input.tsx",
+  },
+  {
+    slug: "textarea",
+    name: "Textarea",
+    description: "A native multi-line text field styled to match the Input.",
+    item: "textarea",
+    source: "registry/ui/textarea.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",

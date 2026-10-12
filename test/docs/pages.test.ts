@@ -286,6 +286,28 @@ describe("field page", () => {
   });
 });
 
+describe("input page", () => {
+  const render = () => container.renderToString(componentPages["input"]!);
+
+  it("shows it inside a Field and explains the invalid and disabled states", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/Field/);
+    expect(visible).toMatch(/aria-invalid/);
+    expect(visible).toMatch(/disabled/);
+    expect(visible).toMatch(/40px/);
+  });
+});
+
+describe("textarea page", () => {
+  const render = () => container.renderToString(componentPages["textarea"]!);
+
+  it("explains why it is a separate item from the Input", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/components\/ui\/textarea\.tsx/);
+    expect(visible).toMatch(/same path as shadcn/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

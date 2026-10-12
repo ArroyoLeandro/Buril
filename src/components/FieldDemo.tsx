@@ -2,6 +2,7 @@ import { useRef, useState, type SubmitEvent } from "react";
 
 import { Button } from "../../registry/ui/button";
 import { Field } from "../../registry/ui/field";
+import { Input } from "../../registry/ui/input";
 
 function validate(email: string) {
   if (email.trim() === "") return "Enter your email address.";
@@ -36,13 +37,12 @@ export default function FieldDemo() {
         required
       >
         {(control) => (
-          <input
+          <Input
             ref={input}
             type="email"
             autoComplete="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-invalid:border-destructive"
             {...control}
           />
         )}
