@@ -4,6 +4,9 @@
   "exclude": ["dist", "public/r"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "paths": {
+      "@/lib/*": ["./registry/lib/*"]
+    }
   }
 }
