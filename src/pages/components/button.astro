@@ -59,10 +59,10 @@ const statusExample = `<Button type="submit" loading={saving}>
       with <code>className=&#123;buttonVariants()&#125;</code> instead of wrapping it.
     </li>
     <li>
-      <strong>No icon or extra-small sizes.</strong> shadcn's <code>size="icon"</code>,
-      <code>icon-xs</code>, <code>icon-sm</code>, <code>icon-lg</code> and <code>xs</code> do not
-      exist. Sizes are <code>sm</code>, <code>default</code> and <code>lg</code>, all at least 32px
-      tall. A dedicated Icon Button is planned.
+      <strong>Icon sizes, but no extra-small ones.</strong> <code>size="icon"</code>,
+      <code>icon-sm</code> and <code>icon-lg</code> exist (40, 32 and 48px squares).
+      <code>xs</code> and <code>icon-xs</code> do not: the smallest size is 32px. For icon-only
+      buttons, use <code>IconButton</code>, which requires <code>aria-label</code>.
     </li>
     <li>
       <strong>
@@ -86,8 +86,10 @@ const statusExample = `<Button type="submit" loading={saving}>
   </ul>
   <p class="mt-4 text-muted-foreground">
     Before replacing shadcn's file, search your project for <code>asChild</code>,
-    <code>size="icon</code> and <code>data-slot="button"</code>. To try Buril next to shadcn's
-    Button, answer no when the CLI asks, and copy the source below into a file with another name.
+    <code>size="xs"</code>, <code>size="icon-xs"</code> and <code>data-slot="button"</code>. Check
+    that every <code>size="icon"</code> button has an <code>aria-label</code>. To try Buril next to
+    shadcn's Button, answer no when the CLI asks, and copy the source below into a file with another
+    name.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Optional theme</h2>

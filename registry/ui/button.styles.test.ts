@@ -156,4 +156,34 @@ describe("buttonVariants compiled with Tailwind", () => {
     // The default spacing unit is 0.25rem, so the smallest size is 32px: above the 24px target.
     expect(units * 4).toBeGreaterThanOrEqual(24);
   });
+
+  it.each([
+    ["icon-sm", 8],
+    ["icon", 10],
+    ["icon-lg", 12],
+  ] as const)("the %s size is a fully rounded square of %s spacing units", (size, units) => {
+    const classes = classesOf({ size });
+    const side = `calc(var(--spacing) * ${units})`;
+    expect(computed(classes, "width")).toBe(side);
+    expect(computed(classes, "height")).toBe(side);
+    expect(computed(classes, "border-radius")).toBe("calc(infinity * 1px)");
+    // A square must not stretch with a label or shrink in a flex row.
+    expect(computed(classes, "min-height")).toBeUndefined();
+    expect(computed(classes, "flex-shrink")).toBe("0");
+    // 32px is the smallest square: above the 24px target size (rule 8).
+    expect(units * 4).toBeGreaterThanOrEqual(24);
+  });
+
+  it.each([
+    ["icon-sm", 4],
+    ["icon", 5],
+    ["icon-lg", 6],
+  ] as const)("the %s size scales an unsized icon to %s spacing units", (size, units) => {
+    const css = build(classesOf({ size }));
+    // Tailwind keeps the nested `& svg:not(...)` rule, so match it in the generated text.
+    const rule = new RegExp(
+      String.raw`svg:not\(\[class\*=['"]?size-['"]?\]\)\s*\{[^}]*width: calc\(var\(--spacing\) \* ${units}\)`,
+    );
+    expect(css).toMatch(rule);
+  });
 });

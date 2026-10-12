@@ -1,0 +1,58 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../layouts/ComponentPage.astro";
+import IconButtonDemo from "../../components/IconButtonDemo";
+import { codeTheme } from "../../components/code-theme";
+
+const usageExample = `import { IconButton } from "@/components/ui/button";
+
+<IconButton aria-label="Close dialog" variant="ghost" onClick={close}>
+  <XIcon />
+</IconButton>`;
+---
+
+<ComponentPage slug="icon-button">
+  <Fragment slot="lead">
+    It is the Button with a square size, so variants, loading and disabled work the same way.
+  </Fragment>
+
+  <IconButtonDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <h2 class="mt-10 font-display text-xl">Accessible name</h2>
+    <p class="mt-4 text-muted-foreground">
+      An icon has no text, so <code>aria-label</code> is the button's only accessible name. It is
+      required: leaving it out is a TypeScript error. Describe the action, such as "Close dialog",
+      not the picture, such as "Cross".
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      The icon is wrapped in an <code>aria-hidden</code> span, so an SVG title or label never adds
+      to the name. When there is room for a visible label, prefer a Button with text: everyone can
+      read it, not only screen reader users.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={usageExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h2 class="mt-10 font-display text-xl">Sizes</h2>
+    <p class="mt-4 text-muted-foreground">
+      <code>icon-sm</code>, <code>icon</code> (the default) and <code>icon-lg</code> are fully
+      rounded squares of 32, 40 and 48px, all above the 24px minimum target. An icon without its own
+      <code>size-*</code> class scales with the button. The same sizes work on
+      <code>Button</code> and on <code>buttonVariants()</code>.
+    </p>
+
+    <h2 class="mt-10 font-display text-xl">Loading</h2>
+    <p class="mt-4 text-muted-foreground">
+      While <code>loading</code>, the spinner replaces the icon and the button keeps its name and
+      focus. As with the Button, announce progress from a <code>role="status"</code> region outside
+      it.
+    </p>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    <code>IconButton</code> ships in the same registry item as the Button, in
+    <code>components/ui/button.tsx</code>, so installing either one gives you both.
+  </p>
+</ComponentPage>
