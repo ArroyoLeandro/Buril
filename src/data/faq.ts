@@ -88,11 +88,11 @@ export const faq: FaqItem[] = [
     answer: {
       en: [
         "The IconButton, which ships in the Button's file, plays its `motion` gestures with CSS keyframes. The Button item appends them to your CSS: only `@keyframes` rules named `buril-icon-*`. Your tokens, variants and other rules stay as they are.",
-        "If you copy `button.tsx` by hand, paste the keyframes too. Without them the icons simply stay still.",
+        "If you copy `button.tsx` by hand, paste the keyframes too. Without them the icons stay still.",
       ],
       es: [
         "El IconButton, que viene en el archivo del Button, reproduce sus gestos de `motion` con keyframes de CSS. El item del Button los agrega a tu CSS: solo reglas `@keyframes` llamadas `buril-icon-*`. Tus tokens, tus variantes y el resto de las reglas no cambian.",
-        "Si copias `button.tsx` a mano, pega también los keyframes. Sin ellos, los iconos simplemente se quedan quietos.",
+        "Si copias `button.tsx` a mano, pega también los keyframes. Sin ellos, los iconos se quedan quietos.",
       ],
     },
     link: { href: "/docs/components/icon-button", label: { en: "Icon Button", es: "Icon Button" } },
