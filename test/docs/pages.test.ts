@@ -250,12 +250,13 @@ describe("link page", () => {
     expect(visible).toMatch(/noopener noreferrer/);
     expect(visible).toMatch(/href/);
     expect(visible).toMatch(/Button/);
+    expect(visible).toMatch(/aria-labelledby\s+replaces the link text/);
   });
 
   it("demos a link that opens in a new tab with its hint in the name", async () => {
     const html = await render();
     expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
-    expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+    expect(html).toMatch(/<span[^>]*class="sr-only"[^>]*>\(opens in a new tab\)<\/span>/);
   });
 });
 

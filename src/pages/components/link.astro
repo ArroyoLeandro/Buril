@@ -51,6 +51,10 @@ const usageExample = `import { Link } from "@/components/ui/link";
       "(opens in a new tab)" as part of the link name, and sighted users see an icon. It also adds
       <code>rel="noopener noreferrer"</code>, keeping any other <code>rel</code> values you pass.
     </p>
+    <p class="mt-4 text-muted-foreground">
+      An <code>aria-label</code> or <code>aria-labelledby</code> replaces the link text as its name,
+      so the link adds the hint to that name as well, and screen readers still hear it.
+    </p>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
