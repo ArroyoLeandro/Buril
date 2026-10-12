@@ -145,6 +145,12 @@ export const componentDocs: Record<string, ComponentDocs> = {
             default: "false",
             description: "Replaces the icon with a spinner and blocks activation.",
           },
+          {
+            name: "motion",
+            type: '"rotate" | "spin" | "wiggle" | "swing" | "nudge-x" | "nudge-up" | "nudge-diagonal" | "pop"',
+            description:
+              "A gesture the icon plays once on hover and keyboard focus (`pop` also on press). `wiggle` lifts a lid marked with `data-lid`.",
+          },
         ],
       },
     ],
@@ -156,6 +162,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
       "`aria-label` is required by its type, because an icon has no text.",
       "The icon sits in an `aria-hidden` span, so it never adds to the name.",
       "Every size is at least 32px, above the 24px minimum target.",
+      "`motion` gestures run only when the user has not asked for reduced motion, play once and never loop, and leave the focus ring untouched.",
     ],
   },
   link: {
@@ -185,6 +192,13 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description:
               'Opens a new tab with `rel="noopener noreferrer"` and says so to every user.',
           },
+          {
+            name: "newTabLabel",
+            type: "string",
+            default: '"(opens in a new tab)"',
+            description:
+              "The hidden hint screen readers hear on a link that opens a new tab. Pass it in your site's language.",
+          },
           className,
         ],
       },
@@ -193,7 +207,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
     accessibility: [
       "It is always a real `<a href>`, announced as a link and reachable with Tab.",
       "The underline stays in every state, so color is never the only signal.",
-      'A new tab adds "(opens in a new tab)" to the accessible name, even with `aria-label`.',
+      'A new tab adds `newTabLabel`, "(opens in a new tab)" by default, to the accessible name, even with `aria-label`.',
     ],
   },
   field: {
@@ -226,7 +240,21 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "required",
             type: "boolean",
             default: "false",
-            description: 'Sets the native `required` and shows "(required)".',
+            description: "Sets the native `required` and shows `requiredLabel` next to the label.",
+          },
+          {
+            name: "requiredLabel",
+            type: "string",
+            default: '"(required)"',
+            description:
+              "The visible required marker, read as part of the name when the control does not report the requirement. Pass it in your site's language.",
+          },
+          {
+            name: "errorPrefix",
+            type: "string",
+            default: '"Error:"',
+            description:
+              "Hidden text screen readers hear before the error. Pass it in your site's language.",
           },
           {
             name: "children",
@@ -525,6 +553,13 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description:
               "Adds a hatched band across the top: hidden from assistive technology and removed in forced-colors mode.",
           },
+          {
+            name: "interactive",
+            type: "boolean",
+            default: "false",
+            description:
+              "For a card that is one stretched link: it lifts and shows a shadow on hover and on keyboard focus. The lift needs motion; the shadow fades in every mode.",
+          },
           className,
         ],
       },
@@ -557,6 +592,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
       "`CardTitle` is a real heading, `h3` by default; set `as` so the page outline skips no level.",
       "The `decor` band is `aria-hidden` and removed in forced-colors mode.",
       "To make the whole card a link, stretch one real link in the title over the card; never put `onClick` on the card.",
+      "An `interactive` card gives keyboard focus the same lift and shadow as hover, lifts only when reduced motion is off, and leaves the link's focus ring untouched.",
     ],
   },
   badge: {
@@ -893,6 +929,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
           size: "Un cuadrado de 32, 40 o 48px.",
           variant: buttonVariantEs,
           loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
+          motion:
+            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado (`pop`, también al pulsar). `wiggle` levanta una tapa marcada con `data-lid`.",
         },
       },
     },
@@ -901,6 +939,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
       "`aria-label` es obligatoria según su tipo, porque un icono no tiene texto.",
       "El icono va dentro de un span con `aria-hidden`, así que nunca se suma al nombre.",
       "Todos los tamaños miden al menos 32px, por encima del objetivo mínimo de 24px.",
+      "Los gestos de `motion` solo se reproducen si el usuario no pidió movimiento reducido, se reproducen una vez sin repetirse y no tocan el anillo de foco.",
     ],
   },
   link: {
@@ -912,6 +951,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: "Color del texto. Las dos conservan el subrayado.",
           external:
             'Abre una pestaña nueva con `rel="noopener noreferrer"` y se lo indica a todos los usuarios.',
+          newTabLabel:
+            "El aviso oculto que oyen los lectores de pantalla en un enlace que abre una pestaña nueva. Pásalo en el idioma de tu sitio.",
           className: classNameEs,
         },
       },
@@ -920,7 +961,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
     accessibility: [
       "Siempre es un `<a href>` real, que se anuncia como enlace y se alcanza con Tab.",
       "El subrayado se mantiene en todos los estados, así que el color nunca es la única señal.",
-      'Una pestaña nueva agrega "(opens in a new tab)" al nombre accesible, incluso con `aria-label`.',
+      'Una pestaña nueva agrega `newTabLabel` al nombre accesible, incluso con `aria-label`; en español, pasa "(se abre en una pestaña nueva)".',
     ],
   },
   field: {
@@ -931,7 +972,11 @@ const spanishDocs: Record<string, SpanishDocs> = {
           label: "Obligatoria. Se renderiza como el `<label>` del control.",
           description: "Texto de ayuda, vinculado con `aria-describedby`.",
           error: "Texto del error. Mientras tiene valor, el control recibe `aria-invalid`.",
-          required: 'Aplica el `required` nativo y muestra "(required)".',
+          required: "Aplica el `required` nativo y muestra `requiredLabel` junto a la etiqueta.",
+          requiredLabel:
+            "La marca visible de obligatorio, que se lee como parte del nombre si el control no indica el requisito. Pásala en el idioma de tu sitio.",
+          errorPrefix:
+            "Texto oculto que los lectores de pantalla oyen antes del error. Pásalo en el idioma de tu sitio.",
           children:
             "Obligatoria. Una render prop que expande las props del control, o un solo elemento.",
           className: classNameEs,
@@ -1088,6 +1133,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
         props: {
           decor:
             "Agrega una franja rayada en la parte superior, oculta para las tecnologías de apoyo y eliminada en el modo de colores forzados.",
+          interactive:
+            "Para una tarjeta que es un solo enlace extendido: se eleva y muestra una sombra al pasar el puntero y con el foco del teclado. La elevación necesita movimiento; la sombra aparece en todos los modos.",
           className: classNameEs,
         },
       },
@@ -1112,6 +1159,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
       "`CardTitle` es un encabezado real, `h3` por defecto; ajusta `as` para que el esquema de la página no salte ningún nivel.",
       "La franja de `decor` tiene `aria-hidden` y se elimina en el modo de colores forzados.",
       "Para que toda la tarjeta sea un enlace, extiende un enlace real del título sobre la tarjeta; nunca pongas `onClick` en la tarjeta.",
+      "Una tarjeta `interactive` da al foco del teclado la misma elevación y sombra que al puntero, solo se eleva si no se pidió movimiento reducido y no toca el anillo de foco del enlace.",
     ],
   },
   badge: {

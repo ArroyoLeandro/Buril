@@ -162,15 +162,18 @@ describe.each([
 });
 
 /** The motion tokens: durations and easings, the same in every color scheme. */
+const spring =
+  "linear(0, 0.045, 0.153, 0.29, 0.434, 0.569, 0.688, 0.787, 0.865, 0.925, 0.967, 0.996, 1.014, 1.024, 1.028, 1.028, 1.026, 1.022, 1.018, 1.014, 1.011, 1.007, 1.005, 1.003, 1)";
 const motionTokens = {
-  "--buril-duration-instant": "80ms",
-  "--buril-duration-fast": "120ms",
-  "--buril-duration-base": "180ms",
-  "--buril-duration-slow": "240ms",
-  "--buril-duration-slower": "320ms",
-  "--buril-ease-out": "cubic-bezier(0.2, 0, 0, 1)",
+  "--buril-duration-instant": "100ms",
+  "--buril-duration-fast": "200ms",
+  "--buril-duration-base": "420ms",
+  "--buril-duration-slow": "460ms",
+  "--buril-duration-slower": "560ms",
+  "--buril-duration-gesture": "720ms",
+  "--buril-ease-out": spring,
   "--buril-ease-in": "cubic-bezier(0.4, 0, 1, 1)",
-  "--buril-ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+  "--buril-ease-in-out": spring,
   "--buril-ease-linear": "linear",
 };
 const isMotionToken = (name: string) => /^--buril-(duration|ease)-/.test(name);
@@ -192,6 +195,20 @@ describe("motion tokens", () => {
       .filter(([name]) => name.startsWith("--buril-duration-"))
       .map(([, value]) => parseInt(value, 10));
     expect(durations).toEqual([...durations].sort((a, b) => a - b));
+  });
+
+  // Entries and position changes use a soft spring: it starts at 0, passes its target by about
+  // 3% and settles exactly on it. Exits keep a plain accelerating curve.
+  it("eases entries and positions with a soft spring that settles about 3% past the target", () => {
+    const stops = /^linear\((.*)\)$/
+      .exec(motionTokens["--buril-ease-out"])![1]!
+      .split(",")
+      .map(Number);
+    expect(stops[0]).toBe(0);
+    expect(stops.at(-1)).toBe(1);
+    expect(Math.max(...stops)).toBeGreaterThan(1.02);
+    expect(Math.max(...stops)).toBeLessThanOrEqual(1.03);
+    expect(motionTokens["--buril-ease-in"]).toMatch(/^cubic-bezier\(/);
   });
 });
 

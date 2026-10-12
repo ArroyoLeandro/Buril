@@ -2,8 +2,17 @@ import { render } from "vitest-browser-react";
 import { userEvent } from "vitest/browser";
 import { describe, expect, it } from "vitest";
 
-import { contrast, setTheme, settle, themes, tokenColor } from "../../test/browser";
-import { Button } from "./button";
+import {
+  contrast,
+  isSoftSpring,
+  setReducedMotion,
+  setTheme,
+  settle,
+  themes,
+  tokenColor,
+  transitionTiming,
+} from "../../test/browser";
+import { Button, IconButton, type IconButtonProps } from "./button";
 
 const ringParts = ["outline-color", "outline-width", "outline-style", "outline-offset", "outline"];
 
@@ -32,6 +41,199 @@ describe("Button in a real browser", () => {
       expect(getComputedStyle(button).outlineColor).toBe(color);
 
       expect(contrast(color, tokenColor("--background"))).toBeGreaterThanOrEqual(3);
+    },
+  );
+});
+
+describe("IconButton motion in a real browser", () => {
+  type Motion = NonNullable<IconButtonProps["motion"]>;
+
+  /** A 24px stroke icon with a marked lid, like a trash can. */
+  function Icon() {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <g data-lid>
+          <path d="M4 7h16M9 7V4h6v3" />
+        </g>
+        <path d="M6 7l1 13h10l1-13" />
+      </svg>
+    );
+  }
+
+  async function renderButton(motion: Motion, props: { dir?: "rtl" } = {}) {
+    const screen = await render(
+      <div dir={props.dir}>
+        <IconButton aria-label="Act" motion={motion}>
+          <Icon />
+        </IconButton>
+      </div>,
+    );
+    // Queried inside this render: a test may render several buttons with the same name.
+    const button = screen.container.querySelector("button")!;
+    const icon = button.querySelector<HTMLElement>("[data-motion]")!;
+    return { button, icon };
+  }
+  const gesturesOn = (icon: Element) =>
+    icon
+      .getAnimations()
+      .filter((animation): animation is CSSAnimation => animation instanceof CSSAnimation);
+
+  // Durations come from the motion tokens: slower × 1.5, gesture, gesture × 1.3, gesture × 0.9
+  // and slow × 1.4.
+  const gestures = [
+    { motion: "spin", name: "buril-icon-spin", duration: 840, delay: 0 },
+    { motion: "wiggle", name: "buril-icon-shake", duration: 720, delay: 200 },
+    { motion: "swing", name: "buril-icon-swing", duration: 936, delay: 0 },
+    { motion: "nudge-x", name: "buril-icon-nudge", duration: 648, delay: 0 },
+    { motion: "nudge-up", name: "buril-icon-nudge", duration: 648, delay: 0 },
+    { motion: "nudge-diagonal", name: "buril-icon-nudge", duration: 648, delay: 0 },
+    { motion: "pop", name: "buril-icon-pop", duration: 644, delay: 0 },
+  ] as const;
+
+  it.each(gestures)(
+    "plays $motion once on hover, then stops",
+    async ({ motion, name, duration, delay }) => {
+      await setReducedMotion(false);
+      const { button, icon } = await renderButton(motion);
+      expect(gesturesOn(icon)).toEqual([]);
+      await userEvent.hover(button);
+      const [gesture, ...others] = gesturesOn(icon);
+      expect(others).toEqual([]);
+      expect(gesture?.animationName).toBe(name);
+      const timing = gesture!.effect!.getTiming();
+      expect(timing.duration).toBeCloseTo(duration, 6);
+      expect(timing.delay).toBe(delay);
+      // One-shot: never a loop.
+      expect(timing.iterations).toBe(1);
+      await settle();
+      expect(gesturesOn(icon).filter(({ playState }) => playState === "running")).toEqual([]);
+    },
+  );
+
+  it.each(gestures)("plays $motion when keyboard focus arrives", async ({ motion, name }) => {
+    await setReducedMotion(false);
+    const { button, icon } = await renderButton(motion);
+    await userEvent.tab();
+    expect(button.matches(":focus-visible")).toBe(true);
+    expect(gesturesOn(icon).map(({ animationName }) => animationName)).toEqual([name]);
+  });
+
+  it("plays the gesture again on the next hover", async () => {
+    await setReducedMotion(false);
+    const { button, icon } = await renderButton("swing");
+    await userEvent.hover(button);
+    await settle();
+    await userEvent.unhover(button);
+    await userEvent.hover(button);
+    expect(gesturesOn(icon).map(({ playState }) => playState)).toEqual(["running"]);
+  });
+
+  it("settles spins, nudges and pops with the soft spring", async () => {
+    await setReducedMotion(false);
+    for (const motion of ["spin", "nudge-x", "pop"] as const) {
+      const { button, icon } = await renderButton(motion);
+      await userEvent.hover(button);
+      const easing = getComputedStyle(icon).animationTimingFunction;
+      expect(isSoftSpring(easing), `${motion}: ${easing}`).toBe(true);
+      await userEvent.unhover(button);
+    }
+  });
+
+  it("swings the bell from the top and shakes the can from the bottom", async () => {
+    await setReducedMotion(false);
+    for (const [motion, top] of [
+      ["swing", true],
+      ["wiggle", false],
+    ] as const) {
+      const { icon } = await renderButton(motion);
+      const [, y = "0"] = getComputedStyle(icon).transformOrigin.split(" ");
+      const height = icon.getBoundingClientRect().height;
+      expect(parseFloat(y) < height / 2, motion).toBe(top);
+    }
+  });
+
+  it("nudges forward in the reading direction", async () => {
+    await setReducedMotion(false);
+    const ltr = await renderButton("nudge-x");
+    expect(getComputedStyle(ltr.icon).getPropertyValue("--buril-nudge-x")).toBe("3.75px");
+    const rtl = await renderButton("nudge-x", { dir: "rtl" });
+    expect(getComputedStyle(rtl.icon).getPropertyValue("--buril-nudge-x")).toBe("-3.75px");
+  });
+
+  // Space holds the button :active, like a pointer press that has not been released yet.
+  it("pops again when pressed, without restarting the first pop", async () => {
+    await setReducedMotion(false);
+    const { icon } = await renderButton("pop");
+    await userEvent.tab();
+    const [focusPop] = gesturesOn(icon);
+    await userEvent.keyboard("{Space>}");
+    const names = gesturesOn(icon).map(({ animationName }) => animationName);
+    expect(names).toEqual(["buril-icon-pop", "buril-icon-press"]);
+    expect(gesturesOn(icon)[0]).toBe(focusPop);
+    await userEvent.keyboard("{/Space}");
+  });
+
+  it("turns the close icon 90° with the soft spring while hovered, and back after", async () => {
+    await setReducedMotion(false);
+    const { button, icon } = await renderButton("rotate");
+    const timing = transitionTiming(icon, "rotate");
+    expect(timing?.duration).toBe(420);
+    expect(isSoftSpring(timing!.easing), timing!.easing).toBe(true);
+    await userEvent.hover(button);
+    await settle();
+    expect(getComputedStyle(icon).rotate).toBe("90deg");
+    await userEvent.unhover(button);
+    await settle();
+    expect(getComputedStyle(icon).rotate).toBe("none");
+  });
+
+  it("lifts a marked lid while the can wiggles", async () => {
+    await setReducedMotion(false);
+    const { button, icon } = await renderButton("wiggle");
+    const lid = icon.querySelector("[data-lid]")!;
+    await userEvent.hover(button);
+    await settle();
+    expect(getComputedStyle(lid).translate).toBe("0px -3px");
+    expect(getComputedStyle(lid).rotate).toBe("-19.6deg");
+  });
+
+  it.each([...gestures.map(({ motion }) => motion), "rotate" as const])(
+    "keeps the %s icon still under reduced motion",
+    async (motion) => {
+      await setReducedMotion(true);
+      const { button, icon } = await renderButton(motion);
+      await userEvent.hover(button);
+      expect(gesturesOn(icon)).toEqual([]);
+      expect(transitionTiming(icon, "rotate")).toBeUndefined();
+      await settle();
+      expect(getComputedStyle(icon).rotate).toBe("none");
+      expect(getComputedStyle(icon.querySelector("[data-lid]")!).translate).toBe("none");
+    },
+  );
+});
+
+describe("Button loading in a real browser", () => {
+  // 8px read as cramped next to the spinning ring; 12px keeps the spinner apart from the label.
+  it.each(["sm", "default", "lg"] as const)(
+    "leaves a 12px gap between the spinner and the label at the %s size",
+    async (size) => {
+      const screen = await render(
+        <Button loading size={size}>
+          Save changes
+        </Button>,
+      );
+      const button = screen.getByRole("button").element();
+      const spinner = button.querySelector("svg")!.getBoundingClientRect();
+      const label = document.createRange();
+      label.selectNodeContents(
+        [...button.childNodes].find((node) => node.nodeType === Node.TEXT_NODE)!,
+      );
+      expect(label.getBoundingClientRect().left - spinner.right).toBeCloseTo(12, 0);
+      // The pair stays centered in the button.
+      const box = button.getBoundingClientRect();
+      const left = spinner.left - box.left;
+      const right = box.right - label.getBoundingClientRect().right;
+      expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
     },
   );
 });

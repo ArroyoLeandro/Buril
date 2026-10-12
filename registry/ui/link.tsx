@@ -8,7 +8,7 @@ const linkVariants = cva(
     // Color alone never marks a link (WCAG 1.4.1), so the underline stays in every state.
     "rounded-xs underline underline-offset-4 hover:decoration-2",
     // The color and the underline fade; outline-color is left out so the focus ring appears at once.
-    "transition-[color,text-decoration-color,text-decoration-thickness] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
+    "transition-[color,text-decoration-color,text-decoration-thickness] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
     // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
   ],
@@ -31,11 +31,16 @@ type LinkProps = Omit<ComponentProps<"a">, "href"> &
     href: string;
     /**
      * Opens the link in a new tab. It sets `target="_blank"` and `rel="noopener noreferrer"`, and
-     * tells every user: screen readers hear "(opens in a new tab)" and sighted users see an icon.
+     * tells every user: screen readers hear `newTabLabel` and sighted users see an icon.
      * Passing `target="_blank"` yourself does the same. With `aria-label` or `aria-labelledby`, the
      * hint is added to that name too.
      */
     external?: boolean;
+    /**
+     * The hidden hint screen readers hear on a link that opens a new tab. Pass your language's
+     * text, such as `"(se abre en una pestaña nueva)"`.
+     */
+    newTabLabel?: string;
   };
 
 function ExternalIcon() {
@@ -64,12 +69,11 @@ function newTabRel(rel: string | undefined) {
   return [...tokens].join(" ");
 }
 
-const newTabHint = "(opens in a new tab)";
-
 function Link({
   className,
   variant,
   external = false,
+  newTabLabel = "(opens in a new tab)",
   target,
   rel,
   children,
@@ -87,7 +91,7 @@ function Link({
       className={cn(linkVariants({ variant }), className)}
       // aria-label and aria-labelledby replace the link text as its name, which would drop the
       // hidden hint, so the hint is added to whichever of them names the link.
-      aria-label={newTab && ariaLabel ? `${ariaLabel} ${newTabHint}` : ariaLabel}
+      aria-label={newTab && ariaLabel ? `${ariaLabel} ${newTabLabel}` : ariaLabel}
       aria-labelledby={newTab && ariaLabelledBy ? `${ariaLabelledBy} ${hintId}` : ariaLabelledBy}
       {...props}
     >
@@ -97,7 +101,7 @@ function Link({
         <>
           {" "}
           <span id={hintId} className="sr-only">
-            {newTabHint}
+            {newTabLabel}
           </span>
           <ExternalIcon />
         </>

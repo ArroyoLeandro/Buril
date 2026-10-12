@@ -44,15 +44,16 @@ const { externalExample, mutedExample } = componentExamples.link;
     <p class="mt-4 text-muted-foreground">
       <code>external</code>, o pasar tú mismo <code>target="_blank"</code>, abre el enlace en una
       pestaña nueva y lo advierte, porque una pestaña nueva rompe el botón Atrás. Los lectores de
-      pantalla oyen "(opens in a new tab)" como parte del nombre del enlace, y quien ve la pantalla
-      ve un icono. También agrega <code>rel="noopener noreferrer"</code> y conserva cualquier otro
-      valor de <code>rel</code> que pases.
+      pantalla oyen un aviso, como "(se abre en una pestaña nueva)", como parte del nombre del
+      enlace, y quien ve la pantalla ve un icono. También agrega{" "}
+      <code>rel="noopener noreferrer"</code> y conserva cualquier otro valor de <code>rel</code> que
+      pases.
     </p>
     <p class="mt-4 text-muted-foreground">
       Un <code>aria-label</code> o un <code>aria-labelledby</code> reemplaza al texto del enlace
       como nombre, así que el enlace también agrega el aviso a ese nombre y los lectores de pantalla
-      lo siguen oyendo. El componente escribe el aviso en inglés; si tu sitio está en otro idioma,
-      cámbialo en tu copia de <code>components/ui/link.tsx</code>.
+      lo siguen oyendo. En otro idioma, pasa el aviso como <code>newTabLabel</code>, como
+      <code>"(se abre en una pestaña nueva)"</code> en español; esta demo ya lo hace.
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={externalExample} lang="tsx" theme={codeTheme} />

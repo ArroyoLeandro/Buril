@@ -112,6 +112,39 @@ describe("Link", () => {
       ).toBeInTheDocument();
     });
 
+    // The hint is text people hear, so a site in another language passes its own.
+    describe("in another language", () => {
+      const hint = "(se abre en una pestaña nueva)";
+
+      it("names the link with the newTabLabel instead of the English hint", () => {
+        render(
+          <Link href="https://example.com" external newTabLabel={hint}>
+            Patrón de enlace
+          </Link>,
+        );
+        expect(screen.getByRole("link", { name: `Patrón de enlace ${hint}` })).toBeInTheDocument();
+        expect(screen.queryByText("(opens in a new tab)")).toBeNull();
+      });
+
+      it("adds the newTabLabel to an aria-label and to aria-labelledby", () => {
+        render(
+          <>
+            <h2 id="notas">Notas de la versión</h2>
+            <Link href="https://example.com/a" external aria-label="Cambios" newTabLabel={hint}>
+              v2
+            </Link>
+            <Link href="https://example.com/b" external aria-labelledby="notas" newTabLabel={hint}>
+              Leer
+            </Link>
+          </>,
+        );
+        expect(screen.getByRole("link", { name: `Cambios ${hint}` })).toBeInTheDocument();
+        expect(
+          screen.getByRole("link", { name: `Notas de la versión ${hint}` }),
+        ).toBeInTheDocument();
+      });
+    });
+
     it("leaves aria-label untouched on a same-tab link", () => {
       render(
         <Link href="/changelog" aria-label="Changelog for version 2">

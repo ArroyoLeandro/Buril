@@ -66,6 +66,14 @@ const { renderPropExample, childExample } = componentExamples.field;
       field lets screen readers read the marker as part of the label, so the requirement is never
       lost, and development builds log a warning that names the control.
     </p>
+
+    <h3 class="mt-8 font-display text-lg">Other languages</h3>
+    <p class="mt-4 text-muted-foreground">
+      The field writes two strings of its own: the "(required)" marker and the hidden "Error:" that
+      screen readers hear before the message. Pass <code>requiredLabel</code> and
+      <code>errorPrefix</code> in your site's language, such as <code>"(obligatorio)"</code> and
+      <code>"Error:"</code> in Spanish.
+    </p>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

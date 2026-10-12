@@ -77,4 +77,10 @@ describe("FieldDemo in Spanish", () => {
       "Suscripción confirmada para ada@example.com.",
     );
   });
+
+  it("marks the field obligatorio, not required", () => {
+    render(<FieldDemo locale="es" />);
+    expect(screen.getByText("(obligatorio)")).toBeInTheDocument();
+    expect(screen.queryByText("(required)")).toBeNull();
+  });
 });

@@ -10,7 +10,7 @@ const alertVariants = cva(
     "relative grid w-full grid-cols-[auto_1fr] gap-y-1 rounded-lg border bg-card px-4 py-3 text-sm",
     // Fades in when inserted. Opacity is not movement, so it fades in every motion mode, and
     // nothing around it moves.
-    "transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) starting:opacity-0",
+    "transition-[opacity] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) starting:opacity-0",
   ],
   {
     variants: {

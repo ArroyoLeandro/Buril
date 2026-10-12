@@ -43,6 +43,8 @@ export default function FieldDemo({ locale = "en" }: Props) {
         description={t("We only use it to send the newsletter.")}
         error={error}
         required
+        requiredLabel={t("(required)")}
+        errorPrefix={t("Error:")}
       >
         {(control) => (
           <Input

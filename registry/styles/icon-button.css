@@ -1,0 +1,102 @@
+/*
+ * Keyframes for the IconButton `motion` gestures. The `button` registry item adds these same
+ * keyframes to your CSS (its `css` field), and `test/registry.test.ts` keeps both copies equal.
+ * Only the shapes live here: the IconButton classes set each gesture's duration and easing from
+ * the motion tokens, play it once per hover or keyboard focus, and only when motion is allowed.
+ * They move with rotate, translate and scale, which the compositor animates without layout.
+ */
+
+/* Refresh: one full turn. */
+@keyframes buril-icon-spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Trash: the can shakes once, pivoting on its base. */
+@keyframes buril-icon-shake {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  20% {
+    rotate: 8.4deg;
+  }
+  42% {
+    rotate: -7deg;
+  }
+  64% {
+    rotate: 4.2deg;
+  }
+  84% {
+    rotate: -1.68deg;
+  }
+}
+
+/* Bell: a swing from the top that loses height on every pass. */
+@keyframes buril-icon-swing {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  14% {
+    rotate: 19.6deg;
+  }
+  32% {
+    rotate: -15.4deg;
+  }
+  50% {
+    rotate: 9.8deg;
+  }
+  68% {
+    rotate: -5.6deg;
+  }
+  84% {
+    rotate: 2.1deg;
+  }
+}
+
+/* Arrows, send and external links: out and back, by the distance the IconButton sets. */
+@keyframes buril-icon-nudge {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  45% {
+    translate: var(--buril-nudge-x, 0) var(--buril-nudge-y, 0);
+  }
+}
+
+/* Like: grows, dips and settles. */
+@keyframes buril-icon-pop {
+  0%,
+  100% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.12;
+  }
+  65% {
+    scale: 0.96;
+  }
+}
+
+/*
+ * The same pop for a press. It has its own name so pressing starts it while the hover pop keeps
+ * its place; reusing the name would not restart it.
+ */
+@keyframes buril-icon-press {
+  0%,
+  100% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.12;
+  }
+  65% {
+    scale: 0.96;
+  }
+}

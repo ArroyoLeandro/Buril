@@ -13,14 +13,15 @@
           "color-scheme": "light",
           "--muted-foreground": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
           "--grid": "color-mix(in oklab, #1a1714 9%, transparent)",
-          "--buril-duration-instant": "80ms",
-          "--buril-duration-fast": "120ms",
-          "--buril-duration-base": "180ms",
-          "--buril-duration-slow": "240ms",
-          "--buril-duration-slower": "320ms",
-          "--buril-ease-out": "cubic-bezier(0.2, 0, 0, 1)",
+          "--buril-duration-instant": "100ms",
+          "--buril-duration-fast": "200ms",
+          "--buril-duration-base": "420ms",
+          "--buril-duration-slow": "460ms",
+          "--buril-duration-slower": "560ms",
+          "--buril-duration-gesture": "720ms",
+          "--buril-ease-out": "linear(0, 0.045, 0.153, 0.29, 0.434, 0.569, 0.688, 0.787, 0.865, 0.925, 0.967, 0.996, 1.014, 1.024, 1.028, 1.028, 1.026, 1.022, 1.018, 1.014, 1.011, 1.007, 1.005, 1.003, 1)",
           "--buril-ease-in": "cubic-bezier(0.4, 0, 1, 1)",
-          "--buril-ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "--buril-ease-in-out": "linear(0, 0.045, 0.153, 0.29, 0.434, 0.569, 0.688, 0.787, 0.865, 0.925, 0.967, 0.996, 1.014, 1.024, 1.028, 1.028, 1.026, 1.022, 1.018, 1.014, 1.011, 1.007, 1.005, 1.003, 1)",
           "--buril-ease-linear": "linear"
         },
         ".dark": {
@@ -138,6 +139,83 @@
       "description": "Accessible button with variants, sizes and a loading state.",
       "dependencies": ["class-variance-authority"],
       "registryDependencies": ["utils"],
+      "css": {
+        "@keyframes buril-icon-spin": {
+          "from": {
+            "rotate": "0deg"
+          },
+          "to": {
+            "rotate": "360deg"
+          }
+        },
+        "@keyframes buril-icon-shake": {
+          "0%, 100%": {
+            "rotate": "0deg"
+          },
+          "20%": {
+            "rotate": "8.4deg"
+          },
+          "42%": {
+            "rotate": "-7deg"
+          },
+          "64%": {
+            "rotate": "4.2deg"
+          },
+          "84%": {
+            "rotate": "-1.68deg"
+          }
+        },
+        "@keyframes buril-icon-swing": {
+          "0%, 100%": {
+            "rotate": "0deg"
+          },
+          "14%": {
+            "rotate": "19.6deg"
+          },
+          "32%": {
+            "rotate": "-15.4deg"
+          },
+          "50%": {
+            "rotate": "9.8deg"
+          },
+          "68%": {
+            "rotate": "-5.6deg"
+          },
+          "84%": {
+            "rotate": "2.1deg"
+          }
+        },
+        "@keyframes buril-icon-nudge": {
+          "0%, 100%": {
+            "translate": "0 0"
+          },
+          "45%": {
+            "translate": "var(--buril-nudge-x, 0) var(--buril-nudge-y, 0)"
+          }
+        },
+        "@keyframes buril-icon-pop": {
+          "0%, 100%": {
+            "scale": "1"
+          },
+          "35%": {
+            "scale": "1.12"
+          },
+          "65%": {
+            "scale": "0.96"
+          }
+        },
+        "@keyframes buril-icon-press": {
+          "0%, 100%": {
+            "scale": "1"
+          },
+          "35%": {
+            "scale": "1.12"
+          },
+          "65%": {
+            "scale": "0.96"
+          }
+        }
+      },
       "files": [
         {
           "path": "registry/ui/button.tsx",

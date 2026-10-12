@@ -105,11 +105,11 @@ function RadioGroupItem({ value, className, children, onChange, ...props }: Radi
           "inset-ring-background checked:border-primary checked:bg-primary checked:inset-ring-4",
           // The colors fade in every motion mode; outline-color is left out so the focus ring
           // appears at once.
-          "transition-[background-color,border-color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
+          "transition-[background-color,border-color] duration-(--buril-duration-base,420ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
           // The ink drop: while unchecked, the ring fills the whole 18px inside, so checking
           // shrinks it to 4px and the dot spreads from the center. The dot grows, which is
           // movement, so under reduced motion the ring jumps and only the colors fade.
-          "motion-safe:transition-[background-color,border-color,box-shadow] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) motion-safe:not-checked:inset-ring-9",
+          "motion-safe:transition-[background-color,border-color,box-shadow] motion-safe:duration-(--buril-duration-base,420ms) motion-safe:ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) motion-safe:not-checked:inset-ring-9",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           "disabled:cursor-not-allowed aria-invalid:border-destructive",

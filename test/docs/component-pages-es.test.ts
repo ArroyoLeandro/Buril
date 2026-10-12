@@ -217,6 +217,49 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
   },
 );
 
+describe("icon-button in Spanish", () => {
+  it("explains the gestures, the lid marker and reduced motion in Spanish", async () => {
+    const visible = squash(
+      text(main(await render(spanish["icon-button"], "/es/docs/components/icon-button"))),
+    );
+    expect(visible).toContain("data-lid");
+    expect(visible).toMatch(/movimiento reducido/);
+    expect(visible).toMatch(/una vez/);
+    expect(visible).toContain("@keyframes buril-icon-");
+  });
+});
+
+describe("Field and Link in Spanish", () => {
+  const visible = async (slug: string) =>
+    squash(text(main(await render(spanish[slug], `/es/docs/components/${slug}`))));
+
+  it("passes Spanish text to the Field instead of saying it stays in English", async () => {
+    const field = await visible("field");
+    expect(field).not.toMatch(/en inglés/);
+    expect(field).toContain("requiredLabel");
+    expect(field).toContain("errorPrefix");
+    expect(field).toContain("(obligatorio)");
+  });
+
+  it("passes a Spanish new-tab hint to the Link instead of saying it stays in English", async () => {
+    const link = await visible("link");
+    expect(link).not.toMatch(/en inglés/);
+    expect(link).toContain("newTabLabel");
+    expect(link).toContain("(se abre en una pestaña nueva)");
+  });
+});
+
+describe("card in Spanish", () => {
+  it("explains the interactive hover in Spanish", async () => {
+    const visible = squash(text(main(await render(spanish["card"], "/es/docs/components/card"))));
+    expect(visible).toContain("interactive");
+    expect(visible).toMatch(/se eleva/);
+    expect(visible).toMatch(/sombra/);
+    expect(visible).toMatch(/foco del teclado/);
+    expect(visible).toMatch(/movimiento reducido/);
+  });
+});
+
 describe("Spanish component docs data", () => {
   it("translates every description, key action and note, and keeps names, types and keys", () => {
     for (const { slug } of documentedComponents) {

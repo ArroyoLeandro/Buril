@@ -8,6 +8,8 @@
     "public/r",
     "**/*.browser.test.tsx",
     "test/browser.ts",
+    "test/browser-commands.ts",
+    "test/browser-setup.ts",
     "test/docs-site.ts",
     "vitest.config.ts",
     "vitest.browser.config.ts"

@@ -46,4 +46,10 @@ describe("SelectDemo in Spanish", () => {
     await userEvent.click(screen.getByRole("button", { name: "Agregar al carrito" }));
     expect(screen.getByRole("status")).toHaveTextContent("Se agregó la talla Mediana al carrito.");
   });
+
+  it("marks the size obligatoria in Spanish", () => {
+    render(<SelectDemo locale="es" />);
+    expect(screen.getByText("(obligatorio)")).toBeInTheDocument();
+    expect(screen.queryByText("(required)")).toBeNull();
+  });
 });

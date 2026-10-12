@@ -56,10 +56,11 @@ const { renderPropExample, childExample } = componentExamples.field;
 
     <h3 class="mt-8 font-display text-lg">Obligatorio</h3>
     <p class="mt-4 text-muted-foreground">
-      Un campo obligatorio muestra "(required)" como texto junto a la etiqueta, nunca como un color
-      o un asterisco solo. El control recibe el atributo nativo <code>required</code>, que los
-      lectores de pantalla anuncian, así que la marca está oculta para ellos y no la oyen dos veces.
-      Las burbujas de validación nativas siguen apareciendo al enviar, salvo que el formulario tenga
+      Un campo obligatorio muestra una marca de texto, como "(obligatorio)", junto a la etiqueta,
+      nunca como un color o un asterisco solo. El control recibe el atributo nativo{" "}
+      <code>required</code>, que los lectores de pantalla anuncian, así que la marca está oculta
+      para ellos y no la oyen dos veces. Las burbujas de validación nativas siguen apareciendo al
+      enviar, salvo que el formulario tenga
       <code>noValidate</code>.
     </p>
     <p class="mt-4 text-muted-foreground">
@@ -68,10 +69,13 @@ const { renderPropExample, childExample } = componentExamples.field;
       el campo deja que los lectores de pantalla lean la marca como parte de la etiqueta, para que
       el requisito nunca se pierda, y en desarrollo muestra una advertencia que nombra el control.
     </p>
+
+    <h3 class="mt-8 font-display text-lg">Otros idiomas</h3>
     <p class="mt-4 text-muted-foreground">
-      El componente escribe "(required)" y "Error:" en inglés, también en esta demo. El código es
-      tuyo: si tu sitio está en otro idioma, cambia esos textos en tu copia de
-      <code>components/ui/field.tsx</code>.
+      El campo escribe dos textos propios: la marca "(required)" y el "Error:" oculto que los
+      lectores de pantalla oyen antes del mensaje. Pasa <code>requiredLabel</code> y
+      <code>errorPrefix</code> en el idioma de tu sitio, como <code>"(obligatorio)"</code> y
+      <code>"Error:"</code> en español. Esta demo ya lo hace.
     </p>
   </Fragment>
 

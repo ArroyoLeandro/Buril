@@ -42,6 +42,10 @@ export const demoText = {
   // Component demos: shared
   Variants: "Variantes",
   Sizes: "Tamaños",
+  // Text that Field and Link write themselves
+  "(required)": "(obligatorio)",
+  "Error:": "Error:",
+  "(opens in a new tab)": "(se abre en una pestaña nueva)",
   // Alert
   "New version available": "Nueva versión disponible",
   "Reload the page to get the latest components.":
@@ -110,6 +114,16 @@ export const demoText = {
   "Loading and disabled": "Carga y deshabilitado",
   "Refresh results": "Actualizar resultados",
   "Refreshing results…": "Actualizando resultados…",
+  Motion: "Movimiento",
+  "Hover over each button or reach it with Tab. Each gesture plays once, and only when reduced motion is off.":
+    "Pasa el puntero por cada botón o llega a él con Tab. Cada gesto se reproduce una vez, y solo si no se pidió movimiento reducido.",
+  "Close dialog": "Cerrar diálogo",
+  "Delete draft": "Eliminar borrador",
+  Notifications: "Notificaciones",
+  "Reload page": "Recargar página",
+  "Send message": "Enviar mensaje",
+  Like: "Me gusta",
+  "Open in a new tab": "Abrir en una pestaña nueva",
   // Input
   "Usernames cannot contain spaces.": "El nombre de usuario no puede tener espacios.",
   "Full name": "Nombre completo",

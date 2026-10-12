@@ -44,6 +44,34 @@ describe("IconButtonDemo", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it("shows a live demo of the gestures, one per kind of icon", () => {
+    render(<IconButtonDemo />);
+    const gestures = {
+      "Close dialog": "rotate",
+      "Delete draft": "wiggle",
+      Notifications: "swing",
+      "Reload page": "spin",
+      "Send message": "nudge-x",
+      Like: "pop",
+      "Open in a new tab": "nudge-diagonal",
+    };
+    for (const [name, motion] of Object.entries(gestures)) {
+      const button = screen.getByRole("button", { name });
+      expect(button.querySelector("[data-motion]")).toHaveAttribute("data-motion", motion);
+    }
+    // The trash marks its lid, so the lid lifts before the can shakes.
+    const trash = screen.getByRole("button", { name: "Delete draft" });
+    expect(trash.querySelector("[data-lid]")).not.toBeNull();
+  });
+
+  it("toggles Like, which pops, as a pressed button", () => {
+    render(<IconButtonDemo />);
+    const like = screen.getByRole("button", { name: "Like" });
+    expect(like).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(like);
+    expect(like).toHaveAttribute("aria-pressed", "true");
+  });
+
   it("has no axe violations", async () => {
     const { container } = render(<IconButtonDemo />);
     expect(await axe(container)).toHaveNoViolations();
@@ -58,5 +86,21 @@ describe("IconButtonDemo in Spanish", () => {
     expect(screen.getByRole("button", { name: "Cerrar panel" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Actualizar resultados" }));
     expect(screen.getByRole("status")).toHaveTextContent("Actualizando resultados…");
+  });
+
+  it("names the gesture demos in Spanish", () => {
+    render(<IconButtonDemo locale="es" />);
+    for (const name of [
+      "Cerrar diálogo",
+      "Eliminar borrador",
+      "Notificaciones",
+      "Recargar página",
+      "Enviar mensaje",
+      "Me gusta",
+      "Abrir en una pestaña nueva",
+    ]) {
+      expect(screen.getByRole("button", { name })).toBeInTheDocument();
+    }
+    expect(screen.getByRole("heading", { name: "Movimiento" })).toBeInTheDocument();
   });
 });

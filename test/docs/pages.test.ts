@@ -229,10 +229,34 @@ describe("icon button page", () => {
     expect(visible).toMatch(/32, 40 and 48px/);
     expect(visible).toMatch(/same registry item as the Button/);
   });
+
+  it("documents every motion preset, the lid marker, reduced motion and the added keyframes", async () => {
+    const visible = text(await render());
+    for (const preset of [
+      "rotate",
+      "spin",
+      "wiggle",
+      "swing",
+      "nudge-x",
+      "nudge-up",
+      "nudge-diagonal",
+      "pop",
+    ])
+      expect(visible).toContain(preset);
+    expect(visible).toContain("data-lid");
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/once/);
+    expect(visible).toContain("@keyframes buril-icon-");
+  });
 });
 
 describe("link page", () => {
   const render = () => container.renderToString(componentPages["link"]!);
+
+  it("explains how to put the new-tab hint in another language", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("newTabLabel");
+  });
 
   it("explains the new-tab behavior and why href is required", async () => {
     const visible = text(await render());
@@ -252,6 +276,12 @@ describe("link page", () => {
 
 describe("field page", () => {
   const render = () => container.renderToString(componentPages["field"]!);
+
+  it("explains how to put the required marker and the error prefix in another language", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("requiredLabel");
+    expect(visible).toContain("errorPrefix");
+  });
 
   it("explains the render prop, the element child and what each wires", async () => {
     const visible = text(await render());
@@ -366,6 +396,16 @@ describe("card page", () => {
     expect(visible).toMatch(/stretched link/i);
     expect(visible).toMatch(/onClick/);
     expect(visible).toMatch(/relative z-10/);
+  });
+
+  it("explains the interactive hover: lift, shadow, keyboard focus and reduced motion", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("interactive");
+    expect(visible).toMatch(/lifts/);
+    expect(visible).toMatch(/shadow/);
+    expect(visible).toMatch(/keyboard focus/);
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/static cards? (never|do not) move/i);
   });
 
   it("explains the heading level and the decoration", async () => {

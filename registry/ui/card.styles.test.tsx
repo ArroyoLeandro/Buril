@@ -3,6 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -73,5 +81,58 @@ describe("Card compiled with Tailwind", () => {
   it("keeps the border in forced-colors mode", () => {
     expect(cascade.computed(card, "border-width", { forcedColors: true })).toBe("1px");
     expect(cascade.computed(card, "border-style", { forcedColors: true })).not.toBe("none");
+  });
+});
+
+// An interactive card (one stretched link) lifts and casts a shadow on hover, and the same while
+// its link has keyboard focus. The lift moves, so it needs motion; the shadow is an overlay whose
+// opacity fades, so box-shadow itself never animates.
+describe("interactive Card compiled with Tailwind", () => {
+  const interactive = classList(
+    /data-slot="card"[^>]*class="([^"]*)"/.exec(renderToStaticMarkup(<Card interactive />))![1]!,
+  );
+  const hover = { states: [":hover"] };
+  const focused = { states: [":has(:focus-visible)"] };
+  const overlay = (state?: string) => ({
+    states: state ? [":hover", `${state}::after`] : ["::after"],
+  });
+
+  it("leaves a static card still: no lift, no overlay, no transition", () => {
+    for (const options of [hover, focused, { ...hover, ...motionAllowed }]) {
+      expect(cascade.computed(card, "--tw-translate-y", options)).toBeUndefined();
+    }
+    expect(cascade.computed(card, "content", overlay(":hover"))).toBeUndefined();
+    expect(cascade.computed(card, "transition-property")).toBeUndefined();
+  });
+
+  it("lifts 4.5px on hover and keyboard focus, only when motion is allowed", () => {
+    for (const state of [hover, focused]) {
+      expect(
+        cascade.computed(interactive, "--tw-translate-y", { ...state, ...motionAllowed }),
+      ).toBe("calc(4.5px * -1)");
+      expect(
+        cascade.computed(interactive, "--tw-translate-y", { ...state, ...motionReduced }),
+      ).toBeUndefined();
+    }
+    expect(cascade.computed(interactive, "--tw-translate-y", motionAllowed)).toBeUndefined();
+    const lift = transitionOf(cascade.computed, interactive, motionAllowed);
+    expect(lift.properties).toEqual(["translate"]);
+    expect(lift.durations).toEqual([durations.base]);
+    expect(lift.easings).toEqual([easings.out]);
+    expect(transitionOf(cascade.computed, interactive, motionReduced).properties).toBeUndefined();
+  });
+
+  it("fades a shadow overlay in on hover and keyboard focus, in every motion mode", () => {
+    expect(cascade.computed(interactive, "opacity", overlay())).toBe("0%");
+    expect(cascade.computed(interactive, "--tw-shadow", overlay())).toMatch(/^0 14px 28px -14px/);
+    expect(cascade.computed(interactive, "pointer-events", overlay())).toBe("none");
+    expect(cascade.computed(interactive, "position", overlay())).toBe("absolute");
+    for (const state of [":hover", ":has(:focus-visible)"]) {
+      expect(cascade.computed(interactive, "opacity", overlay(state))).toBe("100%");
+    }
+    const fade = transitionOf(cascade.computed, interactive, overlay());
+    expect(fade.properties).toEqual(["opacity"]);
+    expect(fade.durations).toEqual([durations.fast]);
+    expectInstantFocusRing(fade.properties);
   });
 });
