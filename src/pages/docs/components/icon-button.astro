@@ -5,8 +5,10 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import IconButtonDemo from "../../../components/IconButtonDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
+import { iconKeyframesCss, iconKeyframesExample } from "../../../utils/icon-keyframes";
 
-const { sizesExample } = componentExamples["icon-button"];
+const { sizesExample, motionExample } = componentExamples["icon-button"];
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 ---
 
 <ComponentPage slug="icon-button">
@@ -37,7 +39,7 @@ const { sizesExample } = componentExamples["icon-button"];
       <code>size-*</code> class scales with the button. The same sizes work on
       <code>Button</code> and on <code>buttonVariants()</code>.
     </p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <div class={code}>
       <Code code={sizesExample} lang="tsx" theme={codeTheme} />
     </div>
 
@@ -47,10 +49,59 @@ const { sizesExample } = componentExamples["icon-button"];
       focus. As with the Button, announce progress from a <code>role="status"</code> region outside
       it.
     </p>
+
+    <h3 class="mt-8 font-display text-lg">Motion</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>motion</code> gives the icon a gesture. It plays once each time the pointer arrives or
+      keyboard focus lands on the button, never loops, and only runs when the user has not asked for
+      reduced motion. The colors and the focus ring do not move.
+    </p>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <code>rotate</code>: a close cross turns a quarter while hovered or focused.
+      </li>
+      <li>
+        <code>spin</code>: a refresh arrow turns once.
+      </li>
+      <li>
+        <code>wiggle</code>: a trash can shakes once. Mark its lid with <code>data-lid</code> and
+        the lid lifts first.
+      </li>
+      <li>
+        <code>swing</code>: a bell swings from the top, a little less on every pass.
+      </li>
+      <li>
+        <code>nudge-x</code>, <code>nudge-up</code> and <code>nudge-diagonal</code>: an arrow, a
+        send or an external-link icon moves out and back. Forward follows the reading direction.
+      </li>
+      <li>
+        <code>pop</code>: a like grows and settles, and pops again when pressed.
+      </li>
+    </ul>
+    <div class={code}>
+      <Code code={motionExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <p class="mt-4 text-muted-foreground">
+      The gestures are CSS keyframes, so installing the button with the CLI also adds them to your
+      CSS file. It adds only these, with a <code>buril-icon-</code> prefix, and leaves your tokens
+      and variants alone:
+    </p>
+    <div class={code}>
+      <Code code={iconKeyframesExample()} lang="css" theme={codeTheme} />
+    </div>
   </Fragment>
 
-  <p slot="install-notes" class="mt-4 text-muted-foreground">
-    <code>IconButton</code> ships in the same registry item as the Button, in
-    <code>components/ui/button.tsx</code>, so installing either one gives you both.
-  </p>
+  <Fragment slot="install-notes">
+    <p class="mt-4 text-muted-foreground">
+      <code>IconButton</code> ships in the same registry item as the Button, in
+      <code>components/ui/button.tsx</code>, so installing either one gives you both.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      The CLI also adds the <code>motion</code> keyframes to your CSS. If you copy the file by hand,
+      paste them into your CSS too; without them the icons stay still.
+    </p>
+    <div class={code}>
+      <Code code={iconKeyframesCss()} lang="css" theme={codeTheme} />
+    </div>
+  </Fragment>
 </ComponentPage>

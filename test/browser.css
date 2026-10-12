@@ -1,6 +1,10 @@
-/* The stylesheet the browser tests load: Tailwind compiled from the registry, plus the theme. */
+/*
+ * The stylesheet the browser tests load: Tailwind compiled from the registry, plus the theme and
+ * the IconButton keyframes that the button item adds to a consumer's CSS.
+ */
 @import "tailwindcss";
 @import "../registry/styles/buril.css";
+@import "../registry/styles/icon-button.css";
 
 @source "../registry";
 @source "./";

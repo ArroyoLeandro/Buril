@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../../registry/styles/buril.css";
+/* The IconButton gesture keyframes, which the button item adds to a consumer's CSS. */
+@import "../../registry/styles/icon-button.css";
 
 /* Docs site fonts. Buril ships tokens only; the docs load Silkscreen and Inter. */
 @theme {

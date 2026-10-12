@@ -139,6 +139,83 @@
       "description": "Accessible button with variants, sizes and a loading state.",
       "dependencies": ["class-variance-authority"],
       "registryDependencies": ["utils"],
+      "css": {
+        "@keyframes buril-icon-spin": {
+          "from": {
+            "rotate": "0deg"
+          },
+          "to": {
+            "rotate": "360deg"
+          }
+        },
+        "@keyframes buril-icon-shake": {
+          "0%, 100%": {
+            "rotate": "0deg"
+          },
+          "20%": {
+            "rotate": "8.4deg"
+          },
+          "42%": {
+            "rotate": "-7deg"
+          },
+          "64%": {
+            "rotate": "4.2deg"
+          },
+          "84%": {
+            "rotate": "-1.68deg"
+          }
+        },
+        "@keyframes buril-icon-swing": {
+          "0%, 100%": {
+            "rotate": "0deg"
+          },
+          "14%": {
+            "rotate": "19.6deg"
+          },
+          "32%": {
+            "rotate": "-15.4deg"
+          },
+          "50%": {
+            "rotate": "9.8deg"
+          },
+          "68%": {
+            "rotate": "-5.6deg"
+          },
+          "84%": {
+            "rotate": "2.1deg"
+          }
+        },
+        "@keyframes buril-icon-nudge": {
+          "0%, 100%": {
+            "translate": "0 0"
+          },
+          "45%": {
+            "translate": "var(--buril-nudge-x, 0) var(--buril-nudge-y, 0)"
+          }
+        },
+        "@keyframes buril-icon-pop": {
+          "0%, 100%": {
+            "scale": "1"
+          },
+          "35%": {
+            "scale": "1.12"
+          },
+          "65%": {
+            "scale": "0.96"
+          }
+        },
+        "@keyframes buril-icon-press": {
+          "0%, 100%": {
+            "scale": "1"
+          },
+          "35%": {
+            "scale": "1.12"
+          },
+          "65%": {
+            "scale": "0.96"
+          }
+        }
+      },
       "files": [
         {
           "path": "registry/ui/button.tsx",

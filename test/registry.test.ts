@@ -6,7 +6,12 @@ import { describe, expect, it } from "vitest";
  * Distribution contract. Installing a component must never rewrite the consumer's theme or
  * helpers, and every documented install command must work without extra registry setup.
  */
-type Item = { name: string; type: string; registryDependencies?: string[] };
+type Item = {
+  name: string;
+  type: string;
+  registryDependencies?: string[];
+  css?: Record<string, unknown>;
+};
 
 const registry = JSON.parse(readFileSync(resolve(__dirname, "../registry.json"), "utf8")) as {
   items: Item[];
@@ -81,5 +86,74 @@ describe("package scripts", () => {
 
   it("check validates the registry", () => {
     expect(pkg.scripts.check).toContain("shadcn registry validate");
+  });
+});
+
+/**
+ * The keyframes of the IconButton gestures, parsed from a stylesheet into the shape of a registry
+ * item's `css` field: `{ "@keyframes name": { "20%": { rotate: "8.4deg" } } }`.
+ */
+function keyframesOf(css: string) {
+  const blocks: Record<string, Record<string, Record<string, string>>> = {};
+  const source = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  for (const match of source.matchAll(/@keyframes\s+([\w-]+)\s*\{/g)) {
+    let depth = 1;
+    let index = match.index + match[0].length;
+    const start = index;
+    while (depth > 0) {
+      if (source[index] === "{") depth++;
+      if (source[index] === "}") depth--;
+      index++;
+    }
+    const body = source.slice(start, index - 1);
+    blocks[`@keyframes ${match[1]}`] = Object.fromEntries(
+      [...body.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, selector, declarations]) => [
+        selector!.trim().replace(/\s*,\s*/g, ", "),
+        Object.fromEntries(
+          declarations!
+            .split(";")
+            .map((declaration) => declaration.trim())
+            .filter(Boolean)
+            .map((declaration) => {
+              const colon = declaration.indexOf(":");
+              return [declaration.slice(0, colon).trim(), declaration.slice(colon + 1).trim()];
+            }),
+        ),
+      ]),
+    );
+  }
+  return blocks;
+}
+
+describe("IconButton gesture keyframes", () => {
+  const css = readFileSync(resolve(__dirname, "../registry/styles/icon-button.css"), "utf8");
+  const shipped = byName.get("button")?.css ?? {};
+
+  // The button item adds them to the consumer's CSS, and the docs and tests load the stylesheet.
+  it("ships the keyframes from registry/styles/icon-button.css in the button item", () => {
+    expect(Object.keys(keyframesOf(css)).length).toBeGreaterThan(0);
+    expect(shipped).toEqual(keyframesOf(css));
+  });
+
+  // Installing the button must only add keyframes: no tokens, variants or other rules.
+  it("adds only namespaced keyframes to the consumer's CSS", () => {
+    for (const key of Object.keys(shipped)) expect(key).toMatch(/^@keyframes buril-icon-[a-z-]+$/);
+  });
+
+  it("move with compositor-only properties", () => {
+    const properties = Object.values(keyframesOf(css)).flatMap((frames) =>
+      Object.values(frames).flatMap((declarations) => Object.keys(declarations)),
+    );
+    expect(new Set(properties)).toEqual(new Set(["rotate", "translate", "scale"]));
+  });
+
+  it("parses keyframes into the css field's shape", () => {
+    expect(
+      keyframesOf(
+        "/* x */ @keyframes buril-icon-a { 0%,100% { rotate: 0deg } 50% { scale: 1.1; } }",
+      ),
+    ).toEqual({
+      "@keyframes buril-icon-a": { "0%, 100%": { rotate: "0deg" }, "50%": { scale: "1.1" } },
+    });
   });
 });

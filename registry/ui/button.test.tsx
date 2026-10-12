@@ -392,6 +392,71 @@ describe("IconButton", () => {
     expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
 
+  describe("motion", () => {
+    const presets = [
+      "rotate",
+      "spin",
+      "wiggle",
+      "swing",
+      "nudge-x",
+      "nudge-up",
+      "nudge-diagonal",
+      "pop",
+    ] as const;
+
+    it.each(presets)("marks the hidden icon with the %s gesture and keeps the name", (motion) => {
+      render(
+        <IconButton aria-label="Close" motion={motion}>
+          <CloseIcon />
+        </IconButton>,
+      );
+      const button = screen.getByRole("button", { name: "Close" });
+      const icon = screen.getByTestId("icon").closest("[data-motion]");
+      expect(icon).toHaveAttribute("data-motion", motion);
+      expect(icon).toHaveAttribute("aria-hidden", "true");
+      // The button names the group its icon reacts to: hover and keyboard focus.
+      expect(button).toHaveClass("group/icon-button");
+    });
+
+    it("adds no gesture without the prop", () => {
+      render(
+        <IconButton aria-label="Close">
+          <CloseIcon />
+        </IconButton>,
+      );
+      expect(screen.getByRole("button")).not.toHaveClass("group/icon-button");
+      expect(screen.getByRole("button").querySelector("[data-motion]")).toBeNull();
+    });
+
+    it("keeps the consumer's classes next to the gesture group", () => {
+      render(
+        <IconButton aria-label="Close" motion="rotate" className="mt-2">
+          <CloseIcon />
+        </IconButton>,
+      );
+      expect(screen.getByRole("button")).toHaveClass("group/icon-button", "mt-2");
+    });
+
+    it("only accepts the documented presets", () => {
+      render(
+        // @ts-expect-error: "bounce" is not a preset.
+        <IconButton aria-label="Close" motion="bounce">
+          <CloseIcon />
+        </IconButton>,
+      );
+      expect(screen.getByRole("button")).toBeInTheDocument();
+    });
+
+    it("drops the gesture with the icon while loading", () => {
+      render(
+        <IconButton aria-label="Refresh" motion="spin" loading>
+          <CloseIcon />
+        </IconButton>,
+      );
+      expect(screen.getByRole("button").querySelector("[data-motion]")).toBeNull();
+    });
+  });
+
   describe("accessibility", () => {
     it.each(variants)("has no axe violations for the %s variant", async (variant) => {
       const { container } = render(

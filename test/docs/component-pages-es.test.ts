@@ -217,6 +217,18 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
   },
 );
 
+describe("icon-button in Spanish", () => {
+  it("explains the gestures, the lid marker and reduced motion in Spanish", async () => {
+    const visible = squash(
+      text(main(await render(spanish["icon-button"], "/es/docs/components/icon-button"))),
+    );
+    expect(visible).toContain("data-lid");
+    expect(visible).toMatch(/movimiento reducido/);
+    expect(visible).toMatch(/una vez/);
+    expect(visible).toContain("@keyframes buril-icon-");
+  });
+});
+
 describe("Spanish component docs data", () => {
   it("translates every description, key action and note, and keeps names, types and keys", () => {
     for (const { slug } of documentedComponents) {
