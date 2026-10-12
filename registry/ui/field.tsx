@@ -39,11 +39,21 @@ type FieldProps = Omit<ComponentProps<"div">, "children"> & {
    */
   error?: ReactNode;
   /**
-   * Marks the control `required` and shows "(required)" next to the label. If the rendered control
+   * Marks the control `required` and shows `requiredLabel` next to the label. If the rendered control
    * ends up neither `required` nor `aria-required`, the marker joins the label's accessible name so
    * the requirement is still announced, and development builds warn.
    */
   required?: boolean;
+  /**
+   * The visible required marker. Pass your language's text, such as `"(obligatorio)"`; screen
+   * readers also hear it whenever the control itself does not report the requirement.
+   */
+  requiredLabel?: string;
+  /**
+   * Hidden text read before the error, so screen readers announce it as an error. Pass your
+   * language's word, such as `"Fehler:"`.
+   */
+  errorPrefix?: string;
   /**
    * The one control this field labels. Either a function that receives the control props to
    * spread onto your element (`{(control) => <input {...control} />}`), or a single element,
@@ -68,7 +78,7 @@ const reportsRequired = (element: HTMLElement) =>
  * every commit this checks the rendered control and, if it does not report the requirement, lets
  * screen readers read the marker as part of the label.
  */
-function useRequirementFallback(controlId: string) {
+function useRequirementFallback(controlId: string, requiredLabel: string) {
   const marker = useRef<HTMLSpanElement>(null);
   const warned = useRef(false);
 
@@ -90,8 +100,8 @@ function useRequirementFallback(controlId: string) {
       console.warn(
         `Field: "required" is set, but the control with id "${controlId}" is not required. ` +
           "Spread every prop the render function receives onto the control, including " +
-          '"required", or set "aria-required" on a custom control. Until then the label reads ' +
-          '"(required)" to screen readers.',
+          `"required", or set "aria-required" on a custom control. Until then the label reads ` +
+          `"${requiredLabel}" to screen readers.`,
       );
     }
   });
@@ -127,6 +137,8 @@ function Field({
   description,
   error,
   required = false,
+  requiredLabel = "(required)",
+  errorPrefix = "Error:",
   className,
   children,
   ...props
@@ -138,7 +150,7 @@ function Field({
   const errorId = `${baseId}-error`;
   const hasDescription = hasContent(description);
   const invalid = hasContent(error);
-  const requiredMarker = useRequirementFallback(controlId);
+  const requiredMarker = useRequirementFallback(controlId, requiredLabel);
 
   const describedBy =
     [
@@ -183,7 +195,7 @@ function Field({
               aria-hidden="true"
               className="font-normal text-muted-foreground"
             >
-              (required)
+              {requiredLabel}
             </span>
           </>
         )}
@@ -212,7 +224,7 @@ function Field({
           <span className="flex items-start gap-1.5 transition-[opacity,translate] duration-[var(--buril-duration-fast,200ms),var(--buril-duration-base,420ms)] ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) starting:opacity-0 motion-safe:starting:-translate-y-0.75">
             <ErrorIcon />
             <span>
-              <span className="sr-only">Error:</span> {error}
+              <span className="sr-only">{errorPrefix}</span> {error}
             </span>
           </span>
         )}

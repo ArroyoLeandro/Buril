@@ -31,11 +31,16 @@ type LinkProps = Omit<ComponentProps<"a">, "href"> &
     href: string;
     /**
      * Opens the link in a new tab. It sets `target="_blank"` and `rel="noopener noreferrer"`, and
-     * tells every user: screen readers hear "(opens in a new tab)" and sighted users see an icon.
+     * tells every user: screen readers hear `newTabLabel` and sighted users see an icon.
      * Passing `target="_blank"` yourself does the same. With `aria-label` or `aria-labelledby`, the
      * hint is added to that name too.
      */
     external?: boolean;
+    /**
+     * The hidden hint screen readers hear on a link that opens a new tab. Pass your language's
+     * text, such as `"(se abre en una pestaña nueva)"`.
+     */
+    newTabLabel?: string;
   };
 
 function ExternalIcon() {
@@ -64,12 +69,11 @@ function newTabRel(rel: string | undefined) {
   return [...tokens].join(" ");
 }
 
-const newTabHint = "(opens in a new tab)";
-
 function Link({
   className,
   variant,
   external = false,
+  newTabLabel = "(opens in a new tab)",
   target,
   rel,
   children,
@@ -87,7 +91,7 @@ function Link({
       className={cn(linkVariants({ variant }), className)}
       // aria-label and aria-labelledby replace the link text as its name, which would drop the
       // hidden hint, so the hint is added to whichever of them names the link.
-      aria-label={newTab && ariaLabel ? `${ariaLabel} ${newTabHint}` : ariaLabel}
+      aria-label={newTab && ariaLabel ? `${ariaLabel} ${newTabLabel}` : ariaLabel}
       aria-labelledby={newTab && ariaLabelledBy ? `${ariaLabelledBy} ${hintId}` : ariaLabelledBy}
       {...props}
     >
@@ -97,7 +101,7 @@ function Link({
         <>
           {" "}
           <span id={hintId} className="sr-only">
-            {newTabHint}
+            {newTabLabel}
           </span>
           <ExternalIcon />
         </>
