@@ -6,7 +6,7 @@ import AlertDemo from "../../../../components/AlertDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 
-const { insertExample, liveExample } = componentExamples.alert;
+const { insertExample, liveExample, variantsExample, assertiveExample } = componentExamples.alert;
 ---
 
 <ComponentPage slug="alert">
@@ -68,6 +68,27 @@ const { insertExample, liveExample } = componentExamples.alert;
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={insertExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Variantes e iconos</h3>
+    <p class="mt-4 text-muted-foreground">
+      Cada variante tiene su propio icono: una <code>i</code> para <code>default</code> y una señal
+      de advertencia para <code>destructive</code>. Pasa <code>icon</code> para usar el tuyo, o{" "}
+      <code>null</code> para no mostrar ninguno. El icono está oculto para los lectores de pantalla,
+      así que el título debe decir qué tipo de mensaje es.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Un error urgente</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>live="assertive"</code> le da a la alerta <code>role="alert"</code>, que interrumpe lo
+      que esté diciendo el lector de pantalla. Resérvala para errores que bloquean el trabajo del
+      usuario, y renderízala antes de que aparezca su texto.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={assertiveExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

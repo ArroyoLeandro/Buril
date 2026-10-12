@@ -19,7 +19,7 @@ import registry from "../../registry.json";
  * page and its Spanish twin under `/es/` each pass their own prose through the slots.
  *
  * Sections, in page order: Preview/Code tabs, Installation (CLI/Manual tabs), Usage, Examples,
- * API reference, Accessibility, then any extra sections. Slots:
+ * API reference, Accessibility (Keyboard, then ARIA, then notes), then any extra sections. Slots:
  * - `lead`: optional text appended to the description paragraph.
  * - `demo`: the live demo, one React island. The Code tab shows `src/components/<Name>Demo.tsx`.
  * - `install-notes`: optional paragraphs in the CLI tab.
@@ -224,7 +224,8 @@ const cell = "px-2 py-2 align-top sm:px-4";
       ))}
 
       <h2 class={h2}>{t("component.accessibility")}</h2>
-      {docs.keyboard && docs.keyboard.length > 0 && (
+      <h3 class="mt-8 font-display text-lg">{t("component.keyboard")}</h3>
+      {docs.keyboard && docs.keyboard.length > 0 ? (
         <div class="mt-4 border border-border">
           <table class="w-full border-collapse text-left text-sm">
             <caption class="sr-only">{t("component.keyboard")}</caption>
@@ -250,7 +251,24 @@ const cell = "px-2 py-2 align-top sm:px-4";
             </tbody>
           </table>
         </div>
+      ) : (
+        <p class="mt-4 text-muted-foreground">{t("component.noKeyboardDetail")}</p>
       )}
+      <h3 class="mt-8 font-display text-lg">{t("component.aria")}</h3>
+      <dl class="mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
+        <dt class="font-semibold">{t("component.role")}</dt>
+        <dd>
+          <InlineCode text={docs.aria.role} />
+        </dd>
+        {docs.aria.states && (
+          <>
+            <dt class="font-semibold">{t("component.states")}</dt>
+            <dd>
+              <InlineCode text={docs.aria.states} />
+            </dd>
+          </>
+        )}
+      </dl>
       <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
         {docs.accessibility.map((note) => (
           <li>

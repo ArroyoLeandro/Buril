@@ -6,7 +6,7 @@ import InputDemo from "../../../../components/InputDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 
-const { usageExample } = componentExamples.input;
+const { usageExample, standaloneExample } = componentExamples.input;
 ---
 
 <ComponentPage slug="input">
@@ -52,6 +52,16 @@ const { usageExample } = componentExamples.input;
         fuente de 16px, así que los navegadores móviles no hacen zoom cuando recibe el foco.
       </li>
     </ul>
+
+    <h3 class="mt-8 font-display text-lg">Sin un Field</h3>
+    <p class="mt-4 text-muted-foreground">
+      Un Field conecta por ti la etiqueta, el error y <code>aria-invalid</code>. Sin él, escríbelos
+      tú: un <code>&lt;label&gt;</code> para el campo, <code>aria-invalid</code> mientras el valor
+      no sea válido y <code>aria-describedby</code> apuntando al mensaje.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={standaloneExample} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

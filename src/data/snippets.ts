@@ -233,6 +233,20 @@ export const componentExamples = {
   <AlertTitle>Upload</AlertTitle>
   <AlertDescription>{progressMessage}</AlertDescription>
 </Alert>`,
+    variantsExample: `<Alert>
+  <AlertTitle>New version available</AlertTitle>
+  <AlertDescription>Reload the page to get the latest components.</AlertDescription>
+</Alert>
+<Alert variant="destructive" icon={<CreditCardIcon />}>
+  <AlertTitle>Payment failed</AlertTitle>
+</Alert>
+<Alert icon={null}>
+  <AlertTitle>Maintenance tonight from 22:00</AlertTitle>
+</Alert>`,
+    assertiveExample: `{/* On the page from the start; it interrupts only when its text appears. */}
+<Alert variant="destructive" live="assertive">
+  {expired && <AlertTitle>Your session expired. Sign in again to save.</AlertTitle>}
+</Alert>`,
   },
   avatar: {
     fallbackExample: `<Avatar alt="Grace Hopper" size="sm" />
@@ -324,6 +338,21 @@ export const componentExamples = {
     <path d="M6 7l1 13h10l1-13M10 11v6M14 11v6" />
   </svg>
 </IconButton>`,
+    variantsExample: `<IconButton aria-label="Add item"><PlusIcon /></IconButton>
+<IconButton aria-label="Add item" variant="secondary"><PlusIcon /></IconButton>
+<IconButton aria-label="Close panel" variant="outline"><XIcon /></IconButton>
+<IconButton aria-label="Close notice" variant="ghost"><XIcon /></IconButton>
+<IconButton aria-label="Open the guide" variant="link"><BookIcon /></IconButton>
+<IconButton aria-label="Delete item" variant="destructive"><TrashIcon /></IconButton>
+
+<IconButton
+  aria-label="Like"
+  aria-pressed={liked}
+  variant="ghost"
+  onClick={() => setLiked(!liked)}
+>
+  <HeartIcon />
+</IconButton>`,
   },
   input: {
     usageExample: `import { Field } from "@/components/ui/field";
@@ -332,6 +361,9 @@ import { Input } from "@/components/ui/input";
 <Field label="Email" error={errors.email} required>
   {(control) => <Input type="email" autoComplete="email" {...control} />}
 </Field>`,
+    standaloneExample: `<label htmlFor="promo">Promo code</label>
+<Input id="promo" aria-invalid={expired || undefined} aria-describedby="promo-error" />
+<p id="promo-error">{expired ? "This code has expired." : ""}</p>`,
   },
   link: {
     externalExample: `<Link href="https://example.com/changelog" external>
@@ -356,6 +388,15 @@ import { Input } from "@/components/ui/input";
     Drone (unavailable)
   </RadioGroupItem>
 </RadioGroup>`,
+    requiredExample: `<RadioGroup legend="Plan" name="plan" required>
+  <RadioGroupItem value="free">Free</RadioGroupItem>
+  <RadioGroupItem value="pro">Pro</RadioGroupItem>
+</RadioGroup>
+
+<RadioGroup legend="Plan" defaultValue="free" disabled>
+  <RadioGroupItem value="free">Free</RadioGroupItem>
+  <RadioGroupItem value="pro">Pro</RadioGroupItem>
+</RadioGroup>`,
   },
   select: {
     example: `import { Field } from "@/components/ui/field";
@@ -369,6 +410,13 @@ import { Select } from "@/components/ui/select";
       <option value="m">Medium</option>
     </Select>
   )}
+</Field>`,
+    listboxExample: `<Field label="Toppings" description="Hold Ctrl, or Cmd on a Mac, to choose several.">
+  <Select name="toppings" multiple>
+    <option value="cheese">Cheese</option>
+    <option value="mushrooms">Mushrooms</option>
+    <option value="olives">Olives</option>
+  </Select>
 </Field>`,
   },
   separator: {
@@ -421,6 +469,10 @@ import { Select } from "@/components/ui/select";
   />
   Wi-Fi
 </label>`,
+    sizesExample: `<Switch className="w-9" />
+<Switch />
+<Switch className="h-8 w-14" />
+<Switch className="h-10 w-16" />`,
   },
   textarea: {
     example: `import { Field } from "@/components/ui/field";
@@ -429,5 +481,9 @@ import { Textarea } from "@/components/ui/textarea";
 <Field label="Message" description="Up to 200 characters.">
   {(control) => <Textarea maxLength={200} {...control} />}
 </Field>`,
+    statesExample: `<Textarea rows={6} />
+<Textarea aria-invalid aria-describedby="message-error" />
+<Textarea readOnly defaultValue="Sent on 12 October." />
+<Textarea disabled />`,
   },
 } as const;

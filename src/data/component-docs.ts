@@ -223,6 +223,18 @@ export const componentDocs: Record<string, ComponentDocs> = {
           className,
         ],
       },
+      {
+        component: "linkVariants()",
+        description: "The same classes as a string, for an element that is already a link.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "muted"',
+            default: '"default"',
+            description: "The same variants as the Link.",
+          },
+        ],
+      },
     ],
     keyboard: [{ key: "Enter", action: "Follows the link." }],
     aria: {
@@ -283,7 +295,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
           },
           {
             name: "children",
-            type: "(control) => ReactNode | ReactElement",
+            type: "((control: FieldControlProps) => ReactNode) | ReactElement",
             description: "Required. A render prop that spreads the control props, or one element.",
           },
           className,
@@ -738,6 +750,18 @@ export const componentDocs: Record<string, ComponentDocs> = {
           className,
         ],
       },
+      {
+        component: "avatarVariants()",
+        description: "The same classes as a string, for your own avatar markup.",
+        props: [
+          {
+            name: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description: "The same sizes as the Avatar.",
+          },
+        ],
+      },
     ],
     aria: {
       role: "`img`: the `<img>`, or the initials named by `alt`",
@@ -836,6 +860,18 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description: "The title or the description. The title can hold a heading.",
           },
           className,
+        ],
+      },
+      {
+        component: "alertVariants()",
+        description: "The same classes as a string, for your own callout markup.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description: "The same variants as the Alert.",
+          },
         ],
       },
     ],
@@ -1059,6 +1095,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
             "El aviso oculto que oyen los lectores de pantalla en un enlace que abre una pestaña nueva. Pásalo en el idioma de tu sitio.",
           className: classNameEs,
         },
+      },
+      "linkVariants()": {
+        description: "Las mismas clases como cadena, para un elemento que ya es un enlace.",
+        props: { variant: "Las mismas variantes que el Link." },
       },
     },
     keyboard: { Enter: { action: "Abre el enlace." } },
@@ -1348,6 +1388,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
         },
         defaultTexts: { fallback: "iniciales de `alt`" },
       },
+      "avatarVariants()": {
+        description: "Las mismas clases como cadena, para tu propio marcado de avatar.",
+        props: { size: "Los mismos tamaños que el Avatar." },
+      },
     },
     aria: {
       role: "`img`: la `<img>`, o las iniciales con `alt` como nombre",
@@ -1404,6 +1448,10 @@ const spanishDocs: Record<string, SpanishDocs> = {
           children: "El título o la descripción. El título puede contener un encabezado.",
           className: classNameEs,
         },
+      },
+      "alertVariants()": {
+        description: "Las mismas clases como cadena, para tu propio marcado de aviso destacado.",
+        props: { variant: "Las mismas variantes que la Alert." },
       },
     },
     aria: {

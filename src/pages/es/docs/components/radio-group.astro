@@ -6,7 +6,7 @@ import RadioGroupDemo from "../../../../components/RadioGroupDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 
-const { example } = componentExamples["radio-group"];
+const { example, requiredExample } = componentExamples["radio-group"];
 ---
 
 <ComponentPage slug="radio-group">
@@ -59,6 +59,16 @@ const { example } = componentExamples["radio-group"];
     <h3 class="mt-8 font-display text-lg">Controlado, con una opción deshabilitada</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Obligatorio, o deshabilitado por completo</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>required</code> marca todos los botones de opción como obligatorios, así que el
+      formulario no se puede enviar sin elegir uno. <code>disabled</code> en el grupo deshabilita
+      todos los botones de opción a través del fieldset.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={requiredExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

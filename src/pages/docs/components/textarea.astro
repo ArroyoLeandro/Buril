@@ -6,7 +6,7 @@ import TextareaDemo from "../../../components/TextareaDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
 
-const { example } = componentExamples.textarea;
+const { example, statesExample } = componentExamples.textarea;
 ---
 
 <ComponentPage slug="textarea">
@@ -39,6 +39,16 @@ const { example } = componentExamples.textarea;
     <h3 class="mt-8 font-display text-lg">In a Field</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Rows and states</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>rows</code> sets the starting height; people can still drag it taller. Invalid,
+      read-only and disabled work as on the Input. Give an invalid textarea a message through{" "}
+      <code>aria-describedby</code>, or put it in a Field, which does it for you.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={statesExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

@@ -142,6 +142,8 @@ const en = {
   "component.role": "Role",
   "component.states": "States",
   "component.notes": "Notes",
+  "component.aria": "ARIA",
+  "component.noKeyboardDetail": "No keyboard interaction: the component itself never takes focus.",
   "docsNav.accessibility": "Accessibility",
   "a11y.rule": "Rule",
   "a11y.rulesCaption": "The 11 rules every component follows, and how each is checked.",
@@ -282,6 +284,9 @@ const es: Record<UiKey, string> = {
   "component.role": "Rol",
   "component.states": "Estados",
   "component.notes": "Notas",
+  "component.aria": "ARIA",
+  "component.noKeyboardDetail":
+    "Sin interacción con el teclado: el componente en sí nunca recibe el foco.",
   "docsNav.accessibility": "Accesibilidad",
   "a11y.rule": "Regla",
   "a11y.rulesCaption": "Las 11 reglas que sigue cada componente y cómo se comprueba cada una.",

@@ -25,11 +25,13 @@ export const changelog: ChangelogEntry[] = [
     changes: {
       en: [
         "New Accessibility, Motion, FAQ and Changelog pages, and five guides: forms, dark mode, theming, using Buril with shadcn and migrating from it.",
+        "Every component page has a Keyboard and an ARIA section, and an example for each variant, size and state.",
         "The IconButton `pop` gesture squeezes on press and settles on release instead of snapping back.",
         "On phones the site header fits one row: the theme is one icon button and the main links fold into a menu.",
       ],
       es: [
         "Nuevas páginas de Accesibilidad, Movimiento, Preguntas frecuentes y Cambios, y cinco guías: formularios, modo oscuro, temas, usar Buril junto a shadcn y migrar desde shadcn.",
+        "Cada página de componente tiene una sección de Teclado y otra de ARIA, y un ejemplo de cada variante, tamaño y estado.",
         "El gesto `pop` del IconButton se encoge al pulsar y se asienta al soltar, en lugar de volver de golpe.",
         "En los teléfonos, el encabezado del sitio cabe en una fila: el tema es un solo botón de icono y los enlaces principales se pliegan en un menú.",
       ],
