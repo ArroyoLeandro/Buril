@@ -20,6 +20,18 @@
  * - forced colors → colores forzados; contrast → contraste; target size → tamaño del objetivo
  * - Getting Started → Primeros pasos; Theming → Temas; On this page → En esta página
  * - Feedback (category) → Avisos y estados; Overlays → Superposiciones
+ * - Component pages: Example → Ejemplo; Preview → Vista previa; Usage → Uso; Examples → Ejemplos;
+ *   API reference → Referencia de la API; Type → Tipo; Default → Valor por defecto
+ * - Keys: Tab, Enter and Shift stay as printed on keyboards; Space → Espacio; Arrow keys →
+ *   Flechas; Letters → Letras; press → pulsar; Tab stop → parada de Tab
+ * - fieldset, legend, render prop, cloneElement and other code terms stay in English; a legend in
+ *   prose → leyenda; skip link (the pattern) → enlace de salto (the component stays Skip Link)
+ * - forced-colors mode → modo de colores forzados; target size → tamaño del objetivo; outline
+ *   (focus) → contorno; border → borde; thumb (Switch) → indicador; track → pista; chevron → flecha
+ * - stretched link → enlace extendido; callout → aviso destacado; badge → insignia (in prose,
+ *   when not the component name); placeholder block → bloque de relleno; status region → región
+ *   de estado; live region → región viva
+ * - build time → al compilar el sitio; npm package → paquete de npm; helper stays in English
  */
 export const locales = ["en", "es"] as const;
 export type Locale = (typeof locales)[number];
@@ -96,6 +108,34 @@ const en = {
   "landing.guide": "Read the installation guide",
   "tokens.token": "Token",
   "tokens.caption": "Buril values for each token, read from `registry/styles/buril.css`.",
+  "component.example": "Example",
+  "component.preview": "Preview",
+  "component.code": "Code",
+  "component.noDemoSource": "This demo has no source file yet.",
+  "component.installation": "Installation",
+  "component.installMethod": "Installation method",
+  "component.cli": "CLI",
+  "component.manual": "Manual",
+  "component.installFromUrl": "Install the component from its URL:",
+  "component.installByName": "Or add the Buril namespace once and install by name:",
+  "component.cnNote":
+    "Every component imports `cn()` from shadcn's `utils` item. The current version of that item re-exports `cn()` from the `cn` npm package, so when the CLI installs or updates `lib/utils.ts`, it also adds `cn` to your dependencies.",
+  "component.installDependencies": "Install the dependencies:",
+  "component.checkUtils": "Check that `lib/utils.ts` exports `cn()`. shadcn's `init` creates it.",
+  "component.copySource":
+    "Copy the source into `components/ui/{file}`. It is read from `{source}` at build time.",
+  "component.usage": "Usage",
+  "component.examples": "Examples",
+  "component.api": "API reference",
+  "component.prop": "Prop",
+  "component.type": "Type",
+  "component.default": "Default",
+  "component.description": "Description",
+  "component.none": "None",
+  "component.accessibility": "Accessibility",
+  "component.keyboard": "Keyboard",
+  "component.key": "Key",
+  "component.action": "Action",
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -168,6 +208,36 @@ const es: Record<UiKey, string> = {
   "landing.guide": "Lee la guía de instalación",
   "tokens.token": "Token",
   "tokens.caption": "Valores de Buril para cada token, leídos de `registry/styles/buril.css`.",
+  "component.example": "Ejemplo",
+  "component.preview": "Vista previa",
+  "component.code": "Código",
+  "component.noDemoSource": "Esta demo todavía no tiene un archivo fuente.",
+  "component.installation": "Instalación",
+  "component.installMethod": "Método de instalación",
+  "component.cli": "CLI",
+  "component.manual": "Manual",
+  "component.installFromUrl": "Instala el componente desde su URL:",
+  "component.installByName":
+    "O registra el namespace de Buril una sola vez e instálalo por nombre:",
+  "component.cnNote":
+    "Todos los componentes importan `cn()` del item `utils` de shadcn. La versión actual de ese item reexporta `cn()` desde el paquete de npm `cn`, así que, cuando la CLI instala o actualiza `lib/utils.ts`, también agrega `cn` a tus dependencias.",
+  "component.installDependencies": "Instala las dependencias:",
+  "component.checkUtils":
+    "Comprueba que `lib/utils.ts` exporte `cn()`. El `init` de shadcn lo crea.",
+  "component.copySource":
+    "Copia el código fuente en `components/ui/{file}`. Se lee de `{source}` al compilar el sitio.",
+  "component.usage": "Uso",
+  "component.examples": "Ejemplos",
+  "component.api": "Referencia de la API",
+  "component.prop": "Prop",
+  "component.type": "Tipo",
+  "component.default": "Valor por defecto",
+  "component.description": "Descripción",
+  "component.none": "Ninguno",
+  "component.accessibility": "Accesibilidad",
+  "component.keyboard": "Teclado",
+  "component.key": "Tecla",
+  "component.action": "Acción",
 };
 
 export const ui: Record<Locale, Record<UiKey, string>> = { en, es };

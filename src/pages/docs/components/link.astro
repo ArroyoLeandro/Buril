@@ -4,14 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import LinkDemo from "../../../components/LinkDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const externalExample = `<Link href="https://example.com/changelog" external>
-  Changelog
-</Link>`;
-
-const mutedExample = `<Link href="/privacy" variant="muted">
-  Privacy policy
-</Link>`;
+const { externalExample, mutedExample } = componentExamples.link;
 ---
 
 <ComponentPage slug="link">

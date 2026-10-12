@@ -1,0 +1,81 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import AlertDemo from "../../../../components/AlertDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { insertExample, liveExample } = componentExamples.alert;
+---
+
+<ComponentPage slug="alert">
+  <Fragment slot="lead">
+    También se conoce como callout. No interrumpe a los lectores de pantalla, salvo que se lo pidas.
+  </Fragment>
+
+  <AlertDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Nunca solo el color.</strong> Cada variante tiene su propio icono, y el título dice
+        qué tipo de mensaje es. El icono tiene <code>aria-hidden</code>, así que el título debe
+        transmitir el significado. Pasa <code>icon</code> para cambiarlo, o
+        <code>icon={"{null}"}</code> para no mostrar ninguno.
+      </li>
+      <li>
+        <strong>Variantes.</strong> <code>default</code> usa los colores de la tarjeta y el borde de
+        tinta; <code>destructive</code> colorea el borde, el icono y el título, y deja la
+        descripción en el color atenuado para que siga siendo fácil de leer.
+      </li>
+    </ul>
+    <p class="mt-4 text-muted-foreground">
+      Por defecto, una alerta es estática: no tiene rol, porque el texto que está en la página desde
+      el principio no necesita anunciarse. La prop <code>live</code> la convierte en una región
+      viva:
+    </p>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <code>live="polite"</code> le da <code>role="status"</code>. Los lectores de pantalla
+        anuncian los cambios cuando el usuario no está haciendo nada. Úsala para la mayoría de los
+        mensajes.
+      </li>
+      <li>
+        <code>live="assertive"</code> le da <code>role="alert"</code>, que interrumpe lo que esté
+        diciendo el lector de pantalla. Úsala solo para mensajes importantes y urgentes que aparecen
+        o cambian mientras el usuario trabaja, como una conexión perdida; nunca para contenido
+        estático.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Una alerta viva cuyo texto cambia</h3>
+    <p class="mt-4 text-muted-foreground">
+      Los lectores de pantalla solo anuncian los cambios de una región viva que ya existe. Una
+      región insertada junto con su texto a menudo pasa desapercibida. Mantén montada la alerta viva
+      y cambia su texto:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={liveExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Una alerta que aparece</h3>
+    <p class="mt-4 text-muted-foreground">
+      Para mostrar una alerta que aparece, insértala en una región <code>role="status"</code> que ya
+      esté en la página, como hace la demo con "Guardar borrador":
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={insertExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/alert.tsx</code>, con la misma ruta y los mismos nombres de partes que
+    el Alert de shadcn. A diferencia del de shadcn, no tiene <code>role="alert"</code> por defecto:
+    usa <code>live</code>. Necesita <code>class-variance-authority</code> y tu helper
+    <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión actual de shadcn,
+    la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

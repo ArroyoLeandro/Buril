@@ -1,0 +1,52 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import TextareaDemo from "../../../../components/TextareaDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { example } = componentExamples.textarea;
+---
+
+<ComponentPage slug="textarea">
+  <Fragment slot="lead">
+    Tiene el borde, el anillo de foco y los estados no válido y deshabilitado del Input, y empieza
+    con unas tres líneas de alto.
+  </Fragment>
+
+  <TextareaDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Ponle una etiqueta.</strong> Ponlo en un Field, como el Input, para que tenga una
+        etiqueta visible, su descripción y su error.
+      </li>
+      <li>
+        <strong>Se redimensiona en vertical.</strong> Se puede agrandar para leer textos largos; el
+        ancho lo sigue marcando tu diseño.
+      </li>
+      <li>
+        <strong>Un texto de error estable.</strong> El Field anuncia los errores nuevos sin
+        interrumpir. Mantén el mismo mensaje mientras se aplica, como hace la demo, para que los
+        lectores de pantalla no lo oigan con cada tecla.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">En un Field</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/textarea.tsx</code>, en la misma ruta que el Textarea de shadcn, así
+    que los imports existentes siguen funcionando. Por eso es un item separado del Input y no un
+    segundo export de <code>input.tsx</code>. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

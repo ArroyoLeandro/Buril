@@ -4,12 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SeparatorDemo from "../../../components/SeparatorDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const verticalExample = `<nav className="flex items-center gap-3">
-  <a href="/docs">Docs</a>
-  <Separator orientation="vertical" decorative />
-  <a href="/blog">Blog</a>
-</nav>`;
+const { verticalExample } = componentExamples.separator;
 ---
 
 <ComponentPage slug="separator">

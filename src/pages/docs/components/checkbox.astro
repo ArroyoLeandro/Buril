@@ -4,16 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import CheckboxDemo from "../../../components/CheckboxDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const fieldExample = `<Field label="Terms" error={errors.terms}>
-  <Checkbox name="terms" />
-</Field>`;
-
-const indeterminateExample = `<Checkbox
-  checked={all}
-  indeterminate={some && !all}
-  onChange={() => setSelected(all ? [] : everything)}
-/>`;
+const { fieldExample, indeterminateExample } = componentExamples.checkbox;
 ---
 
 <ComponentPage slug="checkbox">

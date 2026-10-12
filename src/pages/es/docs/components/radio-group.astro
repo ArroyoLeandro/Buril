@@ -1,0 +1,72 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import RadioGroupDemo from "../../../../components/RadioGroupDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { example } = componentExamples["radio-group"];
+---
+
+<ComponentPage slug="radio-group">
+  <Fragment slot="lead">
+    El navegador aporta el modelo de teclado, así que no hay código de foco que pueda fallar.
+  </Fragment>
+
+  <RadioGroupDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Su leyenda le da nombre.</strong> <code>RadioGroup</code> es un
+        <code>&lt;fieldset&gt;</code>, y <code>legend</code> es obligatoria: es la pregunta visible
+        y el nombre accesible del grupo.
+      </li>
+      <li>
+        <strong>Una parada de Tab y flechas para elegir.</strong> Los botones de opción comparten un
+        <code>name</code> (generado si no pasas uno), así que el navegador convierte el grupo en una
+        sola parada de Tab, en el botón marcado o en el primero. Las flechas mueven el foco y la
+        elección, y saltan los botones deshabilitados.
+      </li>
+      <li>
+        <strong>Controlado o no.</strong> Pasa <code>value</code> y actualízalo desde
+        <code>onValueChange</code>, o pasa <code>defaultValue</code>. Los formularios envían el
+        <code>name</code> con el <code>value</code> marcado.
+      </li>
+      <li>
+        <strong>Las etiquetas son objetivos de clic.</strong> Cada item es una fila
+        <code>&lt;label&gt;</code> de al menos 24px de alto, así que hacer clic en el texto marca el
+        botón. <code>className</code> da estilo a esa fila; las demás props van al
+        <code>&lt;input&gt;</code>.
+      </li>
+      <li>
+        <strong>Errores.</strong> ARIA permite <code>aria-invalid</code> en un botón de opción, pero
+        no en un grupo, así que pasa <code>aria-invalid="true"</code> a cada item; su borde pasa al
+        color destructivo. Apunta el <code>aria-describedby</code> del grupo al texto del error,
+        para que se lea con la leyenda.
+      </li>
+      <li>
+        <strong>Estados.</strong> Un botón marcado muestra un punto relleno, no solo un color. El
+        foco muestra el anillo. <code>disabled</code> en el grupo deshabilita todos los botones; en
+        un item, solo ese. En el modo de colores forzados vuelve el botón de opción nativo, que
+        dibuja el sistema.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Controlado, con una opción deshabilitada</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/radio-group.tsx</code>, en la misma ruta que el Radio Group de shadcn.
+    A diferencia del de shadcn, renderiza un fieldset con una <code>legend</code> obligatoria, y
+    cada item recibe su etiqueta como children. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

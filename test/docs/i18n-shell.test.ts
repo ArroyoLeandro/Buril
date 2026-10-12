@@ -194,10 +194,19 @@ describe("language switcher", () => {
     expect(html.trim()).toBe("");
   });
 
-  it("is left out, with the alternates, while a page has no translation", async () => {
+  it("lists both languages as alternates once a page has its twin", async () => {
     const html = await render(ButtonPage, "/docs/components/button");
-    expect(html).not.toMatch(/hreflang=/);
-    expect(header(html)).not.toMatch(/data-language-switcher/);
+    const head = html.slice(0, html.indexOf("</head>"));
+    expect(head).toMatch(/<link rel="alternate" hreflang="en" href="\/docs\/components\/button"/);
+    expect(head).toMatch(
+      /<link rel="alternate" hreflang="es" href="\/es\/docs\/components\/button"/,
+    );
+    expect(head).toMatch(
+      /<link rel="alternate" hreflang="x-default" href="\/docs\/components\/button"/,
+    );
+    expect(header(html)).toMatch(
+      /<a[^>]*href="\/es\/docs\/components\/button"[^>]*data-language-switcher/,
+    );
   });
 
   it("uses the localized default description", async () => {

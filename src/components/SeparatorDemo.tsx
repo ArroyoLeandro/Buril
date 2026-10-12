@@ -22,7 +22,11 @@ export default function SeparatorDemo({ locale = "en" }: Props) {
         </p>
       </div>
       <Separator />
-      <nav aria-label={t("Project")} className="flex min-h-6 items-center gap-3 text-sm">
+      {/* Wraps on narrow screens, where longer labels, such as the Spanish ones, do not fit. */}
+      <nav
+        aria-label={t("Project")}
+        className="flex min-h-6 flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+      >
         <Link href={href("/docs")}>{t("Docs")}</Link>
         {/* The links are already separate items; the lines only decorate. */}
         <Separator orientation="vertical" decorative />

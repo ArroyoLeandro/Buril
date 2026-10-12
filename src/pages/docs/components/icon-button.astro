@@ -4,10 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import IconButtonDemo from "../../../components/IconButtonDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const sizesExample = `<IconButton aria-label="Edit" size="icon-sm"><PencilIcon /></IconButton>
-<IconButton aria-label="Edit"><PencilIcon /></IconButton>
-<IconButton aria-label="Edit" size="icon-lg"><PencilIcon /></IconButton>`;
+const { sizesExample } = componentExamples["icon-button"];
 ---
 
 <ComponentPage slug="icon-button">

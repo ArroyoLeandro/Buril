@@ -1,0 +1,57 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import IconButtonDemo from "../../../../components/IconButtonDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { sizesExample } = componentExamples["icon-button"];
+---
+
+<ComponentPage slug="icon-button">
+  <Fragment slot="lead">
+    Es el Button con un tamaño cuadrado, así que las variantes, la carga y el estado deshabilitado
+    funcionan igual.
+  </Fragment>
+
+  <IconButtonDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <p class="mt-4 text-muted-foreground">
+      Un icono no tiene texto, así que <code>aria-label</code> es el único nombre accesible del
+      botón. Es obligatoria: omitirla es un error de TypeScript. Describe la acción, como "Cerrar
+      diálogo", no el dibujo, como "Cruz".
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      El icono va dentro de un span con <code>aria-hidden</code>, así que el título o la etiqueta de
+      un SVG nunca se suma al nombre. Cuando hay espacio para una etiqueta visible, es mejor un
+      Button con texto: lo lee todo el mundo, no solo quienes usan un lector de pantalla.
+    </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Tamaños</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>icon-sm</code>, <code>icon</code> (el predeterminado) e <code>icon-lg</code> son
+      cuadrados totalmente redondeados de 32, 40 y 48px, todos por encima del objetivo mínimo de
+      24px. Un icono sin su propia clase <code>size-*</code> se escala con el botón. Los mismos
+      tamaños funcionan en <code>Button</code> y en <code>buttonVariants()</code>.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={sizesExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Carga</h3>
+    <p class="mt-4 text-muted-foreground">
+      Mientras <code>loading</code> está activo, el indicador de carga reemplaza al icono y el botón
+      conserva su nombre y el foco. Como con el Button, anuncia el progreso desde una región
+      <code>role="status"</code> fuera del botón.
+    </p>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    <code>IconButton</code> viene en el mismo item del registry que el Button, en
+    <code>components/ui/button.tsx</code>, así que al instalar cualquiera de los dos tienes ambos.
+  </p>
+</ComponentPage>

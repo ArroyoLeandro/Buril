@@ -1,12 +1,20 @@
+import type { Locale } from "../i18n/ui";
+
 /**
  * Hand-written reference for each component page, keyed by the slug in `components.ts`: a minimal
  * usage snippet, the props of each export and a summary of keyboard and screen reader behavior.
  * Text may use `backticks` for inline code. Keep it in step with `registry/ui/*`.
+ *
+ * The Spanish text lives in `spanishDocs` below, keyed by export, prop name and key, so names,
+ * types, code defaults and the usage snippet are written once and stay in English.
  */
 export interface PropDoc {
   name: string;
   type: string;
+  /** The default as a code value, such as `"default"` or `false`. */
   default?: string;
+  /** A default that is not a code value, such as "generated", shown as text. */
+  defaultText?: string;
   description: string;
 }
 
@@ -351,7 +359,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
           {
             name: "name",
             type: "string",
-            default: "generated",
+            defaultText: "generated",
             description: "The shared `name` that forms submit.",
           },
           {
@@ -614,7 +622,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
           {
             name: "fallback",
             type: "string",
-            default: "initials of `alt`",
+            defaultText: "initials of `alt`",
             description: "Text for the fallback.",
           },
           {
@@ -698,7 +706,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
           {
             name: "icon",
             type: "ReactNode",
-            default: "per variant",
+            defaultText: "per variant",
             description:
               "The icon before the title, hidden from assistive technology. `null` shows none.",
           },
@@ -817,3 +825,487 @@ export const componentDocs: Record<string, ComponentDocs> = {
     ],
   },
 };
+
+/** Spanish text for one export: its description, and each prop's description by prop name. */
+interface SpanishApiDoc {
+  description?: string;
+  props: Record<string, string>;
+  /** Spanish for the `defaultText` of a prop, by prop name. */
+  defaultTexts?: Record<string, string>;
+}
+
+/** Spanish text for one component page. Terminology follows the glossary in `src/i18n/ui.ts`. */
+interface SpanishDocs {
+  /** By export name, as in `ApiDoc.component`. */
+  api: Record<string, SpanishApiDoc>;
+  /** By key as written in English; `key` gives the key's Spanish name when it has one. */
+  keyboard?: Record<string, { key?: string; action: string }>;
+  /** In the same order as the English notes. */
+  accessibility: string[];
+}
+
+const classNameEs = "Clases adicionales, combinadas con `cn()`.";
+const buttonVariantEs =
+  "Estilo visual. `destructive` es para acciones que eliminan algo o no se pueden deshacer.";
+const buttonKeyboardEs = {
+  Enter: { action: "Activa el botón." },
+  Space: { key: "Espacio", action: "Activa el botón." },
+};
+const fieldKeyboardEs = { Tab: { action: "Mueve el foco al control y, después, al siguiente." } };
+const inputInvalidEs = "Pone el borde en el color destructivo. Field lo aplica por ti.";
+const visibleLabelEs = "Necesita una etiqueta visible: ponlo en un Field.";
+
+const spanishDocs: Record<string, SpanishDocs> = {
+  button: {
+    api: {
+      Button: {
+        description: "Todas las demás props van al `<button>` nativo.",
+        props: {
+          variant: buttonVariantEs,
+          size: "Alto y relleno: 32, 40 o 48px, o un cuadrado de esos mismos tamaños.",
+          loading:
+            "Muestra un indicador de carga y bloquea la activación, mientras el botón conserva el foco.",
+          type: 'Pasa `"submit"` para el botón de envío de un formulario.',
+          className: classNameEs,
+        },
+      },
+      "buttonVariants()": {
+        description: "Las mismas clases como cadena, para un enlace con aspecto de botón.",
+        props: { variant: buttonVariantEs, size: "Los mismos tamaños que el Button." },
+      },
+    },
+    keyboard: buttonKeyboardEs,
+    accessibility: [
+      "Es un `<button>` nativo, así que puede recibir el foco y se anuncia como botón.",
+      'Mientras carga, aplica `aria-busy` y `aria-disabled` y sigue pudiendo recibir el foco; anuncia el progreso desde una región `role="status"` fuera del botón.',
+      "`disabled` lo quita del orden de tabulación. Mientras una acción está en curso, es preferible `loading`.",
+      "El anillo de foco es un contorno, así que sigue visible en el modo de colores forzados.",
+    ],
+  },
+  "icon-button": {
+    api: {
+      IconButton: {
+        description:
+          "Acepta todas las props del Button, salvo los valores de `size` que no son cuadrados.",
+        props: {
+          "aria-label": "Obligatoria. Es el único nombre accesible del botón: describe la acción.",
+          children: "Obligatoria. El icono, oculto para las tecnologías de apoyo.",
+          size: "Un cuadrado de 32, 40 o 48px.",
+          variant: buttonVariantEs,
+          loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
+        },
+      },
+    },
+    keyboard: buttonKeyboardEs,
+    accessibility: [
+      "`aria-label` es obligatoria según su tipo, porque un icono no tiene texto.",
+      "El icono va dentro de un span con `aria-hidden`, así que nunca se suma al nombre.",
+      "Todos los tamaños miden al menos 32px, por encima del objetivo mínimo de 24px.",
+    ],
+  },
+  link: {
+    api: {
+      Link: {
+        description: "Todas las demás props van al `<a>` nativo.",
+        props: {
+          href: "Obligatoria. Sin ella, un ancla no es un enlace.",
+          variant: "Color del texto. Las dos conservan el subrayado.",
+          external:
+            'Abre una pestaña nueva con `rel="noopener noreferrer"` y se lo indica a todos los usuarios.',
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: { Enter: { action: "Abre el enlace." } },
+    accessibility: [
+      "Siempre es un `<a href>` real, que se anuncia como enlace y se alcanza con Tab.",
+      "El subrayado se mantiene en todos los estados, así que el color nunca es la única señal.",
+      'Una pestaña nueva agrega "(opens in a new tab)" al nombre accesible, incluso con `aria-label`.',
+    ],
+  },
+  field: {
+    api: {
+      Field: {
+        description: "Todas las demás props van al `<div>` contenedor.",
+        props: {
+          label: "Obligatoria. Se renderiza como el `<label>` del control.",
+          description: "Texto de ayuda, vinculado con `aria-describedby`.",
+          error: "Texto del error. Mientras tiene valor, el control recibe `aria-invalid`.",
+          required: 'Aplica el `required` nativo y muestra "(required)".',
+          children:
+            "Obligatoria. Una render prop que expande las props del control, o un solo elemento.",
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: fieldKeyboardEs,
+    accessibility: [
+      "Hacer clic en la etiqueta enfoca el control, porque el `for` de la etiqueta coincide con su id.",
+      "Los lectores de pantalla leen la descripción y luego el error, después del nombre.",
+      'La región del error siempre está presente, con `aria-live="polite"`, así que los errores nuevos se anuncian.',
+      'La marca "(required)" está oculta para los lectores de pantalla, que anuncian el estado `required` nativo.',
+    ],
+  },
+  input: {
+    api: {
+      Input: {
+        description: "Todas las props van al `<input>` nativo.",
+        props: {
+          type: "Cualquier tipo de input nativo, como `email` o `search`.",
+          "aria-invalid": inputInvalidEs,
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: fieldKeyboardEs,
+    accessibility: [
+      visibleLabelEs,
+      "El borde tiene un contraste de al menos 3:1, y el foco muestra el anillo.",
+      "Una fuente de 16px evita que los navegadores móviles hagan zoom al recibir el foco.",
+    ],
+  },
+  textarea: {
+    api: {
+      Textarea: {
+        description: "Todas las props van al `<textarea>` nativo.",
+        props: {
+          rows: "Altura inicial en líneas. Empieza con unas tres líneas de alto.",
+          "aria-invalid": inputInvalidEs,
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: fieldKeyboardEs,
+    accessibility: [
+      visibleLabelEs,
+      "Se redimensiona en vertical, así que se puede agrandar para leer textos largos.",
+    ],
+  },
+  checkbox: {
+    api: {
+      Checkbox: {
+        description: "Todas las demás props, `ref` incluida, van al `<input>` nativo.",
+        props: {
+          checked: "El estado marcado, para una casilla controlada. Actualízalo desde `onChange`.",
+          indeterminate: "Muestra un guion e informa un estado mixto.",
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: { Space: { key: "Espacio", action: "La marca o la desmarca." } },
+    accessibility: [
+      "Es una casilla nativa, así que su estado se anuncia sin ARIA adicional.",
+      "`indeterminate` se anuncia como mixto.",
+      "Los estados marcado y mixto dibujan una forma, no solo un color. En el modo de colores forzados vuelve la casilla nativa.",
+    ],
+  },
+  "radio-group": {
+    api: {
+      RadioGroup: {
+        description: "Todas las demás props van al `<fieldset>`.",
+        props: {
+          legend: "Obligatoria. La pregunta visible y el nombre accesible del grupo.",
+          name: "El `name` compartido que envían los formularios.",
+          value: "El valor marcado, para un grupo controlado.",
+          defaultValue: "El valor marcado al principio, para un grupo no controlado.",
+          onValueChange: "Se llama con el valor que marca el usuario.",
+          required: "El formulario no se puede enviar sin elegir una opción.",
+          disabled: "Deshabilita todos los botones de opción a través del fieldset.",
+        },
+        defaultTexts: { name: "generado" },
+      },
+      RadioGroupItem: {
+        description:
+          "`className` da estilo a la fila de la etiqueta; las demás props van al `<input>`.",
+        props: {
+          value: "Obligatoria. El valor que informa este botón de opción.",
+          children: "Obligatoria. La etiqueta visible.",
+          disabled: "Deshabilita solo este botón de opción.",
+        },
+      },
+    },
+    keyboard: {
+      Tab: { action: "Lleva el foco al grupo: al botón marcado o, si no hay ninguno, al primero." },
+      "Arrow keys": {
+        key: "Flechas",
+        action: "Mueven el foco y la elección, y saltan los botones deshabilitados.",
+      },
+      Space: { key: "Espacio", action: "Marca el botón enfocado si no hay ninguno marcado." },
+    },
+    accessibility: [
+      "La `<legend>` da nombre al grupo, así que los lectores de pantalla anuncian la pregunta con cada botón.",
+      "El grupo es una sola parada de Tab, gestionada por el navegador.",
+      "Un botón marcado muestra un punto relleno, no solo un color.",
+    ],
+  },
+  switch: {
+    api: {
+      Switch: {
+        description: "Todas las demás props, `ref` incluida, van al `<input>` nativo.",
+        props: {
+          checked:
+            "Activado o desactivado, para un Switch controlado. Actualízalo desde `onChange`.",
+          stateLabels: "Texto visible para cada estado, oculto para los lectores de pantalla.",
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: { Space: { key: "Espacio", action: "Lo activa o lo desactiva." } },
+    accessibility: [
+      'Tiene `role="switch"`, así que los lectores de pantalla lo anuncian como activado o desactivado.',
+      "La posición del indicador muestra el estado, así que nunca depende solo del color.",
+      "El indicador solo se desliza si no se pidió movimiento reducido.",
+    ],
+  },
+  select: {
+    api: {
+      Select: {
+        description: "Todas las props, `ref` incluida, van al `<select>` nativo.",
+        props: {
+          multiple: "Un cuadro de lista sin selector desplegable y sin flecha.",
+          size: "Por encima de 1, un cuadro de lista que muestra esa cantidad de filas, sin flecha.",
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: {
+      Space: {
+        key: "Espacio",
+        action: "Abre el selector de la plataforma en la mayoría de los navegadores.",
+      },
+      "Arrow keys": { key: "Flechas", action: "Cambian la opción o recorren el selector abierto." },
+      Letters: { key: "Letras", action: "Saltan a una opción que coincida." },
+    },
+    accessibility: [
+      "Es un `<select>` nativo, así que el comportamiento con teclado, pantalla táctil y lector de pantalla es el de la plataforma.",
+      "La flecha tiene `aria-hidden` e ignora los clics. En el modo de colores forzados vuelve la flecha nativa.",
+    ],
+  },
+  card: {
+    api: {
+      Card: {
+        description: "Todas las demás props van al `<div>`.",
+        props: {
+          decor:
+            "Agrega una franja rayada en la parte superior, oculta para las tecnologías de apoyo y eliminada en el modo de colores forzados.",
+          className: classNameEs,
+        },
+      },
+      CardTitle: {
+        description: "Todas las demás props van al encabezado.",
+        props: {
+          as: "Nivel del encabezado, para encajar en el esquema de la página. El aspecto no cambia.",
+          className: classNameEs,
+        },
+      },
+      CardDescription: {
+        description: "Todas las demás props van al `<p>`.",
+        props: { className: classNameEs },
+      },
+      "CardHeader, CardContent, CardFooter": {
+        description: "Partes de la estructura: todas las demás props van a su `<div>`.",
+        props: { className: classNameEs },
+      },
+    },
+    accessibility: [
+      "Es un `<div>` simple sin rol, así que no recibe el foco ni agrega un punto de referencia.",
+      "`CardTitle` es un encabezado real, `h3` por defecto; ajusta `as` para que el esquema de la página no salte ningún nivel.",
+      "La franja de `decor` tiene `aria-hidden` y se elimina en el modo de colores forzados.",
+      "Para que toda la tarjeta sea un enlace, extiende un enlace real del título sobre la tarjeta; nunca pongas `onClick` en la tarjeta.",
+    ],
+  },
+  badge: {
+    api: {
+      Badge: {
+        description: "Todas las demás props van al `<span>`.",
+        props: {
+          variant: "Estilo visual. El texto, no el color, dice lo que significa.",
+          className: classNameEs,
+        },
+      },
+      "badgeVariants()": {
+        description: "Las mismas clases como cadena.",
+        props: { variant: "Las mismas variantes que el Badge." },
+      },
+    },
+    accessibility: [
+      "Es un `<span>` sin rol, que se lee junto con el texto que lo rodea.",
+      "No recibe el foco. Para algo con lo que se pueda interactuar, usa un Button o un Link.",
+      "Su texto transmite el significado, nunca solo su color.",
+      "En el modo de colores forzados se quita el relleno y el borde conserva la forma.",
+      'Los lectores de pantalla no anuncian un badge cuyo texto cambia: anúncialo desde una región `role="status"`.',
+    ],
+  },
+  avatar: {
+    api: {
+      Avatar: {
+        description: "`ref` y todas las demás props van al `<span>` raíz.",
+        props: {
+          alt: 'Obligatoria. A quién muestra el avatar, como el nombre de la persona. Da nombre a la imagen y a las iniciales de respaldo; `alt=""` oculta el avatar para las tecnologías de apoyo.',
+          src: "URL de la imagen. Sin ella, o si no carga, el avatar muestra las iniciales.",
+          fallback: "Texto de respaldo.",
+          size: "32, 40 o 48px.",
+          className: classNameEs,
+        },
+        defaultTexts: { fallback: "iniciales de `alt`" },
+      },
+    },
+    accessibility: [
+      "`alt` es obligatoria según su tipo, así que todo avatar tiene un nombre o está marcado como decorativo.",
+      'Las iniciales de respaldo tienen `role="img"` con `alt` como nombre, y las letras tienen `aria-hidden`, así que los lectores de pantalla oyen el nombre, no letras sueltas.',
+      '`alt=""` oculta la imagen, o su respaldo, para los lectores de pantalla, en un avatar junto a un nombre visible.',
+      "En el modo de colores forzados, un borde mantiene visible el círculo.",
+    ],
+  },
+  separator: {
+    api: {
+      Separator: {
+        description: "Todas las demás props, `ref` incluida, van al `<hr>` o al `<div>`.",
+        props: {
+          orientation: "`horizontal` renderiza un `<hr>`; `vertical`, un separador para una fila.",
+          decorative:
+            "Para una línea que solo decora: queda oculta para las tecnologías de apoyo. No la uses entre secciones de contenido.",
+          className: classNameEs,
+        },
+      },
+    },
+    accessibility: [
+      "Un separador horizontal es un `<hr>` nativo, que se anuncia como separador.",
+      'Uno vertical es un `<div>` con `role="separator"` y `aria-orientation="vertical"`.',
+      '`decorative` renderiza `role="none"` con `aria-hidden`, así que los lectores de pantalla lo omiten.',
+      "Nunca recibe el foco.",
+      "Se dibuja con un borde, no con un fondo, así que sigue visible en el modo de colores forzados.",
+    ],
+  },
+  alert: {
+    api: {
+      Alert: {
+        description: "Todas las demás props van al `<div>`.",
+        props: {
+          variant: "Estilo visual. Cada variante tiene su propio icono por defecto.",
+          live: '`polite` la convierte en una región `role="status"`; `assertive`, en una región `role="alert"`, solo para mensajes importantes que aparecen o cambian mientras el usuario trabaja.',
+          icon: "El icono antes del título, oculto para las tecnologías de apoyo. `null` no muestra ninguno.",
+          className: classNameEs,
+        },
+        defaultTexts: { icon: "según la variante" },
+      },
+      "AlertTitle, AlertDescription": {
+        description:
+          "Cada uno renderiza un `<div>` en la columna de texto; todas las demás props van a ese elemento.",
+        props: {
+          children: "El título o la descripción. El título puede contener un encabezado.",
+          className: classNameEs,
+        },
+      },
+    },
+    accessibility: [
+      "Por defecto no tiene rol: el texto que está en la página desde el principio no necesita anunciarse.",
+      '`live="assertive"` le da `role="alert"`, que interrumpe al lector de pantalla; usa `live="polite"` para la mayoría de los mensajes.',
+      "Renderiza una alerta viva antes de que cambie su contenido: una región insertada junto con su texto a menudo no se anuncia.",
+      "El icono tiene `aria-hidden` y el título dice qué tipo de mensaje es, así que el color nunca es la única señal.",
+    ],
+  },
+  spinner: {
+    api: {
+      Spinner: {
+        description: 'Todas las demás props van al `<span>` con `role="status"`.',
+        props: {
+          label:
+            "Lo que se está cargando, leído por los lectores de pantalla y oculto en pantalla.",
+          size: "16, 24 o 32px. El color sigue al color del texto.",
+          className: classNameEs,
+        },
+      },
+    },
+    accessibility: [
+      'Es un elemento `role="status"` con un `label` visualmente oculto como nombre; el dibujo tiene `aria-hidden`.',
+      "No recibe el foco.",
+      "Solo gira si no se pidió movimiento reducido; si no, muestra tres puntos estáticos.",
+      "Se dibuja con el color de texto actual, así que respeta el modo de colores forzados.",
+    ],
+  },
+  skeleton: {
+    api: {
+      Skeleton: {
+        description: "Todas las demás props van al `<div>`. No admite contenido.",
+        props: { className: "Tamaño y forma, como `h-4 w-36`, combinados con `cn()`." },
+      },
+    },
+    accessibility: [
+      "Tiene `aria-hidden`: un bloque de relleno no significa nada para un lector de pantalla.",
+      'Marca la región que carga con `aria-busy="true"` y anuncia que terminó desde una región `role="status"` que ya esté en la página.',
+      "Solo se anima si no se pidió movimiento reducido.",
+      "En el modo de colores forzados, un borde mantiene visible cada bloque.",
+    ],
+  },
+  "skip-link": {
+    api: {
+      SkipLink: {
+        description: "Todas las demás props van al `<a>` nativo.",
+        props: {
+          href: 'El destino dentro de la página. Dale `tabindex="-1"`.',
+          children: "El texto del enlace.",
+          className: classNameEs,
+        },
+      },
+    },
+    keyboard: {
+      Tab: { action: "Desde el principio de la página, muestra el enlace." },
+      Enter: { action: "Mueve el foco al contenido principal." },
+    },
+    accessibility: [
+      "Está recortado, no eliminado, así que los lectores de pantalla lo siguen encontrando.",
+      "Al recibir el foco aparece por encima de los encabezados fijos, así que el foco nunca queda oculto (WCAG 2.4.11).",
+    ],
+  },
+};
+
+/** A Spanish string the docs need, or an error that names what is missing. */
+function required(value: string | undefined, where: string) {
+  if (value === undefined || value.trim() === "") throw new Error(`No Spanish text for ${where}`);
+  return value;
+}
+
+/**
+ * A component's docs in `locale`: the English docs as written, or the same entries with the
+ * Spanish text. Names, types, code defaults and the usage snippet stay in English. A missing
+ * Spanish string fails the build rather than showing English on a Spanish page.
+ */
+export function localizedComponentDocs(slug: string, locale: Locale): ComponentDocs | undefined {
+  const docs = componentDocs[slug];
+  if (docs === undefined || locale === "en") return docs;
+  const spanish = spanishDocs[slug];
+  if (spanish === undefined) throw new Error(`No Spanish docs for "${slug}"`);
+  if (spanish.accessibility.length !== docs.accessibility.length) {
+    throw new Error(`The Spanish accessibility notes for "${slug}" do not match the English ones`);
+  }
+  return {
+    usage: docs.usage,
+    api: docs.api.map((api) => {
+      const text = spanish.api[api.component];
+      const where = `${slug} ${api.component}`;
+      if (text === undefined) throw new Error(`No Spanish text for ${where}`);
+      return {
+        component: api.component,
+        description: api.description && required(text.description, `${where} description`),
+        props: api.props.map((prop) => ({
+          ...prop,
+          defaultText:
+            prop.defaultText &&
+            required(text.defaultTexts?.[prop.name], `${where} ${prop.name} default`),
+          description: required(text.props[prop.name], `${where} ${prop.name}`),
+        })),
+      };
+    }),
+    keyboard: docs.keyboard?.map(({ key }) => {
+      const text = spanish.keyboard?.[key];
+      return {
+        key: text?.key ?? key,
+        action: required(text?.action, `${slug} key ${key}`),
+      };
+    }),
+    accessibility: docs.accessibility.map((_, index) =>
+      required(spanish.accessibility[index], `${slug} accessibility note ${index + 1}`),
+    ),
+  };
+}
