@@ -164,6 +164,15 @@ describe("dark mechanism", () => {
     expect(systemDark).toEqual(dark);
   });
 
+  it("sets color-scheme per mode, including the system dark fallback", () => {
+    const colorScheme = (selector: RegExp, source = css) =>
+      /color-scheme:\s*([\w-]+);/.exec(ruleBody(source, selector))?.[1];
+    const media = ruleBody(css, /@media \(prefers-color-scheme: dark\)\s*\{/);
+    expect(colorScheme(/^:root\s*\{/m)).toBe("light");
+    expect(colorScheme(/^\.dark\s*\{/m)).toBe("dark");
+    expect(colorScheme(/:root:not\(\.light\)\s*\{/, media)).toBe("dark");
+  });
+
   it("does not use data-theme", () => {
     expect(css).not.toContain("data-theme");
   });
