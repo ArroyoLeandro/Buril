@@ -25,6 +25,11 @@ export default defineConfig(
       ...react.configs.flat["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.flatConfigs.recommended.rules,
+      // Buril's form controls render native inputs, so a <label> that wraps one is associated.
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        { controlComponents: ["Checkbox", "Input", "Select", "Switch", "Textarea"] },
+      ],
     },
   },
   ...astro.configs.recommended,
