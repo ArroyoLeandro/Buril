@@ -1,0 +1,53 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import InlineCode from "../InlineCode.astro";
+import { iconPresets, presetDuration } from "../../data/motion";
+import { getLocale, translator } from "../../i18n/ui";
+import { readMotionTokens } from "../../utils/tokens";
+
+/** The IconButton `motion` presets, each timed from the duration tokens in buril.css. */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const tokens = readMotionTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
+const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      <InlineCode text={t("motion.presetsCaption")} />
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.preset")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.for")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("motion.gesture")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold whitespace-nowrap`}>
+          {t("motion.duration")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {iconPresets.map((preset) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-normal sm:whitespace-nowrap`}>
+            <code>{preset.preset}</code>
+          </th>
+          <td class={cell}>{preset.icon[locale]}</td>
+          <td class={cell}>
+            <InlineCode text={preset.gesture[locale]} />
+          </td>
+          <td class={`${cell} whitespace-nowrap`}>{presetDuration(preset, tokens)}ms</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

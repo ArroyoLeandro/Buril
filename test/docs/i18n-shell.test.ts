@@ -194,6 +194,7 @@ describe("Spanish docs sidebar", () => {
       ["Instalación", expectedHref("/docs/installation", "es")],
       ["Temas", expectedHref("/docs/theming", "es")],
       ["Accesibilidad", expectedHref("/docs/accessibility", "es")],
+      ["Movimiento", expectedHref("/docs/motion", "es")],
     ]);
   });
 });
