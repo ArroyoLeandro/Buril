@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
+import { emulateReducedMotion } from "./test/browser-commands.ts";
 import { inspectPage } from "./test/docs-site.ts";
 
 // Real-browser tests: geometry, computed styles, transitions and focus, which jsdom cannot see.
@@ -34,7 +35,7 @@ export default defineConfig({
       enabled: true,
       headless: true,
       provider: playwright(),
-      commands: { inspectPage },
+      commands: { emulateReducedMotion, inspectPage },
       instances: [{ browser: "chromium", viewport: { width: 1024, height: 768 } }],
     },
   },

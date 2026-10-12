@@ -1,7 +1,7 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 
-import { settle } from "../../test/browser";
+import { isSoftSpring, setReducedMotion, settle, transitionTiming } from "../../test/browser";
 import { Avatar } from "./avatar";
 
 // A 2x2 opaque PNG, so the image loads without the network.
@@ -19,4 +19,21 @@ describe("Avatar in a real browser", () => {
     expect(getComputedStyle(image).opacity).toBe("1");
     expect(getComputedStyle(initials).opacity).toBe("0");
   });
+});
+
+describe("Avatar motion in a real browser", () => {
+  // A cross-fade is not movement, so it runs in both motion modes.
+  it.each([false, true])(
+    "cross-fades the picture and the initials over 200ms when reduced motion is %s",
+    async (reduce) => {
+      await setReducedMotion(reduce);
+      const screen = await render(<Avatar src={picture} alt="Ada Lovelace" />);
+      const image = screen.getByRole("img", { name: "Ada Lovelace" }).element();
+      for (const element of [image, image.nextElementSibling!]) {
+        const timing = transitionTiming(element, "opacity");
+        expect(timing?.duration).toBe(200);
+        expect(isSoftSpring(timing!.easing), timing!.easing).toBe(true);
+      }
+    },
+  );
 });

@@ -128,17 +128,20 @@ describe("Checkbox motion", () => {
     }
   });
 
-  // The check is drawn like a burin stroke: one dash as long as the path (pathLength="1") is
-  // offset by its whole length while unchecked and slides into place when checked. The dash
-  // properties are inherited, so the svg sets them for its path.
-  it("measures the check path as one unit long", () => {
+  // The check is drawn like a burin stroke: the path measures one unit (pathLength="1") and one
+  // dash, a tenth longer than the path, slides along it when checked. The spare tenth lets the
+  // spring pass its target without uncovering the start of the path. The dash properties are
+  // inherited, so the svg sets them for its path.
+  it("measures the check path as one unit long, with a dash a tenth longer", () => {
     expect(html).toMatch(/<path[^>]*pathLength="1"[^>]*d="M5 12.5/);
-    expect(cascade.computed(check, "stroke-dasharray")).toBe("1");
+    expect(cascade.computed(check, "stroke-dasharray")).toBe("1.1 1");
   });
 
-  it("offsets the stroke by its whole length until checked", () => {
-    expect(cascade.computed(check, "stroke-dashoffset")).toBe("1");
-    expect(cascade.computed(check, "stroke-dashoffset", { states: [peer(":checked")] })).toBe("0");
+  it("keeps the stroke in the gap until checked, then covers the path with the dash", () => {
+    expect(cascade.computed(check, "stroke-dashoffset")).toBe("1.1");
+    expect(cascade.computed(check, "stroke-dashoffset", { states: [peer(":checked")] })).toBe(
+      "0.1",
+    );
   });
 
   it("draws the check only when motion is allowed; otherwise it appears at once", () => {
