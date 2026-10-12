@@ -125,6 +125,54 @@ describe("Button", () => {
       expect(onSubmit).not.toHaveBeenCalled();
     });
 
+    // Contract: loading blocks every activation path, including implicit submission, because
+    // the browser dispatches a click on the form's default submit button when Enter is pressed
+    // in a text field, and that click reaches our handler.
+    it("blocks implicit submission when Enter is pressed in a form input", async () => {
+      const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <label>
+            Name
+            <input type="text" />
+          </label>
+          <Button type="submit" loading>
+            Save
+          </Button>
+        </form>,
+      );
+      await userEvent.type(screen.getByLabelText("Name"), "Ada{Enter}");
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("submits implicitly again once loading ends", async () => {
+      const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+      render(
+        <form onSubmit={onSubmit}>
+          <label>
+            Name
+            <input type="text" />
+          </label>
+          <Button type="submit">Save</Button>
+        </form>,
+      );
+      await userEvent.type(screen.getByLabelText("Name"), "Ada{Enter}");
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it("blocks activation from the keyboard while loading", async () => {
+      const onClick = vi.fn();
+      render(
+        <Button loading onClick={onClick}>
+          Save
+        </Button>,
+      );
+      await userEvent.tab();
+      await userEvent.keyboard("{Enter}");
+      await userEvent.keyboard(" ");
+      expect(onClick).not.toHaveBeenCalled();
+    });
+
     it("stays focusable", async () => {
       render(<Button loading>Save</Button>);
       await userEvent.tab();
