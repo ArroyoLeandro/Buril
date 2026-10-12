@@ -1,0 +1,61 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import BadgeDemo from "../../../../components/BadgeDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { variantsExample, statusExample } = componentExamples.badge;
+---
+
+<ComponentPage slug="badge">
+  <Fragment slot="lead">
+    Es un <code>&lt;span&gt;</code>, que se lee junto con el texto que lo rodea.
+  </Fragment>
+
+  <BadgeDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>El texto es el significado, nunca solo el color.</strong> "Fallido" en rojo sigue
+        diciendo "Fallido" a quien no distingue el rojo del gris, y a un lector de pantalla. Un
+        icono puede repetir el texto; ocúltalo con <code>aria-hidden</code>.
+      </li>
+      <li>
+        <strong>No es interactivo.</strong> Un badge no recibe el foco ni tiene rol. Para algo con
+        lo que se pueda interactuar, como quitar un filtro, usa un Button o un Link.
+      </li>
+      <li>
+        <strong>Variantes.</strong> <code>default</code> (primario), <code>secondary</code>,
+        <code>outline</code> y <code>destructive</code>. En el modo de colores forzados se quita el
+        relleno y el borde conserva la forma.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Variantes</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Un estado que cambia</h3>
+    <p class="mt-4 text-muted-foreground">
+      Los lectores de pantalla no anuncian un badge cuyo texto cambia. Anuncia el cambio desde una
+      región <code>role="status"</code> que ya esté en la página, como hace la demo:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={statusExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/badge.tsx</code>, en la misma ruta que el Badge de shadcn, y exporta
+    <code>badgeVariants</code>. A diferencia del de shadcn, no tiene <code>asChild</code>: un badge
+    nunca es un enlace. Necesita <code>class-variance-authority</code> y tu helper
+    <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión actual de shadcn,
+    la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

@@ -1,0 +1,60 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SkipLinkDemo from "../../../../components/SkipLinkDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { example } = componentExamples["skip-link"];
+---
+
+<ComponentPage slug="skip-link">
+  <Fragment slot="lead">
+    Este sitio lo usa: pulsa Tab una vez al principio de cualquier página para verlo.
+  </Fragment>
+
+  <SkipLinkDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Ponlo primero</strong> en el <code>&lt;body&gt;</code>, para que sea lo primero que
+        alcanza quien usa el teclado.
+      </li>
+      <li>
+        <strong>
+          Dale <code>tabindex="-1"</code> al destino.
+        </strong>{" "}
+        Así el destino puede recibir el foco, y el siguiente Tab sigue desde el contenido principal
+        en lugar de volver al principio de la página. El destino por defecto es <code>#main</code>;
+        pasa otro con <code>href</code>, como <code>href="#results"</code>, y otro texto como
+        children.
+      </li>
+      <li>
+        <strong>Oculto hasta recibir el foco del teclado.</strong> Está recortado, no eliminado, así
+        que los lectores de pantalla lo siguen encontrando. Al recibir el foco del teclado aparece
+        arriba a la izquierda, por encima de los encabezados fijos, con un fondo sólido y el anillo
+        de foco, así que el foco nunca queda oculto detrás de otro contenido (WCAG 2.4.11).
+      </li>
+      <li>
+        <strong>Funciona sin JavaScript.</strong> Es un enlace simple dentro de la página. Cuando
+        React se ejecuta, también mueve el foco al destino, para los navegadores que solo hacen
+        scroll.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Estructura de la página</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/skip-link.tsx</code> y solo necesita tu helper <code>cn()</code>. Si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo; responder que no es seguro.
+  </p>
+</ComponentPage>

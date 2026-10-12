@@ -4,28 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import CardDemo from "../../../components/CardDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const decorExample = `<Card decor>
-  <CardHeader>
-    <CardTitle as="h2">Starter plan</CardTitle>
-    <CardDescription>For a single project.</CardDescription>
-  </CardHeader>
-  <CardContent>Three seats and 10 GB of storage.</CardContent>
-  <CardFooter>
-    <Button size="sm">Choose Starter</Button>
-  </CardFooter>
-</Card>`;
-
-const linkExample = `<Card>
-  <CardHeader>
-    <CardTitle>
-      <a href="/guides/forms" className="after:absolute after:inset-0">
-        Accessible forms
-      </a>
-    </CardTitle>
-    <CardDescription>Labels, help text and errors.</CardDescription>
-  </CardHeader>
-</Card>`;
+const { decorExample, linkExample } = componentExamples.card;
 ---
 
 <ComponentPage slug="card">

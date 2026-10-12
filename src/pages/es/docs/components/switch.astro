@@ -1,0 +1,75 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SwitchDemo from "../../../../components/SwitchDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { example } = componentExamples.switch;
+---
+
+<ComponentPage slug="switch">
+  <Fragment slot="lead">
+    Es un <code>&lt;input type="checkbox"&gt;</code> nativo con <code>role="switch"</code>, así que
+    Espacio lo alterna y los lectores de pantalla lo anuncian como activado o desactivado.
+  </Fragment>
+
+  <SwitchDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Para ajustes que se aplican al instante.</strong> Un switch activa o desactiva algo
+        en el momento, como un interruptor de luz. Para una opción que solo se aplica al enviar un
+        formulario, usa un Checkbox.
+      </li>
+      <li>
+        <strong>Ponle una etiqueta.</strong> Envuelve el switch y su texto en un
+        <code>&lt;label&gt;</code>, o ponlo en un Field. La etiqueta nombra el ajuste; no la cambies
+        según el estado.
+      </li>
+      <li>
+        <strong>El estado no es solo color.</strong> El indicador se mueve de izquierda a derecha al
+        activarse. Si además quieres una palabra visible, pasa <code>stateLabels</code>; ese texto
+        está oculto para los lectores de pantalla, que ya anuncian el estado.
+      </li>
+      <li>
+        <strong>Estado nativo.</strong> El navegador asigna <code>checked</code> al estado del
+        switch, así que no hay un atributo <code>aria-checked</code> que mantener sincronizado. Usa
+        <code>checked</code> y <code>onChange</code>, o <code>defaultChecked</code>.
+      </li>
+      <li>
+        <strong>Cualquier tamaño.</strong> Cambia el tamaño de la pista con <code>className</code>,
+        como <code>h-8 w-14</code>. El indicador toma su tamaño de la altura de la pista y se
+        desplaza hasta su borde derecho, así que encaja en cualquier pista. Mantén la pista en al
+        menos 24px de alto.
+      </li>
+      <li>
+        <strong>No válido.</strong> <code>aria-invalid="true"</code>, o un Field con un
+        <code>error</code>, pone el borde de la pista en el color destructivo; el texto del error
+        del Field explica por qué.
+      </li>
+      <li>
+        <strong>Movimiento reducido.</strong> El indicador solo se desliza si el usuario no pidió
+        movimiento reducido; si lo pidió, salta. En el modo de colores forzados, el indicador
+        conserva un color del sistema, así que sigue visible.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Con etiquetas de estado</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/switch.tsx</code>, en la misma ruta que el Switch de shadcn. A
+    diferencia del de shadcn, es un input nativo: <code>onChange</code> reemplaza a
+    <code>onCheckedChange</code>. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

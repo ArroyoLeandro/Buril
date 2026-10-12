@@ -4,13 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import TextareaDemo from "../../../components/TextareaDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const example = `import { Field } from "@/components/ui/field";
-import { Textarea } from "@/components/ui/textarea";
-
-<Field label="Message" description="Up to 200 characters.">
-  {(control) => <Textarea maxLength={200} {...control} />}
-</Field>`;
+const { example } = componentExamples.textarea;
 ---
 
 <ComponentPage slug="textarea">

@@ -4,14 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SkipLinkDemo from "../../../components/SkipLinkDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const example = `import { SkipLink } from "@/components/ui/skip-link";
-
-<body>
-  <SkipLink />
-  <header>…</header>
-  <main id="main" tabIndex={-1}>…</main>
-</body>`;
+const { example } = componentExamples["skip-link"];
 ---
 
 <ComponentPage slug="skip-link">

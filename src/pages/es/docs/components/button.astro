@@ -1,0 +1,133 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import ButtonDemo from "../../../../components/ButtonDemo";
+import InstallCommand from "../../../../components/InstallCommand.astro";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { variantsExample, statusExample } = componentExamples.button;
+---
+
+<ComponentPage slug="button">
+  <Fragment slot="lead">
+    Los enlaces con estilo usan las mismas clases a través de <code>buttonVariants</code>.
+  </Fragment>
+
+  <ButtonDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Variantes y tamaños</h3>
+    <p class="mt-4 text-muted-foreground">
+      La pestaña Vista previa muestra todas las variantes y tamaños. Usa un solo botón
+      <code>default</code> para la acción principal de una vista, <code>outline</code> o
+      <code>ghost</code> para las demás, y <code>destructive</code> solo para acciones que eliminan
+      algo o no se pueden deshacer.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Carga</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>loading</code> muestra un indicador de carga y bloquea todas las formas de activarlo,
+      incluido el envío implícito del formulario. El botón conserva su nombre accesible y sigue
+      pudiendo recibir el foco, así que quienes usan el teclado o un lector de pantalla no pierden
+      su lugar. Aplica <code>aria-busy</code> y <code>aria-disabled</code>, pero, en general, los
+      lectores de pantalla no anuncian <code>aria-busy</code> en un botón.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      Anuncia tú el progreso con una región de estado junto al botón. Renderízala antes de que
+      cambie el mensaje y déjala fuera del botón, para que su nombre no cambie:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={statusExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    El botón usa los tokens estándar de shadcn y el helper <code>cn()</code> que ya tienes, así que
+    instalarlo no cambia tu tema. Crea <code>components/ui/button.tsx</code> y agrega
+    <code>class-variance-authority</code>. Si tu <code>lib/utils.ts</code> es distinto de la versión
+    actual de shadcn, la CLI pregunta antes de reemplazarlo; responder que no es seguro, porque el
+    botón solo necesita <code>cn()</code>.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Si vienes de shadcn/ui</h2>
+  <p class="mt-4 text-muted-foreground">
+    Buril se instala en la misma ruta que el Button de shadcn, <code>components/ui/button.tsx</code>
+    . Si ya tienes ese archivo, la CLI pregunta antes de reemplazarlo. Los nombres de las variantes
+    coinciden, pero la API es distinta:
+  </p>
+  <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      <strong>
+        Sin <code>asChild</code>.
+      </strong>{" "}
+      Un enlace sigue siendo un enlace: aplica estilo a un <code>&lt;a&gt;</code>
+      con <code>className=&#123;buttonVariants()&#125;</code> en lugar de envolverlo.
+    </li>
+    <li>
+      <strong>Tamaños de icono, pero no extrapequeños.</strong> Existen <code>size="icon"</code>,
+      <code>icon-sm</code> e <code>icon-lg</code> (cuadrados de 40, 32 y 48px). <code>xs</code> e
+      <code>icon-xs</code> no existen: el tamaño más pequeño es de 32px. Para botones que solo
+      muestran un icono, usa <code>IconButton</code>, que exige <code>aria-label</code>.
+    </li>
+    <li>
+      <strong>
+        <code>type="button"</code> por defecto.
+      </strong>{" "}
+      shadcn deja el valor nativo, que envía el formulario si el botón está dentro de uno. Pasa
+      <code>type="submit"</code> en los botones de envío.
+    </li>
+    <li>
+      <strong>
+        Una prop <code>loading</code>.
+      </strong>{" "}
+      Bloquea la activación y conserva el foco y el nombre accesible.
+    </li>
+    <li>
+      <strong>
+        Sin los atributos <code>data-slot</code>, <code>data-variant</code> ni
+        <code>data-size</code>.
+      </strong>
+      Actualiza el CSS o los tests que los usen como selectores.
+    </li>
+  </ul>
+  <p class="mt-4 text-muted-foreground">
+    Antes de reemplazar el archivo de shadcn, busca en tu proyecto <code>asChild</code>,
+    <code>size="xs"</code>, <code>size="icon-xs"</code> y <code>data-slot="button"</code>. Comprueba
+    que cada botón con <code>size="icon"</code> tenga un <code>aria-label</code>. Para probar Buril
+    junto al Button de shadcn, responde que no cuando la CLI pregunte y copia el código fuente de
+    más arriba en un archivo con otro nombre.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tema opcional</h2>
+  <p class="mt-4 text-muted-foreground">
+    La paleta de Buril (primario de tinta y rojo laca para el foco, la decoración y las acciones
+    destructivas) se instala por separado:
+  </p>
+  <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
+  <p class="mt-4 text-muted-foreground">Modifica tu archivo CSS global:</p>
+  <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      Reemplaza tus tokens de color de shadcn en <code>:root</code> y <code>.dark</code>. Las demás
+      variables, como <code>--radius</code>, no cambian.
+    </li>
+    <li>
+      Agrega dos tokens decorativos, <code>--decor</code> y <code>--grid</code>, y tokens de fuente.
+    </li>
+    <li>
+      Sigue el esquema del sistema sin JavaScript: con <code>prefers-color-scheme: dark</code>, se
+      aplica la paleta oscura, salvo que <code>&lt;html&gt;</code> tenga la clase <code>light</code>
+      .
+    </li>
+    <li>
+      Redefine la variante <code>dark:</code> de la misma forma, así que las utilidades
+      <code>dark:</code> también siguen al sistema. Un selector de tema debe poner
+      <code>class="light"</code> en <code>&lt;html&gt;</code> para forzar el modo claro; quitar
+      <code>dark</code> no alcanza. Con next-themes, <code>attribute="class"</code> ya lo hace.
+    </li>
+  </ul>
+</ComponentPage>

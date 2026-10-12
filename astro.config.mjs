@@ -23,7 +23,15 @@ export default defineConfig({
     defaultLocale: "en",
     routing: { prefixDefaultLocale: false },
   },
-  redirects: { "/components": "/docs/components", ...legacyComponentRedirects },
+  redirects: {
+    "/components": "/docs/components",
+    ...legacyComponentRedirects,
+    // The same short paths under /es/, for readers who type them by analogy.
+    "/es/components": "/es/docs/components",
+    ...Object.fromEntries(
+      Object.entries(legacyComponentRedirects).map(([from, to]) => [`/es${from}`, `/es${to}`]),
+    ),
+  },
   vite: {
     resolve: {
       alias: { "@/lib": fileURLToPath(new URL("./registry/lib", import.meta.url)) },

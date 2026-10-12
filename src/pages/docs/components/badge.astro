@@ -4,17 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import BadgeDemo from "../../../components/BadgeDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const variantsExample = `<Badge>New</Badge>
-<Badge variant="secondary">Draft</Badge>
-<Badge variant="outline">Beta</Badge>
-<Badge variant="destructive">Failed</Badge>`;
-
-const statusExample = `<p>
-  Order 1042 <Badge>{shipped ? "Shipped" : "Processing"}</Badge>
-</p>
-{/* Rendered from the start, empty, so the change is announced. */}
-<p role="status">{message}</p>`;
+const { variantsExample, statusExample } = componentExamples.badge;
 ---
 
 <ComponentPage slug="badge">

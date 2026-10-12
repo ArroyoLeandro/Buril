@@ -1,0 +1,60 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SelectDemo from "../../../../components/SelectDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { example } = componentExamples.select;
+---
+
+<ComponentPage slug="select">
+  <Fragment slot="lead">
+    Solo el control cerrado tiene estilo; al abrirlo aparece el selector propio de la plataforma.
+  </Fragment>
+
+  <SelectDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Por qué nativo.</strong> Un <code>&lt;select&gt;</code> real trae sin esfuerzo el
+        teclado, la búsqueda al escribir, el selector táctil en los teléfonos y la compatibilidad
+        con lectores de pantalla. Sirve para una lista corta y fija. Para buscar u opciones
+        enriquecidas, el patrón adecuado es un combobox; Buril no lo imita aquí.
+      </li>
+      <li>
+        <strong>Ponle una etiqueta.</strong> Ponlo en un Field, como el Input, para tener la
+        etiqueta, la descripción, el error y <code>aria-invalid</code>. Para una elección
+        obligatoria, empieza con una opción vacía como "Elige una talla".
+      </li>
+      <li>
+        <strong>Ancho completo.</strong> Ocupa todo el ancho de su contenedor, como el Input. Para
+        hacerlo más estrecho, limita el contenedor. <code>className</code> y las demás props van al
+        <code>&lt;select&gt;</code>.
+      </li>
+      <li>
+        <strong>La flecha</strong> es un icono con <code>aria-hidden</code> que ignora los clics,
+        así que todo el control abre el selector. En el modo de colores forzados vuelve la flecha
+        nativa. Con <code>multiple</code> o un <code>size</code> mayor que 1, el select es un cuadro
+        de lista, sin flecha.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">En un Field, con una elección obligatoria</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/select.tsx</code>. El Select de shadcn en esa ruta es un cuadro de
+    lista personalizado con otros exports, así que reemplazarlo cambia tus imports: shadcn llama
+    Native Select a su versión nativa. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

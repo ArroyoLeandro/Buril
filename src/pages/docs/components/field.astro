@@ -4,19 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import FieldDemo from "../../../components/FieldDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const renderPropExample = `<Field
-  label="Email"
-  description="We only use it to send the newsletter."
-  error={errors.email}
-  required
->
-  {(control) => <input type="email" {...control} />}
-</Field>`;
-
-const childExample = `<Field label="Message" description="Up to 500 characters.">
-  <textarea id="message" aria-describedby="message-policy" />
-</Field>`;
+const { renderPropExample, childExample } = componentExamples.field;
 ---
 
 <ComponentPage slug="field">
