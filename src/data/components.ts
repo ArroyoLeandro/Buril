@@ -109,6 +109,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/avatar.tsx",
   },
   {
+    slug: "separator",
+    name: "Separator",
+    description: "A horizontal or vertical line between groups of content, semantic or decorative.",
+    item: "separator",
+    source: "registry/ui/separator.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
