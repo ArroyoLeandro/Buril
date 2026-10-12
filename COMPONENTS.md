@@ -106,7 +106,10 @@ Target: **WCAG 2.2 level AA**.
 - [ ] Anything that depends on layout or rendering (positions, sizes, colors in both themes, focus, transitions, overlays) has a real-browser test (`*.browser.test.tsx`, `pnpm test:browser`). jsdom does not lay out or paint.
 - [ ] Manual screen reader pass with NVDA (Phase 2 and 3 components).
 - [ ] Uses semantic tokens only (no hardcoded colors), so future visual styles stay cheap.
-  - **Known exception:** the destructive Button uses `text-white` in light mode and `dark:text-background` in dark mode. White on the dark-mode red fails contrast, and no shadcn token is white in both modes. Any new exception needs the same kind of measured reason, written next to the class.
+  - **Known exceptions:**
+    - The destructive Button uses `text-white` in light mode and `dark:text-background` in dark mode. White on the dark-mode red fails contrast, and no shadcn token is white in both modes.
+    - The interactive Card's hover shadow is black at 35% opacity. A shadow only darkens, no shadcn token is a shadow color, and the lift or the link's focus ring carries the state, never the shadow alone.
+  - Any new exception needs the same kind of measured reason, written next to the class.
 - [ ] Copyable snippet is read from the real source file at build time, never duplicated by hand.
 
 ## Visual style notes

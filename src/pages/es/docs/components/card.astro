@@ -67,6 +67,16 @@ const { decorExample, linkExample } = componentExamples.card;
         seleccionar. No pongas textos largos en una tarjeta enlazada.
       </li>
     </ul>
+
+    <h3 class="mt-8 font-display text-lg">Al pasar el puntero</h3>
+    <p class="mt-4 text-muted-foreground">
+      Pasa <code>interactive</code> a una tarjeta que es un solo enlace. Al pasar el puntero, y
+      mientras su enlace tiene el foco del teclado, la tarjeta se eleva 4.5px y aparece debajo una
+      sombra suave. La elevación mueve la tarjeta, así que solo se ejecuta si el usuario no pidió
+      movimiento reducido; la sombra aparece en todos los modos. La sombra es una capa cuya opacidad
+      cambia, nunca un <code>box-shadow</code> animado, y deja pasar los clics al enlace. Las
+      tarjetas estáticas nunca se mueven.
+    </p>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

@@ -97,6 +97,20 @@ describe("Card", () => {
       render(<Article />);
       expect(screen.getByTestId("card")).toHaveClass("relative");
     });
+
+    // interactive only adds the hover look; the link stays the one control.
+    it("stays a plain container when interactive", () => {
+      render(<Plan interactive />);
+      const card = screen.getByTestId("card");
+      expect(card).toHaveAttribute("data-interactive");
+      expect(card).not.toHaveAttribute("role");
+      expect(card).not.toHaveAttribute("tabindex");
+    });
+
+    it("is static unless marked interactive", () => {
+      render(<Plan />);
+      expect(screen.getByTestId("card")).not.toHaveAttribute("data-interactive");
+    });
   });
 
   it("forwards props and merges className on every part", () => {

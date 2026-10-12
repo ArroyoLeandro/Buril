@@ -229,6 +229,17 @@ describe("icon-button in Spanish", () => {
   });
 });
 
+describe("card in Spanish", () => {
+  it("explains the interactive hover in Spanish", async () => {
+    const visible = squash(text(main(await render(spanish["card"], "/es/docs/components/card"))));
+    expect(visible).toContain("interactive");
+    expect(visible).toMatch(/se eleva/);
+    expect(visible).toMatch(/sombra/);
+    expect(visible).toMatch(/foco del teclado/);
+    expect(visible).toMatch(/movimiento reducido/);
+  });
+});
+
 describe("Spanish component docs data", () => {
   it("translates every description, key action and note, and keeps names, types and keys", () => {
     for (const { slug } of documentedComponents) {

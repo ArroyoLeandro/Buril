@@ -24,6 +24,13 @@ describe("CardDemo", () => {
     expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 
+  it("marks only the linked card interactive, so the plan card never moves", () => {
+    const { container } = render(<CardDemo />);
+    const cards = container.querySelectorAll('[data-slot="card"]');
+    expect(cards[0]).not.toHaveAttribute("data-interactive");
+    expect(cards[1]).toHaveAttribute("data-interactive");
+  });
+
   it("has no axe violations", async () => {
     const { container } = render(<CardDemo />);
     expect(await axe(container)).toHaveNoViolations();

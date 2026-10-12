@@ -387,6 +387,16 @@ describe("card page", () => {
     expect(visible).toMatch(/relative z-10/);
   });
 
+  it("explains the interactive hover: lift, shadow, keyboard focus and reduced motion", async () => {
+    const visible = text(await render());
+    expect(visible).toContain("interactive");
+    expect(visible).toMatch(/lifts/);
+    expect(visible).toMatch(/shadow/);
+    expect(visible).toMatch(/keyboard focus/);
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/static cards? (never|do not) move/i);
+  });
+
   it("explains the heading level and the decoration", async () => {
     const visible = text(await render());
     expect(visible).toMatch(/as=(&quot;|")h2(&quot;|")/);

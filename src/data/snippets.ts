@@ -88,7 +88,7 @@ export const componentExamples = {
     <Button size="sm">Choose Starter</Button>
   </CardFooter>
 </Card>`,
-    linkExample: `<Card>
+    linkExample: `<Card interactive>
   <CardHeader>
     <CardTitle>
       <a href="/guides/forms" className="after:absolute after:inset-0">
