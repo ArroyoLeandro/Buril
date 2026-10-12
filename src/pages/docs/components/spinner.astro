@@ -5,9 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SpinnerDemo from "../../../components/SpinnerDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Spinner } from "@/components/ui/spinner";
-
-<Spinner />
+const sizeExample = `<Spinner />
 <Spinner size="lg" label="Loading comments" />`;
 
 const resultExample = `<section aria-label="Comments" aria-busy={loading || undefined}>
@@ -25,10 +23,6 @@ const resultExample = `<section aria-label="Comments" aria-busy={loading || unde
   <SpinnerDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>A status with a name.</strong> The spinner is a <code>role="status"</code> element
@@ -50,8 +44,15 @@ const resultExample = `<section aria-label="Comments" aria-busy={loading || unde
         keeps the button focusable and its name.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">Announcing the result</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Size and label</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={sizeExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Announcing the result</h3>
     <p class="mt-4 text-muted-foreground">
       A spinner inserted together with its label is not always announced, and its removal never is.
       Mark the loading area with <code>aria-busy</code>, and say when it is done from a

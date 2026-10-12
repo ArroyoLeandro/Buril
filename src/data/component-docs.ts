@@ -487,6 +487,300 @@ export const componentDocs: Record<string, ComponentDocs> = {
       "The chevron is `aria-hidden` and ignores clicks. In forced-colors mode the native arrow returns.",
     ],
   },
+  card: {
+    usage: `import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+<Card>
+  <CardHeader>
+    <CardTitle>Starter plan</CardTitle>
+    <CardDescription>For a single project.</CardDescription>
+  </CardHeader>
+  <CardContent>Three seats and 10 GB of storage.</CardContent>
+  <CardFooter>Billed monthly.</CardFooter>
+</Card>`,
+    api: [
+      {
+        component: "Card",
+        description: "Every other prop goes to the `<div>`.",
+        props: [
+          {
+            name: "decor",
+            type: "boolean",
+            default: "false",
+            description:
+              "Adds a hatched band across the top: hidden from assistive technology and removed in forced-colors mode.",
+          },
+          className,
+        ],
+      },
+      {
+        component: "CardTitle",
+        description: "Every other prop goes to the heading.",
+        props: [
+          {
+            name: "as",
+            type: '"h2" | "h3" | "h4" | "h5" | "h6"',
+            default: '"h3"',
+            description: "Heading level, to fit the page outline. The look stays the same.",
+          },
+          className,
+        ],
+      },
+      {
+        component: "CardDescription",
+        description: "Every other prop goes to the `<p>`.",
+        props: [className],
+      },
+      {
+        component: "CardHeader, CardContent, CardFooter",
+        description: "Layout parts: every other prop goes to their `<div>`.",
+        props: [className],
+      },
+    ],
+    accessibility: [
+      "It is a plain `<div>` with no role, so it is not focusable and adds no landmark.",
+      "`CardTitle` is a real heading, `h3` by default; set `as` so the page outline skips no level.",
+      "The `decor` band is `aria-hidden` and removed in forced-colors mode.",
+      "To make the whole card a link, stretch one real link in the title over the card; never put `onClick` on the card.",
+    ],
+  },
+  badge: {
+    usage: `import { Badge } from "@/components/ui/badge";
+
+<Badge>New</Badge>`,
+    api: [
+      {
+        component: "Badge",
+        description: "Every other prop goes to the `<span>`.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "secondary" | "outline" | "destructive"',
+            default: '"default"',
+            description: "Visual style. The text, not the color, says what it means.",
+          },
+          className,
+        ],
+      },
+      {
+        component: "badgeVariants()",
+        description: "The same classes as a string.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "secondary" | "outline" | "destructive"',
+            default: '"default"',
+            description: "The same variants as the Badge.",
+          },
+        ],
+      },
+    ],
+    accessibility: [
+      "It is a `<span>` with no role, read inline with the text around it.",
+      "It is not focusable. For something people can act on, use a Button or a Link.",
+      "Its text carries the meaning, never its color alone.",
+      "In forced-colors mode the fill is dropped and the border keeps the shape.",
+      'Screen readers do not announce a badge whose text changes: announce it from a `role="status"` region.',
+    ],
+  },
+  avatar: {
+    usage: `import { Avatar } from "@/components/ui/avatar";
+
+<Avatar src={user.photo} alt={user.name} />`,
+    api: [
+      {
+        component: "Avatar",
+        description: "`ref` and every other prop go to the root `<span>`.",
+        props: [
+          {
+            name: "alt",
+            type: "string",
+            description:
+              'Required. Who the avatar shows, such as the person\'s name. It names the image and the initials fallback; `alt=""` hides the avatar from assistive technology.',
+          },
+          {
+            name: "src",
+            type: "string",
+            description:
+              "Image URL. Without it, or when it fails to load, the avatar shows initials.",
+          },
+          {
+            name: "fallback",
+            type: "string",
+            default: "initials of `alt`",
+            description: "Text for the fallback.",
+          },
+          {
+            name: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description: "32, 40 or 48px.",
+          },
+          className,
+        ],
+      },
+    ],
+    accessibility: [
+      "`alt` is required by its type, so every avatar either has a name or is marked decorative.",
+      'The initials fallback has `role="img"` named by `alt`, and the letters are `aria-hidden`, so screen readers hear the name, not letters.',
+      '`alt=""` hides the image, or its fallback, from screen readers, for an avatar next to a visible name.',
+      "In forced-colors mode a border keeps the circle visible.",
+    ],
+  },
+  separator: {
+    usage: `import { Separator } from "@/components/ui/separator";
+
+<section>…</section>
+<Separator />
+<section>…</section>`,
+    api: [
+      {
+        component: "Separator",
+        description: "Every other prop, `ref` included, goes to the `<hr>` or `<div>`.",
+        props: [
+          {
+            name: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description: "`horizontal` renders an `<hr>`; `vertical` a separator for a row.",
+          },
+          {
+            name: "decorative",
+            type: "boolean",
+            default: "false",
+            description:
+              "For a line that only decorates: it is hidden from assistive technology. Leave it off between sections of content.",
+          },
+          className,
+        ],
+      },
+    ],
+    accessibility: [
+      "A horizontal separator is a native `<hr>`, announced as a separator.",
+      'A vertical one is a `<div>` with `role="separator"` and `aria-orientation="vertical"`.',
+      '`decorative` renders `role="none"` with `aria-hidden`, so screen readers skip it.',
+      "It is never focusable.",
+      "It is drawn with a border, not a background, so it stays visible in forced-colors mode.",
+    ],
+  },
+  alert: {
+    usage: `import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+<Alert variant="destructive">
+  <AlertTitle>Payment failed</AlertTitle>
+  <AlertDescription>Your card was declined.</AlertDescription>
+</Alert>`,
+    api: [
+      {
+        component: "Alert",
+        description: "Every other prop goes to the `<div>`.",
+        props: [
+          {
+            name: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description: "Visual style. Each variant has its own default icon.",
+          },
+          {
+            name: "live",
+            type: '"off" | "polite" | "assertive"',
+            default: '"off"',
+            description:
+              '`polite` makes it a `role="status"` region; `assertive` a `role="alert"` region, only for important messages that appear or change while the user works.',
+          },
+          {
+            name: "icon",
+            type: "ReactNode",
+            default: "per variant",
+            description:
+              "The icon before the title, hidden from assistive technology. `null` shows none.",
+          },
+          className,
+        ],
+      },
+      {
+        component: "AlertTitle, AlertDescription",
+        description: "Each renders a `<div>` in the text column; every other prop goes to it.",
+        props: [
+          {
+            name: "children",
+            type: "ReactNode",
+            description: "The title or the description. The title can hold a heading.",
+          },
+          className,
+        ],
+      },
+    ],
+    accessibility: [
+      "By default it has no role: text that is on the page from the start needs no announcement.",
+      '`live="assertive"` gives it `role="alert"`, which interrupts the screen reader; use `live="polite"` for most messages.',
+      "Render a live alert before its content changes: a region inserted together with its text is often not announced.",
+      "The icon is `aria-hidden`, and the title says what kind of message it is, so color is never the only signal.",
+    ],
+  },
+  spinner: {
+    usage: `import { Spinner } from "@/components/ui/spinner";
+
+<Spinner label="Loading comments" />`,
+    api: [
+      {
+        component: "Spinner",
+        description: 'Every other prop goes to the `role="status"` `<span>`.',
+        props: [
+          {
+            name: "label",
+            type: "string",
+            default: '"Loading"',
+            description: "What is loading, read by screen readers and hidden on screen.",
+          },
+          {
+            name: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description: "16, 24 or 32px. The color follows the text color.",
+          },
+          className,
+        ],
+      },
+    ],
+    accessibility: [
+      'It is a `role="status"` element named by a visually hidden `label`; the drawing is `aria-hidden`.',
+      "It is not focusable.",
+      "It spins only without reduced motion; otherwise it shows three static dots.",
+      "It draws with the current text color, so it follows forced-colors mode.",
+    ],
+  },
+  skeleton: {
+    usage: `import { Skeleton } from "@/components/ui/skeleton";
+
+<Skeleton className="h-4 w-36" />`,
+    api: [
+      {
+        component: "Skeleton",
+        description: "Every other prop goes to the `<div>`. It takes no children.",
+        props: [
+          {
+            name: "className",
+            type: "string",
+            description: "Size and shape, such as `h-4 w-36`, merged with `cn()`.",
+          },
+        ],
+      },
+    ],
+    accessibility: [
+      "It is `aria-hidden`: a placeholder block means nothing to a screen reader.",
+      'Mark the loading region with `aria-busy="true"`, and announce completion from a `role="status"` region that is already on the page.',
+      "It pulses only without reduced motion.",
+      "In forced-colors mode a border keeps each block visible.",
+    ],
+  },
   "skip-link": {
     usage: `import { SkipLink } from "@/components/ui/skip-link";
 
