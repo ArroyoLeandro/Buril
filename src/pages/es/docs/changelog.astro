@@ -1,0 +1,22 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import ChangelogList from "../../../components/docs/ChangelogList.astro";
+import { githubUrl } from "../../../data/site";
+---
+
+<DocsLayout
+  title="Cambios | Buril UI"
+  description="Qué cambió en Buril UI, de lo más nuevo a lo más antiguo."
+>
+  <h1 class="font-display text-3xl">Cambios</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Qué cambió para quienes usan Buril, de lo más nuevo a lo más antiguo. Buril todavía no tiene
+    números de versión: un componente está al día cuando lo vuelves a instalar. Todos los commits
+    están en
+    <a href={`${githubUrl}/commits/main`} class="underline underline-offset-4">
+      GitHub
+    </a>
+    .
+  </p>
+  <ChangelogList />
+</DocsLayout>

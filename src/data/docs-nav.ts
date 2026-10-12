@@ -36,6 +36,8 @@ export function gettingStarted(locale: Locale = "en"): NavItem[] {
     { name: t("docsNav.theming"), href: localizedHref("/docs/theming", locale) },
     { name: t("docsNav.accessibility"), href: localizedHref("/docs/accessibility", locale) },
     { name: t("docsNav.motion"), href: localizedHref("/docs/motion", locale) },
+    { name: t("docsNav.faq"), href: localizedHref("/docs/faq", locale) },
+    { name: t("docsNav.changelog"), href: localizedHref("/docs/changelog", locale) },
   ];
 }
 
