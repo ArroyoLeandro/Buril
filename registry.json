@@ -203,6 +203,19 @@
       ]
     },
     {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Native radios in a fieldset with a legend: one Tab stop and arrow keys from the browser.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skip-link",
       "type": "registry:ui",
       "title": "Skip Link",

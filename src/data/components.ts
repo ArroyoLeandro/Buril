@@ -66,6 +66,14 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/checkbox.tsx",
   },
   {
+    slug: "radio-group",
+    name: "Radio Group",
+    description:
+      "Native radios in a fieldset: one Tab stop, arrow keys to choose, a legend as its name.",
+    item: "radio-group",
+    source: "registry/ui/radio-group.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
