@@ -81,6 +81,17 @@ describe("Checkbox compiled with Tailwind", () => {
     );
   });
 
+  it("keeps the destructive border when invalid and indeterminate", () => {
+    const invalid = '[aria-invalid="true"]';
+    expect(cascade.computed(box, "border-color", { states: [":indeterminate", invalid] })).toBe(
+      "var(--destructive)",
+    );
+    // The fill stays primary, so the dash keeps its contrast.
+    expect(cascade.computed(box, "background-color", { states: [":indeterminate", invalid] })).toBe(
+      "var(--primary)",
+    );
+  });
+
   it("dims the box and its icons when disabled", () => {
     expect(cascade.computed(box, "opacity", { states: [":disabled"] })).toBe("50%");
     expect(cascade.computed(check, "opacity", { states: [peer(":disabled")] })).toBe("50%");
