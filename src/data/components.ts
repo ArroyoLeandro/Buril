@@ -88,6 +88,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/select.tsx",
   },
   {
+    slug: "card",
+    name: "Card",
+    description: "A bordered container with a title, a description, content and a footer.",
+    item: "card",
+    source: "registry/ui/card.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
