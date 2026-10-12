@@ -1,0 +1,81 @@
+---
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "../../registry/ui/button";
+import { docsNav } from "../data/docs-nav";
+import { slugify } from "../utils/headings";
+
+const path = (Astro.url?.pathname ?? "").replace(/(.)\/$/, "$1");
+const groups = docsNav();
+const statusLabels = { new: "New", beta: "Beta" } as const;
+---
+
+<div class="border-b border-border px-4 py-3 sm:px-6 lg:border-r lg:border-b-0 lg:p-0">
+  <!--
+    Small screens: a disclosure button. It starts hidden and the sidebar starts open, so the
+    links work without JavaScript; the script shows the button and collapses the sidebar.
+  -->
+  <button
+    type="button"
+    data-docs-nav-toggle
+    aria-expanded="false"
+    aria-controls="docs-sidebar"
+    hidden
+    class={cn(buttonVariants({ variant: "outline", size: "sm" }), "lg:hidden")}
+  >
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      class="size-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    >
+      <path d="M4 7h16M4 12h16M4 17h16"></path>
+    </svg>
+    Menu
+  </button>
+  <nav
+    id="docs-sidebar"
+    aria-label="Docs"
+    class="pt-4 max-lg:data-collapsed:hidden lg:sticky lg:top-0 lg:max-h-dvh lg:overflow-y-auto lg:px-4 lg:py-8"
+  >
+    {groups.map((group) => {
+      const id = `docs-nav-${slugify(group.title)}`;
+      return (
+        <div class="mb-6">
+          <p id={id} class="px-3 font-display text-sm">
+            {group.title}
+          </p>
+          <ul aria-labelledby={id} class="mt-2 flex flex-col gap-0.5 text-sm">
+            {group.items.map(({ name, href, status }) => (
+              <li class="flex items-center gap-2">
+                <a
+                  href={href}
+                  aria-current={path === href ? "page" : undefined}
+                  class="flex-1 rounded-full border border-transparent px-3 py-1.5 hover:bg-secondary aria-[current=page]:border-border aria-[current=page]:bg-primary aria-[current=page]:font-semibold aria-[current=page]:text-primary-foreground"
+                >
+                  {name}
+                </a>
+                {status && (
+                  <span class="rounded-full border border-border px-2 text-xs">
+                    {statusLabels[status]}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    })}
+  </nav>
+</div>
+
+<script>
+  import { initDocsNav } from "../scripts/docs-nav";
+
+  for (const toggle of document.querySelectorAll<HTMLButtonElement>("[data-docs-nav-toggle]")) {
+    initDocsNav(toggle);
+  }
+</script>

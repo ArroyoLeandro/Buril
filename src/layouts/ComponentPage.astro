@@ -1,7 +1,7 @@
 ---
 import { Code } from "astro:components";
 
-import BaseLayout from "./BaseLayout.astro";
+import DocsLayout from "./DocsLayout.astro";
 import InstallCommand from "../components/InstallCommand.astro";
 import { codeTheme } from "../components/code-theme";
 import { findComponent } from "../data/components";
@@ -32,7 +32,7 @@ const source = sources[`../../${entry.source}`];
 if (source === undefined) throw new Error(`Source file not found: ${entry.source}`);
 ---
 
-<BaseLayout title={`${entry.name} | Buril UI`} description={entry.description}>
+<DocsLayout title={`${entry.name} | Buril UI`} description={entry.description}>
   <h1 class="font-display text-3xl">{entry.name}</h1>
   <p class="mt-4 text-muted-foreground">
     {entry.description}
@@ -71,4 +71,4 @@ if (source === undefined) throw new Error(`Source file not found: ${entry.source
   <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
     <Code code={source} lang="tsx" theme={codeTheme} />
   </div>
-</BaseLayout>
+</DocsLayout>
