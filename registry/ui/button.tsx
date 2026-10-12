@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   [
-    // Long labels wrap instead of overflowing at a 320px width; sizes set a minimum height.
-    "inline-flex items-center justify-center gap-2 rounded-full border text-center font-semibold",
+    // Long labels wrap instead of overflowing at a 320px width; sizes set a minimum height. While
+    // loading, the spinner keeps a wider gap, so the moving ring does not crowd the label.
+    "inline-flex items-center justify-center gap-2 rounded-full border text-center font-semibold aria-busy:gap-3",
     // Colors fade with the motion tokens (literal fallbacks, so no theme is needed). The listed
     // properties leave out outline-color: the focus ring appears at once (rule 10).
     "transition-[color,background-color,border-color,text-decoration-color] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",

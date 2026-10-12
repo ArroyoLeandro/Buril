@@ -211,3 +211,29 @@ describe("IconButton motion in a real browser", () => {
     },
   );
 });
+
+describe("Button loading in a real browser", () => {
+  // 8px read as cramped next to the spinning ring; 12px keeps the spinner apart from the label.
+  it.each(["sm", "default", "lg"] as const)(
+    "leaves a 12px gap between the spinner and the label at the %s size",
+    async (size) => {
+      const screen = await render(
+        <Button loading size={size}>
+          Save changes
+        </Button>,
+      );
+      const button = screen.getByRole("button").element();
+      const spinner = button.querySelector("svg")!.getBoundingClientRect();
+      const label = document.createRange();
+      label.selectNodeContents(
+        [...button.childNodes].find((node) => node.nodeType === Node.TEXT_NODE)!,
+      );
+      expect(label.getBoundingClientRect().left - spinner.right).toBeCloseTo(12, 0);
+      // The pair stays centered in the button.
+      const box = button.getBoundingClientRect();
+      const left = spinner.left - box.left;
+      const right = box.right - label.getBoundingClientRect().right;
+      expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
+    },
+  );
+});
