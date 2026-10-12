@@ -30,7 +30,7 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
           "checked:border-primary checked:bg-primary",
           // The track colors fade in every motion mode; outline-color is left out so the focus
           // ring appears at once.
-          "transition-[background-color,border-color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+          "transition-[background-color,border-color] duration-(--buril-duration-base,420ms) ease-(--buril-ease-in-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           "aria-invalid:border-destructive",
@@ -53,7 +53,7 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
           "after:aspect-square after:h-full after:shrink-0",
           // The dot is painted in the rail's text color, which fades in every motion mode.
           "text-muted-foreground peer-checked:text-primary-foreground",
-          "transition-[color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+          "transition-[color] duration-(--buril-duration-base,420ms) ease-(--buril-ease-in-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
           // When on, the carrier moves by its own width, so the dot ends at the far side.
           "peer-checked:[--buril-switch-travel:100%]",
           // Forced colors replace backgrounds and text colors, which would hide the dot; keep a
@@ -68,7 +68,7 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
             // fit it. It moves with translate, never left, and slides only when the user allows
             // motion.
             "h-full min-w-0 flex-1 translate-x-(--buril-switch-travel,0%)",
-            "motion-safe:transition-[translate] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+            "motion-safe:transition-[translate] motion-safe:duration-(--buril-duration-base,420ms) motion-safe:ease-(--buril-ease-in-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
             "before:block before:aspect-square before:h-full before:rounded-full before:bg-current",
           )}
         />

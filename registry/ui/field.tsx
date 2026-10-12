@@ -208,7 +208,7 @@ function Field({
         {/* The content is inserted into the region, so it fades in from its starting style, and
             drops 2px into place only when the user allows motion. */}
         {invalid && (
-          <span className="flex items-start gap-1.5 transition-[opacity,translate] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) starting:opacity-0 motion-safe:starting:-translate-y-0.5">
+          <span className="flex items-start gap-1.5 transition-[opacity,translate] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) starting:opacity-0 motion-safe:starting:-translate-y-0.5">
             <ErrorIcon />
             <span>
               <span className="sr-only">Error:</span> {error}

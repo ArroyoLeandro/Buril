@@ -66,7 +66,9 @@ describe("motion docs", () => {
   it("CONTRIBUTING.md explains the motion tokens and their fallbacks", () => {
     const doc = read("CONTRIBUTING.md");
     expect(doc).toMatch(/^## Motion$/m);
-    expect(doc).toContain("duration-(--buril-duration-fast,120ms)");
+    expect(doc).toContain("duration-(--buril-duration-fast,200ms)");
+    expect(doc).toContain("--buril-duration-gesture");
+    expect(doc).toMatch(/linear\(\)/);
     expect(doc).toContain("motion-safe:");
     expect(doc).toMatch(/outline-color/);
   });

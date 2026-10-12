@@ -89,13 +89,13 @@ function Avatar({ src, alt, fallback, size, className, ...props }: AvatarProps) 
             alt={alt}
             onLoad={(event) => event.currentTarget.removeAttribute("data-loading")}
             onError={() => setFailedSrc(src)}
-            className="peer absolute inset-0 size-full object-cover transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) data-loading:opacity-0"
+            className="peer absolute inset-0 size-full object-cover transition-[opacity] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) data-loading:opacity-0"
           />
           {/* Under the image while it loads, then faded out, so a transparent picture does not
               show letters through it. The image's alt is the name. */}
           <span
             aria-hidden="true"
-            className="opacity-0 transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) peer-data-loading:opacity-100"
+            className="opacity-0 transition-[opacity] duration-(--buril-duration-fast,200ms) ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)) peer-data-loading:opacity-100"
           >
             {initials}
           </span>

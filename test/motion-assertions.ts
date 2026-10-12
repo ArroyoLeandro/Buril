@@ -7,17 +7,22 @@ import type { CascadeOptions } from "./tailwind-cascade";
  * with their literal fallbacks, so the compiled values are these exact `var()` expressions.
  */
 export const durations = {
-  instant: "var(--buril-duration-instant,80ms)",
-  fast: "var(--buril-duration-fast,120ms)",
-  base: "var(--buril-duration-base,180ms)",
-  slow: "var(--buril-duration-slow,240ms)",
-  slower: "var(--buril-duration-slower,320ms)",
+  instant: "var(--buril-duration-instant,100ms)",
+  fast: "var(--buril-duration-fast,200ms)",
+  base: "var(--buril-duration-base,420ms)",
+  slow: "var(--buril-duration-slow,460ms)",
+  slower: "var(--buril-duration-slower,560ms)",
+  gesture: "var(--buril-duration-gesture,720ms)",
 };
 
+/** The soft spring of the entry and position easings: it overshoots about 3% and settles. */
+export const spring =
+  "linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1)";
+
 export const easings = {
-  out: "var(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
+  out: `var(--buril-ease-out,${spring})`,
   in: "var(--buril-ease-in,cubic-bezier(0.4,0,1,1))",
-  inOut: "var(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+  inOut: `var(--buril-ease-in-out,${spring})`,
   linear: "var(--buril-ease-linear,linear)",
 };
 
