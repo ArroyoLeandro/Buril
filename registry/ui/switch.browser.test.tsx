@@ -1,7 +1,16 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 
-import { contrast, pseudoBox, setTheme, settle, themes } from "../../test/browser";
+import {
+  contrast,
+  isSoftSpring,
+  pseudoBox,
+  setReducedMotion,
+  setTheme,
+  settle,
+  themes,
+  transitionTiming,
+} from "../../test/browser";
 import { Switch } from "./switch";
 
 // The default track and the sizes a consumer can give it with className.
@@ -131,5 +140,49 @@ describe("Switch in a real browser", () => {
       const gap = checked ? track.right - dot.right : dot.left - track.left;
       expect(Math.abs(gap - inset)).toBeLessThanOrEqual(tolerance);
     }
+  });
+});
+
+describe("Switch motion in a real browser", () => {
+  async function renderSwitch() {
+    const screen = await render(
+      <label>
+        Email notifications <Switch />
+      </label>,
+    );
+    const track = screen.container.querySelector("input")!;
+    const thumb = screen.container.querySelector<HTMLElement>("[data-thumb]")!;
+    return { screen, track, thumb, carrier: thumb.firstElementChild! };
+  }
+  const slides = (carrier: Element) =>
+    carrier
+      .getAnimations()
+      .some((animation) => (animation as CSSTransition).transitionProperty === "translate");
+
+  // The base duration and the soft spring: slow enough to follow the dot, which settles softly.
+  it("slides the dot over 420ms with the soft spring, and fades the colors with it", async () => {
+    await setReducedMotion(false);
+    const { screen, track, thumb, carrier } = await renderSwitch();
+    for (const [element, property] of [
+      [carrier, "translate"],
+      [track, "background-color"],
+      [track, "border-color"],
+      [thumb, "color"],
+    ] as const) {
+      const timing = transitionTiming(element, property);
+      expect(timing?.duration, property).toBe(420);
+      expect(isSoftSpring(timing!.easing), timing!.easing).toBe(true);
+    }
+    await screen.getByRole("switch").click();
+    expect(slides(carrier)).toBe(true);
+  });
+
+  it("jumps the dot under reduced motion, while the colors still fade", async () => {
+    await setReducedMotion(true);
+    const { screen, track, carrier } = await renderSwitch();
+    expect(transitionTiming(carrier, "translate")).toBeUndefined();
+    expect(transitionTiming(track, "background-color")?.duration).toBe(420);
+    await screen.getByRole("switch").click();
+    expect(slides(carrier)).toBe(false);
   });
 });

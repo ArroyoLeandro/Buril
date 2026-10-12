@@ -1,5 +1,7 @@
 /** Helpers for the real-browser tests (`*.browser.test.tsx`, run with `pnpm test:browser`). */
-import { page } from "vitest/browser";
+import { commands, page } from "vitest/browser";
+
+import { spring } from "./motion-assertions";
 
 export const themes = ["light", "dark"] as const;
 export type Theme = (typeof themes)[number];
@@ -7,6 +9,67 @@ export type Theme = (typeof themes)[number];
 /** Switch the Buril theme the way the docs do: `.dark` on `<html>`. */
 export function setTheme(theme: Theme) {
   document.documentElement.classList.toggle("dark", theme === "dark");
+}
+
+/** Emulate the user's reduced-motion setting, as the operating system would report it. */
+export async function setReducedMotion(reduce: boolean) {
+  await commands.emulateReducedMotion(reduce);
+  await frame();
+}
+
+/** Split a computed list, such as a transition's properties, on the commas outside parentheses. */
+function topLevelItems(value: string) {
+  const items: string[] = [];
+  let depth = 0;
+  let item = "";
+  for (const char of value) {
+    if (char === "(") depth++;
+    if (char === ")") depth--;
+    if (char === "," && depth === 0) {
+      items.push(item.trim());
+      item = "";
+    } else {
+      item += char;
+    }
+  }
+  return [...items, item.trim()];
+}
+
+/**
+ * How the browser transitions one property of an element (or of its pseudo-element): the
+ * duration in ms and the easing, read from the computed style. `undefined` when the property is
+ * not transitioned at all.
+ */
+export function transitionTiming(element: Element, property: string, pseudo?: string) {
+  const style = getComputedStyle(element, pseudo);
+  const index = topLevelItems(style.transitionProperty).indexOf(property);
+  if (index < 0) return undefined;
+  const at = (list: string) => {
+    const items = topLevelItems(list);
+    return items[index % items.length]!;
+  };
+  const duration = at(style.transitionDuration);
+  return {
+    duration: duration.endsWith("ms") ? parseFloat(duration) : parseFloat(duration) * 1000,
+    easing: at(style.transitionTimingFunction),
+  };
+}
+
+/** The output values of a `linear()` easing, without the stop positions a browser adds. */
+export function linearOutputs(easing: string) {
+  const inner = /^linear\((.*)\)$/.exec(easing.trim())?.[1];
+  if (!inner) return undefined;
+  return topLevelItems(inner).map((stop) => parseFloat(stop));
+}
+
+/** Whether an easing is Buril's soft spring: the motion tokens' entry and position curve. */
+export function isSoftSpring(easing: string) {
+  const expected = linearOutputs(spring)!;
+  const actual = linearOutputs(easing);
+  return (
+    actual?.length === expected.length &&
+    actual.every((value, index) => Math.abs(value - expected[index]!) < 1e-6)
+  );
 }
 
 const frame = () => new Promise((resolve) => requestAnimationFrame(resolve));

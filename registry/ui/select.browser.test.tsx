@@ -1,7 +1,15 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 
-import { contrast, setTheme, settle, themes } from "../../test/browser";
+import {
+  contrast,
+  isSoftSpring,
+  setReducedMotion,
+  setTheme,
+  settle,
+  themes,
+  transitionTiming,
+} from "../../test/browser";
 import { Select } from "./select";
 
 describe("Select in a real browser", () => {
@@ -53,5 +61,31 @@ describe("Select in a real browser", () => {
     const box = chevron.getBoundingClientRect();
     expect((box.top + box.bottom) / 2).toBeCloseTo((field.top + field.bottom) / 2, 0);
     expect(box.right).toBeCloseTo(field.right - 12, 0);
+  });
+});
+
+describe("Select chevron motion in a real browser", () => {
+  async function renderChevron() {
+    const screen = await render(
+      <label>
+        Country
+        <Select defaultValue="ar">
+          <option value="ar">Argentina</option>
+        </Select>
+      </label>,
+    );
+    return screen.getByRole("combobox").element().parentElement!.querySelector("svg")!;
+  }
+
+  it("turns over 420ms with the soft spring", async () => {
+    await setReducedMotion(false);
+    const timing = transitionTiming(await renderChevron(), "rotate");
+    expect(timing?.duration).toBe(420);
+    expect(isSoftSpring(timing!.easing), timing!.easing).toBe(true);
+  });
+
+  it("does not turn under reduced motion", async () => {
+    await setReducedMotion(true);
+    expect(transitionTiming(await renderChevron(), "rotate")).toBeUndefined();
   });
 });

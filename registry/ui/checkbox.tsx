@@ -61,10 +61,11 @@ function Checkbox({ className, indeterminate = false, ref, ...props }: CheckboxP
         strokeLinejoin="round"
         className={cn(
           "pointer-events-none invisible col-start-1 row-start-1 size-3.5 text-primary-foreground peer-checked:visible peer-indeterminate:invisible peer-disabled:opacity-50 forced-colors:hidden",
-          // Drawn like a burin stroke: one dash as long as the path is offset by its whole length
-          // and slides into place when checked. The path inherits both dash properties. Under
-          // reduced motion there is no transition, so the check appears at once.
-          "[stroke-dasharray:1] [stroke-dashoffset:1] peer-checked:[stroke-dashoffset:0]",
+          // Drawn like a burin stroke: the path is one unit long and sits in the gap until
+          // checked, when the dash slides over it. The dash is a tenth longer than the path, so
+          // the spring can pass its target without uncovering the start. The path inherits both
+          // dash properties. Under reduced motion there is no transition: the check appears at once.
+          "[stroke-dasharray:1.1_1] [stroke-dashoffset:1.1] peer-checked:[stroke-dashoffset:0.1]",
           "motion-safe:transition-[stroke-dashoffset] motion-safe:duration-(--buril-duration-base,420ms) motion-safe:ease-(--buril-ease-out,linear(0,0.045,0.153,0.29,0.434,0.569,0.688,0.787,0.865,0.925,0.967,0.996,1.014,1.024,1.028,1.028,1.026,1.022,1.018,1.014,1.011,1.007,1.005,1.003,1))",
         )}
       >

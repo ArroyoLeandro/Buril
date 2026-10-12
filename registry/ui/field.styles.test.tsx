@@ -83,7 +83,8 @@ describe("Field error motion", () => {
     expect(cascade.computed(content, "opacity", { ...entering, ...motionReduced })).toBe("0%");
     const transition = transitionOf(cascade.computed, content);
     expect(transition.properties).toEqual(["opacity", "translate"]);
-    expect(transition.durations).toEqual([durations.fast]);
+    // The fade is quick; the drop takes the base duration, so it settles with the spring.
+    expect(transition.durations).toEqual([durations.fast, durations.base]);
     expect(transition.easings).toEqual([easings.out]);
   });
 
@@ -93,7 +94,7 @@ describe("Field error motion", () => {
       cascade.computed(content, "--tw-translate-y", { ...entering, ...motionReduced }),
     ).toBeUndefined();
     expect(cascade.computed(content, "--tw-translate-y", { ...entering, ...motionAllowed })).toBe(
-      "calc(var(--spacing) * -0.5)",
+      "calc(var(--spacing) * -0.75)",
     );
     // Once it has appeared it rests in place.
     expect(cascade.computed(content, "--tw-translate-y", motionAllowed)).toBeUndefined();
