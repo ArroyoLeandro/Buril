@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { THEME_KEY, applyTheme, initThemeToggle, noFlashScript, readTheme } from "./theme";
+import {
+  THEME_KEY,
+  applyTheme,
+  initThemeCycle,
+  initThemeToggle,
+  nextTheme,
+  noFlashScript,
+  readTheme,
+} from "./theme";
 
 const root = document.documentElement;
 
@@ -100,6 +108,85 @@ describe("initThemeToggle", () => {
     button("light").click();
     expect(root.classList.contains("light")).toBe(true);
     expect(pressed(group)).toEqual(["light"]);
+  });
+});
+
+describe("nextTheme", () => {
+  it("cycles light, dark, system and back to light", () => {
+    expect(nextTheme("light")).toBe("dark");
+    expect(nextTheme("dark")).toBe("system");
+    expect(nextTheme("system")).toBe("light");
+  });
+});
+
+describe("initThemeCycle", () => {
+  const labels = { light: "Theme: Light", dark: "Theme: Dark", system: "Theme: System" };
+
+  function renderCycle() {
+    document.body.innerHTML = `
+      <div role="group" aria-label="Theme" data-theme-toggle>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+      </div>
+      <button type="button" data-theme-cycle hidden aria-label="${labels.system}"
+        data-labels='${JSON.stringify(labels)}'>
+        <span data-theme-icon="light" hidden></span>
+        <span data-theme-icon="dark" hidden></span>
+        <span data-theme-icon="system"></span>
+      </button>
+      <span role="status" data-theme-status></span>`;
+    const cycle = document.querySelector<HTMLButtonElement>("[data-theme-cycle]")!;
+    const status = document.querySelector<HTMLElement>("[data-theme-status]")!;
+    const group = document.querySelector<HTMLElement>("[data-theme-toggle]")!;
+    const shownIcons = () =>
+      [...cycle.querySelectorAll<HTMLElement>("[data-theme-icon]")]
+        .filter((icon) => !icon.hasAttribute("hidden"))
+        .map((icon) => icon.dataset.themeIcon);
+    return { cycle, status, group, shownIcons };
+  }
+
+  it("names the button with the stored choice and shows its icon", () => {
+    localStorage.setItem(THEME_KEY, "dark");
+    const { cycle, status, shownIcons } = renderCycle();
+    initThemeCycle(cycle, status);
+    expect(cycle.getAttribute("aria-label")).toBe("Theme: Dark");
+    expect(shownIcons()).toEqual(["dark"]);
+    // Nothing is announced on load: the name already carries the state.
+    expect(status.textContent).toBe("");
+  });
+
+  it("moves to the next choice on each press, applies and stores it and announces it", () => {
+    const { cycle, status, shownIcons } = renderCycle();
+    initThemeCycle(cycle, status);
+
+    cycle.click();
+    expect(root.classList.contains("light")).toBe(true);
+    expect(localStorage.getItem(THEME_KEY)).toBe("light");
+    expect(cycle.getAttribute("aria-label")).toBe("Theme: Light");
+    expect(shownIcons()).toEqual(["light"]);
+    expect(status.textContent).toBe("Theme: Light");
+
+    cycle.click();
+    expect(root.classList.contains("dark")).toBe(true);
+    expect(status.textContent).toBe("Theme: Dark");
+
+    cycle.click();
+    expect(root.className).toBe("");
+    expect(localStorage.getItem(THEME_KEY)).toBeNull();
+    expect(cycle.getAttribute("aria-label")).toBe("Theme: System");
+  });
+
+  it("keeps the button group and the cycle button in step", () => {
+    const { cycle, status, group } = renderCycle();
+    initThemeToggle(group);
+    initThemeCycle(cycle, status);
+
+    cycle.click();
+    expect(pressed(group)).toEqual(["light"]);
+
+    group.querySelector<HTMLButtonElement>('[data-theme-choice="dark"]')!.click();
+    expect(cycle.getAttribute("aria-label")).toBe("Theme: Dark");
   });
 });
 

@@ -33,6 +33,7 @@ const text = (html: string) =>
     .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ")
     .trim();
+const classesOf = (tag: string) => (/class="([^"]*)"/.exec(tag)?.[1] ?? "").split(/\s+/);
 const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** A link for a `locale` reader: the page in that language, or English until it is translated. */
 const expectedHref = (page: string, locale: Locale) => {
@@ -96,6 +97,52 @@ describe.each([
       ([, label]) => text(label!),
     );
     expect(labels).toEqual([t["theme.light"], t["theme.dark"], t["theme.system"]]);
+  });
+
+  // Below lg the three theme buttons do not fit one header row: one icon button cycles them.
+  it("offers one icon button that cycles the theme on small screens", async () => {
+    const html = header(await render(ButtonPage, path));
+    const group = /<div[^>]*role="group"[^>]*>/.exec(html)![0];
+    expect(classesOf(group)).toContain("max-lg:hidden");
+    const cycle = /<button[^>]*data-theme-cycle[^>]*>[\s\S]*?<\/button>/.exec(html)?.[0];
+    expect(cycle, "cycle button").toBeDefined();
+    const tag = /<button[^>]*>/.exec(cycle!)![0];
+    expect(classesOf(tag)).toContain("lg:hidden");
+    // Hidden until the script runs, like the group: without JavaScript it could do nothing.
+    expect(tag).toMatch(/\shidden(\s|>|=)/);
+    expect(tag).toContain(
+      `aria-label="${t["theme.current"].replace("{choice}", t["theme.system"])}"`,
+    );
+    const labels = JSON.parse(/data-labels="([^"]*)"/.exec(tag)![1]!.replace(/&quot;/g, '"'));
+    expect(labels).toEqual({
+      light: t["theme.current"].replace("{choice}", t["theme.light"]),
+      dark: t["theme.current"].replace("{choice}", t["theme.dark"]),
+      system: t["theme.current"].replace("{choice}", t["theme.system"]),
+    });
+    // One icon per choice, all decorative: the name says the state.
+    const icons = [...cycle!.matchAll(/<span[^>]*data-theme-icon="(\w+)"[^>]*>/g)];
+    expect(icons.map(([, choice]) => choice)).toEqual(["light", "dark", "system"]);
+    for (const [icon] of icons) expect(icon).toContain('aria-hidden="true"');
+    // A status region, present from the start, announces each new choice.
+    expect(html).toMatch(/<span[^>]*role="status"[^>]*data-theme-status[^>]*>\s*<\/span>/);
+  });
+
+  it("folds the main navigation behind a disclosure button below md", async () => {
+    const html = header(await render(ButtonPage, path));
+    const nav = new RegExp(`<nav[^>]*aria-label="${t["nav.main"]}"[^>]*>`).exec(html)![0];
+    const id = /\sid="([^"]+)"/.exec(nav)?.[1];
+    expect(id, "nav id").toBeDefined();
+    expect(classesOf(nav)).toEqual(
+      expect.arrayContaining(["max-md:data-collapsed:hidden", "max-md:basis-full"]),
+    );
+    const toggle = /<button[^>]*data-site-nav-toggle[^>]*>/.exec(html)?.[0];
+    expect(toggle, "menu button").toBeDefined();
+    expect(toggle).toContain(`aria-controls="${id}"`);
+    expect(toggle).toContain('aria-expanded="false"');
+    expect(toggle).toContain(`aria-label="${t["nav.menu"]}"`);
+    expect(classesOf(toggle!)).toContain("md:hidden");
+    // Hidden until the script collapses the nav, so the links work without JavaScript.
+    expect(toggle).toMatch(/\shidden(\s|>|=)/);
   });
 
   it("labels the sidebar, its groups and the menu button, and links the same language", async () => {

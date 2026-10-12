@@ -5,7 +5,8 @@ import { localeNames, type Locale } from "../i18n/ui";
  * A plain link to the same page in the other language. It shows that language's own name
  * ("Español", "English") and marks it with `lang` and `hreflang`, so screen readers pronounce it
  * correctly and readers of that language recognise it. No redirect ever picks a language for the
- * visitor. A page that is not translated yet shows no switcher.
+ * visitor. A page that is not translated yet shows no switcher. Below sm the globe is dropped, so
+ * the header keeps one row on a 320px phone; the language name stays.
  */
 interface Props {
   locale: Locale;
@@ -28,7 +29,7 @@ const target = versions.find((version) => version.locale !== locale);
       aria-hidden="true"
       focusable="false"
       viewBox="0 0 24 24"
-      class="size-4 shrink-0"
+      class="size-4 shrink-0 max-sm:hidden"
       fill="none"
       stroke="currentColor"
       stroke-width="1.75"
