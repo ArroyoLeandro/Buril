@@ -6,7 +6,7 @@ import SelectDemo from "../../../../components/SelectDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 
-const { example } = componentExamples.select;
+const { example, listboxExample } = componentExamples.select;
 ---
 
 <ComponentPage slug="select">
@@ -47,6 +47,17 @@ const { example } = componentExamples.select;
     <h3 class="mt-8 font-display text-lg">En un Field, con una elección obligatoria</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Un cuadro de lista</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>multiple</code>, o un <code>size</code> mayor que 1, convierte el select en un cuadro de
+      lista: no hay selector que abrir, así que no hay flecha. Elegir varias opciones requiere una
+      tecla modificadora que mucha gente no conoce; con pocas opciones, un grupo de casillas es más
+      fácil.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={listboxExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

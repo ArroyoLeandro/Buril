@@ -6,7 +6,7 @@ import TextareaDemo from "../../../../components/TextareaDemo";
 import { codeTheme } from "../../../../components/code-theme";
 import { componentExamples } from "../../../../data/snippets";
 
-const { example } = componentExamples.textarea;
+const { example, statesExample } = componentExamples.textarea;
 ---
 
 <ComponentPage slug="textarea">
@@ -39,6 +39,17 @@ const { example } = componentExamples.textarea;
     <h3 class="mt-8 font-display text-lg">En un Field</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Filas y estados</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>rows</code> fija la altura inicial; aun así, se puede arrastrar para agrandarlo. Los
+      estados no válido, de solo lectura y deshabilitado funcionan como en el Input. A un textarea
+      no válido dale un mensaje con <code>aria-describedby</code>, o ponlo en un Field, que lo hace
+      por ti.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={statesExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

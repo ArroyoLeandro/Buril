@@ -82,6 +82,14 @@ function tabGroup(html: string, label: string) {
   );
 }
 
+/** The code a reader can copy: every <pre> outside Installation, the API and Accessibility. */
+function shownCode(html: string) {
+  return sections(html)
+    .filter(({ title }) => !["Installation", "API reference", "Accessibility"].includes(title))
+    .flatMap(({ html }) => [...html.matchAll(/<pre[\s\S]*?<\/pre>/g)].map(([pre]) => text(pre)))
+    .join("\n");
+}
+
 function expectTabSemantics(tabs: ReturnType<typeof tabGroup>) {
   for (const [index, tab] of tabs.entries()) {
     const selected = index === 0;
@@ -193,6 +201,59 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
           ([, cell]) => squash(text(cell!)),
         );
         expect(rows).toEqual(componentDocs[slug]!.api[index]!.props.map(({ name }) => name));
+      }
+    });
+
+    // APG style: a Keyboard table, or a sentence saying the component takes no focus, then what
+    // assistive technology gets: the role and the states.
+    it("has Keyboard and ARIA subsections in its Accessibility section", async () => {
+      const a11y = sections(await render()).find(({ title }) => title === "Accessibility")!.html;
+      const subsections = [...a11y.matchAll(/<h3\b[^>]*>([\s\S]*?)<\/h3>/g)].map(([, inner]) =>
+        squash(text(inner!)),
+      );
+      expect(subsections).toEqual(["Keyboard", "ARIA"]);
+      const docs = componentDocs[slug]!;
+      if (!docs.keyboard?.length) {
+        expect(a11y).not.toMatch(/<table/);
+        expect(squash(text(a11y))).toContain("No keyboard interaction");
+      }
+      const plain = (value: string) => squash(value.replace(/`/g, ""));
+      expect(squash(text(a11y))).toContain(plain(docs.aria.role));
+      if (docs.aria.states) expect(squash(text(a11y))).toContain(plain(docs.aria.states));
+    });
+
+    // Every variant, size and mode the API lists is used in code a reader can copy: the demo's
+    // source, the usage snippet or an example. Prose and the API table do not count.
+    it("shows every variant, size and mode of its API in use", async () => {
+      const shown = shownCode(await render());
+      for (const api of componentDocs[slug]!.api) {
+        for (const prop of api.props) {
+          if (!["variant", "size", "orientation", "live", "motion"].includes(prop.name)) continue;
+          const values = [...prop.type.matchAll(/"([\w-]+)"/g)].map(([, value]) => value!);
+          for (const value of values) {
+            if (prop.default === `"${value}"`) continue;
+            const pattern = new RegExp(
+              `${prop.name}[=:]\\s*\\{?["']${value}["']|\\b${prop.name}\\s*=\\s*\\{${prop.name}\\}`,
+            );
+            const listed = new RegExp(`["']${value}["']`);
+            expect(
+              pattern.test(shown) || listed.test(shown),
+              `${api.component} ${prop.name}="${value}"`,
+            ).toBe(true);
+          }
+        }
+      }
+    });
+
+    // Every state the API documents as a boolean, such as `loading` or `decor`, is used in code too.
+    it("shows every state of its API in use", async () => {
+      const shown = shownCode(await render());
+      for (const api of componentDocs[slug]!.api) {
+        for (const prop of api.props.filter(({ type }) => type === "boolean")) {
+          expect(shown, `${api.component} ${prop.name}`).toMatch(
+            new RegExp(`\\b${prop.name}\\b(?!-)`),
+          );
+        }
       }
     });
 

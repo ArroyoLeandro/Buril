@@ -6,7 +6,7 @@ import SelectDemo from "../../../components/SelectDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
 
-const { example } = componentExamples.select;
+const { example, listboxExample } = componentExamples.select;
 ---
 
 <ComponentPage slug="select">
@@ -47,6 +47,16 @@ const { example } = componentExamples.select;
     <h3 class="mt-8 font-display text-lg">In a Field, with a required choice</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">A list box</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>multiple</code>, or a <code>size</code> above 1, turns the select into a list box: there
+      is no picker to open, so there is no chevron. Choosing several options takes a modifier key,
+      which many people do not know; for a few options, a group of checkboxes is easier.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={listboxExample} lang="tsx" theme={codeTheme} />
     </div>
   </Fragment>
 

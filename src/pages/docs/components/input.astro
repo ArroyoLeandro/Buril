@@ -6,7 +6,7 @@ import InputDemo from "../../../components/InputDemo";
 import { codeTheme } from "../../../components/code-theme";
 import { componentExamples } from "../../../data/snippets";
 
-const { usageExample } = componentExamples.input;
+const { usageExample, standaloneExample } = componentExamples.input;
 ---
 
 <ComponentPage slug="input">
@@ -52,6 +52,16 @@ const { usageExample } = componentExamples.input;
         font, so mobile browsers do not zoom in when it takes focus.
       </li>
     </ul>
+
+    <h3 class="mt-8 font-display text-lg">Without a Field</h3>
+    <p class="mt-4 text-muted-foreground">
+      A Field wires the label, the error and <code>aria-invalid</code> for you. Without one, write
+      them yourself: a <code>&lt;label&gt;</code> for the input, <code>aria-invalid</code> while the
+      value is wrong, and <code>aria-describedby</code> pointing at the message.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={standaloneExample} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
