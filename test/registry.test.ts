@@ -55,6 +55,13 @@ describe("registry items", () => {
     ["radio-group", "registry/ui/radio-group.tsx"],
     ["switch", "registry/ui/switch.tsx"],
     ["select", "registry/ui/select.tsx"],
+    ["card", "registry/ui/card.tsx"],
+    ["badge", "registry/ui/badge.tsx"],
+    ["avatar", "registry/ui/avatar.tsx"],
+    ["separator", "registry/ui/separator.tsx"],
+    ["alert", "registry/ui/alert.tsx"],
+    ["spinner", "registry/ui/spinner.tsx"],
+    ["skeleton", "registry/ui/skeleton.tsx"],
   ])("%s is a standalone component that needs only utils", (name, path) => {
     const item = byName.get(name) as Item & { files?: { path: string; type: string }[] };
     expect(item?.type).toBe("registry:ui");

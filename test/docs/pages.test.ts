@@ -284,6 +284,12 @@ describe("field page", () => {
     expect(visible).toMatch(/\(required\)/);
     expect(visible).toMatch(/icon/);
   });
+
+  it("explains what happens when a render prop drops required", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-required=(&quot;|")true(&quot;|")/);
+    expect(visible).toMatch(/development builds log a warning/);
+  });
 });
 
 describe("input page", () => {
@@ -330,6 +336,12 @@ describe("radio group page", () => {
     expect(visible).toMatch(/arrow keys/i);
     expect(visible).toMatch(/onValueChange/);
   });
+
+  it("explains where aria-invalid and the error description go", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|") to each item/);
+    expect(visible).toMatch(/aria-describedby/);
+  });
 });
 
 describe("switch page", () => {
@@ -342,6 +354,12 @@ describe("switch page", () => {
     expect(visible).toMatch(/stateLabels/);
     expect(visible).toMatch(/reduced motion/i);
   });
+
+  it("explains how to resize the track and the invalid state", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/h-8 w-14/);
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|")/);
+  });
 });
 
 describe("select page", () => {
@@ -353,6 +371,115 @@ describe("select page", () => {
     expect(visible).toMatch(/Field/);
     expect(visible).toMatch(/full width/i);
     expect(visible).toMatch(/forced-colors/);
+  });
+});
+
+describe("card page", () => {
+  const render = () => container.renderToString(componentPages["card"]!);
+
+  it("explains the stretched link pattern instead of a clickable div", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/after:absolute after:inset-0/);
+    expect(visible).toMatch(/stretched link/i);
+    expect(visible).toMatch(/onClick/);
+    expect(visible).toMatch(/relative z-10/);
+  });
+
+  it("explains the heading level and the decoration", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/as=(&quot;|")h2(&quot;|")/);
+    expect(visible).toMatch(/decor/);
+    expect(visible).toMatch(/aria-hidden/);
+  });
+});
+
+describe("badge page", () => {
+  const render = () => container.renderToString(componentPages["badge"]!);
+
+  it("explains that the text carries the meaning and badges are not interactive", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/never color alone|not its color/i);
+    expect(visible).toMatch(/not focusable/i);
+    expect(visible).toMatch(/Button|Link/);
+  });
+
+  it("explains how to announce a status badge that changes", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/announce/i);
+  });
+});
+
+describe("avatar page", () => {
+  const render = () => container.renderToString(componentPages["avatar"]!);
+
+  it("explains alt, the fallback and the decorative case", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")img(&quot;|")/);
+    expect(visible).toMatch(/alt=(&quot;|")(&quot;|")/);
+    expect(visible).toMatch(/initials/i);
+    expect(visible).toMatch(/fails to load/);
+  });
+});
+
+describe("separator page", () => {
+  const render = () => container.renderToString(componentPages["separator"]!);
+
+  it("explains semantic versus decorative separators and the orientation", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/&lt;hr&gt;|<hr>/);
+    expect(visible).toMatch(/aria-orientation=(&quot;|")vertical(&quot;|")/);
+    expect(visible).toMatch(/decorative/);
+    expect(visible).toMatch(/role=(&quot;|")none(&quot;|")/);
+  });
+
+  it("documents the color decision with measured contrast", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/3:1/);
+    expect(visible).toMatch(/border-input/);
+  });
+});
+
+describe("alert page", () => {
+  const render = () => container.renderToString(componentPages["alert"]!);
+
+  it("explains when to use role alert and that the region must exist first", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")alert(&quot;|")/);
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/important/i);
+    expect(visible).toMatch(/already (exists|on the page)/);
+  });
+
+  it("explains that color is never the only signal", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/icon/);
+    expect(visible).toMatch(/title/);
+    expect(visible).toMatch(/color alone|only signal/i);
+  });
+});
+
+describe("spinner page", () => {
+  const render = () => container.renderToString(componentPages["spinner"]!);
+
+  it("explains the status role, the hidden label and reduced motion", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/label/);
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/separate items?/i);
+  });
+});
+
+describe("skeleton page", () => {
+  const render = () => container.renderToString(componentPages["skeleton"]!);
+
+  it("explains aria-busy on the loading region and announcing completion", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-busy=(&quot;|")true(&quot;|")/);
+    expect(visible).toMatch(/aria-hidden/);
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/reduced motion/i);
   });
 });
 

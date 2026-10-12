@@ -19,6 +19,15 @@ describe("SwitchDemo", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Push notifications turned on.");
   });
 
+  it("turns it back off and says so", async () => {
+    render(<SwitchDemo />);
+    const push = screen.getByRole("switch", { name: "Push notifications" });
+    await userEvent.click(push);
+    await userEvent.click(push);
+    expect(push).not.toBeChecked();
+    expect(screen.getByRole("status")).toHaveTextContent("Push notifications turned off.");
+  });
+
   it("has no axe violations", async () => {
     const { container } = render(<SwitchDemo />);
     expect(await axe(container)).toHaveNoViolations();

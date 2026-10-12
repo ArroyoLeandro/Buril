@@ -52,6 +52,15 @@ const usageExample = `import { Switch } from "@/components/ui/switch";
         <code>onChange</code>, or <code>defaultChecked</code>.
       </li>
       <li>
+        <strong>Any size.</strong> Resize the track with <code>className</code>, such as
+        <code>h-8 w-14</code>. The thumb is sized from the track's height and travels to its right
+        edge, so it fits any track. Keep the track at least 24px tall.
+      </li>
+      <li>
+        <strong>Invalid.</strong> <code>aria-invalid="true"</code>, or a Field with an
+        <code>error</code>, turns the track border destructive; the Field's error text says why.
+      </li>
+      <li>
         <strong>Reduced motion.</strong> The thumb slides only when the user has not asked for
         reduced motion; otherwise it jumps. In forced-colors mode the thumb keeps a system color, so
         it stays visible.

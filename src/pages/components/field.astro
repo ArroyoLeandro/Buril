@@ -88,6 +88,12 @@ const childExample = `<Field label="Message" description="Up to 500 characters."
       announce, so the marker is hidden from them to avoid hearing it twice. Native validation
       bubbles still run on submit unless the form has <code>noValidate</code>.
     </p>
+    <p class="mt-4 text-muted-foreground">
+      With a render prop, spread every prop you receive, <code>required</code> included. If the
+      rendered control is neither <code>required</code> nor <code>aria-required="true"</code>, the
+      field lets screen readers read the marker as part of the label, so the requirement is never
+      lost, and development builds log a warning that names the control.
+    </p>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

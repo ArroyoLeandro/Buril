@@ -2,7 +2,7 @@ import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { RadioGroup, RadioGroupItem, type RadioGroupProps } from "./radio-group";
 
@@ -28,6 +28,11 @@ function Page(props: Partial<RadioGroupProps>) {
 }
 
 const radio = (name: string) => screen.getByRole("radio", { name });
+
+// Restore every spy, even when a test fails before its own cleanup.
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("RadioGroup", () => {
   it("is a fieldset named by its legend", () => {
@@ -193,7 +198,48 @@ describe("RadioGroup", () => {
     expect(() => render(<RadioGroupItem value="alone">Alone</RadioGroupItem>)).toThrow(
       /inside a RadioGroup/,
     );
-    vi.mocked(console.error).mockRestore();
+  });
+
+  describe("invalid", () => {
+    // ARIA allows aria-invalid on a radio, not on a group, so each radio carries it.
+    it("puts aria-invalid on each radio that receives it", () => {
+      render(
+        <RadioGroup legend="Delivery" required aria-describedby="delivery-error">
+          <RadioGroupItem value="standard" aria-invalid="true">
+            Standard
+          </RadioGroupItem>
+          <RadioGroupItem value="express" aria-invalid="true">
+            Express
+          </RadioGroupItem>
+        </RadioGroup>,
+      );
+      for (const name of ["Standard", "Express"]) {
+        expect(radio(name)).toHaveAttribute("aria-invalid", "true");
+        expect(radio(name)).toBeInvalid();
+      }
+    });
+
+    it("leaves the radios valid by default", () => {
+      render(<Delivery />);
+      for (const name of ["Standard", "Express", "Pickup"]) expect(radio(name)).toBeValid();
+    });
+
+    it("has no axe violations with an error message", async () => {
+      const { container } = render(
+        <>
+          <RadioGroup legend="Delivery" required aria-describedby="delivery-error">
+            <RadioGroupItem value="standard" aria-invalid="true">
+              Standard
+            </RadioGroupItem>
+          </RadioGroup>
+          <p id="delivery-error">Choose a delivery option.</p>
+        </>,
+      );
+      expect(screen.getByRole("group", { name: "Delivery" })).toHaveAccessibleDescription(
+        "Choose a delivery option.",
+      );
+      expect(await axe(container)).toHaveNoViolations();
+    });
   });
 
   describe("accessibility", () => {

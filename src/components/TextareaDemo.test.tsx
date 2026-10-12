@@ -24,6 +24,18 @@ describe("TextareaDemo", () => {
     );
   });
 
+  it("clears the error once the message is back within the limit", async () => {
+    render(<TextareaDemo />);
+    const message = screen.getByRole("textbox", { name: "Message" });
+    await userEvent.click(message);
+    await userEvent.paste("a".repeat(201));
+    expect(message).toBeInvalid();
+    await userEvent.keyboard("{Backspace}");
+    expect(message).not.toHaveAttribute("aria-invalid");
+    expect(message).toHaveAccessibleDescription("Up to 200 characters.");
+    expect(screen.getByText("200 / 200")).toBeInTheDocument();
+  });
+
   it("has no axe violations", async () => {
     const { container } = render(<TextareaDemo />);
     expect(await axe(container)).toHaveNoViolations();

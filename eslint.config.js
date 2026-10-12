@@ -8,7 +8,7 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig(
-  { ignores: ["dist/", ".astro/", "public/r/", "node_modules/", "pnpm-lock.yaml"] },
+  { ignores: ["dist/", ".astro/", "public/r/", "node_modules/", "pnpm-lock.yaml", ".claude/"] },
   js.configs.recommended,
   tseslint.configs.recommended,
   {
