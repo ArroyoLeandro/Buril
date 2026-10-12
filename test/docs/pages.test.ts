@@ -208,8 +208,33 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       expect(text(source)).toContain(/^export \{.*$/m.exec(file)![0]);
       expect(source).toMatch(/<pre class="astro-code/);
     });
+
+    it("meets AA contrast for every token color in its code blocks", async () => {
+      const pairs = codeColors(await render());
+      expect(pairs.length).toBeGreaterThan(20);
+      const worst = Math.min(...pairs.map(({ color, background }) => contrast(color, background)));
+      expect(worst).toBeGreaterThanOrEqual(4.5);
+    });
   },
 );
+
+describe("icon button page", () => {
+  const render = () => container.renderToString(componentPages["icon-button"]!);
+
+  it("explains that aria-label is required and the icon is hidden", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-label/);
+    expect(visible).toMatch(/required/i);
+    expect(visible).toMatch(/aria-hidden/);
+  });
+
+  it("documents the three icon sizes and that it ships with the Button", async () => {
+    const visible = text(await render());
+    for (const size of ["icon-sm", "icon-lg"]) expect(visible).toContain(size);
+    expect(visible).toMatch(/32, 40 and 48px/);
+    expect(visible).toMatch(/same registry item as the Button/);
+  });
+});
 
 describe("button page", () => {
   it("renders one document with a single main landmark", async () => {
@@ -264,9 +289,15 @@ describe("button page", () => {
   it("documents the API differences from shadcn's Button", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Coming from shadcn\/ui<\/h2>/g)).toBe(1);
-    const section = text(html.slice(html.indexOf(">Coming from shadcn/ui</h2>")));
-    expect(section).toMatch(/asChild/);
+    const start = html.indexOf(">Coming from shadcn/ui</h2>");
+    const section = text(html.slice(start, html.indexOf("<h2", start)));
+    expect(section).toMatch(/No asChild/);
     expect(section).toMatch(/size=(&quot;|")icon(&quot;|")/);
+    // Icon sizes exist now; only the extra-small ones are missing.
+    for (const size of ["icon-sm", "icon-lg"]) expect(section).toContain(size);
+    expect(section).toMatch(/IconButton/);
+    expect(section).toMatch(/icon-xs/);
+    expect(section).not.toMatch(/No icon or extra-small sizes/);
     expect(section).toMatch(/type=(&quot;|")button(&quot;|")/);
     expect(section).toMatch(/components\/ui\/button\.tsx/);
   });

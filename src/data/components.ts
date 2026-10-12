@@ -22,6 +22,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     item: "button",
     source: "registry/ui/button.tsx",
   },
+  {
+    slug: "icon-button",
+    name: "Icon Button",
+    description: "A square button that shows only an icon and requires an aria-label.",
+    item: "button",
+    source: "registry/ui/button.tsx",
+  },
 ];
 
 export const componentHref = (slug: string) => `/components/${slug}`;

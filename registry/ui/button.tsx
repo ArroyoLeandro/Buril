@@ -1,4 +1,4 @@
-import type { ComponentProps, MouseEvent } from "react";
+import type { ComponentProps, MouseEvent, ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -34,6 +34,11 @@ const buttonVariants = cva(
         sm: "min-h-8 px-4 py-1 text-sm",
         default: "min-h-10 px-6 py-2 text-sm",
         lg: "min-h-12 px-8 py-2 text-base",
+        // Fixed squares for a single icon (32/40/48px, all above the 24px target). They never
+        // shrink in a flex row, and an icon without its own size-* class scales with the button.
+        "icon-sm": "size-8 shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        icon: "size-10 shrink-0 [&_svg:not([class*='size-'])]:size-5",
+        "icon-lg": "size-12 shrink-0 [&_svg:not([class*='size-'])]:size-6",
       },
     },
     defaultVariants: {
@@ -103,5 +108,32 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
-export type { ButtonProps };
+type IconButtonProps = Omit<ButtonProps, "size" | "aria-label" | "children"> & {
+  /**
+   * Required: an icon has no text, so this is the button's only accessible name (rule 5).
+   * Describe the action ("Close dialog"), not the icon ("Cross").
+   */
+  "aria-label": string;
+  size?: "icon-sm" | "icon" | "icon-lg";
+  /** The icon. It is hidden from assistive technology, so it never adds to the name. */
+  children: ReactNode;
+};
+
+/**
+ * A square button that shows only an icon. While loading, the spinner replaces the icon so the
+ * square keeps its size.
+ */
+function IconButton({ size = "icon", loading = false, children, ...props }: IconButtonProps) {
+  return (
+    <Button size={size} loading={loading} {...props}>
+      {!loading && (
+        <span aria-hidden="true" className="inline-flex">
+          {children}
+        </span>
+      )}
+    </Button>
+  );
+}
+
+export { Button, IconButton, buttonVariants };
+export type { ButtonProps, IconButtonProps };

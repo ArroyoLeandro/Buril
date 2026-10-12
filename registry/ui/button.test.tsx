@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
 import { describe, expect, it, vi } from "vitest";
-import { Button, buttonVariants } from "./button";
+import { Button, IconButton, buttonVariants } from "./button";
 
 const variants = ["default", "secondary", "outline", "ghost", "link", "destructive"] as const;
 
@@ -250,5 +250,176 @@ describe("buttonVariants", () => {
     // The cascade outcome (a visible border, no transparent override) is covered by
     // button.styles.test.ts, which compiles these classes with Tailwind.
     expect(link).not.toHaveClass("border-transparent");
+  });
+});
+
+function CloseIcon() {
+  return (
+    <svg data-testid="icon" viewBox="0 0 24 24">
+      <title>Cross</title>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}
+
+describe("IconButton", () => {
+  it("takes its accessible name from aria-label, not from the icon", () => {
+    render(
+      <IconButton aria-label="Close dialog">
+        <CloseIcon />
+      </IconButton>,
+    );
+    const button = screen.getByRole("button", { name: "Close dialog" });
+    expect(button.tagName).toBe("BUTTON");
+    expect(button).toHaveAttribute("type", "button");
+    expect(button).toHaveAccessibleName("Close dialog");
+  });
+
+  it("hides the icon from the accessibility tree", () => {
+    render(
+      <IconButton aria-label="Close dialog">
+        <CloseIcon />
+      </IconButton>,
+    );
+    const icon = screen.getByTestId("icon");
+    const hidden = icon.closest('[aria-hidden="true"]');
+    expect(hidden).not.toBeNull();
+    expect(screen.getByRole("button")).toContainElement(hidden as HTMLElement);
+    expect(screen.queryByRole("img", { hidden: false })).toBeNull();
+  });
+
+  it("requires aria-label at the type level", () => {
+    render(
+      // @ts-expect-error: an icon-only button needs aria-label for its accessible name (rule 5).
+      <IconButton>
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(screen.getByRole("button")).not.toHaveAttribute("aria-label");
+  });
+
+  it("defaults to the icon size", () => {
+    render(
+      <IconButton aria-label="Close">
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(screen.getByRole("button")).toHaveClass("size-10", "rounded-full");
+  });
+
+  it.each([
+    ["icon-sm", "size-8"],
+    ["icon", "size-10"],
+    ["icon-lg", "size-12"],
+  ] as const)("applies the %s size", (size, expected) => {
+    render(
+      <IconButton aria-label="Close" size={size}>
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(screen.getByRole("button")).toHaveClass(expected);
+  });
+
+  it("only accepts icon sizes", () => {
+    render(
+      // @ts-expect-error: text sizes would stretch the square button.
+      <IconButton aria-label="Close" size="lg">
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  it("applies variants like Button", () => {
+    render(
+      <IconButton aria-label="Delete" variant="destructive">
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(screen.getByRole("button")).toHaveClass("bg-destructive");
+  });
+
+  it("calls onClick when enabled", async () => {
+    const onClick = vi.fn();
+    render(
+      <IconButton aria-label="Close" onClick={onClick}>
+        <CloseIcon />
+      </IconButton>,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the native disabled attribute and does not fire onClick", async () => {
+    const onClick = vi.fn();
+    render(
+      <IconButton aria-label="Close" disabled onClick={onClick}>
+        <CloseIcon />
+      </IconButton>,
+    );
+    const button = screen.getByRole("button", { name: "Close" });
+    expect(button).toBeDisabled();
+    await userEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("swaps the icon for the spinner while loading and keeps its name and focus", async () => {
+    const onClick = vi.fn();
+    render(
+      <IconButton aria-label="Refresh" loading onClick={onClick}>
+        <CloseIcon />
+      </IconButton>,
+    );
+    const button = screen.getByRole("button", { name: "Refresh" });
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(screen.queryByTestId("icon")).toBeNull();
+    expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    await userEvent.tab();
+    expect(button).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("forwards ref to the button element", () => {
+    const ref = createRef<HTMLButtonElement>();
+    render(
+      <IconButton aria-label="Close" ref={ref}>
+        <CloseIcon />
+      </IconButton>,
+    );
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+  });
+
+  describe("accessibility", () => {
+    it.each(variants)("has no axe violations for the %s variant", async (variant) => {
+      const { container } = render(
+        <IconButton aria-label="Close" variant={variant}>
+          <CloseIcon />
+        </IconButton>,
+      );
+      expect(await axe(container)).toHaveNoViolations();
+    });
+
+    it("has no axe violations at every size, loading or disabled", async () => {
+      const { container } = render(
+        <>
+          <IconButton aria-label="Small" size="icon-sm">
+            <CloseIcon />
+          </IconButton>
+          <IconButton aria-label="Large" size="icon-lg">
+            <CloseIcon />
+          </IconButton>
+          <IconButton aria-label="Saving" loading>
+            <CloseIcon />
+          </IconButton>
+          <IconButton aria-label="Off" disabled>
+            <CloseIcon />
+          </IconButton>
+        </>,
+      );
+      expect(await axe(container)).toHaveNoViolations();
+    });
   });
 });
