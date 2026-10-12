@@ -134,6 +134,20 @@
           "decor": "#d72828"
         }
       }
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Accessible button with variants, sizes and a loading state.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@buril/utils", "@buril/theme"],
+      "files": [
+        {
+          "path": "registry/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

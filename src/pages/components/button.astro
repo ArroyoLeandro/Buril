@@ -1,0 +1,57 @@
+---
+import { Code } from "astro:components";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ButtonDemo from "../../components/ButtonDemo";
+import source from "../../../registry/ui/button.tsx?raw";
+
+const installCommands = `npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+npx shadcn@latest add @buril/button`;
+---
+
+<BaseLayout title="Button | Buril UI">
+  <main class="mx-auto max-w-2xl px-4 py-12">
+    <p class="text-sm">
+      <a href="/" class="underline underline-offset-4">
+        Buril UI
+      </a>
+    </p>
+    <h1 class="mt-4 font-display text-3xl">Button</h1>
+    <p class="mt-4 text-muted-foreground">
+      A native button with variants, sizes and a loading state. Styled anchors use the same classes
+      through <code>buttonVariants</code>.
+    </p>
+
+    <h2 class="mt-10 font-display text-xl">Demo</h2>
+    <div class="mt-4 border border-border p-6">
+      <ButtonDemo client:visible />
+    </div>
+
+    <h2 class="mt-10 font-display text-xl">Install</h2>
+    <p class="mt-4 text-muted-foreground">
+      Add the Buril registry once, then install the component:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={installCommands} lang="bash" theme="github-dark" />
+    </div>
+
+    <h2 class="mt-10 font-display text-xl">Source</h2>
+    <p class="mt-4 text-muted-foreground">
+      Read from <code>registry/ui/button.tsx</code> at build time.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={source} lang="tsx" theme="github-dark" />
+    </div>
+  </main>
+</BaseLayout>
+<div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+  <Code code={installCommands} lang="bash" theme="github-dark" />
+</div>
+
+<h2 class="mt-10 font-display text-xl">Source</h2>
+<p class="mt-4 text-muted-foreground">
+  Read from <code>registry/ui/button.tsx</code> at build time.
+</p>
+<div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+  <Code code={source} lang="tsx" theme="github-dark" />
+</div>
