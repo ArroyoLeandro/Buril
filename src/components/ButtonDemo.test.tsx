@@ -30,3 +30,24 @@ describe("ButtonDemo loading example", () => {
     expect(save.querySelector("[aria-live]")).toBeNull();
   });
 });
+
+describe("ButtonDemo in Spanish", () => {
+  it("names the buttons and announces progress in Spanish", async () => {
+    render(<ButtonDemo locale="es" />);
+    const status = screen.getByRole("status");
+    expect(screen.getByRole("heading", { name: "Variantes" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Iniciar la carga" }));
+    expect(screen.getByRole("button", { name: "Guardar cambios" })).toHaveAttribute(
+      "aria-busy",
+      "true",
+    );
+    expect(status).toHaveTextContent("Guardando cambios…");
+    await userEvent.click(screen.getByRole("button", { name: "Detener la carga" }));
+    expect(status).toHaveTextContent("Cambios guardados.");
+  });
+
+  it("links home in the page language", () => {
+    render(<ButtonDemo locale="es" />);
+    expect(screen.getByRole("link", { name: "Volver al inicio" })).toHaveAttribute("href", "/es/");
+  });
+});

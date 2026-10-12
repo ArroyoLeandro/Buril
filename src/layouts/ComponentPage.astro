@@ -8,6 +8,7 @@ import Tabs from "../components/Tabs.astro";
 import { codeTheme } from "../components/code-theme";
 import { componentDocs } from "../data/component-docs";
 import { findComponent } from "../data/components";
+import { plainDemoSource } from "../i18n/demo-source";
 import registry from "../../registry.json";
 
 /**
@@ -44,11 +45,11 @@ const demos = import.meta.glob<string>(["../components/*Demo.tsx"], {
   eager: true,
 });
 const demoName = `${entry.slug.replace(/(^|-)(\w)/g, (_, __, letter: string) => letter.toUpperCase())}Demo`;
-// Show the imports a consumer writes, not this repository's relative paths.
-const demoSource = demos[`../components/${demoName}.tsx`]?.replace(
-  /(["'])(?:\.\.\/)+registry\/ui\//g,
-  "$1@/components/ui/",
-);
+// Show the code a consumer writes: imports from components/ui, not this repository's relative
+// paths, and plain English strings instead of the docs site's translation helpers.
+const raw = demos[`../components/${demoName}.tsx`];
+const demoSource =
+  raw && plainDemoSource(raw).replace(/(["'])(?:\.\.\/)+registry\/ui\//g, "$1@/components/ui/");
 
 const item = (registry.items as { name: string; dependencies?: string[] }[]).find(
   ({ name }) => name === entry.item,

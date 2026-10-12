@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { IconButton } from "../../registry/ui/button";
+import { demoTranslator } from "../i18n/demos";
+import type { Locale } from "../i18n/ui";
 
 const sizes = ["icon-sm", "icon", "icon-lg"] as const;
 
@@ -27,7 +29,13 @@ const icons = {
   trash: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3",
 };
 
-export default function IconButtonDemo() {
+interface Props {
+  /** Language of the button names and the announcement. */
+  locale?: Locale;
+}
+
+export default function IconButtonDemo({ locale = "en" }: Props) {
+  const t = demoTranslator(locale);
   const [loading, setLoading] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
@@ -38,11 +46,11 @@ export default function IconButtonDemo() {
     <div className="flex flex-col gap-8">
       <section aria-labelledby="demo-icon-sizes" className="flex flex-col gap-3">
         <h3 id="demo-icon-sizes" className="text-sm font-semibold">
-          Sizes
+          {t("Sizes")}
         </h3>
         <div className="flex flex-wrap items-center gap-3">
           {sizes.map((size) => (
-            <IconButton key={size} size={size} aria-label={`Add item (${size})`}>
+            <IconButton key={size} size={size} aria-label={t("Add item ({size})", { size })}>
               <Icon path={icons.plus} />
             </IconButton>
           ))}
@@ -51,19 +59,19 @@ export default function IconButtonDemo() {
 
       <section aria-labelledby="demo-icon-variants" className="flex flex-col gap-3">
         <h3 id="demo-icon-variants" className="text-sm font-semibold">
-          Variants
+          {t("Variants")}
         </h3>
         <div className="flex flex-wrap items-center gap-3">
-          <IconButton aria-label="Add item">
+          <IconButton aria-label={t("Add item")}>
             <Icon path={icons.plus} />
           </IconButton>
-          <IconButton variant="outline" aria-label="Close panel">
+          <IconButton variant="outline" aria-label={t("Close panel")}>
             <Icon path={icons.close} />
           </IconButton>
-          <IconButton variant="ghost" aria-label="Close notice">
+          <IconButton variant="ghost" aria-label={t("Close notice")}>
             <Icon path={icons.close} />
           </IconButton>
-          <IconButton variant="destructive" aria-label="Delete item">
+          <IconButton variant="destructive" aria-label={t("Delete item")}>
             <Icon path={icons.trash} />
           </IconButton>
         </div>
@@ -71,12 +79,12 @@ export default function IconButtonDemo() {
 
       <section aria-labelledby="demo-icon-states" className="flex flex-col gap-3">
         <h3 id="demo-icon-states" className="text-sm font-semibold">
-          Loading and disabled
+          {t("Loading and disabled")}
         </h3>
         <div className="flex flex-wrap items-center gap-3">
           <IconButton
             variant="outline"
-            aria-label="Refresh results"
+            aria-label={t("Refresh results")}
             loading={loading}
             onClick={() => {
               setLoading(true);
@@ -86,13 +94,13 @@ export default function IconButtonDemo() {
           >
             <Icon path={icons.refresh} />
           </IconButton>
-          <IconButton variant="outline" aria-label="Delete item" disabled>
+          <IconButton variant="outline" aria-label={t("Delete item")} disabled>
             <Icon path={icons.trash} />
           </IconButton>
         </div>
         {/* Always rendered, so screen readers notice when its text changes. */}
         <p role="status" className="min-h-5 text-sm">
-          {loading ? "Refreshing results…" : ""}
+          {loading ? t("Refreshing results…") : ""}
         </p>
       </section>
     </div>

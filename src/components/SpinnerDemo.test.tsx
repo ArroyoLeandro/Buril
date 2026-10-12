@@ -51,3 +51,16 @@ describe("SpinnerDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("SpinnerDemo in Spanish", () => {
+  it("names the spinners and announces the result in Spanish", () => {
+    vi.useFakeTimers();
+    render(<SpinnerDemo locale="es" />);
+    expect(screen.getByText("Cargando archivos")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Cargar comentarios" }));
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    expect(screen.getByTestId("comments-status")).toHaveTextContent("3 comentarios cargados.");
+  });
+});

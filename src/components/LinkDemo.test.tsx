@@ -19,3 +19,16 @@ describe("LinkDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("LinkDemo in Spanish", () => {
+  it("writes the links in Spanish and points them at Spanish pages", () => {
+    render(<LinkDemo locale="es" />);
+    expect(screen.getByRole("link", { name: "documentación del Button" })).toHaveAttribute(
+      "href",
+      "/es/docs/components/button",
+    );
+    expect(
+      screen.getByRole("heading", { name: "Se abre en una pestaña nueva" }),
+    ).toBeInTheDocument();
+  });
+});
