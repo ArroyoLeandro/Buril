@@ -1,0 +1,19 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import ComponentIndex from "../../../components/docs/ComponentIndex.astro";
+import { documentedComponents } from "../../../data/components";
+---
+
+<DocsLayout
+  title="Componentes | Buril UI"
+  description="Todos los componentes de Buril, agrupados según lo que hacen."
+>
+  <h1 class="font-display text-3xl">Componentes</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    {documentedComponents.length} componentes, agrupados según lo que hacen. Cada página tiene una
+    demo en vivo, el comando de instalación, la API y su comportamiento con el teclado y con
+    lectores de pantalla.
+  </p>
+
+  <ComponentIndex />
+</DocsLayout>

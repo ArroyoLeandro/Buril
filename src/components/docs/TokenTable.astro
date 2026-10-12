@@ -1,0 +1,55 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import InlineCode from "../InlineCode.astro";
+import { getLocale, translator } from "../../i18n/ui";
+import { readTokens } from "../../utils/tokens";
+
+/**
+ * The theme's tokens with their light and dark values, read from the file the registry ships, so
+ * the table never drifts from the real values. A `?raw` CSS import would be empty under Vitest
+ * (`css: false`), so the file is read from the project root.
+ */
+const t = translator(getLocale(Astro.url));
+const tokens = readTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
+---
+
+{/* Values wrap anywhere, so the table fits a 320px screen without scrolling sideways. */}
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption id="tokens-caption" class="px-4 py-3 text-left text-muted-foreground">
+      <InlineCode text={t("tokens.caption")} />
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        {[t("tokens.token"), t("theme.light"), t("theme.dark")].map((header) => (
+          <th scope="col" class="px-4 py-2 font-semibold">
+            {header}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {tokens.map(({ name, light, dark }) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class="px-4 py-2 font-normal wrap-anywhere">
+            <code>--{name}</code>
+          </th>
+          {[light, dark].map((value) => (
+            <td class="px-4 py-2">
+              <span class="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  class="size-4 shrink-0 rounded-full border border-border"
+                  style={`background: ${value}`}
+                />
+                <code class="min-w-0 wrap-anywhere">{value}</code>
+              </span>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
