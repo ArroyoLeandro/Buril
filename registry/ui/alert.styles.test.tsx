@@ -59,6 +59,12 @@ describe("Alert compiled with Tailwind", () => {
     expect(cascade.computed(plain.description, "grid-column-start")).toBe("2");
   });
 
+  // The space comes from the icon itself, so an alert without an icon has no empty gap.
+  it("spaces the text from the icon with the icon's margin, not a column gap", () => {
+    expect(cascade.computed(plain.root, "column-gap")).toBeUndefined();
+    expect(cascade.computed(plain.icon, "margin-right")).toBe("calc(var(--spacing) * 3)");
+  });
+
   it("uses the body font for the title, never the display font", () => {
     expect(cascade.computed(plain.title, "font-family")).toBeUndefined();
     expect(cascade.computed(plain.title, "font-weight")).toBe("var(--font-weight-semibold)");

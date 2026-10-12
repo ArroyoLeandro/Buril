@@ -4,8 +4,9 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  // The icon sits in its own column; the title and description share the second one.
-  "relative grid w-full grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-lg border bg-card px-4 py-3 text-sm",
+  // The icon sits in its own column, spaced by its own margin, so an alert without an icon has
+  // no empty gap; the title and description share the second column.
+  "relative grid w-full grid-cols-[auto_1fr] gap-y-1 rounded-lg border bg-card px-4 py-3 text-sm",
   {
     variants: {
       variant: {
@@ -88,7 +89,7 @@ function Alert({ className, variant, live = "off", icon, children, ...props }: A
         <span
           data-slot="alert-icon"
           aria-hidden="true"
-          className="col-start-1 row-span-2 row-start-1 mt-0.5 inline-flex [&_svg]:size-4"
+          className="col-start-1 row-span-2 row-start-1 mt-0.5 mr-3 inline-flex [&_svg]:size-4"
         >
           {shownIcon}
         </span>
