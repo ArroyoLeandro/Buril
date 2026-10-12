@@ -102,6 +102,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/badge.tsx",
   },
   {
+    slug: "avatar",
+    name: "Avatar",
+    description: "A round picture of a person that falls back to initials when there is no image.",
+    item: "avatar",
+    source: "registry/ui/avatar.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
