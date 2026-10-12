@@ -1,99 +1,20 @@
 // @vitest-environment node
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname, join, resolve } from "node:path";
-import { compile } from "tailwindcss";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { classList, createCascade } from "../../test/tailwind-cascade";
 import { buttonVariants } from "./button";
 
-/**
- * jsdom runs without CSS, so class assertions cannot see how Tailwind orders the generated
- * rules. These tests compile the real stylesheet with Tailwind and resolve the cascade the way a
- * browser would for an element that carries the classes. That covers a raw <a> styled with
- * `buttonVariants()`, where no `cn()` removes conflicting classes.
- */
-const tailwindDir = resolve(dirname(createRequire(import.meta.url).resolve("tailwindcss")), "..");
-const burilCss = readFileSync(resolve(__dirname, "../styles/buril.css"), "utf8");
-
-async function loadStylesheet(id: string, base: string) {
-  const path = id === "tailwindcss" ? join(tailwindDir, "index.css") : resolve(base, id);
-  return { path, base: dirname(path), content: readFileSync(path, "utf8") };
-}
-
+// Compiled with Tailwind so the cascade is checked, including a raw <a> styled with
+// `buttonVariants()`, where no `cn()` removes conflicting classes.
 let build: (candidates: string[]) => string;
+let computed: Awaited<ReturnType<typeof createCascade>>["computed"];
 
 beforeAll(async () => {
-  const compiler = await compile(`@import "tailwindcss";\n${burilCss}`, {
-    base: __dirname,
-    loadStylesheet,
-  });
-  build = (candidates) => compiler.build(candidates);
+  ({ build, computed } = await createCascade());
 });
 
-type Node = { prelude: string; declarations: [string, string][]; children: Node[] };
-
-/** Parse a CSS block into nested rules. Enough for Tailwind output; not a general parser. */
-function parse(css: string): Node[] {
-  const root: Node = { prelude: "", declarations: [], children: [] };
-  const stack = [root];
-  let buffer = "";
-  for (const char of css) {
-    const current = stack[stack.length - 1]!;
-    if (char === "{") {
-      const node: Node = { prelude: buffer.trim(), declarations: [], children: [] };
-      current.children.push(node);
-      stack.push(node);
-      buffer = "";
-    } else if (char === "}") {
-      addDeclaration(current, buffer);
-      stack.pop();
-      buffer = "";
-    } else if (char === ";") {
-      addDeclaration(current, buffer);
-      buffer = "";
-    } else {
-      buffer += char;
-    }
-  }
-  return root.children;
-}
-
-function addDeclaration(node: Node, text: string) {
-  const colon = text.indexOf(":");
-  if (colon > 0 && !text.trim().startsWith("@")) {
-    node.declarations.push([text.slice(0, colon).trim(), text.slice(colon + 1).trim()]);
-  }
-}
-
-const escape = (name: string) => `.${name.replace(/[:/[\].]/g, "\\$&")}`;
-
-/**
- * Winning value of a property on an element with these classes. Utilities share one specificity,
- * so the last matching declaration wins. With `forcedColors`, rules inside
- * `@media (forced-colors: active)` apply too.
- */
-function computed(classes: string[], property: string, { forcedColors = false } = {}) {
-  const selectors = new Set(classes.map(escape));
-  const layer = parse(build(classes)).find((node) => node.prelude === "@layer utilities");
-  if (!layer) throw new Error("No utilities layer in the generated CSS");
-  let value: string | undefined;
-  const visit = (nodes: Node[]) => {
-    for (const node of nodes) {
-      if (node.prelude === "@media (forced-colors: active)") {
-        if (forcedColors) visit(node.children);
-        continue;
-      }
-      if (!selectors.has(node.prelude)) continue;
-      for (const [name, declared] of node.declarations) if (name === property) value = declared;
-    }
-  };
-  visit(layer.children);
-  return value;
-}
-
 const classesOf = (options: Parameters<typeof buttonVariants>[0]) =>
-  buttonVariants(options).split(/\s+/).filter(Boolean);
+  classList(buttonVariants(options));
 
 /** Unprefixed utilities that set a border color, such as `border-border`. */
 const borderColorClasses = (classes: string[]) =>
