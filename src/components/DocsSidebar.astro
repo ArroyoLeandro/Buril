@@ -39,7 +39,7 @@ const statusLabels = { new: "New", beta: "Beta" } as const;
   <nav
     id="docs-sidebar"
     aria-label="Docs"
-    class="pt-4 max-lg:data-collapsed:hidden lg:sticky lg:top-0 lg:max-h-dvh lg:overflow-y-auto lg:px-4 lg:py-8"
+    class="pt-4 max-lg:data-collapsed:hidden lg:docs-panel lg:px-4 lg:py-8"
   >
     {groups.map((group) => {
       const id = `docs-nav-${slugify(group.title)}`;

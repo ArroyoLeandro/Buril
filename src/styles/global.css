@@ -8,6 +8,18 @@
 }
 
 @layer base {
+  /* Height of the header row. From lg up the header is sticky and the docs panels sit below it. */
+  :root {
+    --header-height: 4rem;
+  }
+
+  /* Anchors and focused elements stop below the sticky header instead of behind it. */
+  @media (width >= 64rem) {
+    html {
+      scroll-padding-top: calc(var(--header-height) + 1rem);
+    }
+  }
+
   body {
     @apply bg-background font-body text-foreground;
   }
@@ -15,6 +27,25 @@
   :focus-visible {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
+  }
+}
+
+/*
+ * Docs sidebar and "On this page" list: sticky below the header and as tall as the rest of the
+ * viewport. A long list scrolls inside the panel (wheel, touch, and Tab moving focus to a link
+ * out of view), but the panel draws no scrollbar, so the page scrollbar is the only one visible.
+ * Overscroll stays in the panel instead of scrolling the page.
+ */
+@utility docs-panel {
+  position: sticky;
+  top: var(--header-height);
+  max-height: calc(100svh - var(--header-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
