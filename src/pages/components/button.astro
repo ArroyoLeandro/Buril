@@ -1,11 +1,10 @@
 ---
 import { Code } from "astro:components";
 
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ComponentPage from "../../layouts/ComponentPage.astro";
 import ButtonDemo from "../../components/ButtonDemo";
 import InstallCommand from "../../components/InstallCommand.astro";
 import { codeTheme } from "../../components/code-theme";
-import source from "../../../registry/ui/button.tsx?raw";
 
 const statusExample = `<Button type="submit" loading={saving}>
   Save changes
@@ -13,42 +12,31 @@ const statusExample = `<Button type="submit" loading={saving}>
 <p role="status">{saving ? "Saving changes…" : message}</p>`;
 ---
 
-<BaseLayout title="Button | Buril UI">
-  <h1 class="font-display text-3xl">Button</h1>
-  <p class="mt-4 text-muted-foreground">
-    A native button with variants, sizes and a loading state. Styled anchors use the same classes
-    through <code>buttonVariants</code>.
-  </p>
+<ComponentPage slug="button">
+  <Fragment slot="lead">
+    Styled anchors use the same classes through <code>buttonVariants</code>.
+  </Fragment>
 
-  <h2 class="mt-10 font-display text-xl">Demo</h2>
-  <div class="mt-4 border border-border p-6">
-    <ButtonDemo client:visible />
-  </div>
+  <ButtonDemo slot="demo" client:visible />
 
-  <h2 class="mt-10 font-display text-xl">Loading</h2>
-  <p class="mt-4 text-muted-foreground">
-    <code>loading</code> shows a spinner and blocks every activation path, including implicit form
-    submission. The button keeps its accessible name and stays focusable, so keyboard and screen
-    reader users keep their place. It sets <code>aria-busy</code> and <code>aria-disabled</code>,
-    but screen readers generally do not announce <code>aria-busy</code> on a button.
-  </p>
-  <p class="mt-4 text-muted-foreground">
-    Announce progress yourself with a status region next to the button. Render it before the message
-    changes, and keep it outside the button so the button's name stays stable:
-  </p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={statusExample} lang="tsx" theme={codeTheme} />
-  </div>
+  <Fragment slot="usage">
+    <h2 class="mt-10 font-display text-xl">Loading</h2>
+    <p class="mt-4 text-muted-foreground">
+      <code>loading</code> shows a spinner and blocks every activation path, including implicit form
+      submission. The button keeps its accessible name and stays focusable, so keyboard and screen
+      reader users keep their place. It sets <code>aria-busy</code> and <code>aria-disabled</code>,
+      but screen readers generally do not announce <code>aria-busy</code> on a button.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      Announce progress yourself with a status region next to the button. Render it before the
+      message changes, and keep it outside the button so the button's name stays stable:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={statusExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
 
-  <h2 class="mt-10 font-display text-xl">Install</h2>
-  <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
-  <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
-  <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
-  <InstallCommand
-    id="install-namespace"
-    commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
-  />
-  <p class="mt-4 text-muted-foreground">
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
     The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have, so
     installing it does not change your theme. It creates
     <code>components/ui/button.tsx</code> and adds <code>class-variance-authority</code>. If your
@@ -71,10 +59,10 @@ const statusExample = `<Button type="submit" loading={saving}>
       with <code>className=&#123;buttonVariants()&#125;</code> instead of wrapping it.
     </li>
     <li>
-      <strong>No icon or extra-small sizes.</strong> shadcn's <code>size="icon"</code>,
-      <code>icon-xs</code>, <code>icon-sm</code>, <code>icon-lg</code> and <code>xs</code> do not
-      exist. Sizes are <code>sm</code>, <code>default</code> and <code>lg</code>, all at least 32px
-      tall. A dedicated Icon Button is planned.
+      <strong>Icon sizes, but no extra-small ones.</strong> <code>size="icon"</code>,
+      <code>icon-sm</code> and <code>icon-lg</code> exist (40, 32 and 48px squares).
+      <code>xs</code> and <code>icon-xs</code> do not: the smallest size is 32px. For icon-only
+      buttons, use <code>IconButton</code>, which requires <code>aria-label</code>.
     </li>
     <li>
       <strong>
@@ -98,8 +86,10 @@ const statusExample = `<Button type="submit" loading={saving}>
   </ul>
   <p class="mt-4 text-muted-foreground">
     Before replacing shadcn's file, search your project for <code>asChild</code>,
-    <code>size="icon</code> and <code>data-slot="button"</code>. To try Buril next to shadcn's
-    Button, answer no when the CLI asks, and copy the source below into a file with another name.
+    <code>size="xs"</code>, <code>size="icon-xs"</code> and <code>data-slot="button"</code>. Check
+    that every <code>size="icon"</code> button has an <code>aria-label</code>. To try Buril next to
+    shadcn's Button, answer no when the CLI asks, and copy the source below into a file with another
+    name.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Optional theme</h2>
@@ -128,12 +118,4 @@ const statusExample = `<Button type="submit" loading={saving}>
       next-themes, <code>attribute="class"</code> already does this.
     </li>
   </ul>
-
-  <h2 class="mt-10 font-display text-xl">Source</h2>
-  <p class="mt-4 text-muted-foreground">
-    Read from <code>registry/ui/button.tsx</code> at build time.
-  </p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={source} lang="tsx" theme={codeTheme} />
-  </div>
-</BaseLayout>
+</ComponentPage>

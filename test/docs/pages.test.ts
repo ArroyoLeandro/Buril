@@ -1,10 +1,15 @@
 // @vitest-environment node
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import reactRenderer from "@astrojs/react/server.js";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+
 import IndexPage from "../../src/pages/index.astro";
 import ButtonPage from "../../src/pages/components/button.astro";
+import { componentHref, documentedComponents } from "../../src/data/components";
 
 let container: AstroContainer;
 
@@ -47,10 +52,20 @@ function codeColors(html: string) {
   return pairs;
 }
 
+/** Every component page, keyed by slug, so new pages get the shared checks automatically. */
+const componentPages = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<AstroComponentFactory>("../../src/pages/components/*.astro", {
+      eager: true,
+      import: "default",
+    }),
+  ).map(([path, page]) => [/([^/]+)\.astro$/.exec(path)![1]!, page]),
+);
+
 const pages = [
-  ["index", () => IndexPage],
-  ["button", () => ButtonPage],
-] as const;
+  ["index", () => IndexPage] as const,
+  ...Object.entries(componentPages).map(([slug, page]) => [slug, () => page] as const),
+];
 
 /** Rules every page must satisfy: one document, one main landmark, nothing after </html>. */
 function expectWellFormedPage(html: string) {
@@ -70,9 +85,14 @@ describe.each(pages)("%s page layout", (_, page) => {
     const firstLink = /<a\b[^>]*>[\s\S]*?<\/a>/.exec(body)![0];
     expect(firstLink).toMatch(/href="#main"/);
     expect(text(firstLink)).toMatch(/Skip to content/);
+    // Rendered by the SkipLink component: hidden until keyboard focus, then above the header.
     expect(firstLink).toMatch(/\bsr-only\b/);
-    expect(firstLink).toMatch(/focus:not-sr-only/);
+    expect(firstLink).toMatch(/focus-visible:not-sr-only/);
+    expect(firstLink).toMatch(/focus-visible:fixed/);
+    expect(firstLink).toMatch(/focus-visible:z-\[100\]/);
+    // The target can take focus, so the next Tab continues from the main content.
     expect(html).toMatch(/<main[^>]*id="main"/);
+    expect(/<main[^>]*>/.exec(html)![0]).toMatch(/tabindex="-1"/);
   });
 
   it("has a header with the main navigation", async () => {
@@ -81,7 +101,11 @@ describe.each(pages)("%s page layout", (_, page) => {
     const nav = /<nav[^>]*aria-label="Main"[\s\S]*?<\/nav>/.exec(header)?.[0] ?? "";
     expect(nav).toMatch(/<a[^>]+href="\/"[^>]*>\s*Home\s*<\/a>/);
     expect(text(nav)).toMatch(/Components/);
-    expect(nav).toMatch(/<a[^>]+href="\/components\/button"[^>]*>\s*Button\s*<\/a>/);
+    for (const { slug, name } of documentedComponents) {
+      expect(nav).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
+      );
+    }
   });
 
   it("has a theme toggle with light, dark and system choices", async () => {
@@ -108,9 +132,14 @@ describe("index page", () => {
     expectWellFormedPage(await container.renderToString(IndexPage));
   });
 
-  it("links to the button page", async () => {
+  it("links to every documented component from its main content", async () => {
     const html = await container.renderToString(IndexPage);
-    expect(html).toMatch(/<a[^>]+href="\/components\/button"/);
+    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
+    for (const { slug, name } of documentedComponents) {
+      expect(main).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
+      );
+    }
   });
 
   it("uses buttonVariants for its call to action instead of a dead button", async () => {
@@ -118,6 +147,127 @@ describe("index page", () => {
     const main = /<main[\s\S]*<\/main>/.exec(html)![0];
     expect(main).not.toMatch(/<button/);
     expect(main).toMatch(/<a[^>]+href="\/components\/button"[^>]+class="[^"]*rounded-full/);
+  });
+});
+
+describe("component list", () => {
+  it("has exactly one page per documented component", () => {
+    expect(Object.keys(componentPages).sort()).toEqual(
+      documentedComponents.map(({ slug }) => slug).sort(),
+    );
+  });
+});
+
+describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))(
+  "%s page from the shared template",
+  (slug, entry) => {
+    const render = () =>
+      container.renderToString(componentPages[slug]!, {
+        request: new Request(`http://localhost${componentHref(slug)}`),
+      });
+
+    it("renders one document with a single main landmark", async () => {
+      expectWellFormedPage(await render());
+    });
+
+    it("uses the component name as its heading and title", async () => {
+      const html = await render();
+      expect(count(html, /<h1[\s>]/g)).toBe(1);
+      expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0]).trim()).toBe(entry.name);
+      expect(html).toContain(`<title>${entry.name} | Buril UI</title>`);
+      expect(html).toContain(`content="${entry.description}"`);
+    });
+
+    it("marks its own nav link as the current page", async () => {
+      const html = await render();
+      expect(html).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]+aria-current="page"`),
+      );
+    });
+
+    it("has Demo, Install and Source sections in that order", async () => {
+      const html = await render();
+      const order = ["Demo", "Install", "Source"].map((title) => {
+        expect(count(html, new RegExp(`>${title}</h2>`, "g"))).toBe(1);
+        return html.indexOf(`>${title}</h2>`);
+      });
+      expect(order).toEqual([...order].sort((a, b) => a - b));
+    });
+
+    it("renders the demo as a single island", async () => {
+      expect(count(await render(), /<astro-island/g)).toBe(1);
+    });
+
+    it("installs its registry item from a URL or by name", async () => {
+      const visible = text(await render());
+      expect(visible).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
+      expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
+    });
+
+    it("shows the source file it documents, read at build time", async () => {
+      const html = await render();
+      const source = html.slice(html.indexOf(">Source</h2>"));
+      expect(text(source)).toContain(entry.source);
+      // The export line is plain text in the highlighted output, so it proves the real file.
+      const file = readFileSync(resolve(__dirname, "../..", entry.source), "utf8");
+      expect(text(source)).toContain(/^export \{.*$/m.exec(file)![0]);
+      expect(source).toMatch(/<pre class="astro-code/);
+    });
+
+    it("meets AA contrast for every token color in its code blocks", async () => {
+      const pairs = codeColors(await render());
+      expect(pairs.length).toBeGreaterThan(20);
+      const worst = Math.min(...pairs.map(({ color, background }) => contrast(color, background)));
+      expect(worst).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);
+
+describe("icon button page", () => {
+  const render = () => container.renderToString(componentPages["icon-button"]!);
+
+  it("explains that aria-label is required and the icon is hidden", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-label/);
+    expect(visible).toMatch(/required/i);
+    expect(visible).toMatch(/aria-hidden/);
+  });
+
+  it("documents the three icon sizes and that it ships with the Button", async () => {
+    const visible = text(await render());
+    for (const size of ["icon-sm", "icon-lg"]) expect(visible).toContain(size);
+    expect(visible).toMatch(/32, 40 and 48px/);
+    expect(visible).toMatch(/same registry item as the Button/);
+  });
+});
+
+describe("link page", () => {
+  const render = () => container.renderToString(componentPages["link"]!);
+
+  it("explains the new-tab behavior and why href is required", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/opens in a new tab/);
+    expect(visible).toMatch(/noopener noreferrer/);
+    expect(visible).toMatch(/href/);
+    expect(visible).toMatch(/Button/);
+  });
+
+  it("demos a link that opens in a new tab with its hint in the name", async () => {
+    const html = await render();
+    expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
+    expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+  });
+});
+
+describe("skip link page", () => {
+  const render = () => container.renderToString(componentPages["skip-link"]!);
+
+  it("explains placement, the focusable target and the sticky-header rule", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/tabindex=(&quot;|")-1(&quot;|")/);
+    expect(visible).toMatch(/first/i);
+    expect(visible).toMatch(/2\.4\.11/);
+    expect(visible).toMatch(/this site/i);
   });
 });
 
@@ -174,9 +324,15 @@ describe("button page", () => {
   it("documents the API differences from shadcn's Button", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Coming from shadcn\/ui<\/h2>/g)).toBe(1);
-    const section = text(html.slice(html.indexOf(">Coming from shadcn/ui</h2>")));
-    expect(section).toMatch(/asChild/);
+    const start = html.indexOf(">Coming from shadcn/ui</h2>");
+    const section = text(html.slice(start, html.indexOf("<h2", start)));
+    expect(section).toMatch(/No asChild/);
     expect(section).toMatch(/size=(&quot;|")icon(&quot;|")/);
+    // Icon sizes exist now; only the extra-small ones are missing.
+    for (const size of ["icon-sm", "icon-lg"]) expect(section).toContain(size);
+    expect(section).toMatch(/IconButton/);
+    expect(section).toMatch(/icon-xs/);
+    expect(section).not.toMatch(/No icon or extra-small sizes/);
     expect(section).toMatch(/type=(&quot;|")button(&quot;|")/);
     expect(section).toMatch(/components\/ui\/button\.tsx/);
   });

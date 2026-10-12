@@ -135,6 +135,33 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "link",
+      "type": "registry:ui",
+      "title": "Link",
+      "description": "Accessible text link with an underline, visible focus and a safe new-tab mode.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/link.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skip-link",
+      "type": "registry:ui",
+      "title": "Skip Link",
+      "description": "Skip-to-content link, hidden until keyboard focus and shown above sticky headers.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/skip-link.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

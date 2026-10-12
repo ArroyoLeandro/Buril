@@ -55,7 +55,7 @@ The project uses test-driven development: write a failing test first, watch it f
 
 Two dev tools stay one major version behind on purpose. Both pins are about plugin compatibility:
 
-- **TypeScript 6.** `typescript-eslint` 8 supports TypeScript `>=4.8.4 <6.1.0`, so TypeScript 7 would break type-aware linting. Keep TypeScript on 6.0.x until `typescript-eslint` widens that range.
+- **TypeScript 6.0.** `typescript-eslint` 8 supports TypeScript `>=4.8.4 <6.1.0`, so TypeScript 6.1 or 7 would break type-aware linting. `package.json` uses `~6.0.3`, which allows 6.0.x patches only; a caret range would let installs drift to 6.1. Widen it when `typescript-eslint` does.
 - **ESLint 9.** `eslint-plugin-react` 7 declares ESLint up to `^9.7` and `eslint-plugin-jsx-a11y` 6 up to `^9`. ESLint 10 would drop the accessibility lint rules this project relies on. Upgrade when both plugins support it.
 
 ## Commits
