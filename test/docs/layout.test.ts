@@ -37,9 +37,14 @@ describe("full-width frame", () => {
   it.each([
     ["landing page", () => landing],
     ["docs page", () => docs],
-  ])("on the %s spans the header and footer rows across the window", (_, html) => {
+  ])("on the %s spans the header row across the window", (_, html) => {
     expect(capped(classesOf(headerRow(html())))).toEqual([]);
-    expect(capped(classesOf(footerRow(html())))).toEqual([]);
+  });
+
+  // Only the landing page has a footer.
+  it("on the landing page spans the footer row across the window", () => {
+    expect(footerRow(landing)).not.toBe("");
+    expect(capped(classesOf(footerRow(landing)))).toEqual([]);
   });
 
   it("lets the docs grid span the window, so the sidebar sits flush left", () => {
