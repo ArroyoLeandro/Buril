@@ -57,6 +57,25 @@
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
+
+  /*
+   * Short inline code never wraps, so `--radius` or `class-variance-authority` cannot break at a
+   * hyphen. Code over 24 characters carries `data-wrap` (the `InlineCode` component adds it, and a
+   * test checks the pages) and wraps, so nothing overflows a 320px screen. In a table no code
+   * wraps: a table too wide for a phone scrolls in its frame.
+   */
+  :not(pre) > code {
+    white-space: nowrap;
+  }
+
+  :not(pre) > code[data-wrap] {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  table :not(pre) > code[data-wrap] {
+    white-space: nowrap;
+  }
 }
 
 /*

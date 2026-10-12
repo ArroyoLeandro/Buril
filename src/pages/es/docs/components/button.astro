@@ -50,16 +50,17 @@ const { variantsExample, statusExample } = componentExamples.button;
     El botón usa los tokens estándar de shadcn y el helper <code>cn()</code> que ya tienes, así que
     instalarlo no cambia tu tema. Crea <code>components/ui/button.tsx</code>, agrega
     <code>class-variance-authority</code> y suma a tu CSS los keyframes de <code>motion</code> de
-    los íconos (<code>@keyframes buril-icon-*</code>); el resto de tu CSS no cambia. Si tu{" "}
+    los iconos (<code>@keyframes buril-icon-*</code>); el resto de tu CSS no cambia. Si tu{" "}
     <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
-    reemplazarlo; responder que no es seguro, porque el botón solo necesita <code>cn()</code>.
+    reemplazarlo; puedes responder que no sin problema, porque el botón solo necesita{" "}
+    <code>cn()</code>.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Si vienes de shadcn/ui</h2>
   <p class="mt-4 text-muted-foreground">
-    Buril se instala en la misma ruta que el Button de shadcn, <code>components/ui/button.tsx</code>
-    . Si ya tienes ese archivo, la CLI pregunta antes de reemplazarlo. Los nombres de las variantes
-    coinciden, pero la API es distinta:
+    Buril se instala en la misma ruta que el Button de shadcn:
+    <code>components/ui/button.tsx</code>. Si ya tienes ese archivo, la CLI pregunta antes de
+    reemplazarlo. Los nombres de las variantes coinciden, pero la API es distinta:
   </p>
   <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
     <li>
@@ -67,7 +68,7 @@ const { variantsExample, statusExample } = componentExamples.button;
         Sin <code>asChild</code>.
       </strong>{" "}
       Un enlace sigue siendo un enlace: aplica estilo a un <code>&lt;a&gt;</code>
-      con <code>className=&#123;buttonVariants()&#125;</code> en lugar de envolverlo.
+      con <code data-wrap>className=&#123;buttonVariants()&#125;</code> en lugar de envolverlo.
     </li>
     <li>
       <strong>Tamaños de icono, pero no extrapequeños.</strong> Existen <code>size="icon"</code>,
@@ -120,15 +121,16 @@ const { variantsExample, statusExample } = componentExamples.button;
       Agrega dos tokens decorativos, <code>--decor</code> y <code>--grid</code>, y tokens de fuente.
     </li>
     <li>
-      Sigue el esquema del sistema sin JavaScript: con <code>prefers-color-scheme: dark</code>, se
-      aplica la paleta oscura, salvo que <code>&lt;html&gt;</code> tenga la clase <code>light</code>
-      .
+      Sigue el esquema del sistema sin JavaScript: con{" "}
+      <code data-wrap>prefers-color-scheme: dark</code>, se aplica la paleta oscura, salvo que{" "}
+      <code>&lt;html&gt;</code> tenga la clase
+      <code>light</code>.
     </li>
     <li>
       Redefine la variante <code>dark:</code> de la misma forma, así que las utilidades
       <code>dark:</code> también siguen al sistema. Un selector de tema debe poner
       <code>class="light"</code> en <code>&lt;html&gt;</code> para forzar el modo claro; quitar
-      <code>dark</code> no alcanza. Con next-themes, <code>attribute="class"</code> ya lo hace.
+      <code>dark</code> no basta. Con next-themes, <code>attribute="class"</code> ya lo hace.
     </li>
   </ul>
 </ComponentPage>

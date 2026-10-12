@@ -35,7 +35,7 @@ export const motionTokenUses: Record<string, Text> = {
   },
   "buril-ease-out": {
     en: "Entries and state changes: a soft spring that passes its target by about 3% and settles.",
-    es: "Entradas y cambios de estado: un rebote suave que pasa su destino en un 3% y se asienta.",
+    es: "Entradas y cambios de estado: un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
   },
   "buril-ease-in": {
     en: "Exits: a plain curve that speeds up as it leaves. Kept for the overlays to come.",
@@ -207,7 +207,7 @@ export const reducedMotionBehavior: ReducedMotionRow[] = [
     component: "Select",
     motion: {
       en: "The chevron turns over while the picker is open, where the browser supports `:open`.",
-      es: "La flecha se da vuelta mientras el selector está abierto, en los navegadores que admiten `:open`.",
+      es: "La flecha gira mientras el selector está abierto, en los navegadores que admiten `:open`.",
     },
     reduced: { en: "The chevron stays still.", es: "La flecha se queda quieta." },
   },
@@ -237,7 +237,7 @@ export const reducedMotionBehavior: ReducedMotionRow[] = [
   },
   {
     component: "Skeleton",
-    motion: { en: "Pulses.", es: "Late." },
+    motion: { en: "Pulses.", es: "Parpadea." },
     reduced: { en: "Stays still.", es: "Se queda quieto." },
   },
   {

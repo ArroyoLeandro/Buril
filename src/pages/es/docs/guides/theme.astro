@@ -37,16 +37,18 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </ol>
   <p class="mt-4">
     Si instalaste el tema de Buril, también escribe los valores oscuros en un bloque
-    <code>@media (prefers-color-scheme: dark)</code>, para quien nunca eligió un tema. Cambia
-    también ese bloque, o el modo oscuro del sistema conservará los valores anteriores.
+    <code data-wrap>@media (prefers-color-scheme: dark)</code>, para quien nunca eligió un tema.
+    Cambia también ese bloque, o el modo oscuro del sistema conservará los valores anteriores.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Cambiar el rojo</h2>
   <p class="mt-4">
-    El rojo tiene un significado, así que el tema de Buril lo usa solo en tres tokens:
-    <code>--decor</code> para la decoración, <code>--ring</code> para el anillo de foco y
+    El rojo tiene un significado, así que el tema de Buril lo usa solo en unos pocos tokens:
+    <code>--decor</code> para la decoración, <code>--ring</code> para el anillo de foco,
+    <code>--accent</code> para el fondo claro de los botones outline y ghost al pasar el puntero, y
     <code>--destructive</code> para las acciones destructivas y los errores. Para darle tu color a
-    la decoración y al anillo de foco:
+    la decoración, al anillo de foco y a ese fondo, redefínelos junto con
+    <code>--accent-foreground</code>:
   </p>
   <div class={code}>
     <Code code={overrideRedExample} lang="css" theme={codeTheme} />
@@ -55,6 +57,10 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     <li>
       Estos azules miden 5.85:1 sobre el fondo de papel y 7.28:1 sobre el oscuro, por encima del 3:1
       que necesita un anillo de foco.
+    </li>
+    <li>
+      Con los fondos azules, el texto con el puntero encima mide 14.03:1 en modo claro y 11.85:1 en
+      modo oscuro, y el anillo de foco, 5.27:1 y 5.78:1 sobre ellos.
     </li>
     <li>
       Mantén <code>--destructive</code> en rojo, salvo que tu marca tenga otro color de peligro.

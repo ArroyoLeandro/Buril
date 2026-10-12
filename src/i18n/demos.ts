@@ -154,7 +154,7 @@ export const demoText = {
   "3 to 5 days": "de 3 a 5 días",
   Express: "Exprés",
   "next day": "al día siguiente",
-  Pickup: "Retiro",
+  Pickup: "Recoger en tienda",
   "from the shop": "en la tienda",
   "Drone (unavailable)": "Dron (no disponible)",
   "Delivery: {name}, {detail}.": "Entrega: {name}, {detail}.",

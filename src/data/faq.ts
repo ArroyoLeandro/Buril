@@ -114,14 +114,31 @@ export const faq: FaqItem[] = [
     },
   },
   {
+    id: "server-components",
+    question: {
+      en: "Do the components work in React Server Components?",
+      es: "¿Los componentes funcionan en React Server Components?",
+    },
+    answer: {
+      en: [
+        'Yes. A component that handles events or keeps state, such as the Button, IconButton, SkipLink, Avatar, Checkbox, Field or Radio Group, starts with `"use client"`, so you can render it from a Server Component in Next.js. The others, such as Card, Badge or Link, have no client code and stay Server Components.',
+      ],
+      es: [
+        'Sí. Los componentes que manejan eventos o guardan estado, como el Button, el IconButton, el SkipLink, el Avatar, el Checkbox, el Field o el Radio Group, empiezan con `"use client"`, así que puedes renderizarlos desde un Server Component en Next.js. Los demás, como Card, Badge o Link, no tienen código de cliente y siguen siendo Server Components.',
+      ],
+    },
+  },
+  {
     id: "npm-package",
     question: { en: "Is Buril an npm package?", es: "¿Buril es un paquete de npm?" },
     answer: {
       en: [
         "No. Buril is a shadcn registry: the CLI copies each component's source into your project, and from then on the code is yours. There is no Buril runtime to update; reinstall a component to get a newer version.",
+        "Reinstalling overwrites the file, including any edits you made to it. Check what would change first with `npx shadcn@latest add @buril/<item> --diff`, which only shows the diff and writes nothing.",
       ],
       es: [
         "No. Buril es un registry de shadcn: la CLI copia el código fuente de cada componente en tu proyecto y, a partir de ahí, el código es tuyo. No hay un runtime de Buril que actualizar; vuelve a instalar un componente para obtener una versión más nueva.",
+        "Reinstalar sobrescribe el archivo, incluidos los cambios que le hayas hecho. Revisa antes qué cambiaría con `npx shadcn@latest add @buril/<item> --diff`, que solo muestra las diferencias y no escribe nada.",
       ],
     },
     link: { href: "/docs/installation", label: { en: "Installation", es: "Instalación" } },

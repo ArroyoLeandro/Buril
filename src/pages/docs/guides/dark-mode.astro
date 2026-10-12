@@ -8,6 +8,7 @@ import {
   astroToggleExample,
   darkModeExample,
   nextThemesLayoutExample,
+  systemDarkScriptExample,
   themeSelectExample,
   viteHeadExample,
   viteMainExample,
@@ -22,8 +23,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 >
   <h1 class="font-display text-3xl">Dark mode</h1>
   <p class="mt-4 text-lg text-muted-foreground">
-    Buril's theme reads one class on <code>&lt;html&gt;</code>. Any tool that sets it works:
-    next-themes in React apps, or a few lines of script anywhere else.
+    Buril's theme reads two classes on <code>&lt;html&gt;</code>, <code>.dark</code> and
+    <code>.light</code>. Any tool that sets them works: next-themes in React apps, or a few lines of
+    script anywhere else.
   </p>
 
   <h2 class="mt-10 font-display text-xl">How the theme decides</h2>
@@ -35,8 +37,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       <code>.dark</code> turns dark mode on; <code>.light</code> forces light mode.
     </li>
     <li>
-      With neither class, a <code>prefers-color-scheme</code> media query follows the system, so the
-      page is right even before any JavaScript runs.
+      With neither class, a <code>prefers-color-scheme</code> media query in
+      <code>@buril/theme</code> follows the system, so the page is right even before any JavaScript
+      runs.
     </li>
     <li>
       The theme also redefines Tailwind's <code>dark:</code> variant with the same rule, so
@@ -46,6 +49,22 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <p class="mt-4">
     One consequence: to force light mode on a dark system, set <code>.light</code>. Removing
     <code>.dark</code> only returns to the system setting.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Without the Buril theme</h2>
+  <p class="mt-4">
+    The system fallback comes from <code>@buril/theme</code>. Other shadcn themes read only
+    <code>.dark</code>, so with no class the page stays light on a dark system. To follow the system
+    there, set <code>.dark</code> from the media query at the top of <code>&lt;head&gt;</code>, and
+    update it when the setting changes:
+  </p>
+  <div class={code}>
+    <Code code={systemDarkScriptExample} lang="html" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    If visitors can also pick a theme, apply their stored choice instead when there is one.
+    next-themes follows the system by default, through <code>enableSystem</code>, so it needs no
+    extra script.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Next.js with next-themes</h2>

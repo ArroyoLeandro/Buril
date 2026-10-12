@@ -19,6 +19,23 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    branch: "docs-fixes",
+    date: "2026-10-12",
+    title: { en: "Ready for Server Components", es: "Listos para los Server Components" },
+    changes: {
+      en: [
+        'Button, IconButton and SkipLink start with `"use client"`, so a Next.js Server Component can render them without throwing.',
+        "Props and token tables keep names such as `variant` and `--buril-duration-instant` whole; on a phone they scroll instead of breaking mid-word.",
+        "Corrected docs: the urgent Alert example, the font tokens you apply yourself, the brand red that includes `--accent`, dark mode without the Buril theme and a `--diff` check before reinstalling.",
+      ],
+      es: [
+        'Button, IconButton y SkipLink empiezan con `"use client"`, así que un Server Component de Next.js puede renderizarlos sin errores.',
+        "Las tablas de props y de tokens mantienen enteros nombres como `variant` y `--buril-duration-instant`; en un teléfono se desplazan en lugar de cortarlos a mitad de palabra.",
+        "Documentación corregida: el ejemplo de la alerta urgente, los tokens de fuente que aplicas tú, el rojo de marca que incluye `--accent`, el modo oscuro sin el tema de Buril y una comprobación con `--diff` antes de reinstalar.",
+      ],
+    },
+  },
+  {
     branch: "docs-content",
     date: "2026-10-12",
     title: { en: "Documentation you can rely on", es: "Una documentación en la que confiar" },
@@ -50,7 +67,7 @@ export const changelog: ChangelogEntry[] = [
         "More room between the loading Button's spinner and its label.",
       ],
       es: [
-        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que pasa su destino en un 3% y se asienta.",
+        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
         "Presets de `motion` para el IconButton: rotate, spin, wiggle, swing, tres variantes de nudge y pop.",
         "Las Card `interactive` se elevan y muestran una sombra con el puntero y con el foco del teclado.",
         "Field acepta `requiredLabel` y `errorPrefix`, y Link acepta `newTabLabel`, para que el texto que escriben esté en tu idioma.",
@@ -84,7 +101,7 @@ export const changelog: ChangelogEntry[] = [
       ],
       es: [
         "Tokens de movimiento con valores alternativos literales, así que los componentes se mueven igual con o sin el tema.",
-        "Los anillos de foco aparecen al instante en lugar de fundirse.",
+        "Los anillos de foco se muestran al instante en lugar de aparecer gradualmente.",
         "Un golpe de imprenta al pulsar los botones, una marca que se dibuja, un punto de radio que se extiende como tinta y una flecha del Select que gira, todo desactivado con movimiento reducido.",
         "El indicador del Switch se mantiene dentro de su pista en todos los navegadores.",
       ],

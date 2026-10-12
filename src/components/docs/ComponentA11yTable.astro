@@ -1,4 +1,5 @@
 ---
+import TableScroll from "./TableScroll.astro";
 import InlineCode from "../InlineCode.astro";
 import { localizedComponentDocs } from "../../data/component-docs";
 import { componentHref, documentedComponents } from "../../data/components";
@@ -11,16 +12,16 @@ import { getLocale, translator } from "../../i18n/ui";
  */
 const locale = getLocale(Astro.url);
 const t = translator(locale);
-const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+const cell = "px-2 py-3 align-top sm:px-4";
 const rows = documentedComponents.map((entry) => ({
   entry,
   docs: localizedComponentDocs(entry.slug, locale)!,
 }));
 ---
 
-<div class="mt-4 border border-border">
+<TableScroll labelledby="components-a11y-caption">
   <table class="w-full border-collapse text-left text-sm">
-    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+    <caption id="components-a11y-caption" class="px-2 py-3 text-left text-muted-foreground sm:px-4">
       {t("a11y.componentsCaption")}
     </caption>
     <thead>
@@ -77,4 +78,4 @@ const rows = documentedComponents.map((entry) => ({
       ))}
     </tbody>
   </table>
-</div>
+</TableScroll>

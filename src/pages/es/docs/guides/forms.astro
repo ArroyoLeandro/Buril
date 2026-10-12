@@ -30,7 +30,10 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       Pasa el mensaje de error a <code>error</code> después de validar.
     </li>
   </ol>
-  <InstallCommand id="install-forms" commands={["add @buril/field @buril/input @buril/textarea"]} />
+  <InstallCommand
+    id="install-forms"
+    commands={["add @buril/button @buril/field @buril/input @buril/textarea"]}
+  />
 
   <h2 class="mt-10 font-display text-xl">Un formulario completo</h2>
   <p class="mt-4">
@@ -45,7 +48,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h2 class="mt-10 font-display text-xl">La render prop</h2>
   <p class="mt-4">
     Field no conoce tu control. Te entrega las props que debes ponerle, como render prop:
-    <code>{"{(control) => <Input {...control} />}"}</code>. Son estas:
+    <code data-wrap>{"{(control) => <Input {...control} />}"}</code>. Son estas:
   </p>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     <li>
@@ -87,7 +90,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     </li>
     <li>
       Agrega <code>noValidate</code> al <code>&lt;form&gt;</code> cuando validas por tu cuenta, para
-      que los globos del navegador no aparezcan encima de los errores de Field.
+      que las burbujas de validación del navegador no aparezcan encima de los errores de Field.
     </li>
     <li>
       Al enviar, lleva el foco al primer campo con error. Su nombre, su descripción y su error se
@@ -129,18 +132,19 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h2 class="mt-10 font-display text-xl">Otros controles</h2>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     <li>
+      Un{" "}
       <a href="/es/docs/components/input" class="underline underline-offset-4">
         Input
-      </a>
-      ,
+      </a>{" "}
+      o un
       <a href="/es/docs/components/textarea" class="underline underline-offset-4">
         Textarea
       </a>{" "}
-      y
+      va dentro de un Field, y un
       <a href="/es/docs/components/select" class="underline underline-offset-4">
         Select
       </a>{" "}
-      van dentro de un Field.
+      también.
     </li>
     <li>
       Un{" "}
@@ -151,8 +155,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       <a href="/es/docs/components/switch" class="underline underline-offset-4">
         Switch
       </a>{" "}
-      solo va dentro de un <code>&lt;label&gt;</code> con su texto; usa un Field cuando necesita
-      texto de ayuda o un error.
+      sueltos van dentro de un <code>&lt;label&gt;</code> con su texto; usa un Field cuando
+      necesiten texto de ayuda o un error.
     </li>
     <li>
       Un{" "}

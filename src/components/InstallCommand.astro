@@ -11,9 +11,15 @@ interface Props {
   id: string;
   /** shadcn CLI arguments, one command per line, for example `add @buril/button`. */
   commands: string[];
+  /**
+   * Whether to explain the example.com placeholder under a command that uses it. Turn it off only
+   * when the same section already explains it right above.
+   */
+  placeholderNote?: boolean;
 }
 
-const { id, commands } = Astro.props;
+const { id, commands, placeholderNote = true } = Astro.props;
+const showNote = placeholderNote && commands.some((command) => command.includes("example.com"));
 const t = translator(getLocale(Astro.url));
 
 // The runners shadcn documents for each package manager.
@@ -58,9 +64,10 @@ const managers = [
       id={`${id}-panel-${manager.name}`}
       aria-labelledby={`${id}-tab-${manager.name}`}
       hidden={index !== 0}
-      class="mt-2 flex flex-wrap items-start gap-2"
+      class="mt-2 flex flex-col-reverse items-end gap-2 sm:flex-row sm:items-start"
     >
-      <div class="min-w-0 flex-1 overflow-x-auto text-sm [&_pre]:p-4">
+      {/* Below sm the Copy button sits above the command, so the command gets the full width. */}
+      <div class="w-full min-w-0 overflow-x-auto text-sm sm:w-auto sm:flex-1 [&_pre]:p-4">
         <Code code={manager.code} lang="bash" theme={codeTheme} />
       </div>
       <button
@@ -73,6 +80,7 @@ const managers = [
       </button>
     </div>
   ))}
+  {showNote && <p class="mt-2 text-sm text-muted-foreground">{t("install.placeholder")}</p>}
   <p role="status" data-copy-status class="mt-2 min-h-5 text-sm text-muted-foreground"></p>
 </div>
 

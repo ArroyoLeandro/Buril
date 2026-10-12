@@ -64,8 +64,9 @@ const { fieldExample, indeterminateExample } = componentExamples.checkbox;
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
-    It creates <code>components/ui/checkbox.tsx</code>, the same path as shadcn's Checkbox. Unlike
-    shadcn's, it is a native input: <code>onChange</code> replaces <code>onCheckedChange</code>, and
+    It creates <code data-wrap>components/ui/checkbox.tsx</code>, the same path as shadcn's
+    Checkbox. Unlike shadcn's, it is a native input: <code>onChange</code> replaces{" "}
+    <code>onCheckedChange</code>, and
     <code>indeterminate</code> replaces <code>checked="indeterminate"</code>. It needs only your
     <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
     version, the CLI asks before replacing it, and answering no is safe.

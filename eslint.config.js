@@ -46,4 +46,15 @@ export default defineConfig(
   },
   ...astro.configs.recommended,
   ...astro.configs["flat/jsx-a11y-recommended"],
+  {
+    files: ["**/*.astro"],
+    rules: {
+      // A docs table too wide for a phone scrolls in a named region, which must take focus so
+      // keyboard users can scroll it (axe: scrollable-region-focusable).
+      "astro/jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        { tags: [], roles: ["tabpanel", "region"], allowExpressionValues: true },
+      ],
+    },
+  },
 );

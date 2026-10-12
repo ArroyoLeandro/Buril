@@ -53,9 +53,10 @@ const { example, statesExample } = componentExamples.textarea;
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
-    It creates <code>components/ui/textarea.tsx</code>, the same path as shadcn's Textarea, so
-    existing imports keep working. That is why it is a separate item from the Input rather than a
-    second export of <code>input.tsx</code>. It needs only your <code>cn()</code> helper; if your
+    It creates <code data-wrap>components/ui/textarea.tsx</code>, the same path as shadcn's
+    Textarea, so existing imports keep working. That is why it is a separate item from the Input
+    rather than a second export of <code>input.tsx</code>. It needs only your <code>cn()</code>{" "}
+    helper; if your
     <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
     it, and answering no is safe.
   </p>

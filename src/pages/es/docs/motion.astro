@@ -30,7 +30,10 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       Las pulsaciones y el puntero responden al instante; los cambios de estado y las entradas
       tardan más.
     </li>
-    <li>Lo que se mueve termina con un rebote suave que pasa su destino en un 3% y se asienta.</li>
+    <li>
+      Lo que se mueve termina con un rebote suave que sobrepasa su destino en aproximadamente un 3%
+      y se asienta.
+    </li>
     <li>
       Con movimiento reducido, nada se desplaza, cambia de tamaño ni gira. Los fundidos de color y
       de opacidad se mantienen, porque no son movimiento.
@@ -81,8 +84,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <h3 class="mt-8 font-display text-lg">Cambiar los tiempos</h3>
   <p class="mt-4">
     Cada componente escribe su token con el mismo valor como alternativa, como
-    <code>duration-(--buril-duration-fast,200ms)</code>, así que se mueve igual sin el tema. Para
-    ajustar todos los componentes a la vez, redefine los tokens después del tema:
+    <code data-wrap>duration-(--buril-duration-fast,200ms)</code>, así que se mueve igual sin el
+    tema. Para ajustar todos los componentes a la vez, redefine los tokens después del tema:
   </p>
   <div class={code}>
     <Code code={retuneMotionExample} lang="css" theme={codeTheme} />
@@ -118,11 +121,12 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </p>
   <IconPresetTable />
   <p class="mt-4">
-    Los gestos son keyframes de CSS que el item del{" "}
+    Los gestos son keyframes de CSS que el item <code>button</code> agrega a tu CSS al instalarlo.
+    Ese item incluye el
     <a href="/es/docs/components/icon-button" class="underline underline-offset-4">
-      Icon Button
-    </a>{" "}
-    agrega a tu CSS al instalarlo.
+      IconButton
+    </a>
+    junto con el Button.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Tarjeta interactiva</h2>
@@ -145,9 +149,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     </li>
     <li>
       Las transiciones enumeran sus propiedades, como{" "}
-      <code>transition-[color,background-color,border-color]</code>. <code>transition</code>,{" "}
-      <code>transition-all</code> y <code>transition-colors</code> también animarían el contorno del
-      foco.
+      <code data-wrap>transition-[color,background-color,border-color]</code>.{" "}
+      <code>transition</code>, <code>transition-all</code> y <code>transition-colors</code> también
+      animarían el contorno del foco.
     </li>
     <li>
       Solo se mueven la opacidad, translate, scale y rotate. El ancho, el alto, top y left nunca se

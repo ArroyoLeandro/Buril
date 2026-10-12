@@ -37,15 +37,17 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </ol>
   <p class="mt-4">
     If you installed the Buril theme, it also writes the dark values in a
-    <code>@media (prefers-color-scheme: dark)</code> block, for visitors who never chose a theme.
-    Change that block too, or system dark mode keeps the old values.
+    <code data-wrap>@media (prefers-color-scheme: dark)</code> block, for visitors who never chose a
+    theme. Change that block too, or system dark mode keeps the old values.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Change the red</h2>
   <p class="mt-4">
-    The red carries meaning, so the Buril theme uses it in three tokens only: <code>--decor</code>
-    for decoration, <code>--ring</code> for the focus ring and <code>--destructive</code> for
-    destructive actions and errors. To brand the decoration and the focus ring with your own color:
+    The red carries meaning, so the Buril theme uses it in a few tokens only: <code>--decor</code>
+    for decoration, <code>--ring</code> for the focus ring, <code>--accent</code> for the light wash
+    behind hovered outline and ghost buttons, and <code>--destructive</code> for destructive actions
+    and errors. To brand the decoration, the focus ring and the hover wash with your own color,
+    redefine them with <code>--accent-foreground</code>:
   </p>
   <div class={code}>
     <Code code={overrideRedExample} lang="css" theme={codeTheme} />
@@ -54,6 +56,10 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     <li>
       These blues measure 5.85:1 on the paper background and 7.28:1 on the dark one, above the 3:1 a
       focus ring needs.
+    </li>
+    <li>
+      The blue washes keep hovered text at 14.03:1 in light mode and 11.85:1 in dark mode, and the
+      focus ring at 5.27:1 and 5.78:1 on them.
     </li>
     <li>
       Keep <code>--destructive</code> red unless your brand has another danger color. It needs 4.5:1

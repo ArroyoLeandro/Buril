@@ -77,6 +77,8 @@ const en = {
   "install.copyLabel": "Copy {name} command",
   "install.copied": "Copied the {name} command.",
   "install.copyFailed": "Could not copy. Select the command and copy it manually.",
+  "install.placeholder":
+    "example.com is a placeholder until the registry is hosted; the paths after it stay the same.",
   "landing.lead": "Accessible React components you copy into your project and make your own.",
   "landing.sublead":
     "Styled with Tailwind CSS, installed with the shadcn CLI, and tested with the keyboard and the accessibility tree in mind.",
@@ -87,7 +89,7 @@ const en = {
     "Components are copied into your project as source, not installed as a dependency. Edit them freely.",
   "landing.accessibleTitle": "Accessible by default",
   "landing.accessibleBody":
-    "Every component targets WCAG 2.2 AA and follows its WAI-ARIA pattern, with keyboard and screen reader tests.",
+    "Every component targets WCAG 2.2 AA and follows its WAI-ARIA pattern, with keyboard and accessibility-tree tests.",
   "landing.platformTitle": "Platform first",
   "landing.platformBody":
     "Native elements and browser features come before JavaScript: a select stays a select, a link stays a link.",
@@ -126,12 +128,15 @@ const en = {
   "component.checkUtils": "Check that `lib/utils.ts` exports `cn()`. shadcn's `init` creates it.",
   "component.copySource":
     "Copy the source into `components/ui/{file}`. It is read from `{source}` at build time.",
+  "component.copyKeyframes":
+    "Paste the icon `motion` keyframes into your global CSS. Without them, IconButton icons stay still.",
   "component.usage": "Usage",
   "component.examples": "Examples",
   "component.api": "API reference",
   "component.prop": "Prop",
   "component.type": "Type",
   "component.default": "Default",
+  "component.propsLabel": "{name} props",
   "component.description": "Description",
   "component.none": "None",
   "component.accessibility": "Accessibility",
@@ -217,6 +222,8 @@ const es: Record<UiKey, string> = {
   "install.copyLabel": "Copiar el comando de {name}",
   "install.copied": "Se copió el comando de {name}.",
   "install.copyFailed": "No se pudo copiar. Selecciona el comando y cópialo manualmente.",
+  "install.placeholder":
+    "example.com es provisional hasta que el registry esté publicado; las rutas que siguen no cambian.",
   "landing.lead": "Componentes de React accesibles que copias en tu proyecto y haces tuyos.",
   "landing.sublead":
     "Estilizados con Tailwind CSS, se instalan con la CLI de shadcn y se prueban teniendo en cuenta el teclado y el árbol de accesibilidad.",
@@ -227,7 +234,7 @@ const es: Record<UiKey, string> = {
     "Los componentes se copian en tu proyecto como código fuente, no se instalan como una dependencia. Puedes editarlos sin restricciones.",
   "landing.accessibleTitle": "Accesible por defecto",
   "landing.accessibleBody":
-    "Todos los componentes apuntan a WCAG 2.2 AA y siguen su patrón de WAI-ARIA, con tests de teclado y de lector de pantalla.",
+    "Todos los componentes apuntan a WCAG 2.2 AA y siguen su patrón de WAI-ARIA, con tests de teclado y del árbol de accesibilidad.",
   "landing.platformTitle": "La plataforma primero",
   "landing.platformBody":
     "Los elementos nativos y las funciones del navegador van antes que JavaScript: un select sigue siendo un select y un enlace sigue siendo un enlace.",
@@ -268,12 +275,15 @@ const es: Record<UiKey, string> = {
     "Comprueba que `lib/utils.ts` exporte `cn()`. El `init` de shadcn lo crea.",
   "component.copySource":
     "Copia el código fuente en `components/ui/{file}`. Se lee de `{source}` al compilar el sitio.",
+  "component.copyKeyframes":
+    "Pega los keyframes de `motion` de los iconos en tu CSS global. Sin ellos, los iconos de IconButton no se mueven.",
   "component.usage": "Uso",
   "component.examples": "Ejemplos",
   "component.api": "Referencia de la API",
   "component.prop": "Prop",
   "component.type": "Tipo",
   "component.default": "Valor por defecto",
+  "component.propsLabel": "Props de {name}",
   "component.description": "Descripción",
   "component.none": "Ninguno",
   "component.accessibility": "Accesibilidad",

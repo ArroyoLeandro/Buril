@@ -18,7 +18,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   <p class="mt-4 text-lg text-muted-foreground">
     Los componentes leen los tokens estándar de shadcn, así que funcionan con cualquier tema de
     shadcn. El tema opcional de Buril los define como tinta sobre papel, con un único rojo para el
-    foco, la decoración y las acciones destructivas.
+    foco, la decoración, el fondo al pasar el puntero y las acciones destructivas.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Capas de tokens</h2>
@@ -26,7 +26,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     <li>
       <strong>Primitivos</strong>, <code>--buril-*</code>: la paleta en bruto, como
       <code>--buril-paper</code> y <code>--buril-ink</code>. Nunca cambian con el esquema de color.
-      Solo los usa este sitio de documentación; el tema del registry escribe los valores finales.
+      Solo este sitio de documentación usa la paleta; el tema del registry escribe los valores
+      finales de color, y además los 10 tokens de movimiento, <code>--buril-duration-*</code> y
+      <code>--buril-ease-*</code>, que los componentes leen con una alternativa.
     </li>
     <li>
       <strong>Variables de shadcn</strong>, como <code>--background</code> y <code>--primary</code>.
@@ -35,13 +37,16 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     <li>
       <strong>Extras de Buril</strong>: <code>--decor</code> para la decoración y{" "}
       <code>--grid</code>
-      para las líneas de la grilla. La decoración siempre tiene un valor alternativo, así que los
-      componentes funcionan también sin ellos.
+      para las líneas de la cuadrícula. La decoración siempre tiene un valor alternativo, así que
+      los componentes funcionan también sin ellos.
     </li>
   </ol>
   <p class="mt-4">
     Un bloque <code>@theme inline</code> asigna cada variable a un color de Tailwind, de modo que
-    <code>bg-background</code> y <code>text-primary</code> siguen el esquema activo.
+    <code>bg-background</code> y <code>text-primary</code> siguen el esquema activo. El tema también
+    define los tokens de fuente y una regla <code>@custom-variant dark</code>, que se explica más
+    abajo. No toca <code>--sidebar-*</code> ni <code>--chart-*</code>, porque Buril no tiene
+    componentes de barra lateral ni de gráficos.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Tokens</h2>
@@ -75,10 +80,13 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 
   <h2 class="mt-10 font-display text-xl">Cambiar el rojo</h2>
   <p class="mt-4">
-    El rojo tiene un significado, así que se limita a tres tokens: <code>--decor</code> para la
-    decoración, <code>--ring</code> para el anillo de foco y <code>--destructive</code> para las
-    acciones destructivas y los errores. Para usar tu propio color, redefínelos después del tema, en
-    los tres bloques:
+    El rojo tiene un significado, así que se limita a unos pocos tokens: <code>--decor</code> para
+    la decoración, <code>--ring</code> para el anillo de foco, <code>--accent</code> para el fondo
+    de los botones outline y ghost al pasar el puntero, y <code>--destructive</code> para las
+    acciones destructivas y los errores. Para usar el color de tu marca, redefine{" "}
+    <code>--decor</code>,<code>--ring</code>, <code>--accent</code> y{" "}
+    <code>--accent-foreground</code> después del tema, en los tres bloques que escribe, y mantén{" "}
+    <code>--destructive</code> en rojo:
   </p>
   <div class={code}>
     <Code code={overrideRedExample} lang="css" theme={codeTheme} />
@@ -93,7 +101,28 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       lo usa el texto de los errores.
     </li>
     <li>
+      Mantén <code>--accent-foreground</code> en al menos 4.5:1 frente a <code>--accent</code>, y
+      <code>--ring</code> en al menos 3:1 frente a <code>--accent</code>, porque los botones con el
+      puntero encima muestran texto y foco sobre él.
+    </li>
+    <li>
       Mide los dos esquemas: un color que pasa sobre el papel puede fallar sobre el fondo oscuro.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Próximos pasos</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <a href="/es/docs/guides/dark-mode" class="underline underline-offset-4">
+        Modo oscuro
+      </a>
+      agrega un selector de tema con next-themes, en Astro o en Vite.
+    </li>
+    <li>
+      <a href="/es/docs/guides/theme" class="underline underline-offset-4">
+        Personalizar el tema
+      </a>
+      muestra una paleta neutra, tus propias fuentes y un movimiento más tranquilo.
     </li>
   </ul>
 </DocsLayout>

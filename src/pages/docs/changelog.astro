@@ -8,11 +8,16 @@ import { githubUrl } from "../../data/site";
   <h1 class="font-display text-3xl">Changelog</h1>
   <p class="mt-4 text-lg text-muted-foreground">
     What changed for people who use Buril, newest first. Buril has no version numbers yet: a
-    component is up to date when you reinstall it. Every commit is on
+    component is up to date when you reinstall it. The
     <a href={`${githubUrl}/commits/main`} class="underline underline-offset-4">
-      GitHub
+      commit history
     </a>
-    .
+    on GitHub lists every change.
+  </p>
+  <p class="mt-4">
+    Reinstalling overwrites the component file, including any edits you made to it. Check what would
+    change first with <code data-wrap>npx shadcn@latest add @buril/&lt;item&gt; --diff</code>, which
+    only shows the diff and writes nothing.
   </p>
   <ChangelogList />
 </DocsLayout>

@@ -120,7 +120,7 @@ export const migrationNotes: Record<string, Text> = {
   },
   skeleton: {
     en: "The same API. It is `aria-hidden`, and it only pulses when motion is allowed.",
-    es: "La misma API. Tiene `aria-hidden` y solo late si se permite el movimiento.",
+    es: "La misma API. Tiene `aria-hidden` y solo parpadea si se permite el movimiento.",
   },
   "skip-link": {
     en: 'No shadcn counterpart. Put it first in `<body>` and give the target `tabindex="-1"`.',

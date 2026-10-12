@@ -52,7 +52,7 @@ El tema por defecto combina el grabado impreso con una terminal:
 - Tinta sobre papel crudo. El color primario es tinta en modo claro y hueso en modo oscuro.
 - El rojo laca se reserva para el anillo de foco, la decoración y las acciones destructivas, así que el rojo siempre tiene un significado.
 - Una fuente pixel para los títulos y una sans-serif neutra para el cuerpo de texto.
-- Líneas de grilla finas, botones en forma de píldora y tramados CSS opcionales.
+- Líneas de cuadrícula finas, botones en forma de píldora y tramados CSS opcionales.
 
 Los modos claro y oscuro vienen incluidos desde la primera versión. Los elementos decorativos son opcionales, así que los componentes también funcionan con un tema neutro.
 
@@ -61,7 +61,7 @@ Los modos claro y oscuro vienen incluidos desde la primera versión. Los element
 | Fase | Enfoque | Ejemplos |
 |------|---------|----------|
 | **1** | Fundamentos | Button, Field, Input, Checkbox, Radio Group, Switch, Card, Alert |
-| **2** | Lo que hace útil a la librería | Dialog, Popover, Tooltip, Tabs, Toast, Dropdown Menu |
+| **2** | Lo que hace útil a la biblioteca | Dialog, Popover, Tooltip, Tabs, Toast, Dropdown Menu |
 | **3** | Componentes complejos | Combobox, Command Palette, Date Picker, Carousel |
 
 Primero React. Hay una versión para Angular prevista para una etapa posterior.

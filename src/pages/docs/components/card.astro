@@ -20,8 +20,8 @@ const { decorExample, linkExample } = componentExamples.card;
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Heading level.</strong> <code>CardTitle</code> renders an <code>h3</code> by
-        default. Pass <code>as="h2"</code> through <code>as="h6"</code> so it fits the page outline;
-        the look does not change.
+        default. Pass <code>as</code> a value from <code>"h2"</code> to <code>"h6"</code> so it fits
+        the page outline; the look does not change.
       </li>
       <li>
         <strong>Decoration.</strong> <code>decor</code> adds a hatched band across the top. It is
@@ -46,7 +46,7 @@ const { decorExample, linkExample } = componentExamples.card;
       Never put an <code>onClick</code> on the card: a clickable <code>&lt;div&gt;</code> is not
       focusable, has no role and no name. Put one real link in the title and stretch it over the
       card with a pseudo-element. The card is <code>relative</code>, so
-      <code>after:absolute after:inset-0</code> covers it:
+      <code data-wrap>after:absolute after:inset-0</code> covers it:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={linkExample} lang="tsx" theme={codeTheme} />
@@ -77,10 +77,10 @@ const { decorExample, linkExample } = componentExamples.card;
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
-    It creates <code>components/ui/card.tsx</code>, the same path and part names as shadcn's Card.
-    Unlike shadcn's, <code>CardTitle</code> is a real heading and <code>CardDescription</code> a
-    paragraph. It needs only your <code>cn()</code> helper; if your <code>lib/utils.ts</code>{" "}
-    differs from the current shadcn version, the CLI asks before replacing it, and answering no is
-    safe.
+    It creates <code>components/ui/card.tsx</code>, the same path and part names as shadcn's Card,
+    except one: <code>CardAction</code> is not included. Unlike shadcn's, <code>CardTitle</code> is
+    a real heading and <code>CardDescription</code> a paragraph. It needs only your{" "}
+    <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
+    version, the CLI asks before replacing it, and answering no is safe.
   </p>
 </ComponentPage>

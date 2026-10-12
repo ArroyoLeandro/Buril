@@ -83,9 +83,11 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
 
     <h3 class="mt-8 font-display text-lg">Un error urgente</h3>
     <p class="mt-4 text-muted-foreground">
-      <code>live="assertive"</code> le da a la alerta <code>role="alert"</code>, que interrumpe lo
-      que esté diciendo el lector de pantalla. Resérvala para errores que bloquean el trabajo del
-      usuario, y renderízala antes de que aparezca su texto.
+      <code>role="alert"</code> interrumpe lo que esté diciendo el lector de pantalla, así que
+      resérvalo para errores que bloquean el trabajo del usuario. Para un error que aparece, inserta
+      la alerta en una región <code>role="alert"</code> vacía que ya esté en la página, así no se ve
+      una alerta vacía antes del error. Para una alerta que ya está en pantalla y cuyo texto cambia,
+      mantenla montada con <code>live="assertive"</code>, que le da <code>role="alert"</code>:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={assertiveExample} lang="tsx" theme={codeTheme} />
@@ -94,9 +96,9 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     Crea <code>components/ui/alert.tsx</code>, con la misma ruta y los mismos nombres de partes que
-    el Alert de shadcn. A diferencia del de shadcn, no tiene <code>role="alert"</code> por defecto:
-    usa <code>live</code>. Necesita <code>class-variance-authority</code> y tu helper
+    el componente Alert de shadcn. A diferencia del de shadcn, no tiene <code>role="alert"</code>{" "}
+    por defecto: usa <code>live</code>. Necesita <code>class-variance-authority</code> y tu helper
     <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión actual de shadcn,
-    la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+    la CLI pregunta antes de reemplazarlo, y puedes responder que no sin problema.
   </p>
 </ComponentPage>
