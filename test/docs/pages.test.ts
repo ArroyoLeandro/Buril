@@ -336,6 +336,12 @@ describe("radio group page", () => {
     expect(visible).toMatch(/arrow keys/i);
     expect(visible).toMatch(/onValueChange/);
   });
+
+  it("explains where aria-invalid and the error description go", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|") to each item/);
+    expect(visible).toMatch(/aria-describedby/);
+  });
 });
 
 describe("switch page", () => {

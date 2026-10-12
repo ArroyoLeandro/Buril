@@ -56,6 +56,12 @@ const usageExample = `import { RadioGroup, RadioGroupItem } from "@/components/u
         row; other props go to the <code>&lt;input&gt;</code>.
       </li>
       <li>
+        <strong>Errors.</strong> ARIA allows <code>aria-invalid</code> on a radio but not on a
+        group, so pass <code>aria-invalid="true"</code> to each item; its border turns destructive.
+        Point the group's <code>aria-describedby</code> at the error text, so it is read with the
+        legend.
+      </li>
+      <li>
         <strong>States.</strong> A checked radio shows a filled dot, not only a color. Focus shows
         the ring outline. <code>disabled</code> on the group disables every radio; on an item, only
         that one. In forced-colors mode the native radio returns, drawn by the system.
