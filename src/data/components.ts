@@ -124,6 +124,20 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/alert.tsx",
   },
   {
+    slug: "spinner",
+    name: "Spinner",
+    description: "A spinning loading indicator with a hidden label, announced as a status.",
+    item: "spinner",
+    source: "registry/ui/spinner.tsx",
+  },
+  {
+    slug: "skeleton",
+    name: "Skeleton",
+    description: "A placeholder block shown while content loads, hidden from assistive technology.",
+    item: "skeleton",
+    source: "registry/ui/skeleton.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
