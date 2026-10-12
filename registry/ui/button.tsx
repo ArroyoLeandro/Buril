@@ -45,8 +45,10 @@ const buttonVariants = cva(
 
 interface ButtonProps extends ComponentProps<"button">, VariantProps<typeof buttonVariants> {
   /**
-   * Shows a spinner and blocks activation. The button stays focusable (no `disabled`) and
-   * announces `aria-busy`, so keyboard and screen reader users keep their place.
+   * Shows a spinner and blocks activation. The button stays focusable (no `disabled`) and keeps
+   * its accessible name, so keyboard and screen reader users keep their place. It sets
+   * `aria-busy` and `aria-disabled`, but screen readers generally do not announce `aria-busy` on
+   * a button: announce progress from a `role="status"` region outside the button.
    */
   loading?: boolean;
 }
