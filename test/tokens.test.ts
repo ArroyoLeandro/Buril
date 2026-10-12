@@ -74,14 +74,22 @@ function fromOklab([L, a, b]: Rgb): Rgb {
   ].map((c) => toSrgb(Math.min(1, Math.max(0, c)))) as Rgb;
 }
 
+/** Replace every var(--name) with the token's value, recursively. */
+function expand(tokens: Tokens, value: string): string {
+  return value.replace(/var\((--[\w-]+)\)/g, (_, name: string) => {
+    const next = tokens[name];
+    if (next === undefined) throw new Error(`Missing token ${name}`);
+    return expand(tokens, next);
+  });
+}
+
 function resolveColor(tokens: Tokens, name: string): Rgb {
   const value = tokens[name];
   if (value === undefined) throw new Error(`Missing token ${name}`);
-  const ref = /^var\((--[\w-]+)\)$/.exec(value);
-  if (ref) return resolveColor(tokens, ref[1]!);
-  if (value.startsWith("#")) return hexToRgb(value);
+  const literal = expand(tokens, value);
+  if (literal.startsWith("#")) return hexToRgb(literal);
   const mix = /^color-mix\(in oklab,\s*(#[0-9a-fA-F]{6})\s+(\d+)%,\s*(#[0-9a-fA-F]{6})\)$/.exec(
-    value,
+    literal,
   );
   if (mix) {
     const weight = Number(mix[2]) / 100;
@@ -101,23 +109,23 @@ function contrast(a: Rgb, b: Rgb) {
 }
 
 const ratio = (tokens: Tokens, fg: string, bg: string) =>
-  contrast(resolveColor(tokens, `--buril-${fg}`), resolveColor(tokens, `--buril-${bg}`));
+  contrast(resolveColor(tokens, `--${fg}`), resolveColor(tokens, `--${bg}`));
 
-// [foreground token, background token, minimum ratio, expected ratio (2 decimals)]
+// [foreground token, background token, minimum ratio, expected ratio (1 decimal tolerance)]
 const pairs = {
   light: [
-    ["fg", "bg", 4.5, 15.58],
-    ["muted", "bg", 4.5, 7.52],
-    ["accent", "bg", 3, 4.34],
-    ["accent-strong", "bg", 4.5, 5.14],
-    ["accent-strong-fg", "accent-strong", 4.5, 5.89],
+    ["foreground", "background", 4.5, 15.58],
+    ["muted-foreground", "background", 4.5, 7.52],
+    ["decor", "background", 3, 4.34],
+    ["primary", "background", 4.5, 5.14],
+    ["primary-foreground", "primary", 4.5, 5.89],
   ],
   dark: [
-    ["fg", "bg", 4.5, 14.92],
-    ["muted", "bg", 4.5, 8.33],
-    ["accent", "bg", 3, 3.72],
-    ["accent-strong", "bg", 4.5, 6.02],
-    ["accent-strong-fg", "accent-strong", 4.5, 6.02],
+    ["foreground", "background", 4.5, 14.92],
+    ["muted-foreground", "background", 4.5, 8.33],
+    ["decor", "background", 3, 3.72],
+    ["primary", "background", 4.5, 6.02],
+    ["primary-foreground", "primary", 4.5, 6.02],
   ],
 } as const;
 
@@ -131,8 +139,8 @@ describe.each([
     expect(actual).toBeCloseTo(expected, 1);
   });
 
-  it("focus indicator meets 3:1 against the background", () => {
-    expect(ratio({ ...light, ...tokens }, "focus", "bg")).toBeGreaterThanOrEqual(3);
+  it("focus ring meets 3:1 against the background", () => {
+    expect(ratio({ ...light, ...tokens }, "ring", "background")).toBeGreaterThanOrEqual(3);
   });
 });
 
@@ -153,23 +161,74 @@ describe("dark mechanism", () => {
 
 describe("registry theme item", () => {
   type Rule = Record<string, string>;
-  const registry = JSON.parse(readFileSync(resolve(__dirname, "../registry.json"), "utf8")) as {
-    items: { name: string; css?: Record<string, Record<string, unknown>> }[];
+  type Item = {
+    name: string;
+    cssVars?: { theme?: Rule; light?: Rule; dark?: Rule };
+    css?: Record<string, Record<string, unknown>>;
   };
-  const shipped = registry.items.find((item) => item.name === "theme")?.css ?? {};
+  const registry = JSON.parse(readFileSync(resolve(__dirname, "../registry.json"), "utf8")) as {
+    items: Item[];
+  };
+  const item = registry.items.find((entry) => entry.name === "theme");
+  const shipped = item?.css ?? {};
+  const vars = item?.cssVars ?? {};
 
+  /** Custom properties of a css-field rule, with the color-scheme kept apart. */
   const customProperties = (rule: unknown): Tokens =>
-    Object.fromEntries(Object.entries(rule as Rule).filter(([name]) => name.startsWith("--")));
+    Object.fromEntries(
+      Object.entries((rule ?? {}) as Rule).filter(([name]) => name.startsWith("--")),
+    );
+  const colorScheme = (rule: unknown) => ((rule ?? {}) as Rule)["color-scheme"];
+  const prefixed = (rule: Rule = {}): Tokens =>
+    Object.fromEntries(Object.entries(rule).map(([name, value]) => [`--${name}`, value]));
 
-  it("ships the same light, dark and system fallback tokens as buril.css", () => {
-    const media = shipped["@media (prefers-color-scheme: dark)"] ?? {};
-    expect(customProperties(shipped[":root"])).toEqual(light);
-    expect(customProperties(shipped[".dark"])).toEqual(dark);
-    expect(customProperties(media[":root:not(.light)"])).toEqual(dark);
+  /**
+   * Literal tokens the registry must ship for a block: every shadcn variable and Buril extra
+   * from buril.css with var() expanded. Primitives are not shipped; their values are inlined.
+   */
+  const expected = (block: Tokens): Tokens =>
+    Object.fromEntries(
+      Object.entries(block)
+        .filter(([name]) => !name.startsWith("--buril-"))
+        .map(([name, value]) => [name, expand({ ...light, ...block }, value)]),
+    );
+
+  // The CLI only treats plain colors as cssVars safely. color-mix values go through the css
+  // field, otherwise it emits self-referencing @theme inline aliases.
+  const shippedLight = { ...prefixed(vars.light), ...customProperties(shipped[":root"]) };
+  const shippedDark = { ...prefixed(vars.dark), ...customProperties(shipped[".dark"]) };
+  const fallback = (shipped["@media (prefers-color-scheme: dark)"] ?? {})[":root:not(.light)"];
+
+  it("ships the same light and dark tokens as buril.css", () => {
+    expect(shippedLight).toEqual(expected(light));
+    expect(shippedDark).toEqual(expected(dark));
+  });
+
+  it("ships the system dark fallback with the same tokens as .dark", () => {
+    expect(customProperties(fallback)).toEqual(expected(systemDark));
+    expect(customProperties(fallback)).toEqual(shippedDark);
   });
 
   it("sets color-scheme per mode", () => {
-    expect((shipped[":root"] as Rule)["color-scheme"]).toBe("light");
-    expect((shipped[".dark"] as Rule)["color-scheme"]).toBe("dark");
+    expect(colorScheme(shipped[":root"])).toBe("light");
+    expect(colorScheme(shipped[".dark"])).toBe("dark");
+    expect(colorScheme(fallback)).toBe("dark");
+  });
+
+  it("ships the @theme inline mapping from buril.css", () => {
+    const mapping = declarations(ruleBody(css, /^@theme inline\s*\{/m));
+    const colors = Object.fromEntries(
+      Object.entries(prefixed(vars.theme)).filter(([name]) => name.startsWith("--color-")),
+    );
+    expect(colors).toEqual(mapping);
+  });
+
+  it("ships the dark custom variant selectors from buril.css", () => {
+    const selectors = (source: string) =>
+      [...source.matchAll(/(&:where\([^{]*\))\s*\{/g)].map((match) => match[1]);
+    const variant = ruleBody(css, /^@custom-variant dark\s*\{/m);
+    const json = JSON.stringify(shipped["@custom-variant dark"] ?? {});
+    expect(selectors(variant)).toHaveLength(2);
+    for (const selector of selectors(variant)) expect(json).toContain(selector);
   });
 });

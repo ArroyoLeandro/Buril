@@ -22,42 +22,22 @@
       "title": "Buril theme",
       "description": "Buril design tokens: red lacquer palette with light and dark schemes.",
       "css": {
-        ":root": {
-          "color-scheme": "light",
-          "--buril-bg": "#f4efe6",
-          "--buril-fg": "#1a1714",
-          "--buril-muted": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
-          "--buril-grid": "color-mix(in oklab, #1a1714 9%, transparent)",
-          "--buril-border": "#1a1714",
-          "--buril-accent": "#d72828",
-          "--buril-accent-strong": "#c90f1a",
-          "--buril-accent-strong-fg": "#ffffff",
-          "--buril-focus": "var(--buril-accent-strong)"
-        },
-        ".dark": {
-          "color-scheme": "dark",
-          "--buril-bg": "#161310",
-          "--buril-fg": "#ede6da",
-          "--buril-muted": "#b5ada0",
-          "--buril-grid": "color-mix(in oklab, #ede6da 7%, transparent)",
-          "--buril-border": "#ede6da",
-          "--buril-accent": "#d72828",
-          "--buril-accent-strong": "#ff5a51",
-          "--buril-accent-strong-fg": "#161310",
-          "--buril-focus": "var(--buril-accent-strong)"
-        },
         "@media (prefers-color-scheme: dark)": {
           ":root:not(.light)": {
             "color-scheme": "dark",
-            "--buril-bg": "#161310",
-            "--buril-fg": "#ede6da",
-            "--buril-muted": "#b5ada0",
-            "--buril-grid": "color-mix(in oklab, #ede6da 7%, transparent)",
-            "--buril-border": "#ede6da",
-            "--buril-accent": "#d72828",
-            "--buril-accent-strong": "#ff5a51",
-            "--buril-accent-strong-fg": "#161310",
-            "--buril-focus": "var(--buril-accent-strong)"
+            "--background": "#161310",
+            "--foreground": "#ede6da",
+            "--card": "#161310",
+            "--card-foreground": "#ede6da",
+            "--popover": "#161310",
+            "--popover-foreground": "#ede6da",
+            "--primary": "#ff5a51",
+            "--primary-foreground": "#161310",
+            "--muted-foreground": "#b5ada0",
+            "--border": "#ede6da",
+            "--ring": "#ff5a51",
+            "--decor": "#d72828",
+            "--grid": "color-mix(in oklab, #ede6da 7%, transparent)"
           }
         },
         "@custom-variant dark": {
@@ -69,21 +49,61 @@
               "@slot": {}
             }
           }
+        },
+        ":root": {
+          "color-scheme": "light",
+          "--muted-foreground": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
+          "--grid": "color-mix(in oklab, #1a1714 9%, transparent)"
+        },
+        ".dark": {
+          "color-scheme": "dark",
+          "--muted-foreground": "#b5ada0",
+          "--grid": "color-mix(in oklab, #ede6da 7%, transparent)"
         }
       },
       "cssVars": {
         "theme": {
-          "color-bg": "var(--buril-bg)",
-          "color-fg": "var(--buril-fg)",
-          "color-muted": "var(--buril-muted)",
-          "color-grid": "var(--buril-grid)",
-          "color-border": "var(--buril-border)",
-          "color-accent": "var(--buril-accent)",
-          "color-accent-strong": "var(--buril-accent-strong)",
-          "color-accent-strong-fg": "var(--buril-accent-strong-fg)",
-          "color-focus": "var(--buril-focus)",
+          "color-background": "var(--background)",
+          "color-foreground": "var(--foreground)",
+          "color-card": "var(--card)",
+          "color-card-foreground": "var(--card-foreground)",
+          "color-popover": "var(--popover)",
+          "color-popover-foreground": "var(--popover-foreground)",
+          "color-primary": "var(--primary)",
+          "color-primary-foreground": "var(--primary-foreground)",
+          "color-muted-foreground": "var(--muted-foreground)",
+          "color-border": "var(--border)",
+          "color-ring": "var(--ring)",
+          "color-decor": "var(--decor)",
+          "color-grid": "var(--grid)",
           "font-display": "ui-monospace, monospace",
           "font-body": "system-ui, sans-serif"
+        },
+        "light": {
+          "background": "#f4efe6",
+          "foreground": "#1a1714",
+          "card": "#f4efe6",
+          "card-foreground": "#1a1714",
+          "popover": "#f4efe6",
+          "popover-foreground": "#1a1714",
+          "primary": "#c90f1a",
+          "primary-foreground": "#ffffff",
+          "border": "#1a1714",
+          "ring": "#c90f1a",
+          "decor": "#d72828"
+        },
+        "dark": {
+          "background": "#161310",
+          "foreground": "#ede6da",
+          "card": "#161310",
+          "card-foreground": "#ede6da",
+          "popover": "#161310",
+          "popover-foreground": "#ede6da",
+          "primary": "#ff5a51",
+          "primary-foreground": "#161310",
+          "border": "#ede6da",
+          "ring": "#ff5a51",
+          "decor": "#d72828"
         }
       }
     }

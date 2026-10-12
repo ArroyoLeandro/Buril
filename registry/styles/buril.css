@@ -1,10 +1,12 @@
 /*
- * Buril UI design tokens (decision 016, "Red lacquer").
+ * Buril UI design tokens (decision 016 palette, decision 018 names).
  *
- * Two layers:
- *   1. Primitives, `--buril-*`, declared per color scheme. Override these in :root to re-skin.
- *   2. Semantics, `--color-*`, mapped through `@theme inline` so Tailwind generates
- *      utilities such as `bg-accent`. Components use semantic tokens only.
+ * Three layers:
+ *   1. Primitives, `--buril-*`: the raw palette. Mode independent, declared once in :root.
+ *   2. shadcn variables (`--background`, `--primary`, ...): they switch per color scheme, so
+ *      Buril components work with any shadcn theme. Components depend on these only.
+ *   3. Buril extras (`--decor`, `--grid`): decoration, always used with a fallback.
+ * `@theme inline` maps them to Tailwind utilities such as `bg-background` and `text-primary`.
  *
  * Dark mode: `.dark` on <html> turns it on, `.light` forces light. Without JavaScript the
  * system preference applies unless `.light` is present. Keep the three dark blocks in sync;
@@ -14,34 +16,53 @@
 :root {
   color-scheme: light;
 
-  /* paper #F4EFE6, ink #1A1714 */
-  --buril-bg: #f4efe6;
-  --buril-fg: #1a1714;
-  --buril-muted: color-mix(in oklab, #1a1714 72%, #f4efe6);
-  --buril-grid: color-mix(in oklab, #1a1714 9%, transparent);
-  --buril-border: #1a1714;
-  /* Decorative only (borders, icons, hatching). Not for text. */
-  --buril-accent: #d72828;
-  /* Text-safe accent for buttons, links and accent text. */
-  --buril-accent-strong: #c90f1a;
-  --buril-accent-strong-fg: #ffffff;
-  --buril-focus: var(--buril-accent-strong);
+  /* Primitives */
+  --buril-paper: #f4efe6;
+  --buril-ink: #1a1714;
+  --buril-night: #161310;
+  --buril-bone: #ede6da;
+  --buril-bone-muted: #b5ada0;
+  --buril-vermilion: #d72828;
+  --buril-vermilion-strong: #c90f1a;
+  --buril-vermilion-bright: #ff5a51;
+  --buril-white: #ffffff;
+
+  /* shadcn variables */
+  --background: var(--buril-paper);
+  --foreground: var(--buril-ink);
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --primary: var(--buril-vermilion-strong);
+  --primary-foreground: var(--buril-white);
+  --muted-foreground: color-mix(in oklab, var(--buril-ink) 72%, var(--buril-paper));
+  --border: var(--buril-ink);
+  --ring: var(--primary);
+
+  /* Buril extras */
+  --decor: var(--buril-vermilion);
+  --grid: color-mix(in oklab, var(--buril-ink) 9%, transparent);
 }
 
 /* Explicit dark: class on <html>. */
 .dark {
   color-scheme: dark;
 
-  /* night #161310, bone #EDE6DA */
-  --buril-bg: #161310;
-  --buril-fg: #ede6da;
-  --buril-muted: #b5ada0;
-  --buril-grid: color-mix(in oklab, #ede6da 7%, transparent);
-  --buril-border: #ede6da;
-  --buril-accent: #d72828;
-  --buril-accent-strong: #ff5a51;
-  --buril-accent-strong-fg: #161310;
-  --buril-focus: var(--buril-accent-strong);
+  --background: var(--buril-night);
+  --foreground: var(--buril-bone);
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --primary: var(--buril-vermilion-bright);
+  --primary-foreground: var(--buril-night);
+  --muted-foreground: var(--buril-bone-muted);
+  --border: var(--buril-bone);
+  --ring: var(--primary);
+
+  --decor: var(--buril-vermilion);
+  --grid: color-mix(in oklab, var(--buril-bone) 7%, transparent);
 }
 
 /* No-JS fallback: follow the system unless the page forces light. */
@@ -49,15 +70,20 @@
   :root:not(.light) {
     color-scheme: dark;
 
-    --buril-bg: #161310;
-    --buril-fg: #ede6da;
-    --buril-muted: #b5ada0;
-    --buril-grid: color-mix(in oklab, #ede6da 7%, transparent);
-    --buril-border: #ede6da;
-    --buril-accent: #d72828;
-    --buril-accent-strong: #ff5a51;
-    --buril-accent-strong-fg: #161310;
-    --buril-focus: var(--buril-accent-strong);
+    --background: var(--buril-night);
+    --foreground: var(--buril-bone);
+    --card: var(--background);
+    --card-foreground: var(--foreground);
+    --popover: var(--background);
+    --popover-foreground: var(--foreground);
+    --primary: var(--buril-vermilion-bright);
+    --primary-foreground: var(--buril-night);
+    --muted-foreground: var(--buril-bone-muted);
+    --border: var(--buril-bone);
+    --ring: var(--primary);
+
+    --decor: var(--buril-vermilion);
+    --grid: color-mix(in oklab, var(--buril-bone) 7%, transparent);
   }
 }
 
@@ -74,17 +100,20 @@
   }
 }
 
-/* Semantic tokens: they reference the primitives, so they follow the active scheme. */
 @theme inline {
-  --color-bg: var(--buril-bg);
-  --color-fg: var(--buril-fg);
-  --color-muted: var(--buril-muted);
-  --color-grid: var(--buril-grid);
-  --color-border: var(--buril-border);
-  --color-accent: var(--buril-accent);
-  --color-accent-strong: var(--buril-accent-strong);
-  --color-accent-strong-fg: var(--buril-accent-strong-fg);
-  --color-focus: var(--buril-focus);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-decor: var(--decor);
+  --color-grid: var(--grid);
 }
 
 /* Fonts are not shipped. Override these with your own families. */
