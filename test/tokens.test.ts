@@ -37,7 +37,10 @@ function ruleBody(source: string, selector: RegExp): string {
 const light = declarations(ruleBody(css, /^:root\s*\{/m));
 const dark = declarations(ruleBody(css, /^\.dark\s*\{/m));
 const systemDark = declarations(
-  ruleBody(ruleBody(css, /@media \(prefers-color-scheme: dark\)\s*\{/), /:root:not\(\.light\)\s*\{/),
+  ruleBody(
+    ruleBody(css, /@media \(prefers-color-scheme: dark\)\s*\{/),
+    /:root:not\(\.light\)\s*\{/,
+  ),
 );
 
 const hexToRgb = (hex: string): Rgb => {
@@ -77,7 +80,9 @@ function resolveColor(tokens: Tokens, name: string): Rgb {
   const ref = /^var\((--[\w-]+)\)$/.exec(value);
   if (ref) return resolveColor(tokens, ref[1]!);
   if (value.startsWith("#")) return hexToRgb(value);
-  const mix = /^color-mix\(in oklab,\s*(#[0-9a-fA-F]{6})\s+(\d+)%,\s*(#[0-9a-fA-F]{6})\)$/.exec(value);
+  const mix = /^color-mix\(in oklab,\s*(#[0-9a-fA-F]{6})\s+(\d+)%,\s*(#[0-9a-fA-F]{6})\)$/.exec(
+    value,
+  );
   if (mix) {
     const weight = Number(mix[2]) / 100;
     const a = toOklab(hexToRgb(mix[1]!));
@@ -87,7 +92,8 @@ function resolveColor(tokens: Tokens, name: string): Rgb {
   throw new Error(`Cannot resolve ${name}: ${value}`);
 }
 
-const luminance = ([r, g, b]: Rgb) => 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+const luminance = ([r, g, b]: Rgb) =>
+  0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 
 function contrast(a: Rgb, b: Rgb) {
   const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x) as [number, number];

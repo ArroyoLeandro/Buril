@@ -3,7 +3,8 @@ import { cn } from "./utils";
 
 describe("cn", () => {
   it("joins class names and skips falsy values", () => {
-    expect(cn("a", false && "b", undefined, null, "c")).toBe("a c");
+    const isOn = Boolean(0);
+    expect(cn("a", isOn && "b", undefined, null, "c")).toBe("a c");
   });
 
   it("supports conditional object and array syntax", () => {
