@@ -1,9 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { Field } from "./field";
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("Field", () => {
   describe("with a render prop", () => {
@@ -145,6 +149,64 @@ describe("Field", () => {
       );
       expect(screen.getByRole("textbox", { name: "Email" })).toBeRequired();
       expect(screen.getByText("(required)")).toHaveAttribute("aria-hidden", "true");
+    });
+
+    it("accepts aria-required on a control that has no native required", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(
+        <Field label="Email" required>
+          {(control) => (
+            <input {...control} required={undefined} aria-required={control.required} />
+          )}
+        </Field>,
+      );
+      expect(screen.getByRole("textbox", { name: "Email" })).toBeRequired();
+      expect(screen.getByText("(required)")).toHaveAttribute("aria-hidden", "true");
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    // A render prop that drops `required` would leave screen readers without the requirement,
+    // since the visible marker is hidden from them.
+    describe("when the control does not get required", () => {
+      const field = () => (
+        <Field label="Email" required>
+          {(control) => <input {...control} required={undefined} />}
+        </Field>
+      );
+
+      it("puts the marker back into the label's name", () => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        render(field());
+        const input = screen.getByRole("textbox", { name: "Email (required)" });
+        expect(input).not.toBeRequired();
+        expect(screen.getByText("(required)")).not.toHaveAttribute("aria-hidden");
+      });
+
+      it("warns once in development, naming the fix", () => {
+        const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const { rerender } = render(field());
+        rerender(field());
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn.mock.calls[0]![0]).toMatch(/Field.*required.*spread/is);
+      });
+
+      it("hides the marker again once the control is required", () => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        const { rerender } = render(field());
+        rerender(
+          <Field label="Email" required>
+            {(control) => <input {...control} />}
+          </Field>,
+        );
+        expect(screen.getByRole("textbox", { name: "Email" })).toBeRequired();
+        expect(screen.getByText("(required)")).toHaveAttribute("aria-hidden", "true");
+      });
+    });
+
+    it("does not warn when the field is not required", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<Field label="Email">{(control) => <input {...control} />}</Field>);
+      expect(warn).not.toHaveBeenCalled();
     });
   });
 

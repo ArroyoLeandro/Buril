@@ -284,6 +284,12 @@ describe("field page", () => {
     expect(visible).toMatch(/\(required\)/);
     expect(visible).toMatch(/icon/);
   });
+
+  it("explains what happens when a render prop drops required", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-required=(&quot;|")true(&quot;|")/);
+    expect(visible).toMatch(/development builds log a warning/);
+  });
 });
 
 describe("input page", () => {
