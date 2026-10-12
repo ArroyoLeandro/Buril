@@ -63,3 +63,18 @@ describe("FieldDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("FieldDemo in Spanish", () => {
+  it("labels the field and reports errors and success in Spanish", async () => {
+    render(<FieldDemo locale="es" />);
+    const input = screen.getByRole("textbox", { name: /Correo electrónico/ });
+    await userEvent.click(screen.getByRole("button", { name: "Suscribirme" }));
+    expect(input).toHaveAccessibleDescription(/Escribe tu correo electrónico\./);
+    expect(input).toHaveFocus();
+    await userEvent.type(input, "ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Suscribirme" }));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Suscripción confirmada para ada@example.com.",
+    );
+  });
+});

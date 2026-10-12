@@ -3,18 +3,34 @@ import { resolve } from "node:path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
-import { demoText, demoTranslator } from "./demos";
+import { demoHref, demoText, demoTranslator } from "./demos";
 
 const root = resolve(__dirname, "../..");
 const placeholders = (value: string) =>
   [...value.matchAll(/\{(\w+)\}/g)].map(([, name]) => name).sort();
 
-/** Every React island the docs localize: its text goes through `t()`. */
-const localized = Object.keys(
+/** Every React island on the docs site: the live demos and the landing panels. */
+const islands = Object.keys(
   import.meta.glob(["../components/**/*.tsx", "!../components/**/*.test.tsx"]),
-)
-  .map((path) => resolve(__dirname, path))
-  .filter((path) => readFileSync(path, "utf8").includes("demoTranslator"));
+).map((path) => resolve(__dirname, path));
+
+/** The islands that localize their text through `t()`. */
+const localized = islands.filter((path) => readFileSync(path, "utf8").includes("demoTranslator"));
+
+/** Names of people, products and languages: written the same way in every language. */
+const names = new Set([
+  "Ada Lovelace",
+  "Grace Hopper",
+  "Katherine Johnson",
+  "Dorothy Vaughan",
+  "Buril UI",
+  "English",
+  "Español",
+  "Français",
+]);
+
+/** Calls whose string argument is the English text or a path, translated at run time. */
+const translating = new Set(["t", "href", "demoTranslator", "demoHref"]);
 
 const source = (path: string) => readFileSync(path, "utf8");
 
@@ -31,8 +47,9 @@ const textProps = new Set([
 ]);
 
 /**
- * Literal JSX text and literal text props in a component, which would stay in English on Spanish
- * pages. Text inside `<code>` is a code identifier and stays as written.
+ * Text in a component that would stay in English on Spanish pages: literal JSX text, literal text
+ * props, and sentence-case strings anywhere else (state messages, option names). Text inside
+ * `<code>` is a code identifier, and names are written the same way in every language.
  */
 function untranslatedText(code: string) {
   const file = ts.createSourceFile(
@@ -45,16 +62,47 @@ function untranslatedText(code: string) {
   const found: string[] = [];
   const insideCode = (node: ts.Node) =>
     ts.isJsxElement(node.parent) && node.parent.openingElement.tagName.getText(file) === "code";
+  const insideOtherAttribute = (node: ts.Node): boolean => {
+    for (let parent = node.parent; parent; parent = parent.parent) {
+      if (ts.isJsxAttribute(parent)) return !textProps.has(parent.name.getText(file));
+    }
+    return false;
+  };
+  const translated = (node: ts.Node) =>
+    ts.isCallExpression(node.parent) &&
+    translating.has(node.parent.expression.getText(file)) &&
+    node.parent.arguments[0] === node;
   const visit = (node: ts.Node) => {
-    if (ts.isJsxText(node) && /[A-Za-z]/.test(node.text) && !insideCode(node)) {
+    if (
+      ts.isJsxText(node) &&
+      /[A-Za-z]/.test(node.text) &&
+      !insideCode(node) &&
+      !names.has(node.text.trim())
+    ) {
       found.push(node.text.trim());
+    }
+    if (
+      (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+      /^[A-Z][a-z]/.test(node.text) &&
+      !names.has(node.text) &&
+      !translated(node) &&
+      !ts.isImportDeclaration(node.parent) &&
+      !ts.isJsxAttribute(node.parent) &&
+      !ts.isLiteralTypeNode(node.parent) &&
+      !insideOtherAttribute(node)
+    ) {
+      found.push(node.getText(file));
+    }
+    if (ts.isTemplateExpression(node) && /^[A-Z][a-z]/.test(node.head.text)) {
+      found.push(node.getText(file));
     }
     if (
       ts.isJsxAttribute(node) &&
       textProps.has(node.name.getText(file)) &&
       node.initializer &&
       ts.isStringLiteral(node.initializer) &&
-      /[A-Za-z]/.test(node.initializer.text)
+      /[A-Za-z]/.test(node.initializer.text) &&
+      !names.has(node.initializer.text)
     ) {
       found.push(node.getText(file));
     }
@@ -75,7 +123,7 @@ describe("demo text dictionary", () => {
 
   it("keeps only strings that a demo still uses", () => {
     const used = new Set(
-      localized.flatMap((path) =>
+      islands.flatMap((path) =>
         [...source(path).matchAll(/\bt\(\s*"((?:[^"\\]|\\.)*)"/g)].map(([, text]) =>
           JSON.parse(`"${text}"`),
         ),
@@ -84,22 +132,33 @@ describe("demo text dictionary", () => {
     expect(Object.keys(demoText).filter((text) => !used.has(text))).toEqual([]);
   });
 
-  it("covers the landing showcase panels", () => {
+  it("covers the landing showcase panels and the component demos", () => {
     expect(localized.map(relative)).toEqual(
       expect.arrayContaining([
         "src/components/showcase/ButtonsPanel.tsx",
         "src/components/showcase/SettingsPanel.tsx",
         "src/components/showcase/SignInPanel.tsx",
+        "src/components/ButtonDemo.tsx",
+        "src/components/FieldDemo.tsx",
       ]),
     );
   });
 
-  it.each(localized.map((path) => [relative(path), path]))(
+  it.each(islands.map((path) => [relative(path), path]))(
     "%s writes no user-facing text outside t()",
     (_, path) => {
       expect(untranslatedText(source(path))).toEqual([]);
     },
   );
+});
+
+describe("demoHref", () => {
+  it("keeps English paths and moves Spanish ones under /es/", () => {
+    expect(demoHref("en")("/docs/components/button")).toBe("/docs/components/button");
+    expect(demoHref("es")("/docs/components/button")).toBe("/es/docs/components/button");
+    expect(demoHref("en")("/")).toBe("/");
+    expect(demoHref("es")("/")).toBe("/es/");
+  });
 });
 
 describe("demoTranslator", () => {

@@ -133,6 +133,8 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       expect(code).toContain(`export default function ${pascal(slug)}Demo`);
       expect(code).toMatch(/from "@\/components\/ui\//);
       expect(code).not.toMatch(/registry\/ui/);
+      // The demo is localized for the docs site; the code shown is what a reader writes.
+      expect(code).not.toMatch(/\bt\(|\bhref\(|demoTranslator|demoHref|\blocale\b|i18n/);
     });
 
     it("has Example, Installation, Usage, API reference and Accessibility sections in order", async () => {
