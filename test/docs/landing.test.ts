@@ -7,6 +7,7 @@ import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import IndexPage from "../../src/pages/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
+import { localizedHref } from "../../src/i18n/paths";
 
 let container: AstroContainer;
 
@@ -155,5 +156,103 @@ describe.each([
       /<a[^>]+href="https:\/\/github\.com\/ArroyoLeandro\/Buril\/blob\/main\/LICENSE"/,
     );
     expect(footer).toMatch(/<a[^>]+href="https:\/\/github\.com\/ArroyoLeandro\/Buril"/);
+  });
+});
+
+describe("Spanish landing page", () => {
+  const pages = import.meta.glob<AstroComponentFactory>("../../src/pages/es/index.astro", {
+    eager: true,
+    import: "default",
+  });
+  const renderEs = () => {
+    const page = pages["../../src/pages/es/index.astro"];
+    expect(page, "src/pages/es/index.astro").toBeDefined();
+    return container.renderToString(page!, { request: new Request("http://x/es/") });
+  };
+
+  it("is a Spanish document with a Spanish title and description", async () => {
+    const html = await renderEs();
+    expect(html).toMatch(/<html lang="es"/);
+    expect(html).toContain("<title>Buril UI</title>");
+    expect(html).toMatch(/<meta name="description" content="Componentes de React accesibles/);
+  });
+
+  it("has the Spanish hero and calls to action that stay in Spanish", async () => {
+    const html = main(await renderEs());
+    expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0])).toBe("Buril UI");
+    expect(text(html)).toMatch(/Componentes de React accesibles que copias en tu proyecto/);
+    // The Spanish page, or the English one until it is translated.
+    const docs = localizedHref("/docs", "es");
+    const components = localizedHref("/docs/components", "es");
+    expect(html).toMatch(new RegExp(`<a[^>]+href="${docs}"[^>]*>\\s*Empezar`));
+    expect(html).toMatch(new RegExp(`<a[^>]+href="${components}"[^>]*>\\s*Componentes`));
+  });
+
+  it("states the four principles in Spanish", async () => {
+    const values = text(section(main(await renderEs()), "Por qué Buril"));
+    for (const principle of [
+      "El código es tuyo",
+      "Accesible por defecto",
+      "La plataforma primero",
+      "Personalizable",
+    ]) {
+      expect(values).toContain(principle);
+    }
+  });
+
+  it("shows the live panels with Spanish titles and Spanish controls", async () => {
+    const html = section(main(await renderEs()), "Componentes en acción");
+    expect(html.match(/<astro-island/g)).toHaveLength(3);
+    const titles = [...html.matchAll(/<h3[^>]*data-slot="card-title"[^>]*>([\s\S]*?)<\/h3>/g)].map(
+      ([, title]) => text(title!),
+    );
+    expect(titles).toEqual(["Iniciar sesión", "Notificaciones", "Botones"]);
+    // Server-rendered island markup is already Spanish, and the islands hydrate in Spanish.
+    expect(text(html)).toContain("Mantener la sesión iniciada");
+    expect(text(html)).toContain("Notificaciones por correo");
+    expect(text(html)).toContain("Guardar borrador");
+    for (const island of html.match(/<astro-island[^>]*>/g)!) {
+      expect(island).toMatch(/props="[^"]*locale[^"]*es/);
+    }
+    expect(html.match(/<ul[^>]*aria-label="Componentes usados"/g)).toHaveLength(3);
+  });
+
+  it("explains the shadcn requirement and links the Spanish installation guide", async () => {
+    const html = section(main(await renderEs()), "Instalación");
+    expect(text(html)).toMatch(/Requiere un proyecto con shadcn/);
+    expect(text(html)).toMatch(/components\.json/);
+    expect(text(html)).toContain(
+      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+    );
+    expect(html).toContain(`href="${localizedHref("/docs/installation", "es")}"`);
+  });
+
+  it("lists both languages and x-default as alternates, on both landing pages", async () => {
+    const english = await container.renderToString(IndexPage, {
+      request: new Request("http://x/"),
+    });
+    for (const html of [english, await renderEs()]) {
+      const head = html.slice(0, html.indexOf("</head>"));
+      const links = [
+        ...head.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g),
+      ].map(([, lang, href]) => [lang, href]);
+      expect(links).toEqual([
+        ["en", "/"],
+        ["es", "/es/"],
+        ["x-default", "/"],
+      ]);
+    }
+  });
+
+  it("switches to the twin landing page from the header", async () => {
+    const english = await container.renderToString(IndexPage, {
+      request: new Request("http://x/"),
+    });
+    const toSpanish = /<a[^>]*data-language-switcher[^>]*>[\s\S]*?<\/a>/.exec(english)![0];
+    expect(toSpanish).toMatch(/href="\/es\/"/);
+    expect(text(toSpanish)).toBe("Español");
+    const toEnglish = /<a[^>]*data-language-switcher[^>]*>[\s\S]*?<\/a>/.exec(await renderEs())![0];
+    expect(toEnglish).toMatch(/href="\/"/);
+    expect(text(toEnglish)).toBe("English");
   });
 });

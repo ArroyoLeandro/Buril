@@ -10,7 +10,8 @@ import IndexPage from "../../src/pages/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
 import LanguageSwitcher from "../../src/components/LanguageSwitcher.astro";
 import { docsNav } from "../../src/data/docs-nav";
-import { ui } from "../../src/i18n/ui";
+import { localizePath, pageRoutes, unlocalizePath } from "../../src/i18n/paths";
+import { ui, type Locale } from "../../src/i18n/ui";
 
 /**
  * The localized site shell: language, alternates, header, sidebar, TOC and footer. The shell reads
@@ -33,6 +34,11 @@ const text = (html: string) =>
     .replace(/\s+/g, " ")
     .trim();
 const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** A link for a `locale` reader: the page in that language, or English until it is translated. */
+const expectedHref = (page: string, locale: Locale) => {
+  const translated = localizePath(page, locale);
+  return pageRoutes.includes(translated) ? translated : page;
+};
 const header = (html: string) => /<header[\s\S]*?<\/header>/.exec(html)![0];
 const footer = (html: string) => /<footer[\s\S]*?<\/footer>/.exec(html)![0];
 
@@ -67,7 +73,8 @@ describe.each([
   it("links the wordmark and the main nav to pages in the same language", async () => {
     const html = header(await render(ButtonPage, path));
     const home = locale === "es" ? "/es/" : "/";
-    const docs = locale === "es" ? "/es/docs" : "/docs";
+    const docs = expectedHref("/docs", locale);
+    const components = expectedHref("/docs/components", locale);
     expect(html).toMatch(new RegExp(`<a[^>]+href="${home}"[^>]*>[\\s\\S]*?Buril UI`));
     const nav = new RegExp(`<nav[^>]*aria-label="${t["nav.main"]}"[\\s\\S]*?</nav>`).exec(html);
     expect(nav).not.toBeNull();
@@ -75,9 +82,7 @@ describe.each([
       new RegExp(`<a[^>]+href="${docs}"[^>]*>\\s*${escape(t["nav.docs"])}\\s*</a>`),
     );
     expect(nav![0]).toMatch(
-      new RegExp(
-        `<a[^>]+href="${docs}/components"[^>]*>\\s*${escape(t["nav.components"])}\\s*</a>`,
-      ),
+      new RegExp(`<a[^>]+href="${components}"[^>]*>\\s*${escape(t["nav.components"])}\\s*</a>`),
     );
   });
 
@@ -101,13 +106,14 @@ describe.each([
     for (const group of docsNav(locale)) {
       expect(nav).toMatch(new RegExp(`>\\s*${escape(group.title)}\\s*<`));
       for (const item of group.items) {
-        expect(item.href.startsWith(locale === "es" ? "/es/docs" : "/docs")).toBe(true);
+        expect(item.href).toBe(expectedHref(unlocalizePath(item.href), locale));
         expect(nav).toContain(`href="${item.href}"`);
       }
     }
+    // Rendered at its /es/ address before the Spanish page exists, the page has no link of its own.
     const current = [...nav.matchAll(/<a[^>]+aria-current="page"[^>]*>/g)];
-    expect(current).toHaveLength(1);
-    expect(current[0]![0]).toContain(`href="${path}"`);
+    expect(current).toHaveLength(pageRoutes.includes(path) ? 1 : 0);
+    if (current.length > 0) expect(current[0]![0]).toContain(`href="${path}"`);
     const button = /<button[^>]*data-docs-nav-toggle[^>]*>[\s\S]*?<\/button>/.exec(html)![0];
     expect(text(button)).toBe(t["docsNav.menu"]);
   });
@@ -137,9 +143,9 @@ describe("Spanish docs sidebar", () => {
       "Navegación",
     ]);
     expect(docsNav("es")[0]!.items.map(({ name, href }) => [name, href])).toEqual([
-      ["Introducción", "/es/docs"],
-      ["Instalación", "/es/docs/installation"],
-      ["Temas", "/es/docs/theming"],
+      ["Introducción", expectedHref("/docs", "es")],
+      ["Instalación", expectedHref("/docs/installation", "es")],
+      ["Temas", expectedHref("/docs/theming", "es")],
     ]);
   });
 });
@@ -174,7 +180,8 @@ describe("language switcher", () => {
   it("keeps the switcher a visible, comfortable target on small screens", async () => {
     const link = /<a[^>]*>/.exec(await renderSwitcher("en"))![0];
     const classes = /class="([^"]*)"/.exec(link)![1]!.split(/\s+/);
-    expect(classes).toContain("min-h-10");
+    // 32px tall, like the theme buttons beside it, and above the 24px target size minimum.
+    expect(classes).toContain("min-h-8");
     expect(classes.filter((name) => /^(hidden|sr-only)$|^max-\w+:hidden$/.test(name))).toEqual([]);
     // The icon is decoration: the language name is the whole accessible name.
     expect(await renderSwitcher("en")).toMatch(/<svg[^>]*aria-hidden="true"/);

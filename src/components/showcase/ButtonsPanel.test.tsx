@@ -22,4 +22,14 @@ describe("ButtonsPanel", () => {
     expect(await screen.findByText("Published.")).toBe(status);
     expect(screen.getByRole("button", { name: "Publish" })).not.toHaveAttribute("aria-busy");
   });
+
+  it("speaks Spanish on Spanish pages, including the announced result", async () => {
+    render(<ButtonsPanel delay={0} locale="es" />);
+    const user = userEvent.setup();
+    for (const name of ["Publicar", "Guardar borrador", "Vista previa", "Cancelar", "Eliminar"]) {
+      expect(screen.getByRole("button", { name })).toBeInTheDocument();
+    }
+    await user.click(screen.getByRole("button", { name: "Publicar" }));
+    expect(await screen.findByText("Publicado.")).toBe(screen.getByRole("status"));
+  });
 });

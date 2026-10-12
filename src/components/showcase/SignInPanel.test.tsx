@@ -40,4 +40,25 @@ describe("SignInPanel", () => {
     expect(screen.getByRole("button", { name: "Sign in" })).not.toHaveAttribute("aria-busy");
     expect(screen.getByRole("textbox", { name: "Email" })).not.toHaveAttribute("aria-invalid");
   });
+
+  it("speaks Spanish on Spanish pages: labels, errors and the result", async () => {
+    render(<SignInPanel delay={0} locale="es" />);
+    const user = userEvent.setup();
+    expect(
+      screen.getByRole("checkbox", { name: "Mantener la sesión iniciada" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Iniciar sesión" }));
+    const email = screen.getByRole("textbox", { name: "Correo electrónico" });
+    expect(email).toHaveAccessibleDescription(/Escribe un correo electrónico/);
+    expect(screen.getByLabelText(/^Contraseña/)).toHaveAccessibleDescription(
+      /Escribe tu contraseña/,
+    );
+
+    await user.type(email, "ada@example.com");
+    await user.type(screen.getByLabelText(/^Contraseña/), "grabado");
+    await user.click(screen.getByRole("button", { name: "Iniciar sesión" }));
+    expect(await screen.findByText(/Sesión iniciada como ada@example\.com/)).toBe(
+      screen.getByRole("status"),
+    );
+  });
 });
