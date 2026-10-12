@@ -12,7 +12,16 @@
         ":root": {
           "color-scheme": "light",
           "--muted-foreground": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
-          "--grid": "color-mix(in oklab, #1a1714 9%, transparent)"
+          "--grid": "color-mix(in oklab, #1a1714 9%, transparent)",
+          "--buril-duration-instant": "80ms",
+          "--buril-duration-fast": "120ms",
+          "--buril-duration-base": "180ms",
+          "--buril-duration-slow": "240ms",
+          "--buril-duration-slower": "320ms",
+          "--buril-ease-out": "cubic-bezier(0.2, 0, 0, 1)",
+          "--buril-ease-in": "cubic-bezier(0.4, 0, 1, 1)",
+          "--buril-ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "--buril-ease-linear": "linear"
         },
         ".dark": {
           "color-scheme": "dark",

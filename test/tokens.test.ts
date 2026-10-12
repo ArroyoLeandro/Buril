@@ -161,6 +161,40 @@ describe.each([
   });
 });
 
+/** The motion tokens: durations and easings, the same in every color scheme. */
+const motionTokens = {
+  "--buril-duration-instant": "80ms",
+  "--buril-duration-fast": "120ms",
+  "--buril-duration-base": "180ms",
+  "--buril-duration-slow": "240ms",
+  "--buril-duration-slower": "320ms",
+  "--buril-ease-out": "cubic-bezier(0.2, 0, 0, 1)",
+  "--buril-ease-in": "cubic-bezier(0.4, 0, 1, 1)",
+  "--buril-ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+  "--buril-ease-linear": "linear",
+};
+const isMotionToken = (name: string) => /^--buril-(duration|ease)-/.test(name);
+const motionOf = (block: Tokens) =>
+  Object.fromEntries(Object.entries(block).filter(([name]) => isMotionToken(name)));
+
+describe("motion tokens", () => {
+  it("declares every duration and easing once, in :root", () => {
+    expect(motionOf(light)).toEqual(motionTokens);
+  });
+
+  it("keeps them out of the dark blocks, because motion does not change with the scheme", () => {
+    expect(motionOf(dark)).toEqual({});
+    expect(motionOf(systemDark)).toEqual({});
+  });
+
+  it("orders the durations from the shortest to the longest", () => {
+    const durations = Object.entries(motionTokens)
+      .filter(([name]) => name.startsWith("--buril-duration-"))
+      .map(([, value]) => parseInt(value, 10));
+    expect(durations).toEqual([...durations].sort((a, b) => a - b));
+  });
+});
+
 describe("dark mechanism", () => {
   it("system fallback declares exactly the same tokens as .dark", () => {
     expect(systemDark).toEqual(dark);
@@ -200,9 +234,9 @@ describe("registry theme item", () => {
   const vars = item?.cssVars ?? {};
 
   /** Custom properties of a css-field rule, with the color-scheme kept apart. */
-  const customProperties = (rule: unknown): Tokens =>
+  const customProperties = (rule: unknown, keep: (name: string) => boolean = () => true): Tokens =>
     Object.fromEntries(
-      Object.entries((rule ?? {}) as Rule).filter(([name]) => name.startsWith("--")),
+      Object.entries((rule ?? {}) as Rule).filter(([name]) => name.startsWith("--") && keep(name)),
     );
   const colorScheme = (rule: unknown) => ((rule ?? {}) as Rule)["color-scheme"];
   const prefixed = (rule: Rule = {}): Tokens =>
@@ -221,7 +255,10 @@ describe("registry theme item", () => {
 
   // The CLI only treats plain colors as cssVars safely. color-mix values go through the css
   // field, otherwise it emits self-referencing @theme inline aliases.
-  const shippedLight = { ...prefixed(vars.light), ...customProperties(shipped[":root"]) };
+  const shippedLight = {
+    ...prefixed(vars.light),
+    ...customProperties(shipped[":root"], (name) => !isMotionToken(name)),
+  };
   const shippedDark = { ...prefixed(vars.dark), ...customProperties(shipped[".dark"]) };
   const fallback = (shipped["@media (prefers-color-scheme: dark)"] ?? {})[":root:not(.light)"];
 
@@ -233,6 +270,16 @@ describe("registry theme item", () => {
   it("ships the system dark fallback with the same tokens as .dark", () => {
     expect(customProperties(fallback)).toEqual(expected(systemDark));
     expect(customProperties(fallback)).toEqual(shippedDark);
+  });
+
+  // Motion tokens are not colors, so they go in the css field's :root, never in cssVars.
+  it("ships the motion tokens from buril.css in its :root css, and nowhere else", () => {
+    expect(motionOf(customProperties(shipped[":root"]))).toEqual(motionOf(light));
+    for (const rule of [vars.theme, vars.light, vars.dark]) {
+      expect(Object.keys(prefixed(rule)).filter(isMotionToken)).toEqual([]);
+    }
+    expect(motionOf(customProperties(shipped[".dark"]))).toEqual({});
+    expect(motionOf(customProperties(fallback))).toEqual({});
   });
 
   it("sets color-scheme per mode", () => {

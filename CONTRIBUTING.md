@@ -51,6 +51,18 @@ Vitest runs everything. Each kind of test answers a different question:
 
 The project uses test-driven development: write a failing test first, watch it fail, then make it pass.
 
+## Motion
+
+Motion is short and decelerating, with no bounce: "ink settles, the plate presses". It is plain CSS, with no animation library.
+
+- **Tokens.** Durations (`--buril-duration-instant` 80ms, `fast` 120ms, `base` 180ms, `slow` 240ms, `slower` 320ms) and easings (`--buril-ease-out`, `-in`, `-in-out`, `-linear`) live in `:root` in `registry/styles/buril.css` and in the theme item's `css[":root"]`, never in `cssVars`.
+- **Fallbacks.** Components stay standalone, so every token use carries its literal value as a fallback, such as `duration-(--buril-duration-fast,120ms)` and `ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))`. Without the theme a component looks and moves the same. `test/motion.test.ts` fails if a fallback drifts from `buril.css`.
+- **Reduced motion.** Movement (translate, scale, rotate, size) goes behind `motion-safe:`. Color and opacity may change in every mode. See rule 10 in [COMPONENTS.md](./COMPONENTS.md).
+- **Focus.** Never transition `outline-color` or any other part of a focus indicator. List the properties, such as `transition-[color,background-color,border-color]`; `transition`, `transition-all` and `transition-colors` include `outline-color`.
+- **Performance.** Animate opacity, translate, scale and rotate. Never transition `left`, `top`, `width` or `height`.
+- **No waiting.** Focus moves and state changes never wait for `transitionend` or `animationend`.
+- **Tests.** Compiled-style tests check the transition properties, the token values and that movement only applies under `(prefers-reduced-motion: no-preference)`. The cascade helper resolves `@starting-style` (`startingStyle: true`) and `@supports` (`supports: [...]`). Real entry transitions need a browser.
+
 ## Pinned versions
 
 Two dev tools stay one major version behind on purpose. Both pins are about plugin compatibility:
