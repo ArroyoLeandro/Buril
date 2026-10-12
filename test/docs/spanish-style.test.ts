@@ -42,6 +42,8 @@ const banned: [RegExp, string][] = [
   [word("globos?"), 'the browser\'s validation "burbujas"'],
   [word("Retiro", "u"), '"Recoger en tienda"'],
   [word("solo late|Late[.]", "u"), '"parpadea"'],
+  [word("rebote suave"), '"resorte suave": the motion is a spring, not a bounce'],
+  [word("punto del Switch"), '"indicador del Switch", the glossary term for the thumb'],
   [word("podés|tenés|querés|sabés|hacés|usá|mirá|probá|fijate|elegí|poné|tené|andá|vení"), "voseo"],
 ];
 

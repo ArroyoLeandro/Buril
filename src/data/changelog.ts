@@ -38,7 +38,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "docs-content",
     date: "2026-10-12",
-    title: { en: "Documentation you can rely on", es: "Una documentación en la que confiar" },
+    title: { en: "New docs pages and guides", es: "Nuevas páginas y guías de la documentación" },
     changes: {
       en: [
         "New Accessibility, Motion, FAQ and Changelog pages, and five guides: forms, dark mode, theming, using Buril with shadcn and migrating from it.",
@@ -57,7 +57,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "motion-v2",
     date: "2026-10-12",
-    title: { en: "Motion with more presence", es: "Un movimiento con más presencia" },
+    title: { en: "Slower motion and icon gestures", es: "Movimiento más lento y gestos de icono" },
     changes: {
       en: [
         "Slower state changes and entries, ending on a soft spring that settles about 3% past its target.",
@@ -67,7 +67,7 @@ export const changelog: ChangelogEntry[] = [
         "More room between the loading Button's spinner and its label.",
       ],
       es: [
-        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
+        "Cambios de estado y entradas más lentos, que terminan con un resorte suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
         "Presets de `motion` para el IconButton: rotate, spin, wiggle, swing, tres variantes de nudge y pop.",
         "Las Card `interactive` se elevan y muestran una sombra con el puntero y con el foco del teclado.",
         "Field acepta `requiredLabel` y `errorPrefix`, y Link acepta `newTabLabel`, para que el texto que escriben esté en tu idioma.",
@@ -110,7 +110,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "site-polish",
     date: "2026-10-12",
-    title: { en: "A calmer docs layout", es: "Un diseño de la documentación más tranquilo" },
+    title: { en: "A one-scroll docs layout", es: "La documentación en un solo desplazamiento" },
     changes: {
       en: ["One page scroll, a sticky header and side panels, and full-width proportions."],
       es: [

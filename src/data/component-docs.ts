@@ -1107,7 +1107,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: buttonVariantEs,
           loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
           motion:
-            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado. `pop` además encoge el icono al pulsar y lo deja volver con un rebote suave al soltar; `wiggle` levanta una tapa marcada con `data-lid`.",
+            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado. `pop` además encoge el icono al pulsar y lo deja volver con un resorte suave al soltar; `wiggle` levanta una tapa marcada con `data-lid`.",
           className: classNameEs,
         },
       },

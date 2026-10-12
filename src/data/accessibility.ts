@@ -127,8 +127,8 @@ export const accessibilityRules: AccessibilityRule[] = [
     number: 3,
     title: { en: "Focus management", es: "Gestión del foco" },
     summary: {
-      en: "Focus goes where you expect. A modal keeps focus inside and gives it back when it closes, and nothing sticky ever covers the focused element.",
-      es: "El foco va adonde esperas. Un modal mantiene el foco dentro y lo devuelve al cerrarse, y nada fijo tapa nunca el elemento enfocado.",
+      en: "A modal keeps focus inside and gives it back when it closes, and nothing sticky ever covers the focused element.",
+      es: "Un modal mantiene el foco dentro y lo devuelve al cerrarse, y nada fijo tapa nunca el elemento enfocado.",
     },
     how: {
       en: "The Skip Link's tests check that focus lands on its target and that the link shows above sticky headers. Modals arrive with the overlay components.",
@@ -169,8 +169,8 @@ export const accessibilityRules: AccessibilityRule[] = [
     number: 6,
     title: { en: "State is exposed through ARIA", es: "El estado se expone con ARIA" },
     summary: {
-      en: "What you see is what is announced: checked, pressed, expanded, busy or invalid. Native state comes first, such as a checkbox's `checked`.",
-      es: "Lo que ves es lo que se anuncia: marcado, presionado, expandido, ocupado o no válido. Primero se usa el estado nativo, como el `checked` de una casilla.",
+      en: "Every visible state is announced too: checked, pressed, expanded, busy or invalid. Native state comes first, such as a checkbox's `checked`.",
+      es: "Cada estado visible también se anuncia: marcado, presionado, expandido, ocupado o no válido. Primero se usa el estado nativo, como el `checked` de una casilla.",
     },
     how: {
       en: "Behavior tests assert the announced state after every interaction.",
@@ -186,8 +186,8 @@ export const accessibilityRules: AccessibilityRule[] = [
       es: "El texto tiene un contraste de al menos 4.5:1; los bordes, los iconos y los indicadores de foco, de al menos 3:1. El color nunca es la única señal: los errores también llevan un icono y texto.",
     },
     how: {
-      en: "The token tests measure every pair in both modes. Browser tests measure painted colors, such as the Switch dot against its track.",
-      es: "Los tests de tokens miden cada par en los dos modos. Los tests en navegador miden los colores pintados, como el punto del Switch frente a su pista.",
+      en: "The token tests measure every pair in both modes. Browser tests measure painted colors, such as the Switch thumb against its track.",
+      es: "Los tests de tokens miden cada par en los dos modos. Los tests en navegador miden los colores pintados, como el indicador del Switch frente a su pista.",
     },
     checks: ["tokens", "browser"],
   },
