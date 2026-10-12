@@ -2,6 +2,12 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { linkVariants } from "./link";
 
 let computed: Awaited<ReturnType<typeof createCascade>>["computed"];
@@ -52,6 +58,25 @@ describe("linkVariants compiled with Tailwind", () => {
       expect(computed(classes, "outline-width", focus)).toBe("2px");
       expect(computed(classes, "outline-offset", focus)).toBe("2px");
       expect(computed(classes, "outline-color")).toBeUndefined();
+    },
+  );
+});
+
+describe("linkVariants motion", () => {
+  it.each(["default", "muted"] as const)(
+    "the %s variant fades its color and underline, never the focus ring",
+    (variant) => {
+      for (const states of [[], [":focus", ":focus-visible"], [":hover"]]) {
+        const transition = transitionOf(computed, classesOf(variant), { states });
+        expectInstantFocusRing(transition.properties);
+        expect(transition.properties).toEqual([
+          "color",
+          "text-decoration-color",
+          "text-decoration-thickness",
+        ]);
+        expect(transition.durations).toEqual([durations.fast]);
+        expect(transition.easings).toEqual([easings.out]);
+      }
     },
   );
 });

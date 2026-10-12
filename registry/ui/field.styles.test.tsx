@@ -3,6 +3,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Field } from "./field";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -56,5 +63,39 @@ describe("Field compiled with Tailwind", () => {
     expect(cascade.computed(error, "display", empty)).toBe("flex");
     expect(cascade.computed(error, "visibility", empty)).toBeUndefined();
     expect(cascade.computed(error, "position")).toBeUndefined();
+  });
+});
+
+// The error content is inserted into the region that is always there, so it can start from a
+// starting style: it fades in, and drops 2px into place only when the user allows motion.
+describe("Field error motion", () => {
+  const content = classList(/aria-live="polite"[^>]*><span class="([^"]*)"/.exec(html)![1]!);
+  const entering = { startingStyle: true };
+
+  it("lays out the icon beside the text", () => {
+    expect(cascade.computed(content, "display")).toBe("flex");
+    expect(cascade.computed(content, "align-items")).toBe("flex-start");
+  });
+
+  it("fades in when it appears, in every motion mode", () => {
+    expect(cascade.computed(content, "opacity")).toBeUndefined();
+    expect(cascade.computed(content, "opacity", entering)).toBe("0%");
+    expect(cascade.computed(content, "opacity", { ...entering, ...motionReduced })).toBe("0%");
+    const transition = transitionOf(cascade.computed, content);
+    expect(transition.properties).toEqual(["opacity", "translate"]);
+    expect(transition.durations).toEqual([durations.fast]);
+    expect(transition.easings).toEqual([easings.out]);
+  });
+
+  it("drops into place only when motion is allowed", () => {
+    expect(cascade.computed(content, "--tw-translate-y", entering)).toBeUndefined();
+    expect(
+      cascade.computed(content, "--tw-translate-y", { ...entering, ...motionReduced }),
+    ).toBeUndefined();
+    expect(cascade.computed(content, "--tw-translate-y", { ...entering, ...motionAllowed })).toBe(
+      "calc(var(--spacing) * -0.5)",
+    );
+    // Once it has appeared it rests in place.
+    expect(cascade.computed(content, "--tw-translate-y", motionAllowed)).toBeUndefined();
   });
 });

@@ -1,0 +1,6 @@
+/* The stylesheet the browser tests load: Tailwind compiled from the registry, plus the theme. */
+@import "tailwindcss";
+@import "../registry/styles/buril.css";
+
+@source "../registry";
+@source "./";

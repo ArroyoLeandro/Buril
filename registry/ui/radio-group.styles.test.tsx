@@ -3,6 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -76,5 +84,50 @@ describe("RadioGroup compiled with Tailwind", () => {
   // Forced colors drop backgrounds and box shadows, so the dot would vanish.
   it("falls back to the native radio in forced-colors mode", () => {
     expect(cascade.computed(dot, "appearance", { forcedColors: true })).toBe("auto");
+  });
+});
+
+// The ink drop: while unchecked and motion is allowed, a background-colored inset ring fills the
+// whole 18px inside of the circle. Checking shrinks it to 4px, so the primary dot spreads out
+// from the center. Under reduced motion the ring jumps and only the colors fade.
+describe("RadioGroup ink drop", () => {
+  const focus = { states: [":focus", ":focus-visible"] };
+
+  it("fills the inside with a background ring while unchecked, only when motion is allowed", () => {
+    const unchecked = { states: [":not(:checked)"] };
+    expect(
+      cascade.computed(dot, "--tw-inset-ring-shadow", { ...unchecked, ...motionAllowed }),
+    ).toMatch(/^inset 0 0 0 9px var\(--tw-inset-ring-color/);
+    expect(cascade.computed(dot, "--tw-inset-ring-color")).toBe("var(--background)");
+    expect(
+      cascade.computed(dot, "--tw-inset-ring-shadow", { ...unchecked, ...motionReduced }),
+    ).toBeUndefined();
+  });
+
+  it("shrinks the ring to 4px when checked, in every motion mode", () => {
+    for (const options of [
+      checked,
+      { ...checked, ...motionAllowed },
+      { ...checked, ...motionReduced },
+    ]) {
+      expect(cascade.computed(dot, "--tw-inset-ring-shadow", options)).toMatch(
+        /^inset 0 0 0 4px var\(--tw-inset-ring-color/,
+      );
+    }
+  });
+
+  it("fades the colors in every mode and the ring only when motion is allowed", () => {
+    for (const options of [{}, focus, motionReduced]) {
+      const transition = transitionOf(cascade.computed, dot, options);
+      expectInstantFocusRing(transition.properties);
+      expect(transition.properties).toEqual(["background-color", "border-color"]);
+      expect(transition.durations).toEqual([durations.base]);
+      expect(transition.easings).toEqual([easings.out]);
+    }
+    const allowed = transitionOf(cascade.computed, dot, motionAllowed);
+    expectInstantFocusRing(allowed.properties);
+    expect(allowed.properties).toEqual(["background-color", "border-color", "box-shadow"]);
+    expect(allowed.durations).toEqual([durations.base]);
+    expect(allowed.easings).toEqual([easings.out]);
   });
 });

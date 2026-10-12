@@ -1,7 +1,16 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "public/r"],
+  // The browser tests and the Vitest configs load Vitest's browser matchers, whose types clash
+  // with jest-dom's; tsconfig.browser.json checks them.
+  "exclude": [
+    "dist",
+    "public/r",
+    "**/*.browser.test.tsx",
+    "test/browser.ts",
+    "vitest.config.ts",
+    "vitest.browser.config.ts"
+  ],
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",

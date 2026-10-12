@@ -2,6 +2,14 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { buttonVariants } from "./button";
 
 // Compiled with Tailwind so the cascade is checked, including a raw <a> styled with
@@ -106,5 +114,76 @@ describe("buttonVariants compiled with Tailwind", () => {
       String.raw`svg:not\(\[class\*=['"]?size-['"]?\]\)\s*\{[^}]*width: calc\(var\(--spacing\) \* ${units}\)`,
     );
     expect(css).toMatch(rule);
+  });
+});
+
+describe("buttonVariants motion", () => {
+  const focus = { states: [":focus", ":focus-visible"] };
+
+  it.each(variants)(
+    "the %s variant fades its colors with the fast token, never the focus ring",
+    (variant) => {
+      for (const options of [{}, focus]) {
+        const transition = transitionOf(computed, classesOf({ variant }), options);
+        expectInstantFocusRing(transition.properties);
+        expect(transition.properties).toEqual([
+          "color",
+          "background-color",
+          "border-color",
+          "text-decoration-color",
+        ]);
+        expect(transition.durations).toEqual([durations.fast]);
+        expect(transition.easings).toEqual([easings.out]);
+      }
+    },
+  );
+
+  it("the icon sizes keep the same transition", () => {
+    const transition = transitionOf(computed, classesOf({ size: "icon" }));
+    expectInstantFocusRing(transition.properties);
+    expect(transition.durations).toEqual([durations.fast]);
+  });
+});
+
+// The letterpress: the plate presses the paper 1px. It moves, so it only runs when the user allows
+// motion, and a loading button (aria-disabled) does not press.
+describe("buttonVariants letterpress", () => {
+  const press = { states: [':active:not([aria-disabled="true"])'] };
+
+  it.each(variants)("the %s variant presses 1px down only when motion is allowed", (variant) => {
+    const classes = classesOf({ variant });
+    expect(computed(classes, "--tw-translate-y", press)).toBeUndefined();
+    expect(computed(classes, "--tw-translate-y", { ...press, ...motionReduced })).toBeUndefined();
+    expect(computed(classes, "--tw-translate-y", { ...press, ...motionAllowed })).toBe("1px");
+  });
+
+  it("does not press while loading", () => {
+    const active = { states: [":active"], ...motionAllowed };
+    expect(computed(classesOf({}), "--tw-translate-y", active)).toBeUndefined();
+  });
+
+  it("presses at the instant duration while the colors keep the fast one", () => {
+    const transition = transitionOf(computed, classesOf({}), motionAllowed);
+    expectInstantFocusRing(transition.properties);
+    expect(transition.properties).toEqual([
+      "color",
+      "background-color",
+      "border-color",
+      "text-decoration-color",
+      "translate",
+    ]);
+    expect(transition.durations).toEqual([
+      durations.fast,
+      durations.fast,
+      durations.fast,
+      durations.fast,
+      durations.instant,
+    ]);
+    expect(transition.easings).toEqual([easings.out]);
+  });
+
+  it("does not transition translate under reduced motion", () => {
+    const transition = transitionOf(computed, classesOf({}), motionReduced);
+    expect(transition.properties).not.toContain("translate");
   });
 });

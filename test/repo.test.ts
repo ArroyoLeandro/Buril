@@ -62,6 +62,24 @@ describe("CONTRIBUTING.md", () => {
   });
 });
 
+describe("motion docs", () => {
+  it("CONTRIBUTING.md explains the motion tokens and their fallbacks", () => {
+    const doc = read("CONTRIBUTING.md");
+    expect(doc).toMatch(/^## Motion$/m);
+    expect(doc).toContain("duration-(--buril-duration-fast,120ms)");
+    expect(doc).toContain("motion-safe:");
+    expect(doc).toMatch(/outline-color/);
+  });
+
+  it("COMPONENTS.md rule 10 gives a reduced-motion snippet consumers can paste", () => {
+    const doc = read("COMPONENTS.md");
+    const rule = doc.slice(doc.indexOf("10. **Respect user preferences.**"), doc.indexOf("11. **"));
+    expect(rule).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(rule).toMatch(/```css/);
+    expect(rule).toContain("motion-safe:");
+  });
+});
+
 describe.each(["README.md", "README.es.md"])("%s", (file) => {
   const doc = () => read(file);
 

@@ -5,7 +5,8 @@
  * measured against WCAG 2.2 AA in `test/tokens.test.ts`.
  *
  * Three layers:
- *   1. Primitives, `--buril-*`: the raw palette. Mode independent, declared once in :root.
+ *   1. Primitives, `--buril-*`: the raw palette and the motion tokens. Mode independent, declared
+ *      once in :root.
  *   2. shadcn variables (`--background`, `--primary`, ...): they switch per color scheme, so
  *      Buril components work with any shadcn theme. Components depend on these only.
  *   3. Buril extras (`--decor`, `--grid`): decoration, always used with a fallback.
@@ -35,6 +36,21 @@
   --buril-night-wash: #321a15;
   --buril-ink-soft: #7e7a74;
   --buril-bone-soft: #6d6862;
+
+  /*
+   * Motion: short, decelerating, no bounce. Components use these with the same literal fallback,
+   * such as `duration-(--buril-duration-fast,120ms)`, so they move the same without this file;
+   * retune them here. `test/motion.test.ts` keeps the fallbacks in sync.
+   */
+  --buril-duration-instant: 80ms;
+  --buril-duration-fast: 120ms;
+  --buril-duration-base: 180ms;
+  --buril-duration-slow: 240ms;
+  --buril-duration-slower: 320ms;
+  --buril-ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --buril-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --buril-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --buril-ease-linear: linear;
 
   /* shadcn variables */
   --background: var(--buril-paper);

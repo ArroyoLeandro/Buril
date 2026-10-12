@@ -9,8 +9,11 @@ Thanks for helping. This guide covers the local setup, the scripts, how the test
 
 ```bash
 pnpm install
+pnpm exec playwright install chromium
 pnpm dev
 ```
+
+The second line downloads the headless Chromium that `pnpm test:browser` runs in. It is needed once per machine, and again after a Playwright upgrade.
 
 `pnpm dev` serves the docs site. Consumers can use any package manager; pnpm is only for developing Buril.
 
@@ -19,8 +22,9 @@ pnpm dev
 | Script                | What it does                                                                           |
 | --------------------- | -------------------------------------------------------------------------------------- |
 | `pnpm dev`            | Docs site with live reload.                                                            |
-| `pnpm test`           | Runs every Vitest suite once (`pnpm test:watch` keeps it running).                     |
-| `pnpm check`          | `astro check`, `tsc --noEmit` and `shadcn registry validate`.                          |
+| `pnpm test`           | Runs every jsdom Vitest suite once (`pnpm test:watch` keeps it running).               |
+| `pnpm test:browser`   | Runs the real-browser tests (`*.browser.test.tsx`) in headless Chromium.               |
+| `pnpm check`          | `astro check`, `tsc --noEmit` (twice, see below) and `shadcn registry validate`.       |
 | `pnpm lint`           | ESLint, including the `jsx-a11y` rules.                                                |
 | `pnpm format`         | Prettier, with class sorting from `prettier-plugin-tailwindcss`.                       |
 | `pnpm format:check`   | Prettier without writing.                                                              |
@@ -30,8 +34,10 @@ pnpm dev
 Before opening a pull request, run:
 
 ```bash
-pnpm test && pnpm check && pnpm lint && pnpm format:check && pnpm build
+pnpm test && pnpm test:browser && pnpm check && pnpm lint && pnpm format:check && pnpm build
 ```
+
+`pnpm check` stays static (types and the registry schema) and never starts a browser. The browser tests are their own step, so `pnpm test` stays fast while you iterate.
 
 ## Project layout
 
@@ -47,9 +53,22 @@ Vitest runs everything. Each kind of test answers a different question:
 - **Compiled styles** (`registry/ui/*.styles.test.ts`): jsdom does not apply CSS, so class-name assertions cannot catch cascade bugs. These tests compile the real stylesheet with Tailwind's `compile()` API and check which rule wins, including forced-colors mode.
 - **Tokens** (`test/tokens.test.ts`): parses `buril.css`, resolves `var()` and `color-mix()`, and measures every WCAG contrast pair in light and dark mode. It also checks that the registry theme ships the same values.
 - **Registry contract** (`test/registry.test.ts`): components must not depend on a theme, and their dependencies must not use a namespace, so URL installs work.
+- **Real browser** (`*.browser.test.tsx`, `pnpm test:browser`): Vitest browser mode with Playwright and headless Chromium, with the compiled Tailwind stylesheet and the Buril theme loaded (`test/browser.css`). Use it for what jsdom and the compiled-style tests cannot see: geometry (`getBoundingClientRect()`), computed colors in light and dark mode, real focus, transitions and `@starting-style` entries, and overlays. `test/browser.ts` switches the theme (every test starts in light mode), waits for transitions to settle, measures pseudo-elements, which have no `getBoundingClientRect()`, and reads painted pixels from a screenshot. Vitest's browser matchers and jest-dom type the same matchers differently, so the browser tests, their helper and the Vitest configs are type-checked on their own with `tsconfig.browser.json`.
 - **Docs pages** (`test/docs/`): renders each page with Astro's container API and checks landmarks, the skip link, the theme toggle, install commands and code-block contrast.
 
 The project uses test-driven development: write a failing test first, watch it fail, then make it pass.
+
+## Motion
+
+Motion is short and decelerating, with no bounce: "ink settles, the plate presses". It is plain CSS, with no animation library.
+
+- **Tokens.** Durations (`--buril-duration-instant` 80ms, `fast` 120ms, `base` 180ms, `slow` 240ms, `slower` 320ms) and easings (`--buril-ease-out`, `-in`, `-in-out`, `-linear`) live in `:root` in `registry/styles/buril.css` and in the theme item's `css[":root"]`, never in `cssVars`.
+- **Fallbacks.** Components stay standalone, so every token use carries its literal value as a fallback, such as `duration-(--buril-duration-fast,120ms)` and `ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))`. Without the theme a component looks and moves the same. `test/motion.test.ts` fails if a fallback drifts from `buril.css`.
+- **Reduced motion.** Movement (translate, scale, rotate, size) goes behind `motion-safe:`. Color and opacity may change in every mode. See rule 10 in [COMPONENTS.md](./COMPONENTS.md).
+- **Focus.** Never transition `outline-color` or any other part of a focus indicator. List the properties, such as `transition-[color,background-color,border-color]`; `transition`, `transition-all` and `transition-colors` include `outline-color`.
+- **Performance.** Animate opacity, translate, scale and rotate. Never transition `left`, `top`, `width` or `height`.
+- **No waiting.** Focus moves and state changes never wait for `transitionend` or `animationend`.
+- **Tests.** Compiled-style tests check the transition properties, the token values and that movement only applies under `(prefers-reduced-motion: no-preference)`. The cascade helper resolves `@starting-style` (`startingStyle: true`) and `@supports` (`supports: [...]`). Real entry transitions, end states and positions are checked in browser tests.
 
 ## Pinned versions
 

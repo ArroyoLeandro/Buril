@@ -78,7 +78,23 @@ Target: **WCAG 2.2 level AA**.
 8. **Minimum target size is 24×24px** (WCAG 2.5.8).
 9. **Dynamic announcements.** Toasts and status messages use `role="status"` or `aria-live="polite"`. Use `assertive` only for critical errors.
 10. **Respect user preferences.**
-    - Honor `prefers-reduced-motion`.
+    - Honor `prefers-reduced-motion`, per component. Anything that moves, resizes or rotates sits behind `motion-safe:`; color and opacity fades may run in every mode. Use `motion-reduce:` only for a different effect, such as the Spinner's static dots.
+    - Never transition a focus indicator: it appears at once, at full contrast. List the transition properties explicitly instead of `transition`, `transition-all` or `transition-colors`, which include `outline-color`.
+    - Buril ships no global reduced-motion rule. An app that wants one for its own code can paste this; it also stops the color fades:
+
+      ```css
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+      ```
+
     - Support `forced-colors` (Windows high contrast mode).
     - Support 200% zoom and a 320px reflow width.
 11. **Tooltips never contain interactive content.** If it needs a button or a link, it is a popover. The APG Tooltip pattern is still marked as work in progress. Treat it as guidance, not a closed spec.
@@ -87,6 +103,7 @@ Target: **WCAG 2.2 level AA**.
 
 - [ ] Follows its APG pattern checklist (keyboard, roles, states).
 - [ ] Automated tests with Testing Library + `axe`.
+- [ ] Anything that depends on layout or rendering (positions, sizes, colors in both themes, focus, transitions, overlays) has a real-browser test (`*.browser.test.tsx`, `pnpm test:browser`). jsdom does not lay out or paint.
 - [ ] Manual screen reader pass with NVDA (Phase 2 and 3 components).
 - [ ] Uses semantic tokens only (no hardcoded colors), so future visual styles stay cheap.
   - **Known exception:** the destructive Button uses `text-white` in light mode and `dark:text-background` in dark mode. White on the dark-mode red fails contrast, and no shadcn token is white in both modes. Any new exception needs the same kind of measured reason, written next to the class.
