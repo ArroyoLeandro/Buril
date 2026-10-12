@@ -66,7 +66,7 @@ const { variantsExample, statusExample } = componentExamples.button;
         No <code>asChild</code>.
       </strong>{" "}
       A link stays a link: style an <code>&lt;a&gt;</code>
-      with <code>className=&#123;buttonVariants()&#125;</code> instead of wrapping it.
+      with <code data-wrap>className=&#123;buttonVariants()&#125;</code> instead of wrapping it.
     </li>
     <li>
       <strong>Icon sizes, but no extra-small ones.</strong> <code>size="icon"</code>,
@@ -118,8 +118,9 @@ const { variantsExample, statusExample } = componentExamples.button;
       It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font tokens.
     </li>
     <li>
-      It follows the system without JavaScript: under <code>prefers-color-scheme: dark</code>, the
-      dark palette applies unless <code>&lt;html&gt;</code> has the <code>light</code> class.
+      It follows the system without JavaScript: under{" "}
+      <code data-wrap>prefers-color-scheme: dark</code>, the dark palette applies unless{" "}
+      <code>&lt;html&gt;</code> has the <code>light</code> class.
     </li>
     <li>
       It redefines the <code>dark:</code> variant the same way, so <code>dark:</code> utilities also

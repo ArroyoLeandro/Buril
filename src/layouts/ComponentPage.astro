@@ -5,6 +5,7 @@ import DocsLayout from "./DocsLayout.astro";
 import InlineCode from "../components/InlineCode.astro";
 import InstallCommand from "../components/InstallCommand.astro";
 import Tabs from "../components/Tabs.astro";
+import TableScroll from "../components/docs/TableScroll.astro";
 import { codeTheme } from "../components/code-theme";
 import { localizedComponentDocs } from "../data/component-docs";
 import { componentDescription, findComponent } from "../data/components";
@@ -66,6 +67,13 @@ const fileName = entry.source.split("/").pop() ?? entry.source;
 const h2 = "mt-10 font-display text-xl";
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 const cell = "px-2 py-2 align-top sm:px-4";
+// A type breaks between its alternatives: each alternative, with its trailing `|`, stays whole,
+// except a long one such as a function type, which may also break at its spaces.
+const typeParts = (type: string) =>
+  type.split(" | ").map((part, i, all) => ({
+    text: i < all.length - 1 ? `${part} |` : part,
+    whole: part.length <= 24,
+  }));
 ---
 
 <DocsLayout title={`${entry.name} | Buril UI`} description={description}>
@@ -175,7 +183,7 @@ const cell = "px-2 py-2 align-top sm:px-4";
               <InlineCode text={api.description} />
             </p>
           )}
-          <div class="mt-4 border border-border">
+          <TableScroll label={t("component.propsLabel", { name: api.component })}>
             <table class="w-full border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-border">
@@ -194,15 +202,24 @@ const cell = "px-2 py-2 align-top sm:px-4";
               <tbody>
                 {api.props.map((prop) => (
                   <tr class="border-b border-border last:border-b-0">
-                    <th scope="row" class={`${cell} font-normal wrap-anywhere`}>
+                    <th scope="row" class={`${cell} font-normal whitespace-nowrap`}>
                       <code>{prop.name}</code>
                     </th>
-                    <td class={`${cell} wrap-anywhere`}>
-                      <code>{prop.type}</code>
+                    <td class={cell}>
+                      <code class="whitespace-normal">
+                        {typeParts(prop.type).map((part, index) => (
+                          <>
+                            {index > 0 && " "}
+                            <span class={part.whole ? "whitespace-nowrap" : undefined}>
+                              {part.text}
+                            </span>
+                          </>
+                        ))}
+                      </code>
                     </td>
-                    <td class={`${cell} wrap-anywhere`}>
+                    <td class={cell}>
                       {prop.default ? (
-                        <code>{prop.default}</code>
+                        <code class="whitespace-nowrap">{prop.default}</code>
                       ) : prop.defaultText ? (
                         <InlineCode text={prop.defaultText} />
                       ) : (
@@ -212,23 +229,26 @@ const cell = "px-2 py-2 align-top sm:px-4";
                         </>
                       )}
                     </td>
-                    <td class={cell}>
+                    {/* Wide enough to read when the table scrolls on a phone. */}
+                    <td class={`${cell} min-w-48`}>
                       <InlineCode text={prop.description} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
         </>
       ))}
 
       <h2 class={h2}>{t("component.accessibility")}</h2>
       <h3 class="mt-8 font-display text-lg">{t("component.keyboard")}</h3>
       {docs.keyboard && docs.keyboard.length > 0 ? (
-        <div class="mt-4 border border-border">
+        <TableScroll labelledby="keyboard-caption">
           <table class="w-full border-collapse text-left text-sm">
-            <caption class="sr-only">{t("component.keyboard")}</caption>
+            <caption id="keyboard-caption" class="sr-only">
+              {t("component.keyboard")}
+            </caption>
             <thead>
               <tr class="border-b border-border">
                 <th scope="col" class={`${cell} font-semibold`}>
@@ -250,7 +270,7 @@ const cell = "px-2 py-2 align-top sm:px-4";
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       ) : (
         <p class="mt-4 text-muted-foreground">{t("component.noKeyboardDetail")}</p>
       )}

@@ -46,7 +46,7 @@ const { decorExample, linkExample } = componentExamples.card;
       Never put an <code>onClick</code> on the card: a clickable <code>&lt;div&gt;</code> is not
       focusable, has no role and no name. Put one real link in the title and stretch it over the
       card with a pseudo-element. The card is <code>relative</code>, so
-      <code>after:absolute after:inset-0</code> covers it:
+      <code data-wrap>after:absolute after:inset-0</code> covers it:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={linkExample} lang="tsx" theme={codeTheme} />

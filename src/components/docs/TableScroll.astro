@@ -1,0 +1,27 @@
+---
+/**
+ * The bordered frame around a docs table. Identifiers in a table never break mid-word, so a table
+ * can be wider than a phone; it then scrolls inside this frame instead of the page. The frame is
+ * a named region that takes focus, so keyboard users can scroll it too. It is positioned, so
+ * screen-reader-only text in a cell, which is absolutely positioned, scrolls with the table
+ * instead of widening the page.
+ */
+interface Props {
+  /** The id of the table's caption, which names the region. */
+  labelledby?: string;
+  /** The region's name, for a table without a caption. */
+  label?: string;
+}
+
+const { labelledby, label } = Astro.props;
+---
+
+<div
+  role="region"
+  aria-labelledby={labelledby}
+  aria-label={labelledby ? undefined : label}
+  tabindex="0"
+  class="relative mt-4 overflow-x-auto border border-border"
+>
+  <slot />
+</div>

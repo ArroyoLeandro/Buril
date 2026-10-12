@@ -22,7 +22,7 @@ const { verticalExample } = componentExamples.separator;
         <strong>Semántico.</strong> Un separador horizontal es un <code>&lt;hr&gt;</code>, que los
         lectores de pantalla anuncian como separador entre secciones. Uno vertical es un
         <code>&lt;div&gt;</code> con <code>role="separator"</code> y
-        <code>aria-orientation="vertical"</code>. Ninguno de los dos recibe el foco.
+        <code data-wrap>aria-orientation="vertical"</code>. Ninguno de los dos recibe el foco.
       </li>
       <li>
         <strong>Decorativo.</strong> Cuando la línea solo decora, por ejemplo entre enlaces que ya
@@ -51,11 +51,11 @@ const { verticalExample } = componentExamples.separator;
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
-    Crea <code>components/ui/separator.tsx</code>, con la misma ruta y los mismos nombres de props
-    que el Separator de shadcn, pero sin Radix: el horizontal es un <code>&lt;hr&gt;</code> nativo.
-    Un valor por defecto cambia: <code>decorative</code> vale <code>false</code> por defecto,
-    mientras que en shadcn vale <code>true</code>, así que un separador de Buril se anuncia salvo
-    que pases <code>decorative</code>. Solo necesita tu helper <code>cn()</code>; si tu{" "}
+    Crea <code data-wrap>components/ui/separator.tsx</code>, con la misma ruta y los mismos nombres
+    de props que el Separator de shadcn, pero sin Radix: el horizontal es un <code>&lt;hr&gt;</code>{" "}
+    nativo. Un valor por defecto cambia: <code>decorative</code> vale <code>false</code> por
+    defecto, mientras que en shadcn vale <code>true</code>, así que un separador de Buril se anuncia
+    salvo que pases <code>decorative</code>. Solo necesita tu helper <code>cn()</code>; si tu{" "}
     <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
     reemplazarlo, y responder que no es seguro.
   </p>

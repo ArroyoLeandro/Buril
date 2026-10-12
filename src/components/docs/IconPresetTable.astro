@@ -1,4 +1,5 @@
 ---
+import TableScroll from "./TableScroll.astro";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -11,12 +12,12 @@ import { readMotionTokens } from "../../utils/tokens";
 const locale = getLocale(Astro.url);
 const t = translator(locale);
 const tokens = readMotionTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
-const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+const cell = "px-2 py-3 align-top sm:px-4";
 ---
 
-<div class="mt-4 border border-border">
+<TableScroll labelledby="icon-presets-caption">
   <table class="w-full border-collapse text-left text-sm">
-    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+    <caption id="icon-presets-caption" class="px-2 py-3 text-left text-muted-foreground sm:px-4">
       <InlineCode text={t("motion.presetsCaption")} />
     </caption>
     <thead>
@@ -38,11 +39,12 @@ const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
     <tbody>
       {iconPresets.map((preset) => (
         <tr class="border-b border-border last:border-b-0">
-          <th scope="row" class={`${cell} font-normal sm:whitespace-nowrap`}>
+          <th scope="row" class={`${cell} font-normal whitespace-nowrap`}>
             <code>{preset.preset}</code>
           </th>
           <td class={cell}>{preset.icon[locale]}</td>
-          <td class={cell}>
+          {/* Wide enough to read when the table scrolls on a phone. */}
+          <td class={`${cell} min-w-40`}>
             <InlineCode text={preset.gesture[locale]} />
           </td>
           <td class={`${cell} whitespace-nowrap`}>{presetDuration(preset, tokens)}ms</td>
@@ -50,4 +52,4 @@ const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
       ))}
     </tbody>
   </table>
-</div>
+</TableScroll>

@@ -401,9 +401,149 @@ export const inspectPanels: BrowserCommand<[origin: string, path: string]> = asy
   }
 };
 
+export interface WrappingInspection {
+  status: number;
+  scrollWidth: number;
+  clientWidth: number;
+  /** How many identifiers and short inline code elements were measured. */
+  measured: number;
+  /**
+   * Code that broke onto another line where it must not, with the text around the break (`⏎`):
+   * identifiers in table row headers and Default cells, never at all; the Type column of an API
+   * table, only after a `|`, or at a space inside an alternative over 24 characters; other code
+   * in tables, only at a space; inline code of up to 24 characters, such as `--radius`, never.
+   * Also punctuation that a break parted from its code.
+   */
+  splits: string[];
+  /** The first package manager's install block: the code beside or below its Copy button. */
+  install?: { codeWidth: number; panelWidth: number; firstLineFits: boolean };
+}
+
+/**
+ * Opens `path` at `width` px and finds code that breaks in the middle of an identifier: it reads
+ * the line box of every character, so it sees exactly where the browser wrapped each element.
+ */
+export const inspectWrapping: BrowserCommand<
+  [origin: string, path: string, width: number]
+> = async (context, origin, path, width): Promise<WrappingInspection> => {
+  const page = await context.context.newPage();
+  try {
+    await page.setViewportSize({ width, height: 900 });
+    const response = await page.goto(new URL(path, origin).href, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    const result = await page.evaluate(() => {
+      type Rule = "never" | "after-pipe" | "at-space";
+      /** The indexes in the element's text where a new line starts. */
+      const breaksIn = (element: Element) => {
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        const range = document.createRange();
+        const breaks: number[] = [];
+        let offset = 0;
+        let lastTop: number | undefined;
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const value = node.nodeValue ?? "";
+          for (let i = 0; i < value.length; i++) {
+            if (/\s/.test(value[i]!)) continue;
+            range.setStart(node, i);
+            range.setEnd(node, i + 1);
+            const rect = range.getClientRects()[0];
+            if (!rect) continue;
+            if (lastTop !== undefined && rect.top > lastTop + rect.height / 2)
+              breaks.push(offset + i);
+            lastTop = rect.top;
+          }
+          offset += value.length;
+        }
+        return breaks;
+      };
+      const allowed = (text: string, index: number, rule: Rule) => {
+        const before = text.slice(0, index);
+        if (rule === "after-pipe") {
+          if (before.trimEnd().endsWith("|")) return true;
+          // A long alternative, such as a function type, may also break at a space.
+          const alternative = text.split(" | ").find((_, i, all) => {
+            const end = all.slice(0, i + 1).join(" | ").length;
+            return index <= end;
+          });
+          return /\s$/.test(before) && (alternative?.length ?? 0) > 24;
+        }
+        if (rule === "at-space") return /\s$/.test(before);
+        return false;
+      };
+      const checks: [Element, Rule][] = [];
+      for (const table of document.querySelectorAll("main table")) {
+        const headers = [...table.querySelectorAll("thead th")].map((th) => th.textContent!.trim());
+        const api = headers[0] === "Prop";
+        for (const row of table.querySelectorAll("tbody tr")) {
+          [...row.children].forEach((cell, column) => {
+            for (const code of cell.querySelectorAll("code")) {
+              const rule: Rule =
+                cell.matches("th") || (api && column === 2)
+                  ? "never"
+                  : api && column === 1
+                    ? "after-pipe"
+                    : "at-space";
+              checks.push([code, rule]);
+            }
+          });
+        }
+      }
+      for (const code of document.querySelectorAll("main :not(pre) > code"))
+        if ((code.textContent ?? "").trim().length <= 24 && !code.closest("table"))
+          checks.push([code, "never"]);
+      const splits: string[] = [];
+      for (const [element, rule] of checks) {
+        const text = element.textContent ?? "";
+        for (const index of breaksIn(element))
+          if (!allowed(text, index, rule))
+            splits.push(
+              `${text.slice(Math.max(0, index - 12), index)}⏎${text.slice(index, index + 12)}`,
+            );
+      }
+      // Punctuation right after inline code stays on the code's line: "--radius," never ends
+      // one line with the code and starts the next with the comma.
+      const range = document.createRange();
+      for (const code of document.querySelectorAll("main :not(pre) > code")) {
+        const next = code.nextSibling;
+        if (next?.nodeType !== Node.TEXT_NODE || !/^[.,;:)]/.test(next.nodeValue ?? "")) continue;
+        const rects = code.getClientRects();
+        const last = rects[rects.length - 1];
+        range.setStart(next, 0);
+        range.setEnd(next, 1);
+        const mark = range.getClientRects()[0];
+        if (last && mark && mark.top > last.top + last.height / 2)
+          splits.push(`${code.textContent}⏎${next.nodeValue!.slice(0, 6)}`);
+      }
+
+      const panel = document.querySelector<HTMLElement>(
+        "main [data-install-tabs] [role=tabpanel]:not([hidden])",
+      );
+      const pre = panel?.querySelector("pre");
+      return {
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        measured: checks.length,
+        splits,
+        install:
+          panel && pre
+            ? {
+                codeWidth: pre.getBoundingClientRect().width,
+                panelWidth: panel.getBoundingClientRect().width,
+                firstLineFits: pre.scrollWidth <= pre.clientWidth,
+              }
+            : undefined,
+      };
+    });
+    return { status: response?.status() ?? 0, ...result };
+  } finally {
+    await page.close();
+  }
+};
+
 declare module "vitest/browser" {
   interface BrowserCommands {
     inspectPanels: (origin: string, path: string) => Promise<PanelsInspection>;
+    inspectWrapping: (origin: string, path: string, width: number) => Promise<WrappingInspection>;
     inspectMotionDemo: (origin: string, path: string) => Promise<MotionDemoInspection>;
     inspectPage: (origin: string, path: string, width: number) => Promise<PageInspection>;
     inspectHeader: (origin: string, path: string, width: number) => Promise<HeaderInspection>;

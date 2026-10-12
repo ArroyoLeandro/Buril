@@ -4,7 +4,13 @@ import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 import { emulateReducedMotion } from "./test/browser-commands.ts";
-import { inspectHeader, inspectMotionDemo, inspectPage, inspectPanels } from "./test/docs-site.ts";
+import {
+  inspectHeader,
+  inspectMotionDemo,
+  inspectPage,
+  inspectPanels,
+  inspectWrapping,
+} from "./test/docs-site.ts";
 
 // Real-browser tests: geometry, computed styles, transitions and focus, which jsdom cannot see.
 // They run in headless Chromium with the compiled Tailwind stylesheet and the Buril theme.
@@ -41,6 +47,7 @@ export default defineConfig({
         inspectMotionDemo,
         inspectPage,
         inspectPanels,
+        inspectWrapping,
       },
       instances: [{ browser: "chromium", viewport: { width: 1024, height: 768 } }],
     },

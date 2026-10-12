@@ -58,9 +58,10 @@ const managers = [
       id={`${id}-panel-${manager.name}`}
       aria-labelledby={`${id}-tab-${manager.name}`}
       hidden={index !== 0}
-      class="mt-2 flex flex-wrap items-start gap-2"
+      class="mt-2 flex flex-col-reverse items-end gap-2 sm:flex-row sm:items-start"
     >
-      <div class="min-w-0 flex-1 overflow-x-auto text-sm [&_pre]:p-4">
+      {/* Below sm the Copy button sits above the command, so the command gets the full width. */}
+      <div class="w-full min-w-0 overflow-x-auto text-sm sm:w-auto sm:flex-1 [&_pre]:p-4">
         <Code code={manager.code} lang="bash" theme={codeTheme} />
       </div>
       <button
