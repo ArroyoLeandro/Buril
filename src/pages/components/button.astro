@@ -9,79 +9,95 @@ const urlInstall = "npx shadcn@latest add https://example.com/r/button.json";
 const namespaceInstall = `npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
 npx shadcn@latest add @buril/button`;
 const themeInstall = "npx shadcn@latest add @buril/theme";
+
+// Every token color, comments included, meets 4.5:1 on this theme's background (the worst is
+// about 6.1:1). The docs tests measure it. github-dark fails: its comments are 3.05:1.
+const codeTheme = "github-dark-default";
+
+const statusExample = `<Button type="submit" loading={saving}>
+  Save changes
+</Button>
+<p role="status">{saving ? "Saving changes…" : message}</p>`;
 ---
 
 <BaseLayout title="Button | Buril UI">
-  <main class="mx-auto max-w-2xl px-4 py-12">
-    <p class="text-sm">
-      <a href="/" class="underline underline-offset-4">
-        Buril UI
-      </a>
-    </p>
-    <h1 class="mt-4 font-display text-3xl">Button</h1>
-    <p class="mt-4 text-muted-foreground">
-      A native button with variants, sizes and a loading state. Styled anchors use the same classes
-      through <code>buttonVariants</code>.
-    </p>
+  <h1 class="font-display text-3xl">Button</h1>
+  <p class="mt-4 text-muted-foreground">
+    A native button with variants, sizes and a loading state. Styled anchors use the same classes
+    through <code>buttonVariants</code>.
+  </p>
 
-    <h2 class="mt-10 font-display text-xl">Demo</h2>
-    <div class="mt-4 border border-border p-6">
-      <ButtonDemo client:visible />
-    </div>
+  <h2 class="mt-10 font-display text-xl">Demo</h2>
+  <div class="mt-4 border border-border p-6">
+    <ButtonDemo client:visible />
+  </div>
 
-    <h2 class="mt-10 font-display text-xl">Install</h2>
-    <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={urlInstall} lang="bash" theme="github-dark" />
-    </div>
-    <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={namespaceInstall} lang="bash" theme="github-dark" />
-    </div>
-    <p class="mt-4 text-muted-foreground">
-      The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have,
-      so installing it does not change your theme. It creates
-      <code>components/ui/button.tsx</code> and adds <code>class-variance-authority</code>. If your
-      <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before
-      replacing it; answering no is safe, because the button only needs <code>cn()</code>.
-    </p>
+  <h2 class="mt-10 font-display text-xl">Loading</h2>
+  <p class="mt-4 text-muted-foreground">
+    <code>loading</code> shows a spinner and blocks every activation path, including implicit form
+    submission. The button keeps its accessible name and stays focusable, so keyboard and screen
+    reader users keep their place. It sets <code>aria-busy</code> and <code>aria-disabled</code>,
+    but screen readers generally do not announce <code>aria-busy</code> on a button.
+  </p>
+  <p class="mt-4 text-muted-foreground">
+    Announce progress yourself with a status region next to the button. Render it before the message
+    changes, and keep it outside the button so the button's name stays stable:
+  </p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={statusExample} lang="tsx" theme={codeTheme} />
+  </div>
 
-    <h2 class="mt-10 font-display text-xl">Optional theme</h2>
-    <p class="mt-4 text-muted-foreground">
-      The Buril palette (ink primary, red lacquer for focus, decoration and destructive actions) is
-      a separate install:
-    </p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={themeInstall} lang="bash" theme="github-dark" />
-    </div>
-    <p class="mt-4 text-muted-foreground">It edits your global CSS file:</p>
-    <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
-      <li>
-        It replaces your shadcn color tokens in <code>:root</code> and <code>.dark</code>. Other
-        variables, such as <code>--radius</code>, stay as they are.
-      </li>
-      <li>
-        It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font
-        tokens.
-      </li>
-      <li>
-        It follows the system without JavaScript: under <code>prefers-color-scheme: dark</code>, the
-        dark palette applies unless <code>&lt;html&gt;</code> has the <code>light</code> class.
-      </li>
-      <li>
-        It redefines the <code>dark:</code> variant the same way, so <code>dark:</code> utilities
-        also follow the system. A theme toggle must set <code>class="light"</code> on
-        <code>&lt;html&gt;</code> to force light mode; removing <code>dark</code> is not enough.
-        With next-themes, <code>attribute="class"</code> already does this.
-      </li>
-    </ul>
+  <h2 class="mt-10 font-display text-xl">Install</h2>
+  <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={urlInstall} lang="bash" theme={codeTheme} />
+  </div>
+  <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={namespaceInstall} lang="bash" theme={codeTheme} />
+  </div>
+  <p class="mt-4 text-muted-foreground">
+    The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have, so
+    installing it does not change your theme. It creates
+    <code>components/ui/button.tsx</code> and adds <code>class-variance-authority</code>. If your
+    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
+    it; answering no is safe, because the button only needs <code>cn()</code>.
+  </p>
 
-    <h2 class="mt-10 font-display text-xl">Source</h2>
-    <p class="mt-4 text-muted-foreground">
-      Read from <code>registry/ui/button.tsx</code> at build time.
-    </p>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={source} lang="tsx" theme="github-dark" />
-    </div>
-  </main>
+  <h2 class="mt-10 font-display text-xl">Optional theme</h2>
+  <p class="mt-4 text-muted-foreground">
+    The Buril palette (ink primary, red lacquer for focus, decoration and destructive actions) is a
+    separate install:
+  </p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={themeInstall} lang="bash" theme={codeTheme} />
+  </div>
+  <p class="mt-4 text-muted-foreground">It edits your global CSS file:</p>
+  <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      It replaces your shadcn color tokens in <code>:root</code> and <code>.dark</code>. Other
+      variables, such as <code>--radius</code>, stay as they are.
+    </li>
+    <li>
+      It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font tokens.
+    </li>
+    <li>
+      It follows the system without JavaScript: under <code>prefers-color-scheme: dark</code>, the
+      dark palette applies unless <code>&lt;html&gt;</code> has the <code>light</code> class.
+    </li>
+    <li>
+      It redefines the <code>dark:</code> variant the same way, so <code>dark:</code> utilities also
+      follow the system. A theme toggle must set <code>class="light"</code> on
+      <code>&lt;html&gt;</code> to force light mode; removing <code>dark</code> is not enough. With
+      next-themes, <code>attribute="class"</code> already does this.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Source</h2>
+  <p class="mt-4 text-muted-foreground">
+    Read from <code>registry/ui/button.tsx</code> at build time.
+  </p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={source} lang="tsx" theme={codeTheme} />
+  </div>
 </BaseLayout>
