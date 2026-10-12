@@ -410,6 +410,18 @@ describe("badge page", () => {
   });
 });
 
+describe("avatar page", () => {
+  const render = () => container.renderToString(componentPages["avatar"]!);
+
+  it("explains alt, the fallback and the decorative case", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")img(&quot;|")/);
+    expect(visible).toMatch(/alt=(&quot;|")(&quot;|")/);
+    expect(visible).toMatch(/initials/i);
+    expect(visible).toMatch(/fails to load/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 
