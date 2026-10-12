@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentProps, MouseEvent } from "react";
 
 import { cn } from "@/lib/utils";
