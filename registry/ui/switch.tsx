@@ -18,8 +18,8 @@ type SwitchProps = Omit<ComponentProps<"input">, "type" | "role"> & {
  */
 function Switch({ className, stateLabels, ...props }: SwitchProps) {
   return (
-    // A grid, so the track and the thumb share one cell: the thumb's percentages then resolve
-    // against the track box, whatever size the consumer gives the track.
+    // A grid, so the track and the thumb share one cell: the thumb's inset then resolves against
+    // the track box, whatever size the consumer gives the track.
     <span className="relative inline-grid shrink-0 grid-flow-col items-center gap-2 align-middle">
       <input
         type="checkbox"
@@ -44,22 +44,35 @@ function Switch({ className, stateLabels, ...props }: SwitchProps) {
         aria-hidden="true"
         className={cn(
           // The thumb's position tells off from on, so the state is never color alone. This
-          // element is the rail, 4px inside the track; its ::before is the round dot, as tall as
-          // the rail. The rail is a size container, so when on the dot moves by the rail's width
-          // (100cqw) minus its own (100%) with translate, never left: it fits and travels fully
-          // on any track size.
-          "[container-type:size] pointer-events-none absolute inset-1 col-start-1 row-start-1 flex peer-disabled:opacity-50",
-          "before:aspect-square before:h-full before:shrink-0 before:rounded-full before:bg-muted-foreground",
-          "peer-checked:before:translate-x-[calc(100cqw-100%)] peer-checked:before:bg-primary-foreground",
-          // Without container query units the translate is dropped; an auto margin moves the dot.
-          "not-supports-[width:1cqw]:peer-checked:before:ml-auto",
-          // The color fades in every motion mode; the dot slides only when the user allows motion.
-          "before:transition-[background-color] before:duration-(--buril-duration-base,180ms) before:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
-          "motion-safe:before:transition-[background-color,translate] motion-safe:before:duration-(--buril-duration-base,180ms) motion-safe:before:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
-          // Forced colors replace backgrounds, which would hide the dot; keep a system color.
-          "forced-colors:forced-color-adjust-none forced-colors:before:bg-[CanvasText]",
+          // element is the rail the dot travels along, 4px inside the track. It names both grid
+          // lines: an absolute grid child with an auto end line reaches the container's far edge,
+          // over the state text.
+          "pointer-events-none absolute inset-1 col-start-1 col-end-2 row-start-1 row-end-2 flex peer-disabled:opacity-50",
+          // The ::after is an empty square as tall as the rail at its end, so the dot's carrier
+          // gets the rest of the rail: its width is exactly how far the dot travels.
+          "after:aspect-square after:h-full after:shrink-0",
+          // The dot is painted in the rail's text color, which fades in every motion mode.
+          "text-muted-foreground peer-checked:text-primary-foreground",
+          "transition-[color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+          // When on, the carrier moves by its own width, so the dot ends at the far side.
+          "peer-checked:[--buril-switch-travel:100%]",
+          // Forced colors replace backgrounds and text colors, which would hide the dot; keep a
+          // system color.
+          "forced-colors:text-[CanvasText] forced-colors:forced-color-adjust-none",
         )}
-      />
+      >
+        <span
+          className={cn(
+            // The carrier: the dot is its ::before, round and as tall as the rail. On a short
+            // track the dot is wider than the carrier; min-w-0 keeps the carrier from growing to
+            // fit it. It moves with translate, never left, and slides only when the user allows
+            // motion.
+            "h-full min-w-0 flex-1 translate-x-(--buril-switch-travel,0%)",
+            "motion-safe:transition-[translate] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-in-out,cubic-bezier(0.4,0,0.2,1))",
+            "before:block before:aspect-square before:h-full before:rounded-full before:bg-current",
+          )}
+        />
+      </span>
       {stateLabels && (
         <>
           <span aria-hidden="true" className="text-sm peer-checked:hidden">
