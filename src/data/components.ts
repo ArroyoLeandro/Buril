@@ -36,6 +36,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     item: "link",
     source: "registry/ui/link.tsx",
   },
+  {
+    slug: "skip-link",
+    name: "Skip Link",
+    description: "A link that lets keyboard users jump past the header to the main content.",
+    item: "skip-link",
+    source: "registry/ui/skip-link.tsx",
+  },
 ];
 
 export const componentHref = (slug: string) => `/components/${slug}`;
