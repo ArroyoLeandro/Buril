@@ -59,6 +59,8 @@ export interface CascadeOptions {
   forcedColors?: boolean;
   /** Pseudo-classes the element matches, such as `[":focus", ":focus-visible"]`. */
   states?: string[];
+  /** Other media queries that match, such as `["(prefers-reduced-motion: no-preference)"]`. */
+  media?: string[];
 }
 
 export async function createCascade() {
@@ -83,7 +85,7 @@ export async function createCascade() {
   function lastOf(
     classes: string[],
     properties: string[],
-    { forcedColors = false, states = [] }: CascadeOptions = {},
+    { forcedColors = false, states = [], media = [] }: CascadeOptions = {},
   ) {
     const selectors = new Set(
       classes.flatMap((name) => [escape(name), ...states.map((state) => escape(name) + state)]),
@@ -100,6 +102,10 @@ export async function createCascade() {
         // Tailwind only applies hover: on devices that can hover.
         if (node.prelude === "@media (hover: hover)") {
           if (states.includes(":hover")) visit(node.children);
+          continue;
+        }
+        if (node.prelude.startsWith("@media ")) {
+          if (media.includes(node.prelude.slice("@media ".length))) visit(node.children);
           continue;
         }
         if (!selectors.has(node.prelude)) continue;

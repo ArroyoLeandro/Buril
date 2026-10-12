@@ -74,6 +74,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/radio-group.tsx",
   },
   {
+    slug: "switch",
+    name: "Switch",
+    description: "An on/off control: a native checkbox with the switch role and a sliding thumb.",
+    item: "switch",
+    source: "registry/ui/switch.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
