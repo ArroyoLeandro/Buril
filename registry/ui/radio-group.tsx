@@ -102,7 +102,14 @@ function RadioGroupItem({ value, className, children, onChange, ...props }: Radi
         className={cn(
           "size-5 shrink-0 cursor-pointer appearance-none rounded-full border border-input bg-background",
           // Checked: a primary fill behind an inset ring in the background color leaves a dot.
-          "checked:border-primary checked:bg-primary checked:inset-ring-4 checked:inset-ring-background",
+          "inset-ring-background checked:border-primary checked:bg-primary checked:inset-ring-4",
+          // The colors fade in every motion mode; outline-color is left out so the focus ring
+          // appears at once.
+          "transition-[background-color,border-color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
+          // The ink drop: while unchecked, the ring fills the whole 18px inside, so checking
+          // shrinks it to 4px and the dot spreads from the center. The dot grows, which is
+          // movement, so under reduced motion the ring jumps and only the colors fade.
+          "motion-safe:transition-[background-color,border-color,box-shadow] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) motion-safe:not-checked:inset-ring-9",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           "disabled:cursor-not-allowed aria-invalid:border-destructive",
