@@ -1,9 +1,16 @@
+import { catalogCategory, type ComponentCategory } from "./catalog";
+
+export type { ComponentCategory } from "./catalog";
+
+/** A short marker shown next to the name in the sidebar. */
+export type ComponentStatus = "new" | "beta";
+
 /**
- * The documented components, in catalog order. This list is the single source for the header
- * nav, the index page and each component page's title, description, install item and source.
+ * The documented components, in catalog order. This list is the single source for the docs
+ * sidebar, the index page and each component page's title, description, install item and source.
  */
 export interface DocumentedComponent {
-  /** URL segment: the page lives at `src/pages/components/<slug>.astro`. */
+  /** URL segment: the page lives at `src/pages/docs/components/<slug>.astro`. */
   slug: string;
   name: string;
   /** One sentence, used as the page lead and its meta description. */
@@ -12,6 +19,10 @@ export interface DocumentedComponent {
   item: string;
   /** Repository path of the file the registry item ships, shown as the page's Source. */
   source: string;
+  /** Sidebar group. Optional: defaults to the component's category in COMPONENTS.md. */
+  category?: ComponentCategory;
+  /** Optional marker, such as "new", shown next to the sidebar link. */
+  status?: ComponentStatus;
 }
 
 export const documentedComponents: readonly DocumentedComponent[] = [
@@ -146,7 +157,12 @@ export const documentedComponents: readonly DocumentedComponent[] = [
   },
 ];
 
-export const componentHref = (slug: string) => `/components/${slug}`;
+export const componentHref = (slug: string) => `/docs/components/${slug}`;
+
+/** The entry's own category, else its catalog category, else "Other". */
+export function componentCategory(entry: DocumentedComponent): ComponentCategory | "Other" {
+  return entry.category ?? catalogCategory[entry.slug] ?? "Other";
+}
 
 export function findComponent(slug: string): DocumentedComponent {
   const found = documentedComponents.find((entry) => entry.slug === slug);

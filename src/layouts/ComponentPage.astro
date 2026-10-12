@@ -1,74 +1,256 @@
 ---
 import { Code } from "astro:components";
 
-import BaseLayout from "./BaseLayout.astro";
+import DocsLayout from "./DocsLayout.astro";
+import InlineCode from "../components/InlineCode.astro";
 import InstallCommand from "../components/InstallCommand.astro";
+import Tabs from "../components/Tabs.astro";
 import { codeTheme } from "../components/code-theme";
+import { componentDocs } from "../data/component-docs";
 import { findComponent } from "../data/components";
+import registry from "../../registry.json";
 
 /**
  * Shared page for one documented component. Name, description, install item and source file come
- * from `src/data/components.ts`, so the page, the nav and the index never drift apart.
+ * from `src/data/components.ts`; usage, API and accessibility from `src/data/component-docs.ts`.
  *
- * Slots, in page order:
+ * Sections, in page order: Preview/Code tabs, Installation (CLI/Manual tabs), Usage, Examples,
+ * API reference, Accessibility, then any extra sections. Slots:
  * - `lead`: optional text appended to the description paragraph.
- * - `demo`: the live demo, usually one React island.
- * - `usage`: optional sections between the demo and the install commands.
- * - `install-notes`: optional paragraphs after the install commands.
- * - default: API notes and other sections before the source.
+ * - `demo`: the live demo, one React island. The Code tab shows `src/components/<Name>Demo.tsx`.
+ * - `install-notes`: optional paragraphs in the CLI tab.
+ * - `usage`: optional notes after the usage snippet.
+ * - `examples`: optional h3 subsections for variants and states.
+ * - default: extra h2 sections after Accessibility, such as migration notes.
  */
 interface Props {
   slug: string;
 }
 
 const entry = findComponent(Astro.props.slug);
+const docs = componentDocs[entry.slug];
 
-// Every shipped component file, as raw text at build time: the snippet is never copied by hand.
+// Every shipped component file and every demo, as raw text at build time: never copied by hand.
 const sources = import.meta.glob<string>(
   ["../../registry/ui/*.tsx", "!../../registry/ui/*.test.tsx"],
   { query: "?raw", import: "default", eager: true },
 );
 const source = sources[`../../${entry.source}`];
 if (source === undefined) throw new Error(`Source file not found: ${entry.source}`);
+
+const demos = import.meta.glob<string>(["../components/*Demo.tsx"], {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const demoName = `${entry.slug.replace(/(^|-)(\w)/g, (_, __, letter: string) => letter.toUpperCase())}Demo`;
+// Show the imports a consumer writes, not this repository's relative paths.
+const demoSource = demos[`../components/${demoName}.tsx`]?.replace(
+  /(["'])(?:\.\.\/)+registry\/ui\//g,
+  "$1@/components/ui/",
+);
+
+const item = (registry.items as { name: string; dependencies?: string[] }[]).find(
+  ({ name }) => name === entry.item,
+);
+const dependencies = item?.dependencies ?? [];
+const fileName = entry.source.split("/").pop();
+
+const h2 = "mt-10 font-display text-xl";
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+const cell = "px-4 py-2 align-top";
 ---
 
-<BaseLayout title={`${entry.name} | Buril UI`} description={entry.description}>
+<DocsLayout title={`${entry.name} | Buril UI`} description={entry.description}>
   <h1 class="font-display text-3xl">{entry.name}</h1>
   <p class="mt-4 text-muted-foreground">
     {entry.description}
     <slot name="lead" />
   </p>
 
-  <h2 class="mt-10 font-display text-xl">Demo</h2>
-  <div class="mt-4 border border-border p-6">
-    <slot name="demo" />
-  </div>
+  <h2 class={h2}>Example</h2>
+  <Tabs
+    id="example"
+    label="Example"
+    tabs={[
+      { id: "preview", label: "Preview" },
+      { id: "code", label: "Code" },
+    ]}
+  >
+    <div slot="preview" class="bg-paper-grid border border-border p-6">
+      <slot name="demo" />
+    </div>
+    <div slot="code" class="text-sm [&_pre]:max-h-[32rem] [&_pre]:overflow-auto [&_pre]:p-4">
+      {demoSource ? (
+        <Code code={demoSource} lang="tsx" theme={codeTheme} />
+      ) : (
+        <p class="text-muted-foreground">This demo has no source file yet.</p>
+      )}
+    </div>
+  </Tabs>
 
+  <h2 class={h2}>Installation</h2>
+  <Tabs
+    id="installation"
+    label="Installation method"
+    tabs={[
+      { id: "cli", label: "CLI" },
+      { id: "manual", label: "Manual" },
+    ]}
+  >
+    <div slot="cli">
+      <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
+      <InstallCommand
+        id="install-url"
+        commands={[`add https://example.com/r/${entry.item}.json`]}
+      />
+      <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
+      <InstallCommand
+        id="install-namespace"
+        commands={[
+          "registry add @buril=https://example.com/r/{name}.json",
+          `add @buril/${entry.item}`,
+        ]}
+      />
+      <p class="mt-4 text-muted-foreground">
+        Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
+        version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so
+        when the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to
+        your dependencies.
+      </p>
+      <slot name="install-notes" />
+    </div>
+    <div slot="manual">
+      <ol class="mt-4 list-decimal space-y-4 pl-6">
+        {dependencies.length > 0 && (
+          <li>
+            Install the dependencies:
+            <div class={code}>
+              <Code code={`npm install ${dependencies.join(" ")}`} lang="bash" theme={codeTheme} />
+            </div>
+          </li>
+        )}
+        <li>
+          Check that <code>lib/utils.ts</code> exports <code>cn()</code>. shadcn's
+          <code>init</code> creates it.
+        </li>
+        <li>
+          Copy the source into <code>components/ui/{fileName}</code>. It is read from
+          <code>{entry.source}</code> at build time.
+          <div class={code}>
+            <Code code={source} lang="tsx" theme={codeTheme} />
+          </div>
+        </li>
+      </ol>
+    </div>
+  </Tabs>
+
+  {docs && (
+    <>
+      <h2 class={h2}>Usage</h2>
+      <div class={code}>
+        <Code code={docs.usage} lang="tsx" theme={codeTheme} />
+      </div>
+    </>
+  )}
   <slot name="usage" />
 
-  <h2 class="mt-10 font-display text-xl">Install</h2>
-  <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
-  <InstallCommand id="install-url" commands={[`add https://example.com/r/${entry.item}.json`]} />
-  <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
-  <InstallCommand
-    id="install-namespace"
-    commands={["registry add @buril=https://example.com/r/{name}.json", `add @buril/${entry.item}`]}
-  />
-  <p class="mt-4 text-muted-foreground">
-    Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
-    version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so when
-    the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to your
-    dependencies.
-  </p>
-  <slot name="install-notes" />
+  {Astro.slots.has("examples") && (
+    <>
+      <h2 class={h2}>Examples</h2>
+      <slot name="examples" />
+    </>
+  )}
+
+  {docs && (
+    <>
+      <h2 class={h2}>API reference</h2>
+      {docs.api.map((api) => (
+        <>
+          <h3 class="mt-8 font-display text-lg">{api.component}</h3>
+          {api.description && (
+            <p class="mt-2 text-muted-foreground">
+              <InlineCode text={api.description} />
+            </p>
+          )}
+          <div class="mt-4 border border-border">
+            <table class="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-border">
+                  {["Prop", "Type", "Default", "Description"].map((header) => (
+                    <th scope="col" class={`${cell} font-semibold`}>
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {api.props.map((prop) => (
+                  <tr class="border-b border-border last:border-b-0">
+                    <th scope="row" class={`${cell} font-normal wrap-anywhere`}>
+                      <code>{prop.name}</code>
+                    </th>
+                    <td class={`${cell} wrap-anywhere`}>
+                      <code>{prop.type}</code>
+                    </td>
+                    <td class={`${cell} wrap-anywhere`}>
+                      {prop.default ? (
+                        <code>{prop.default}</code>
+                      ) : (
+                        <>
+                          <span aria-hidden="true">–</span>
+                          <span class="sr-only">None</span>
+                        </>
+                      )}
+                    </td>
+                    <td class={cell}>
+                      <InlineCode text={prop.description} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ))}
+
+      <h2 class={h2}>Accessibility</h2>
+      {docs.keyboard && docs.keyboard.length > 0 && (
+        <div class="mt-4 border border-border">
+          <table class="w-full border-collapse text-left text-sm">
+            <caption class="sr-only">Keyboard</caption>
+            <thead>
+              <tr class="border-b border-border">
+                <th scope="col" class={`${cell} font-semibold`}>
+                  Key
+                </th>
+                <th scope="col" class={`${cell} font-semibold`}>
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {docs.keyboard.map(({ key, action }) => (
+                <tr class="border-b border-border last:border-b-0">
+                  <th scope="row" class={`${cell} font-normal whitespace-nowrap`}>
+                    <kbd class="font-body font-semibold">{key}</kbd>
+                  </th>
+                  <td class={cell}>{action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+        {docs.accessibility.map((note) => (
+          <li>
+            <InlineCode text={note} />
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
 
   <slot />
-
-  <h2 class="mt-10 font-display text-xl">Source</h2>
-  <p class="mt-4 text-muted-foreground">
-    Read from <code>{entry.source}</code> at build time.
-  </p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={source} lang="tsx" theme={codeTheme} />
-  </div>
-</BaseLayout>
+</DocsLayout>

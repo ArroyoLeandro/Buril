@@ -1,0 +1,70 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import SelectDemo from "../../../components/SelectDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const example = `import { Field } from "@/components/ui/field";
+import { Select } from "@/components/ui/select";
+
+<Field label="Size" error={errors.size} required>
+  {(control) => (
+    <Select name="size" defaultValue="" {...control}>
+      <option value="">Choose a size</option>
+      <option value="s">Small</option>
+      <option value="m">Medium</option>
+    </Select>
+  )}
+</Field>`;
+---
+
+<ComponentPage slug="select">
+  <Fragment slot="lead">
+    Only the closed control is styled; opening it shows the platform's own picker.
+  </Fragment>
+
+  <SelectDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Why native.</strong> A real <code>&lt;select&gt;</code> brings the keyboard,
+        type-ahead, the touch picker on phones and screen reader support for free. It suits a short,
+        fixed list. For searching or rich options, a combobox is the right pattern; Buril does not
+        fake one here.
+      </li>
+      <li>
+        <strong>Label it.</strong> Put it in a Field, as with the Input, for the label, the
+        description, the error and <code>aria-invalid</code>. For a required choice, start with an
+        empty option such as "Choose a size".
+      </li>
+      <li>
+        <strong>Full width.</strong> It fills its container, like the Input. To make it narrower,
+        constrain the container. <code>className</code> and the other props go to the
+        <code>&lt;select&gt;</code>.
+      </li>
+      <li>
+        <strong>The chevron</strong> is an <code>aria-hidden</code> icon that ignores clicks, so the
+        whole control opens the picker. In forced-colors mode the native arrow comes back instead.
+        With <code>multiple</code> or <code>size</code> above 1 the select is a list box, with no
+        chevron.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field, with a required choice</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/select.tsx</code>. shadcn's Select at that path is a custom list
+    box with other exports, so replacing it changes your imports: shadcn calls its native version
+    Native Select. It needs only your <code>cn()</code> helper; if your <code>lib/utils.ts</code>{" "}
+    differs from the current shadcn version, the CLI asks before replacing it, and answering no is
+    safe.
+  </p>
+</ComponentPage>

@@ -1,0 +1,82 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import RadioGroupDemo from "../../../components/RadioGroupDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const example = `import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+<RadioGroup
+  legend="Delivery"
+  name="delivery"
+  value={delivery}
+  onValueChange={setDelivery}
+>
+  <RadioGroupItem value="standard">Standard</RadioGroupItem>
+  <RadioGroupItem value="express">Express</RadioGroupItem>
+  <RadioGroupItem value="drone" disabled>
+    Drone (unavailable)
+  </RadioGroupItem>
+</RadioGroup>`;
+---
+
+<ComponentPage slug="radio-group">
+  <Fragment slot="lead">
+    The browser provides the keyboard model, so there is no focus code to get wrong.
+  </Fragment>
+
+  <RadioGroupDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Named by its legend.</strong> <code>RadioGroup</code> is a
+        <code>&lt;fieldset&gt;</code>, and <code>legend</code> is required: it is the visible
+        question and the group's accessible name.
+      </li>
+      <li>
+        <strong>One Tab stop, arrow keys to choose.</strong> The radios share one <code>name</code>
+        (generated if you do not pass one), so the browser makes the group one Tab stop, on the
+        checked radio or the first one. The arrow keys move focus and the choice, and skip disabled
+        radios.
+      </li>
+      <li>
+        <strong>Controlled or not.</strong> Pass <code>value</code> and update it from
+        <code>onValueChange</code>, or pass <code>defaultValue</code>. Forms submit the
+        <code>name</code> with the checked <code>value</code>.
+      </li>
+      <li>
+        <strong>Labels are click targets.</strong> Each item is a <code>&lt;label&gt;</code> row at
+        least 24px tall, so clicking the text checks the radio. <code>className</code> styles that
+        row; other props go to the <code>&lt;input&gt;</code>.
+      </li>
+      <li>
+        <strong>Errors.</strong> ARIA allows <code>aria-invalid</code> on a radio but not on a
+        group, so pass <code>aria-invalid="true"</code> to each item; its border turns destructive.
+        Point the group's <code>aria-describedby</code> at the error text, so it is read with the
+        legend.
+      </li>
+      <li>
+        <strong>States.</strong> A checked radio shows a filled dot, not only a color. Focus shows
+        the ring outline. <code>disabled</code> on the group disables every radio; on an item, only
+        that one. In forced-colors mode the native radio returns, drawn by the system.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Controlled, with a disabled option</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/radio-group.tsx</code>, the same path as shadcn's Radio Group.
+    Unlike shadcn's, it renders a fieldset with a required <code>legend</code>, and each item takes
+    its label as children. It needs only your <code>cn()</code> helper; if your
+    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
+    it, and answering no is safe.
+  </p>
+</ComponentPage>

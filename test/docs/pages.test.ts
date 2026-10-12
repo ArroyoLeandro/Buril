@@ -8,7 +8,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import IndexPage from "../../src/pages/index.astro";
-import ButtonPage from "../../src/pages/components/button.astro";
+import ButtonPage from "../../src/pages/docs/components/button.astro";
 import { componentHref, documentedComponents } from "../../src/data/components";
 
 let container: AstroContainer;
@@ -55,7 +55,7 @@ function codeColors(html: string) {
 /** Every component page, keyed by slug, so new pages get the shared checks automatically. */
 const componentPages = Object.fromEntries(
   Object.entries(
-    import.meta.glob<AstroComponentFactory>("../../src/pages/components/*.astro", {
+    import.meta.glob<AstroComponentFactory>("../../src/pages/docs/components/*.astro", {
       eager: true,
       import: "default",
     }),
@@ -98,14 +98,11 @@ describe.each(pages)("%s page layout", (_, page) => {
   it("has a header with the main navigation", async () => {
     const html = await render();
     const header = /<header[\s\S]*?<\/header>/.exec(html)?.[0] ?? "";
+    // The wordmark links home; the component links live in the docs sidebar (shell.test.ts).
+    expect(header).toMatch(/<a[^>]+href="\/"[^>]*>[\s\S]*?Buril UI[\s\S]*?<\/a>/);
     const nav = /<nav[^>]*aria-label="Main"[\s\S]*?<\/nav>/.exec(header)?.[0] ?? "";
-    expect(nav).toMatch(/<a[^>]+href="\/"[^>]*>\s*Home\s*<\/a>/);
-    expect(text(nav)).toMatch(/Components/);
-    for (const { slug, name } of documentedComponents) {
-      expect(nav).toMatch(
-        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
-      );
-    }
+    expect(nav).toMatch(/<a[^>]+href="\/docs"[^>]*>\s*Docs\s*<\/a>/);
+    expect(nav).toMatch(/<a[^>]+href="\/docs\/components"[^>]*>\s*Components\s*<\/a>/);
   });
 
   it("has a theme toggle with light, dark and system choices", async () => {
@@ -132,22 +129,7 @@ describe("index page", () => {
     expectWellFormedPage(await container.renderToString(IndexPage));
   });
 
-  it("links to every documented component from its main content", async () => {
-    const html = await container.renderToString(IndexPage);
-    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
-    for (const { slug, name } of documentedComponents) {
-      expect(main).toMatch(
-        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
-      );
-    }
-  });
-
-  it("uses buttonVariants for its call to action instead of a dead button", async () => {
-    const html = await container.renderToString(IndexPage);
-    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
-    expect(main).not.toMatch(/<button/);
-    expect(main).toMatch(/<a[^>]+href="\/components\/button"[^>]+class="[^"]*rounded-full/);
-  });
+  // The hero, the showcase and the footer are covered in landing.test.ts.
 });
 
 describe("component list", () => {
@@ -185,14 +167,7 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       );
     });
 
-    it("has Demo, Install and Source sections in that order", async () => {
-      const html = await render();
-      const order = ["Demo", "Install", "Source"].map((title) => {
-        expect(count(html, new RegExp(`>${title}</h2>`, "g"))).toBe(1);
-        return html.indexOf(`>${title}</h2>`);
-      });
-      expect(order).toEqual([...order].sort((a, b) => a - b));
-    });
+    // Section order and the Preview/Code and CLI/Manual tabs: component-page.test.ts.
 
     it("renders the demo as a single island", async () => {
       expect(count(await render(), /<astro-island/g)).toBe(1);
@@ -206,14 +181,22 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
 
     it("notes that shadcn's utils item can add the cn npm package", async () => {
       const html = await render();
-      const install = text(html.slice(html.indexOf(">Install</h2>"), html.indexOf(">Source</h2>")));
+      const install = text(
+        html.slice(
+          html.indexOf(">Installation</h2>"),
+          html.indexOf('id="installation-panel-manual"'),
+        ),
+      );
       expect(install).toMatch(/re-exports\s+cn\(\)\s+from\s+the\s+cn\s+npm\s+package/);
       expect(install).toMatch(/also\s+adds\s+cn\s+to\s+your\s+dependencies/);
     });
 
     it("shows the source file it documents, read at build time", async () => {
       const html = await render();
-      const source = html.slice(html.indexOf(">Source</h2>"));
+      const source = html.slice(
+        html.indexOf('id="installation-panel-manual"'),
+        html.indexOf(">Usage</h2>"),
+      );
       expect(text(source)).toContain(entry.source);
       // The export line is plain text in the highlighted output, so it proves the real file.
       const file = readFileSync(resolve(__dirname, "../..", entry.source), "utf8");
@@ -502,7 +485,7 @@ describe("button page", () => {
 
   it("renders the Install section exactly once with URL and namespaced commands", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Install<\/h2>/g)).toBe(1);
+    expect(count(html, />Installation<\/h2>/g)).toBe(1);
     expect(
       count(text(html), /npx shadcn@latest add https:\/\/example\.com\/r\/button\.json/g),
     ).toBe(1);
@@ -570,9 +553,11 @@ describe("button page", () => {
     expect(text(html)).toMatch(/class="light"|class=&quot;light&quot;/);
   });
 
-  it("renders the Source section exactly once with the component source", async () => {
+  it("shows the component source exactly once, in the Manual installation tab", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Source<\/h2>/g)).toBe(1);
+    const manual = html.indexOf('id="installation-panel-manual"');
+    expect(manual).toBeGreaterThan(-1);
+    expect(count(text(html.slice(manual)), /const buttonVariants = cva\(/g)).toBe(1);
     expect(count(text(html), /const buttonVariants = cva\(/g)).toBe(1);
   });
 
@@ -591,7 +576,8 @@ describe("button page", () => {
 
   it("documents announcing progress with a status region outside the button", async () => {
     const html = await container.renderToString(ButtonPage);
-    expect(count(html, />Loading<\/h2>/g)).toBe(1);
+    // The demo island has its own "Loading" h3; the page section is the one with id="loading".
+    expect(count(html, /<h3[^>]*id="loading"[^>]*>\s*Loading\s*<\/h3>/g)).toBe(1);
     expect(text(html)).toMatch(/role=(&quot;|")status(&quot;|")/);
     expect(html).toMatch(/<[a-z]+[^>]*role="status"/);
   });

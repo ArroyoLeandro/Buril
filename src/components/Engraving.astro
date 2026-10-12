@@ -1,0 +1,64 @@
+---
+/**
+ * Decorative guilloche rosette, the kind a burin cuts into banknote plates. Ink lines with one
+ * ring in the decor red. It carries no information, so it is hidden from assistive technology.
+ */
+interface Props {
+  class?: string;
+}
+
+const center = 100;
+const ring = (k: number) => {
+  const base = 34 + k * 5.8;
+  const amplitude = 2.5 + (k % 3);
+  const points = Array.from({ length: 121 }, (_, i) => {
+    const t = (i / 120) * Math.PI * 2;
+    const r = base + amplitude * Math.sin(12 * t + k * 0.4);
+    return `${(center + r * Math.cos(t)).toFixed(1)} ${(center + r * Math.sin(t)).toFixed(1)}`;
+  });
+  return `M${points.join("L")}Z`;
+};
+const rings = Array.from({ length: 11 }, (_, k) => ({ d: ring(k), decor: k === 7 }));
+const hatching = Array.from({ length: 20 }, (_, i) => -40 + i * 4);
+---
+
+<svg
+  data-engraving
+  aria-hidden="true"
+  focusable="false"
+  viewBox="0 0 200 200"
+  fill="none"
+  class={Astro.props.class}
+>
+  <defs>
+    <clipPath id="engraving-core">
+      <circle cx={center} cy={center} r="28"></circle>
+    </clipPath>
+  </defs>
+  <g stroke="currentColor" stroke-width="0.5" class="text-foreground">
+    {rings
+      .filter(({ decor }) => !decor)
+      .map(({ d }) => (
+        <path d={d} />
+      ))}
+    <circle cx={center} cy={center} r="99" stroke-width="0.75"></circle>
+    <circle cx={center} cy={center} r="28" stroke-width="0.75"></circle>
+    <g clip-path="url(#engraving-core)">
+      {hatching.map((offset) => (
+        <line
+          x1={center + offset - 30}
+          y1={center + 30}
+          x2={center + offset + 30}
+          y2={center - 30}
+        />
+      ))}
+    </g>
+  </g>
+  <g stroke="currentColor" stroke-width="1.25" class="text-decor">
+    {rings
+      .filter(({ decor }) => decor)
+      .map(({ d }) => (
+        <path d={d} />
+      ))}
+  </g>
+</svg>

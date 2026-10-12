@@ -1,0 +1,24 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import DocsSidebar from "../components/DocsSidebar.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import { collectHeadings } from "../utils/headings";
+
+/**
+ * Docs page shell: the grouped sidebar, the page content in the single <main>, and an
+ * "On this page" list built from the content's h2 and h3 headings, which also get their ids here.
+ */
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const { html, headings } = collectHeadings(await Astro.slots.render("default"));
+---
+
+<BaseLayout title={title} description={description} docs>
+  <DocsSidebar slot="sidebar" />
+  <Fragment set:html={html} />
+  <TableOfContents slot="toc" headings={headings} />
+</BaseLayout>

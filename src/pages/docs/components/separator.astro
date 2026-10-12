@@ -1,0 +1,71 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import SeparatorDemo from "../../../components/SeparatorDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const verticalExample = `<nav className="flex items-center gap-3">
+  <a href="/docs">Docs</a>
+  <Separator orientation="vertical" decorative />
+  <a href="/blog">Blog</a>
+</nav>`;
+---
+
+<ComponentPage slug="separator">
+  <Fragment slot="lead">
+    Horizontal by default, as a native <code>&lt;hr&gt;</code>.
+  </Fragment>
+
+  <SeparatorDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Semantic.</strong> A horizontal separator is an <code>&lt;hr&gt;</code>, which
+        screen readers announce as a separator between sections. A vertical one is a
+        <code>&lt;div&gt;</code> with <code>role="separator"</code> and
+        <code>aria-orientation="vertical"</code>. Neither is focusable.
+      </li>
+      <li>
+        <strong>Decorative.</strong> When the line only decorates, such as between links that are
+        already separate items, pass <code>decorative</code>. It renders <code>role="none"</code>{" "}
+        with <code>aria-hidden</code>, so screen readers skip it.
+      </li>
+      <li>
+        <strong>Vertical in a row.</strong> The vertical line stretches to the height of its flex
+        row; give the row a height or let its content set one.
+      </li>
+      <li>
+        <strong>Forced colors.</strong> The line is a border, not a background, so it stays visible
+        in forced-colors mode.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Vertical, between links</h3>
+    <p class="mt-4 text-muted-foreground">
+      The links are already separate items, so the line only decorates:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={verticalExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/separator.tsx</code>, the same path and props as shadcn's
+    Separator, without Radix: the horizontal one is a native <code>&lt;hr&gt;</code>. It needs only
+    your <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
+    version, the CLI asks before replacing it, and answering no is safe.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Color</h2>
+  <p class="mt-4 text-muted-foreground">
+    A separator that marks structure is a graphic people need to see, so it should reach 3:1 against
+    the page. It uses the <code>border</code> color, the token meant for dividers. In the Buril
+    theme that is ink, far above 3:1, which matches the engraved grid lines. For a quieter line,
+    pass <code>className="border-input"</code>: Buril measures it at 3.72:1 in light mode and 3.35:1
+    in dark mode. Lighter mixes fall below 3:1, so keep them for decorative lines.
+  </p>
+</ComponentPage>

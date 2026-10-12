@@ -17,3 +17,11 @@
     outline-offset: 2px;
   }
 }
+
+/* Graph-paper background from the decorative grid token, with a fallback for other themes. */
+@utility bg-paper-grid {
+  background-image:
+    linear-gradient(var(--color-grid, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

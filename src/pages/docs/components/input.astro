@@ -1,0 +1,66 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import InputDemo from "../../../components/InputDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const usageExample = `import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+<Field label="Email" error={errors.email} required>
+  {(control) => <Input type="email" autoComplete="email" {...control} />}
+</Field>`;
+---
+
+<ComponentPage slug="input">
+  <Fragment slot="lead">
+    It is a plain <code>&lt;input&gt;</code>, so every native type, attribute and browser feature,
+    such as autofill, keeps working.
+  </Fragment>
+
+  <InputDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <p class="mt-4 text-muted-foreground">
+      An input always needs a visible label. Put it in a Field, which renders the label and wires
+      the description, the error and <code>aria-invalid</code> for you.
+    </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={usageExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">States</h3>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Visible border and focus.</strong> The border uses the <code>input</code> token,
+        which has at least 3:1 contrast with the background. Keyboard focus shows the ring outline,
+        which also stays visible in forced-colors mode.
+      </li>
+      <li>
+        <strong>Invalid.</strong> With <code>aria-invalid="true"</code> the border turns
+        destructive. The color only reinforces the error: the Field's error text and icon say what
+        is wrong.
+      </li>
+      <li>
+        <strong>Disabled.</strong> A <code>disabled</code> input is dimmed, shows a not-allowed
+        cursor and is skipped by the keyboard. Prefer <code>readOnly</code> for a value people still
+        need to read or copy.
+      </li>
+      <li>
+        <strong>Size.</strong> It is at least 40px tall, like the default Button, and uses a 16px
+        font, so mobile browsers do not zoom in when it takes focus.
+      </li>
+    </ul>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/input.tsx</code>, the same path as shadcn's Input, and needs only
+    your <code>cn()</code> helper. If your <code>lib/utils.ts</code> differs from the current shadcn
+    version, the CLI asks before replacing it; answering no is safe.
+  </p>
+</ComponentPage>

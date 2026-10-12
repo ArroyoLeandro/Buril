@@ -1,0 +1,96 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import CardDemo from "../../../components/CardDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const decorExample = `<Card decor>
+  <CardHeader>
+    <CardTitle as="h2">Starter plan</CardTitle>
+    <CardDescription>For a single project.</CardDescription>
+  </CardHeader>
+  <CardContent>Three seats and 10 GB of storage.</CardContent>
+  <CardFooter>
+    <Button size="sm">Choose Starter</Button>
+  </CardFooter>
+</Card>`;
+
+const linkExample = `<Card>
+  <CardHeader>
+    <CardTitle>
+      <a href="/guides/forms" className="after:absolute after:inset-0">
+        Accessible forms
+      </a>
+    </CardTitle>
+    <CardDescription>Labels, help text and errors.</CardDescription>
+  </CardHeader>
+</Card>`;
+---
+
+<ComponentPage slug="card">
+  <Fragment slot="lead">
+    It is a plain <code>&lt;div&gt;</code>: it groups content but is not interactive by itself.
+  </Fragment>
+
+  <CardDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Heading level.</strong> <code>CardTitle</code> renders an <code>h3</code> by
+        default. Pass <code>as="h2"</code> through <code>as="h6"</code> so it fits the page outline;
+        the look does not change.
+      </li>
+      <li>
+        <strong>Decoration.</strong> <code>decor</code> adds a hatched band across the top. It is
+        <code>aria-hidden</code>, uses the <code>--decor</code> color with <code>--primary</code> as
+        the fallback, and is removed in forced-colors mode.
+      </li>
+      <li>
+        <strong>Colors.</strong> The border uses <code>border</code>, the surface <code>card</code>{" "}
+        and <code>card-foreground</code>, and the description <code>muted-foreground</code>.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Heading level and decoration</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={decorExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">The whole card as a link</h3>
+    <p class="mt-4 text-muted-foreground">
+      Never put an <code>onClick</code> on the card: a clickable <code>&lt;div&gt;</code> is not
+      focusable, has no role and no name. Put one real link in the title and stretch it over the
+      card with a pseudo-element. The card is <code>relative</code>, so
+      <code>after:absolute after:inset-0</code> covers it:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={linkExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>One Tab stop, a short name.</strong> Screen readers hear the title as the link name,
+        not every line of the card.
+      </li>
+      <li>
+        <strong>Other controls.</strong> A button or a second link inside the card sits under the
+        stretched link. Give it <code>relative z-10</code> so it stays clickable.
+      </li>
+      <li>
+        <strong>Trade-off.</strong> The stretched link covers the text, so it cannot be selected.
+        Keep long text out of a linked card.
+      </li>
+    </ul>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/card.tsx</code>, the same path and part names as shadcn's Card.
+    Unlike shadcn's, <code>CardTitle</code> is a real heading and <code>CardDescription</code> a
+    paragraph. It needs only your <code>cn()</code> helper; if your <code>lib/utils.ts</code>{" "}
+    differs from the current shadcn version, the CLI asks before replacing it, and answering no is
+    safe.
+  </p>
+</ComponentPage>

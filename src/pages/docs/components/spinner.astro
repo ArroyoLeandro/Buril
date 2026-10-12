@@ -1,0 +1,73 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import SpinnerDemo from "../../../components/SpinnerDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const sizeExample = `<Spinner />
+<Spinner size="lg" label="Loading comments" />`;
+
+const resultExample = `<section aria-label="Comments" aria-busy={loading || undefined}>
+  {loading ? <Spinner label="Loading comments" /> : <CommentList />}
+</section>
+{/* On the page from the start, empty. */}
+<p role="status">{loaded ? "3 comments loaded." : ""}</p>`;
+---
+
+<ComponentPage slug="spinner">
+  <Fragment slot="lead">
+    Use it when you cannot predict the layout of what is loading; otherwise prefer a Skeleton.
+  </Fragment>
+
+  <SpinnerDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>A status with a name.</strong> The spinner is a <code>role="status"</code> element
+        with a visually hidden <code>label</code>, "Loading" by default. Say what is loading, such
+        as "Loading comments". The drawing is <code>aria-hidden</code>.
+      </li>
+      <li>
+        <strong>Reduced motion.</strong> It spins only when the user has not asked for reduced
+        motion. Otherwise it shows three static dots, which still read as "in progress"; a frozen
+        arc would look broken.
+      </li>
+      <li>
+        <strong>Sizes and color.</strong> <code>sm</code> (16px), <code>default</code> (24px) and
+        <code>lg</code> (32px). It draws with the current text color, so it follows forced-colors
+        mode too.
+      </li>
+      <li>
+        <strong>Inside a button.</strong> Use the Button's <code>loading</code> prop instead; it
+        keeps the button focusable and its name.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Size and label</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={sizeExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Announcing the result</h3>
+    <p class="mt-4 text-muted-foreground">
+      A spinner inserted together with its label is not always announced, and its removal never is.
+      Mark the loading area with <code>aria-busy</code>, and say when it is done from a
+      <code>role="status"</code> region that is already on the page:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={resultExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/spinner.tsx</code>, the same path as shadcn's Spinner. Spinner
+    and Skeleton are separate items, as in shadcn, so each keeps its import path and you install
+    only what you use. It needs only your <code>cn()</code> helper; if your
+    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
+    it, and answering no is safe.
+  </p>
+</ComponentPage>

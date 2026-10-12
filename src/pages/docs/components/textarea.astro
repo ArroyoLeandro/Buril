@@ -1,0 +1,56 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../layouts/ComponentPage.astro";
+import TextareaDemo from "../../../components/TextareaDemo";
+import { codeTheme } from "../../../components/code-theme";
+
+const example = `import { Field } from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+
+<Field label="Message" description="Up to 200 characters.">
+  {(control) => <Textarea maxLength={200} {...control} />}
+</Field>`;
+---
+
+<ComponentPage slug="textarea">
+  <Fragment slot="lead">
+    It has the Input's border, focus ring, invalid and disabled states, and starts about three lines
+    tall.
+  </Fragment>
+
+  <TextareaDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Label it.</strong> Put it in a Field, as with the Input, so it gets a visible label,
+        its description and its error.
+      </li>
+      <li>
+        <strong>Resizes vertically.</strong> People can make it taller to read long text; the width
+        stays with your layout.
+      </li>
+      <li>
+        <strong>Stable error text.</strong> The Field announces a new error politely. Keep the
+        message the same while it applies, as the demo does, so screen readers do not hear it on
+        every keystroke.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">In a Field</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={example} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/textarea.tsx</code>, the same path as shadcn's Textarea, so
+    existing imports keep working. That is why it is a separate item from the Input rather than a
+    second export of <code>input.tsx</code>. It needs only your <code>cn()</code> helper; if your
+    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
+    it, and answering no is safe.
+  </p>
+</ComponentPage>
