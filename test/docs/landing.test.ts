@@ -6,7 +6,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import IndexPage from "../../src/pages/index.astro";
+import IndexPageEs from "../../src/pages/es/index.astro";
+import DocsIndexPage from "../../src/pages/docs/index.astro";
+import DocsIndexPageEs from "../../src/pages/es/docs/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
+import ButtonPageEs from "../../src/pages/es/docs/components/button.astro";
 import { localizedHref } from "../../src/i18n/paths";
 
 let container: AstroContainer;
@@ -143,11 +147,13 @@ describe("landing page", () => {
 });
 
 describe.each([
-  ["landing page", IndexPage],
-  ["component page", ButtonPage],
-] as [string, AstroComponentFactory][])("footer on the %s", (_, page) => {
+  ["English landing page", IndexPage, "/"],
+  ["Spanish landing page", IndexPageEs, "/es/"],
+] as [string, AstroComponentFactory, string][])("footer on the %s", (_, page, path) => {
   it("is a footer outside the main with the license and the GitHub link", async () => {
-    const html = await container.renderToString(page);
+    const html = await container.renderToString(page, {
+      request: new Request(`http://localhost${path}`),
+    });
     const footer = /<footer[\s\S]*?<\/footer>/.exec(html)?.[0] ?? "";
     expect(html.match(/<footer[\s>]/g)).toHaveLength(1);
     expect(html.indexOf("<footer")).toBeGreaterThan(html.indexOf("</main>"));
@@ -254,5 +260,20 @@ describe("Spanish landing page", () => {
     const toEnglish = /<a[^>]*data-language-switcher[^>]*>[\s\S]*?<\/a>/.exec(await renderEs())![0];
     expect(toEnglish).toMatch(/href="\/"/);
     expect(text(toEnglish)).toBe("English");
+  });
+});
+
+// The footer belongs to the landing page only: docs pages end with their content.
+describe.each([
+  ["/docs", DocsIndexPage],
+  ["/es/docs", DocsIndexPageEs],
+  ["/docs/components/button", ButtonPage],
+  ["/es/docs/components/button", ButtonPageEs],
+] as [string, AstroComponentFactory][])("the docs page %s", (path, page) => {
+  it("renders no footer", async () => {
+    const html = await container.renderToString(page, {
+      request: new Request(`http://localhost${path}`),
+    });
+    expect(html).not.toMatch(/<footer[\s>]/);
   });
 });

@@ -172,8 +172,8 @@ describe.each([
     expect(text(toc![0])).toContain(t["toc.title"]);
   });
 
-  it("writes the footer in the page language", async () => {
-    const html = text(footer(await render(ButtonPage, path)));
+  it("writes the landing page's footer in the page language", async () => {
+    const html = text(footer(await render(IndexPage, locale === "es" ? "/es/" : "/")));
     expect(html).toContain(t["footer.licenseLink"]);
     expect(html).toContain(t["footer.source"]);
   });
