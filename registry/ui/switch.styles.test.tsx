@@ -25,14 +25,15 @@ const classesOf = (tag: RegExp) => classList(/class="([^"]*)"/.exec(tag.exec(htm
 const wrapper = classesOf(/<span[^>]*>/);
 const track = classesOf(/<input[^>]*>/);
 const thumb = classesOf(/<span[^>]*data-thumb[^>]*>/);
+// The dot's carrier, inside the thumb; the dot is its ::before.
+const carrier = classList(/data-thumb[^>]*><span class="([^"]*)"/.exec(html)![1]!);
 const offText = classesOf(/<span[^>]*>Off</);
 const onText = classesOf(/<span[^>]*>On</);
 
 // How Tailwind writes `peer-*` variants: the thumb and the text follow the input.
 const peerChecked = { states: [":is(:where(.peer):checked ~ *)"] };
-// The dot is the thumb's ::before, off and on.
-const dot = ["::before"];
-const onDot = ["::before", ":is(:where(.peer):checked ~ *)::before"];
+// The dot is the carrier's ::before.
+const dot = { states: ["::before"] };
 
 describe("Switch compiled with Tailwind", () => {
   it("draws a 44 by 24px pill track instead of the native checkbox", () => {
@@ -51,30 +52,41 @@ describe("Switch compiled with Tailwind", () => {
   });
 
   // The thumb's position, not only its color, tells off from on. The thumb element is the rail
-  // the dot travels along; its ::before is the dot, moved with translate, never with left.
-  it("moves the dot from the left to the right with translate when on", () => {
+  // the dot travels along; when on, it sets how far the carrier moves, and the carrier moves with
+  // translate, never with left.
+  it("moves the dot's carrier by its own width with translate when on", () => {
     expect(cascade.computed(thumb, "inset")).toBe("var(--spacing)");
-    for (const states of [dot, onDot]) {
-      expect(cascade.computed(thumb, "left", { states })).toBeUndefined();
+    expect(cascade.computed(thumb, "--buril-switch-travel")).toBeUndefined();
+    expect(cascade.computed(thumb, "--buril-switch-travel", peerChecked)).toBe("100%");
+    expect(cascade.computed(carrier, "--tw-translate-x")).toBe("var(--buril-switch-travel,0%)");
+    for (const element of [thumb, carrier]) {
+      expect(cascade.computed(element, "left")).toBeUndefined();
+      expect(cascade.computed(element, "left", peerChecked)).toBeUndefined();
     }
-    expect(cascade.computed(thumb, "--tw-translate-x", { states: dot })).toBeUndefined();
-    expect(cascade.computed(thumb, "--tw-translate-x", { states: onDot })).toBe(
-      "calc(100cqw - 100%)",
-    );
-    // The rail is a size container, so 100cqw is the rail's width.
-    expect(cascade.computed(thumb, "container-type")).toBe("size");
   });
 
-  // Browsers without container query units cannot resolve the translate; the dot jumps to the
-  // right edge with an auto margin instead, so the position still tells off from on.
-  it("still moves the dot where container query units are not supported", () => {
-    const unsupported = { supports: ["not (width: 1cqw)"] };
+  // Container query units on the dot did not resolve against the rail it was meant to measure,
+  // so the layout is plain flexbox: the rail's ::after is an empty square at its end, as tall as
+  // the rail, and the carrier takes the rest of the width, which is how far the dot travels.
+  // Real-browser positions for several track sizes are in switch.browser.test.tsx.
+  it("sizes the dot's travel with flexbox, without container query units", () => {
     expect(cascade.computed(thumb, "display")).toBe("flex");
-    expect(cascade.computed(thumb, "margin-left", { states: onDot, ...unsupported })).toBe("auto");
-    expect(cascade.computed(thumb, "margin-left", { states: onDot })).toBeUndefined();
+    expect(cascade.computed(thumb, "container-type")).toBeUndefined();
+    expect(html).not.toMatch(/cq[whib]|cqmin|cqmax/);
+    const spacer = { states: ["::after"] };
+    expect(cascade.computed(thumb, "aspect-ratio", spacer)).toBe("1 / 1");
+    expect(cascade.computed(thumb, "height", spacer)).toBe("100%");
+    expect(cascade.computed(thumb, "flex-shrink", spacer)).toBe("0");
+    expect(cascade.computed(carrier, "flex")).toBe("1");
+    expect(cascade.computed(carrier, "min-width")).toBe("0px");
+    expect(cascade.computed(carrier, "aspect-ratio", dot)).toBe("1 / 1");
+    expect(cascade.computed(carrier, "height", dot)).toBe("100%");
+    expect(cascade.computed(carrier, "border-radius", dot)).toBe("calc(infinity * 1px)");
   });
 
-  // The thumb sits in the track's grid cell, so percentages resolve against the track box.
+  // The thumb sits in the track's grid cell, so its inset resolves against the track box. It
+  // names the end lines too: with an auto end line, an absolute grid child reaches the far edge
+  // of the container, and the rail would run under the state text.
   it("places the thumb in the same grid cell as the track", () => {
     expect(cascade.computed(wrapper, "display")).toBe("inline-grid");
     expect(cascade.computed(wrapper, "position")).toBe("relative");
@@ -82,61 +94,16 @@ describe("Switch compiled with Tailwind", () => {
       expect(cascade.computed(element, "grid-column-start")).toBe("1");
       expect(cascade.computed(element, "grid-row-start")).toBe("1");
     }
+    expect(cascade.computed(thumb, "grid-column-end")).toBe("2");
+    expect(cascade.computed(thumb, "grid-row-end")).toBe("2");
     expect(cascade.computed(thumb, "position")).toBe("absolute");
   });
 
-  /**
-   * Resolve the dot geometry for a track of a given size, in px, the way a browser does: the rail
-   * is inset from the track, the dot's `100%` height is the rail's height, and in its translate
-   * `100cqw` is the rail's width and `100%` the dot's own width.
-   */
-  function dotBox(width: number, height: number, states: string[]) {
-    const resolve = (value: string | undefined, percent: number, cqw = 0) => {
-      if (value === undefined) return 0;
-      const expression = value
-        .replaceAll("var(--spacing)", "4")
-        .replaceAll("calc(", "(")
-        .replace(/(-?[\d.]+)cqw/g, (_, amount: string) => `(${(Number(amount) / 100) * cqw})`)
-        .replace(/(-?[\d.]+)%/g, (_, amount: string) => `(${(Number(amount) / 100) * percent})`)
-        .replace(/(-?[\d.]+)px/g, "$1");
-      if (!/^[\d\s.+\-*/()]+$/.test(expression)) throw new Error(`Cannot resolve ${value}`);
-      return Number(new Function(`return ${expression}`)());
-    };
-    const inset = resolve(cascade.computed(thumb, "inset"), 0);
-    const rail = { width: width - 2 * inset, height: height - 2 * inset };
-    const size = resolve(cascade.computed(thumb, "height", { states }), rail.height);
-    const ratio = cascade.computed(thumb, "aspect-ratio", { states });
-    const shift = resolve(
-      cascade.computed(thumb, "--tw-translate-x", { states }),
-      size,
-      rail.width,
-    );
-    return { size, ratio, start: inset + shift };
-  }
-
-  // A consumer can size the track with className; the thumb must still fit and travel fully.
-  it.each([
-    [44, 24],
-    [36, 24],
-    [56, 32],
-    [64, 40],
-  ])("keeps the thumb inside a %ix%ipx track with equal gaps, off and on", (width, height) => {
-    const off = dotBox(width, height, dot);
-    const on = dotBox(width, height, onDot);
-    expect(off.ratio).toBe("1 / 1");
-    expect(off.size).toBe(height - 8);
-    expect(off.start).toBe(4);
-    expect(on.size).toBe(height - 8);
-    expect(width - (on.start + on.size)).toBe(4);
-  });
-
+  // The dot is painted in the rail's text color, so one color transition on the rail fades it.
   it("contrasts the thumb with the track in both states", () => {
-    expect(cascade.computed(thumb, "background-color", { states: dot })).toBe(
-      "var(--muted-foreground)",
-    );
-    expect(cascade.computed(thumb, "background-color", { states: onDot })).toBe(
-      "var(--primary-foreground)",
-    );
+    expect(cascade.computed(carrier, "background-color", dot)).toBe("currentcolor");
+    expect(cascade.computed(thumb, "color")).toBe("var(--muted-foreground)");
+    expect(cascade.computed(thumb, "color", peerChecked)).toBe("var(--primary-foreground)");
   });
 
   it("fades the track colors in every motion mode, never the focus ring", () => {
@@ -151,16 +118,19 @@ describe("Switch compiled with Tailwind", () => {
 
   // Under reduced motion the dot jumps to its side while its color still fades.
   it("slides the thumb only when the user allows motion", () => {
-    for (const options of [{ states: dot }, { states: dot, ...motionReduced }]) {
-      const transition = transitionOf(cascade.computed, thumb, options);
-      expect(transition.properties).toEqual(["background-color"]);
-      expect(transition.durations).toEqual([durations.base]);
-      expect(transition.easings).toEqual([easings.inOut]);
+    for (const options of [{}, motionReduced, motionAllowed]) {
+      const color = transitionOf(cascade.computed, thumb, options);
+      expect(color.properties).toEqual(["color"]);
+      expect(color.durations).toEqual([durations.base]);
+      expect(color.easings).toEqual([easings.inOut]);
     }
-    const allowed = transitionOf(cascade.computed, thumb, { states: dot, ...motionAllowed });
-    expect(allowed.properties).toEqual(["background-color", "translate"]);
-    expect(allowed.durations).toEqual([durations.base]);
-    expect(allowed.easings).toEqual([easings.inOut]);
+    for (const options of [{}, motionReduced]) {
+      expect(transitionOf(cascade.computed, carrier, options).properties).toBeUndefined();
+    }
+    const slide = transitionOf(cascade.computed, carrier, motionAllowed);
+    expect(slide.properties).toEqual(["translate"]);
+    expect(slide.durations).toEqual([durations.base]);
+    expect(slide.easings).toEqual([easings.inOut]);
   });
 
   it("turns the track border destructive when invalid, even while on", () => {
@@ -190,8 +160,9 @@ describe("Switch compiled with Tailwind", () => {
   it("keeps the thumb visible in forced-colors mode", () => {
     const forced = { forcedColors: true };
     expect(cascade.computed(thumb, "forced-color-adjust", forced)).toBe("none");
-    expect(cascade.computed(thumb, "background-color", { ...forced, states: dot })).toBe(
-      "CanvasText",
+    expect(cascade.computed(thumb, "color", forced)).toBe("CanvasText");
+    expect(cascade.computed(carrier, "background-color", { ...forced, ...dot })).toBe(
+      "currentcolor",
     );
     expect(cascade.computed(track, "border-width")).toBe("1px");
   });
