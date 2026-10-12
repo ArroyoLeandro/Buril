@@ -459,6 +459,30 @@ describe("alert page", () => {
   });
 });
 
+describe("spinner page", () => {
+  const render = () => container.renderToString(componentPages["spinner"]!);
+
+  it("explains the status role, the hidden label and reduced motion", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/label/);
+    expect(visible).toMatch(/reduced motion/i);
+    expect(visible).toMatch(/separate items?/i);
+  });
+});
+
+describe("skeleton page", () => {
+  const render = () => container.renderToString(componentPages["skeleton"]!);
+
+  it("explains aria-busy on the loading region and announcing completion", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-busy=(&quot;|")true(&quot;|")/);
+    expect(visible).toMatch(/aria-hidden/);
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/reduced motion/i);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 
