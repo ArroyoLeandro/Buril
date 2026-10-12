@@ -37,6 +37,9 @@ function Checkbox({ className, indeterminate = false, ref, ...props }: CheckboxP
           // A 20px box; pair it with a label so the clickable target is at least 24px (rule 8).
           "peer col-start-1 row-start-1 size-5 shrink-0 cursor-pointer appearance-none rounded-sm border border-input bg-background",
           "checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary",
+          // The fill fades in every motion mode; outline-color is left out so the focus ring
+          // appears at once.
+          "transition-[background-color,border-color] duration-(--buril-duration-base,180ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
           // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           "aria-invalid:border-destructive",
@@ -56,9 +59,16 @@ function Checkbox({ className, indeterminate = false, ref, ...props }: CheckboxP
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="pointer-events-none invisible col-start-1 row-start-1 size-3.5 text-primary-foreground peer-checked:visible peer-indeterminate:invisible peer-disabled:opacity-50 forced-colors:hidden"
+        className={cn(
+          "pointer-events-none invisible col-start-1 row-start-1 size-3.5 text-primary-foreground peer-checked:visible peer-indeterminate:invisible peer-disabled:opacity-50 forced-colors:hidden",
+          // Drawn like a burin stroke: one dash as long as the path is offset by its whole length
+          // and slides into place when checked. The path inherits both dash properties. Under
+          // reduced motion there is no transition, so the check appears at once.
+          "[stroke-dasharray:1] [stroke-dashoffset:1] peer-checked:[stroke-dashoffset:0]",
+          "motion-safe:transition-[stroke-dashoffset] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
+        )}
       >
-        <path d="M5 12.5l4.5 4.5L19 7.5" />
+        <path pathLength={1} d="M5 12.5l4.5 4.5L19 7.5" />
       </svg>
       <svg
         aria-hidden="true"
@@ -68,7 +78,12 @@ function Checkbox({ className, indeterminate = false, ref, ...props }: CheckboxP
         stroke="currentColor"
         strokeWidth="3"
         strokeLinecap="round"
-        className="pointer-events-none invisible col-start-1 row-start-1 size-3.5 text-primary-foreground peer-indeterminate:visible peer-disabled:opacity-50 forced-colors:hidden"
+        className={cn(
+          "pointer-events-none invisible col-start-1 row-start-1 size-3.5 text-primary-foreground peer-indeterminate:visible peer-disabled:opacity-50 forced-colors:hidden",
+          // The dash grows across from the middle. Scaling is movement, so under reduced motion
+          // the dash is never scaled down and appears at once.
+          "motion-safe:scale-x-0 motion-safe:transition-[scale] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) motion-safe:peer-indeterminate:scale-x-100",
+        )}
       >
         <path d="M6 12h12" />
       </svg>

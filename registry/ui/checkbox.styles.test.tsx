@@ -3,6 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  motionAllowed,
+  motionReduced,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Checkbox } from "./checkbox";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -104,5 +112,54 @@ describe("Checkbox compiled with Tailwind", () => {
     expect(cascade.computed(box, "appearance", { forcedColors: true })).toBe("auto");
     expect(cascade.computed(check, "display", { forcedColors: true })).toBe("none");
     expect(cascade.computed(dash, "display", { forcedColors: true })).toBe("none");
+  });
+});
+
+describe("Checkbox motion", () => {
+  const focus = { states: [":focus", ":focus-visible"] };
+
+  it("fades the fill and border in every motion mode, never the focus ring", () => {
+    for (const options of [{}, focus, motionAllowed, motionReduced]) {
+      const transition = transitionOf(cascade.computed, box, options);
+      expectInstantFocusRing(transition.properties);
+      expect(transition.properties).toEqual(["background-color", "border-color"]);
+      expect(transition.durations).toEqual([durations.base]);
+      expect(transition.easings).toEqual([easings.out]);
+    }
+  });
+
+  // The check is drawn like a burin stroke: one dash as long as the path (pathLength="1") is
+  // offset by its whole length while unchecked and slides into place when checked. The dash
+  // properties are inherited, so the svg sets them for its path.
+  it("measures the check path as one unit long", () => {
+    expect(html).toMatch(/<path[^>]*pathLength="1"[^>]*d="M5 12.5/);
+    expect(cascade.computed(check, "stroke-dasharray")).toBe("1");
+  });
+
+  it("offsets the stroke by its whole length until checked", () => {
+    expect(cascade.computed(check, "stroke-dashoffset")).toBe("1");
+    expect(cascade.computed(check, "stroke-dashoffset", { states: [peer(":checked")] })).toBe("0");
+  });
+
+  it("draws the check only when motion is allowed; otherwise it appears at once", () => {
+    const allowed = transitionOf(cascade.computed, check, motionAllowed);
+    expect(allowed.properties).toEqual(["stroke-dashoffset"]);
+    expect(allowed.durations).toEqual([durations.base]);
+    expect(allowed.easings).toEqual([easings.out]);
+    expect(transitionOf(cascade.computed, check, motionReduced).properties).toBeUndefined();
+  });
+
+  it("grows the dash across when indeterminate, only when motion is allowed", () => {
+    const indeterminate = { states: [peer(":indeterminate")] };
+    expect(cascade.computed(dash, "--tw-scale-x", motionAllowed)).toBe("0%");
+    expect(cascade.computed(dash, "--tw-scale-x", { ...indeterminate, ...motionAllowed })).toBe(
+      "100%",
+    );
+    // Under reduced motion the dash is never scaled down, so it appears at full width.
+    expect(cascade.computed(dash, "--tw-scale-x", motionReduced)).toBeUndefined();
+    const allowed = transitionOf(cascade.computed, dash, motionAllowed);
+    expect(allowed.properties).toEqual(["scale"]);
+    expect(allowed.durations).toEqual([durations.base]);
+    expect(transitionOf(cascade.computed, dash, motionReduced).properties).toBeUndefined();
   });
 });
