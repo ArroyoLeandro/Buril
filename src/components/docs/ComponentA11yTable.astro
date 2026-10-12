@@ -1,0 +1,80 @@
+---
+import InlineCode from "../InlineCode.astro";
+import { localizedComponentDocs } from "../../data/component-docs";
+import { componentHref, documentedComponents } from "../../data/components";
+import { localizedHref } from "../../i18n/paths";
+import { getLocale, translator } from "../../i18n/ui";
+
+/**
+ * One row per documented component: its keys, its role and states, and the one note to remember,
+ * read from the same data as each component page, so the summary and the pages agree.
+ */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+const rows = documentedComponents.map((entry) => ({
+  entry,
+  docs: localizedComponentDocs(entry.slug, locale)!,
+}));
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      {t("a11y.componentsCaption")}
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("a11y.component")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("component.keyboard")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("a11y.aria")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(({ entry, docs }) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-normal`}>
+            <a
+              href={localizedHref(componentHref(entry.slug), locale)}
+              class="font-semibold underline underline-offset-4"
+            >
+              {entry.name}
+            </a>
+            <p class="mt-1 text-muted-foreground">
+              <InlineCode text={docs.aria.note} />
+            </p>
+          </th>
+          <td class={cell}>
+            {docs.keyboard && docs.keyboard.length > 0 ? (
+              <ul class="flex flex-col gap-1">
+                {docs.keyboard.map(({ key }) => (
+                  <li>
+                    <kbd class="font-body font-semibold">{key}</kbd>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span class="text-muted-foreground">{t("component.noKeyboard")}</span>
+            )}
+          </td>
+          <td class={cell}>
+            <p>
+              <InlineCode text={docs.aria.role} />
+            </p>
+            {docs.aria.states && (
+              <p class="mt-1 text-muted-foreground">
+                <InlineCode text={docs.aria.states} />
+              </p>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

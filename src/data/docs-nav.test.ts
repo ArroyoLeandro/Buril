@@ -38,6 +38,7 @@ describe("docsNav", () => {
       ["Introduction", "/docs"],
       ["Installation", "/docs/installation"],
       ["Theming", "/docs/theming"],
+      ["Accessibility", "/docs/accessibility"],
     ]);
   });
 

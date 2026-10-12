@@ -1,0 +1,97 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import ChecksTable from "../../components/docs/ChecksTable.astro";
+import ComponentA11yTable from "../../components/docs/ComponentA11yTable.astro";
+import InlineCode from "../../components/InlineCode.astro";
+import RulesTable from "../../components/docs/RulesTable.astro";
+import { knownLimits } from "../../data/accessibility";
+import { githubUrl } from "../../data/site";
+---
+
+<DocsLayout
+  title="Accessibility | Buril UI"
+  description="The accessibility rules every Buril component follows, how each one is checked, and the known limits."
+>
+  <h1 class="font-display text-3xl">Accessibility</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Every component targets WCAG 2.2 level AA and follows its pattern in the WAI-ARIA Authoring
+    Practices Guide. Eleven rules apply to all of them; this page says how each one is checked and
+    what is not covered yet.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">At a glance</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <strong>Target:</strong> WCAG 2.2 level AA.
+    </li>
+    <li>
+      <strong>Checked by the test suite:</strong> behavior tests, axe, TypeScript, lint, compiled
+      styles, token contrast and real-browser tests in Chromium.
+    </li>
+    <li>
+      <strong>Manual screen reader pass:</strong> pending. It is not recorded for any component yet.
+    </li>
+    <li>
+      <strong>Your part:</strong> give every control a visible label, keep contrast if you change
+      the theme, and pick heading levels that fit your page.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">The 11 rules</h2>
+  <p class="mt-4">
+    These are the rules from <code>COMPONENTS.md</code>, in plain words. A component is not done
+    until it follows all of them.
+  </p>
+  <RulesTable />
+
+  <h2 class="mt-10 font-display text-xl">How the checks work</h2>
+  <p class="mt-4">
+    Each kind of check answers a different question. jsdom tests what is announced; compiled-style
+    and browser tests see what is painted.
+  </p>
+  <ChecksTable />
+
+  <h2 class="mt-10 font-display text-xl">Components</h2>
+  <p class="mt-4">
+    What each component does with the keyboard and what screen readers hear. Each page has the full
+    keyboard table and accessibility notes.
+  </p>
+  <ComponentA11yTable />
+
+  <h2 class="mt-10 font-display text-xl">Known limits</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {knownLimits.map((limit) => (
+      <li>
+        <InlineCode text={limit.en} />
+      </li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Your part</h2>
+  <p class="mt-4">The components can only do so much. In your app, a few things are up to you:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Give every control a visible label: put inputs in a <code>Field</code>, and checkboxes and
+      switches in a <code>&lt;label&gt;</code>.
+    </li>
+    <li>
+      Describe the action in an <code>IconButton</code>'s <code>aria-label</code>, such as "Close
+      dialog", not the picture.
+    </li>
+    <li>
+      Announce progress and results from a <code>role="status"</code> region that is already on the
+      page.
+    </li>
+    <li>
+      Set <code>CardTitle</code>'s <code>as</code> so the page's heading levels skip none.
+    </li>
+    <li>Measure contrast in both color schemes if you change the palette.</li>
+  </ul>
+  <p class="mt-4">
+    Found a barrier?{" "}
+    <a href={`${githubUrl}/issues`} class="underline underline-offset-4">
+      Open an issue on GitHub
+    </a>{" "}
+    with the component, the browser and the assistive technology you used.
+  </p>
+</DocsLayout>
