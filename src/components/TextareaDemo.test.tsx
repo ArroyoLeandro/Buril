@@ -41,3 +41,11 @@ describe("TextareaDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("TextareaDemo in Spanish", () => {
+  it("labels the textarea and writes its limit in Spanish", () => {
+    render(<TextareaDemo locale="es" />);
+    const textarea = screen.getByRole("textbox", { name: "Mensaje" });
+    expect(textarea).toHaveAccessibleDescription(/Hasta 200 caracteres\./);
+  });
+});

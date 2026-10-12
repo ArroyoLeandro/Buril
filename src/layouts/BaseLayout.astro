@@ -1,9 +1,12 @@
 ---
 import "../styles/global.css";
+import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { SkipLink } from "../../registry/ui/skip-link";
 import { noFlashScript } from "../scripts/theme";
 import { githubUrl, licenseUrl } from "../data/site";
+import { alternates, localizedHref } from "../i18n/paths";
+import { getLocale, translator } from "../i18n/ui";
 
 interface Props {
   title: string;
@@ -12,30 +15,40 @@ interface Props {
   docs?: boolean;
 }
 
-const {
-  title,
-  description = "Accessible React components you copy into your project.",
-  docs = false,
-} = Astro.props;
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const { title, description = t("site.description"), docs = false } = Astro.props;
 
 const path = (Astro.url?.pathname ?? "").replace(/(.)\/$/, "$1");
 const current = (href: string) => (path === href ? "page" : undefined);
 
 const links = [
-  { name: "Docs", href: "/docs" },
-  { name: "Components", href: "/docs/components" },
+  { name: t("nav.docs"), href: localizedHref("/docs", locale) },
+  { name: t("nav.components"), href: localizedHref("/docs/components", locale) },
 ];
+
+// Every language version of this page, for search engines and the language switcher. A page that
+// is not translated yet lists none. Absolute once `site` is set in the Astro config.
+const versions = alternates(path).map((version) => ({
+  ...version,
+  href: Astro.site ? new URL(version.href, Astro.site).href : version.href,
+}));
+const defaultVersion = versions.find((version) => version.locale === "en");
 const linkClass =
   "rounded-full px-3 py-1.5 underline-offset-4 hover:underline aria-[current=page]:underline";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline set:html={noFlashScript} />
     <meta name="description" content={description} />
+    {versions.map(({ locale, href }) => (
+      <link rel="alternate" hreflang={locale} href={href} />
+    ))}
+    {defaultVersion && <link rel="alternate" hreflang="x-default" href={defaultVersion.href} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -46,10 +59,13 @@ const linkClass =
   </head>
   <body class="flex min-h-dvh flex-col">
     <!-- Static HTML: the browser moves focus to #main, which has tabindex="-1". -->
-    <SkipLink />
+    <SkipLink>{t("skipLink")}</SkipLink>
     <header class="border-b border-border bg-background lg:sticky lg:top-0 lg:z-40 lg:h-(--header-height)">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6 lg:h-full lg:flex-nowrap lg:py-0">
-        <a href="/" class="me-2 inline-flex min-h-10 items-center gap-2 rounded-full font-display">
+        <a
+          href={localizedHref("/", locale)}
+          class="me-2 inline-flex min-h-10 items-center gap-2 rounded-full font-display"
+        >
           <svg
             aria-hidden="true"
             focusable="false"
@@ -65,7 +81,7 @@ const linkClass =
           </svg>
           <span class="text-lg">Buril UI</span>
         </a>
-        <nav aria-label="Main" class="me-auto lg:flex-1">
+        <nav aria-label={t("nav.main")} class="me-auto lg:flex-1">
           <ul class="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm">
             {links.map(({ name, href }) => (
               <li>
@@ -90,7 +106,8 @@ const linkClass =
             </li>
           </ul>
         </nav>
-        <ThemeToggle />
+        <ThemeToggle locale={locale} />
+        <LanguageSwitcher locale={locale} versions={versions} />
       </div>
     </header>
     <div
@@ -118,14 +135,14 @@ const linkClass =
     <footer class="border-t border-border">
       <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-6 text-sm text-muted-foreground sm:px-6">
         <p>
-          Buril UI is released under the{" "}
+          {t("footer.licensePrefix")}{" "}
           <a href={licenseUrl} class="text-foreground underline underline-offset-4">
-            MIT license
+            {t("footer.licenseLink")}
           </a>
           .
         </p>
         <p>
-          Source code on{" "}
+          {t("footer.source")}{" "}
           <a href={githubUrl} class="text-foreground underline underline-offset-4">
             GitHub
           </a>

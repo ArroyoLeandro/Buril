@@ -1,0 +1,61 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SkeletonDemo from "../../../../components/SkeletonDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { regionExample } = componentExamples.skeleton;
+---
+
+<ComponentPage slug="skeleton">
+  <Fragment slot="lead">
+    Mantiene estable la disposición mientras carga el contenido, así que nada salta cuando llega.
+  </Fragment>
+
+  <SkeletonDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Solo decoración.</strong> Un skeleton es un <code>&lt;div&gt;</code> vacío con
+        <code>aria-hidden</code>: un bloque gris no significa nada para un lector de pantalla. Dale
+        forma con <code>className</code> para que se parezca al contenido que representa.
+      </li>
+      <li>
+        <strong>Marca la región como ocupada.</strong> Pon <code>aria-busy="true"</code> en la
+        región que está cargando y quítalo cuando el contenido esté listo. Algunos lectores de
+        pantalla esperan a que se quite para leer la región.
+      </li>
+      <li>
+        <strong>Anuncia que terminó.</strong> Los lectores de pantalla no anuncian el cambio de
+        <code>aria-busy</code>. Di "Perfil cargado." desde una región <code>role="status"</code> que
+        ya esté en la página, como hace la demo.
+      </li>
+      <li>
+        <strong>Movimiento reducido.</strong> Solo se anima si el usuario no pidió movimiento
+        reducido. En el modo de colores forzados, donde se quitan los rellenos, un borde mantiene
+        visible cada bloque.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Una región que carga</h3>
+    <p class="mt-4 text-muted-foreground">
+      Da a cada bloque la forma del contenido que representa, marca la región como ocupada y anuncia
+      cuando el contenido esté listo:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={regionExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/skeleton.tsx</code>, en la misma ruta que el Skeleton de shadcn. A
+    diferencia del de shadcn, tiene <code>aria-hidden</code> y no admite contenido. Solo necesita tu
+    helper <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión actual de
+    shadcn, la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

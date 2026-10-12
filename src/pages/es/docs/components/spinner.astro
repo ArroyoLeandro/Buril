@@ -1,0 +1,68 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SpinnerDemo from "../../../../components/SpinnerDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { sizeExample, resultExample } = componentExamples.spinner;
+---
+
+<ComponentPage slug="spinner">
+  <Fragment slot="lead">
+    Úsalo cuando no puedes prever la disposición de lo que se está cargando; si no, es mejor un
+    Skeleton.
+  </Fragment>
+
+  <SpinnerDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Un estado con nombre.</strong> El spinner es un elemento <code>role="status"</code>{" "}
+        con un <code>label</code> visualmente oculto, "Loading" por defecto. Di qué se está
+        cargando, como "Cargando comentarios". El dibujo tiene <code>aria-hidden</code>.
+      </li>
+      <li>
+        <strong>Movimiento reducido.</strong> Solo gira si el usuario no pidió movimiento reducido.
+        Si lo pidió, muestra tres puntos estáticos, que se siguen leyendo como "en curso"; un arco
+        congelado parecería roto.
+      </li>
+      <li>
+        <strong>Tamaños y color.</strong> <code>sm</code> (16px), <code>default</code> (24px) y
+        <code>lg</code> (32px). Se dibuja con el color de texto actual, así que también respeta el
+        modo de colores forzados.
+      </li>
+      <li>
+        <strong>Dentro de un botón.</strong> Usa la prop <code>loading</code> del Button; mantiene
+        el botón enfocable y conserva su nombre.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Tamaño y etiqueta</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={sizeExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Anunciar el resultado</h3>
+    <p class="mt-4 text-muted-foreground">
+      Un spinner insertado junto con su etiqueta no siempre se anuncia, y su desaparición nunca se
+      anuncia. Marca la zona que carga con <code>aria-busy</code> y di cuándo terminó desde una
+      región <code>role="status"</code> que ya esté en la página:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={resultExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/spinner.tsx</code>, en la misma ruta que el Spinner de shadcn. Spinner
+    y Skeleton son items separados, como en shadcn, así que cada uno conserva su ruta de importación
+    e instalas solo lo que usas. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

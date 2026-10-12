@@ -4,21 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import AlertDemo from "../../../components/AlertDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const insertExample = `{/* On the page from the start, empty. */}
-<div role="status">
-  {saved && (
-    <Alert>
-      <AlertTitle>Draft saved</AlertTitle>
-    </Alert>
-  )}
-</div>`;
-
-const liveExample = `{/* Rendered before the upload starts; only its text changes. */}
-<Alert live="polite">
-  <AlertTitle>Upload</AlertTitle>
-  <AlertDescription>{progressMessage}</AlertDescription>
-</Alert>`;
+const { insertExample, liveExample } = componentExamples.alert;
 ---
 
 <ComponentPage slug="alert">

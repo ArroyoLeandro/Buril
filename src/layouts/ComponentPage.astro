@@ -6,13 +6,17 @@ import InlineCode from "../components/InlineCode.astro";
 import InstallCommand from "../components/InstallCommand.astro";
 import Tabs from "../components/Tabs.astro";
 import { codeTheme } from "../components/code-theme";
-import { componentDocs } from "../data/component-docs";
-import { findComponent } from "../data/components";
+import { localizedComponentDocs } from "../data/component-docs";
+import { componentDescription, findComponent } from "../data/components";
+import { plainDemoSource } from "../i18n/demo-source";
+import { getLocale, translator } from "../i18n/ui";
 import registry from "../../registry.json";
 
 /**
- * Shared page for one documented component. Name, description, install item and source file come
- * from `src/data/components.ts`; usage, API and accessibility from `src/data/component-docs.ts`.
+ * Shared page for one documented component, in the language of its URL. Name, description,
+ * install item and source file come from `src/data/components.ts`; usage, API and accessibility
+ * from `src/data/component-docs.ts`; the template's own labels from the UI dictionary. The English
+ * page and its Spanish twin under `/es/` each pass their own prose through the slots.
  *
  * Sections, in page order: Preview/Code tabs, Installation (CLI/Manual tabs), Usage, Examples,
  * API reference, Accessibility, then any extra sections. Slots:
@@ -27,8 +31,11 @@ interface Props {
   slug: string;
 }
 
+const locale = getLocale(Astro.url);
+const t = translator(locale);
 const entry = findComponent(Astro.props.slug);
-const docs = componentDocs[entry.slug];
+const description = componentDescription(entry, locale);
+const docs = localizedComponentDocs(entry.slug, locale);
 
 // Every shipped component file and every demo, as raw text at build time: never copied by hand.
 const sources = import.meta.glob<string>(
@@ -44,37 +51,37 @@ const demos = import.meta.glob<string>(["../components/*Demo.tsx"], {
   eager: true,
 });
 const demoName = `${entry.slug.replace(/(^|-)(\w)/g, (_, __, letter: string) => letter.toUpperCase())}Demo`;
-// Show the imports a consumer writes, not this repository's relative paths.
-const demoSource = demos[`../components/${demoName}.tsx`]?.replace(
-  /(["'])(?:\.\.\/)+registry\/ui\//g,
-  "$1@/components/ui/",
-);
+// Show the code a consumer writes: imports from components/ui, not this repository's relative
+// paths, and plain English strings instead of the docs site's translation helpers.
+const raw = demos[`../components/${demoName}.tsx`];
+const demoSource =
+  raw && plainDemoSource(raw).replace(/(["'])(?:\.\.\/)+registry\/ui\//g, "$1@/components/ui/");
 
 const item = (registry.items as { name: string; dependencies?: string[] }[]).find(
   ({ name }) => name === entry.item,
 );
 const dependencies = item?.dependencies ?? [];
-const fileName = entry.source.split("/").pop();
+const fileName = entry.source.split("/").pop() ?? entry.source;
 
 const h2 = "mt-10 font-display text-xl";
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 const cell = "px-2 py-2 align-top sm:px-4";
 ---
 
-<DocsLayout title={`${entry.name} | Buril UI`} description={entry.description}>
+<DocsLayout title={`${entry.name} | Buril UI`} description={description}>
   <h1 class="font-display text-3xl">{entry.name}</h1>
   <p class="mt-4 text-muted-foreground">
-    {entry.description}
+    {description}
     <slot name="lead" />
   </p>
 
-  <h2 class={h2}>Example</h2>
+  <h2 class={h2}>{t("component.example")}</h2>
   <Tabs
     id="example"
-    label="Example"
+    label={t("component.example")}
     tabs={[
-      { id: "preview", label: "Preview" },
-      { id: "code", label: "Code" },
+      { id: "preview", label: t("component.preview") },
+      { id: "code", label: t("component.code") },
     ]}
   >
     <div slot="preview" class="bg-paper-grid border border-border p-6">
@@ -84,27 +91,27 @@ const cell = "px-2 py-2 align-top sm:px-4";
       {demoSource ? (
         <Code code={demoSource} lang="tsx" theme={codeTheme} />
       ) : (
-        <p class="text-muted-foreground">This demo has no source file yet.</p>
+        <p class="text-muted-foreground">{t("component.noDemoSource")}</p>
       )}
     </div>
   </Tabs>
 
-  <h2 class={h2}>Installation</h2>
+  <h2 class={h2}>{t("component.installation")}</h2>
   <Tabs
     id="installation"
-    label="Installation method"
+    label={t("component.installMethod")}
     tabs={[
-      { id: "cli", label: "CLI" },
-      { id: "manual", label: "Manual" },
+      { id: "cli", label: t("component.cli") },
+      { id: "manual", label: t("component.manual") },
     ]}
   >
     <div slot="cli">
-      <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
+      <p class="mt-4 text-muted-foreground">{t("component.installFromUrl")}</p>
       <InstallCommand
         id="install-url"
         commands={[`add https://example.com/r/${entry.item}.json`]}
       />
-      <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
+      <p class="mt-4 text-muted-foreground">{t("component.installByName")}</p>
       <InstallCommand
         id="install-namespace"
         commands={[
@@ -113,10 +120,7 @@ const cell = "px-2 py-2 align-top sm:px-4";
         ]}
       />
       <p class="mt-4 text-muted-foreground">
-        Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
-        version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so
-        when the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to
-        your dependencies.
+        <InlineCode text={t("component.cnNote")} />
       </p>
       <slot name="install-notes" />
     </div>
@@ -124,19 +128,17 @@ const cell = "px-2 py-2 align-top sm:px-4";
       <ol class="mt-4 list-decimal space-y-4 pl-6">
         {dependencies.length > 0 && (
           <li>
-            Install the dependencies:
+            {t("component.installDependencies")}
             <div class={code}>
               <Code code={`npm install ${dependencies.join(" ")}`} lang="bash" theme={codeTheme} />
             </div>
           </li>
         )}
         <li>
-          Check that <code>lib/utils.ts</code> exports <code>cn()</code>. shadcn's
-          <code>init</code> creates it.
+          <InlineCode text={t("component.checkUtils")} />
         </li>
         <li>
-          Copy the source into <code>components/ui/{fileName}</code>. It is read from
-          <code>{entry.source}</code> at build time.
+          <InlineCode text={t("component.copySource", { file: fileName, source: entry.source })} />
           <div class={code}>
             <Code code={source} lang="tsx" theme={codeTheme} />
           </div>
@@ -147,7 +149,7 @@ const cell = "px-2 py-2 align-top sm:px-4";
 
   {docs && (
     <>
-      <h2 class={h2}>Usage</h2>
+      <h2 class={h2}>{t("component.usage")}</h2>
       <div class={code}>
         <Code code={docs.usage} lang="tsx" theme={codeTheme} />
       </div>
@@ -157,14 +159,14 @@ const cell = "px-2 py-2 align-top sm:px-4";
 
   {Astro.slots.has("examples") && (
     <>
-      <h2 class={h2}>Examples</h2>
+      <h2 class={h2}>{t("component.examples")}</h2>
       <slot name="examples" />
     </>
   )}
 
   {docs && (
     <>
-      <h2 class={h2}>API reference</h2>
+      <h2 class={h2}>{t("component.api")}</h2>
       {docs.api.map((api) => (
         <>
           <h3 class="mt-8 font-display text-lg">{api.component}</h3>
@@ -177,7 +179,12 @@ const cell = "px-2 py-2 align-top sm:px-4";
             <table class="w-full border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-border">
-                  {["Prop", "Type", "Default", "Description"].map((header) => (
+                  {[
+                    t("component.prop"),
+                    t("component.type"),
+                    t("component.default"),
+                    t("component.description"),
+                  ].map((header) => (
                     <th scope="col" class={`${cell} font-semibold`}>
                       {header}
                     </th>
@@ -196,10 +203,12 @@ const cell = "px-2 py-2 align-top sm:px-4";
                     <td class={`${cell} wrap-anywhere`}>
                       {prop.default ? (
                         <code>{prop.default}</code>
+                      ) : prop.defaultText ? (
+                        <InlineCode text={prop.defaultText} />
                       ) : (
                         <>
                           <span aria-hidden="true">–</span>
-                          <span class="sr-only">None</span>
+                          <span class="sr-only">{t("component.none")}</span>
                         </>
                       )}
                     </td>
@@ -214,18 +223,18 @@ const cell = "px-2 py-2 align-top sm:px-4";
         </>
       ))}
 
-      <h2 class={h2}>Accessibility</h2>
+      <h2 class={h2}>{t("component.accessibility")}</h2>
       {docs.keyboard && docs.keyboard.length > 0 && (
         <div class="mt-4 border border-border">
           <table class="w-full border-collapse text-left text-sm">
-            <caption class="sr-only">Keyboard</caption>
+            <caption class="sr-only">{t("component.keyboard")}</caption>
             <thead>
               <tr class="border-b border-border">
                 <th scope="col" class={`${cell} font-semibold`}>
-                  Key
+                  {t("component.key")}
                 </th>
                 <th scope="col" class={`${cell} font-semibold`}>
-                  Action
+                  {t("component.action")}
                 </th>
               </tr>
             </thead>

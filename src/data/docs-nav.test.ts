@@ -62,7 +62,7 @@ describe("docsNav", () => {
   });
 
   it("adds groups for new categories and keeps an entry's status", () => {
-    const groups = docsNav([
+    const groups = docsNav("en", [
       entry({ slug: "button", name: "Button" }),
       entry({ slug: "card", name: "Card", status: "new" }),
       entry({ slug: "mystery", name: "Mystery" }),

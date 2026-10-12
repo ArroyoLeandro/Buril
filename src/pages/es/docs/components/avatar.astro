@@ -1,0 +1,65 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import AvatarDemo from "../../../../components/AvatarDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { fallbackExample, decorativeExample } = componentExamples.avatar;
+---
+
+<ComponentPage slug="avatar">
+  <Fragment slot="lead">
+    <code>alt</code> es obligatoria, así que todo avatar tiene un nombre o está marcado como
+    decorativo.
+  </Fragment>
+
+  <AvatarDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Ponle nombre con alt.</strong> Usa el nombre de la persona, como "Ada Lovelace", no
+        "avatar" ni "foto de perfil".
+      </li>
+      <li>
+        <strong>Iniciales de respaldo.</strong> Sin <code>src</code>, o si la imagen no carga, el
+        avatar muestra las iniciales tomadas de <code>alt</code> (o de <code>fallback</code>). El
+        respaldo tiene <code>role="img"</code> con <code>alt</code> como nombre, y las iniciales
+        tienen <code>aria-hidden</code>, así que los lectores de pantalla oyen "Ada Lovelace,
+        imagen", no "A L".
+      </li>
+      <li>
+        <strong>Tamaños.</strong> <code>sm</code> (32px), <code>default</code> (40px) y
+        <code>lg</code> (48px). Las iniciales usan los colores atenuados; en el modo de colores
+        forzados, un borde mantiene visible el círculo.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Tamaños y un respaldo propio</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={fallbackExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Avatares decorativos</h3>
+    <p class="mt-4 text-muted-foreground">
+      Cuando el nombre ya está junto al avatar, pasa <code>alt=""</code>. La imagen, o su respaldo,
+      queda oculta para los lectores de pantalla, así que el nombre no se lee dos veces:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={decorativeExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/avatar.tsx</code>, en la misma ruta que el Avatar de shadcn, pero como
+    un solo componente: <code>src</code>, <code>alt</code> y <code>fallback</code> son props en vez
+    de las partes <code>AvatarImage</code> y <code>AvatarFallback</code>. Necesita
+    <code>class-variance-authority</code> y tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

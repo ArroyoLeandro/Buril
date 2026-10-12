@@ -47,3 +47,13 @@ describe("InputDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("InputDemo in Spanish", () => {
+  it("labels the inputs and writes the error in Spanish", async () => {
+    render(<InputDemo locale="es" />);
+    expect(screen.getByRole("textbox", { name: "Nombre completo" })).toBeInTheDocument();
+    const username = screen.getByRole("textbox", { name: "Nombre de usuario" });
+    await userEvent.type(username, "ada lovelace");
+    expect(username).toHaveAccessibleDescription(/El nombre de usuario no puede tener espacios\./);
+  });
+});

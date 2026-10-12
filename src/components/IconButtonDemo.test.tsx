@@ -49,3 +49,14 @@ describe("IconButtonDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("IconButtonDemo in Spanish", () => {
+  it("names every icon button and announces the refresh in Spanish", () => {
+    vi.useFakeTimers();
+    render(<IconButtonDemo locale="es" />);
+    expect(screen.getByRole("button", { name: "Agregar elemento (icon-sm)" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Cerrar panel" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Actualizar resultados" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Actualizando resultados…");
+  });
+});

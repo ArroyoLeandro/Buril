@@ -1,19 +1,30 @@
 import { Link } from "../../registry/ui/link";
+import { demoHref, demoTranslator } from "../i18n/demos";
+import type { Locale } from "../i18n/ui";
 
-export default function LinkDemo() {
+interface Props {
+  /** Language of the text and of the pages the links open. */
+  locale?: Locale;
+}
+
+export default function LinkDemo({ locale = "en" }: Props) {
+  const t = demoTranslator(locale);
+  const href = demoHref(locale);
+
   return (
     <div className="flex flex-col gap-8">
       <section aria-labelledby="demo-link-variants" className="flex flex-col gap-3">
         <h3 id="demo-link-variants" className="text-sm font-semibold">
-          Variants
+          {t("Variants")}
         </h3>
         <p>
-          Read the <Link href="/docs/components/button">Button docs</Link> first.
+          {t("Start with the")}{" "}
+          <Link href={href("/docs/components/button")}>{t("Button docs")}</Link>.
         </p>
         <p className="text-sm text-muted-foreground">
-          Muted links suit secondary text, such as a{" "}
-          <Link href="/" variant="muted">
-            footer link
+          {t("Muted links suit secondary text, such as a")}{" "}
+          <Link href={href("/")} variant="muted">
+            {t("footer link")}
           </Link>
           .
         </p>
@@ -21,12 +32,12 @@ export default function LinkDemo() {
 
       <section aria-labelledby="demo-link-external" className="flex flex-col gap-3">
         <h3 id="demo-link-external" className="text-sm font-semibold">
-          Opens in a new tab
+          {t("Opens in a new tab")}
         </h3>
         <p>
-          Buril follows the{" "}
+          {t("Buril follows the")}{" "}
           <Link href="https://www.w3.org/WAI/ARIA/apg/patterns/link/" external>
-            APG link pattern
+            {t("APG link pattern")}
           </Link>
           .
         </p>

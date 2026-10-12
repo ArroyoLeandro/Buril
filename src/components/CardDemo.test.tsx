@@ -19,7 +19,7 @@ describe("CardDemo", () => {
   it("makes the article card one link named by its title", () => {
     render(<CardDemo />);
     const link = screen.getByRole("link", { name: "Accessible forms" });
-    expect(link).toHaveAttribute("href", "/components/field");
+    expect(link).toHaveAttribute("href", "/docs/components/field");
     expect(link).toHaveClass("after:absolute", "after:inset-0");
     expect(screen.getAllByRole("link")).toHaveLength(1);
   });
@@ -27,5 +27,17 @@ describe("CardDemo", () => {
   it("has no axe violations", async () => {
     const { container } = render(<CardDemo />);
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("CardDemo in Spanish", () => {
+  it("writes both cards in Spanish and links the Spanish Field page", () => {
+    render(<CardDemo locale="es" />);
+    expect(screen.getByRole("heading", { name: "Plan básico" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Elegir el plan básico" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Formularios accesibles" })).toHaveAttribute(
+      "href",
+      "/es/docs/components/field",
+    );
   });
 });

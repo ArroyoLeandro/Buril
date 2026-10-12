@@ -1,18 +1,7 @@
 ---
 import DocsLayout from "../../layouts/DocsLayout.astro";
-import { componentCategory, documentedComponents } from "../../data/components";
-import { docsNav } from "../../data/docs-nav";
-
-// Same grouping and order as the sidebar, with each component's description.
-const descriptions = new Map(
-  documentedComponents.map((entry) => [entry.name, entry.description] as const),
-);
-const groups = docsNav()
-  .filter(({ title }) => documentedComponents.some((entry) => componentCategory(entry) === title))
-  .map(({ title, items }) => ({
-    title,
-    items: items.map((item) => ({ ...item, description: descriptions.get(item.name) ?? "" })),
-  }));
+import ComponentIndex from "../../components/docs/ComponentIndex.astro";
+import { documentedComponents } from "../../data/components";
 ---
 
 <DocsLayout
@@ -25,19 +14,5 @@ const groups = docsNav()
     the install command, the API and its keyboard and screen reader behavior.
   </p>
 
-  {groups.map(({ title, items }) => (
-    <section>
-      <h2 class="mt-10 font-display text-xl">{title}</h2>
-      <ul class="mt-4 grid border-t border-l border-border sm:grid-cols-2">
-        {items.map(({ name, href, description }) => (
-          <li class="border-r border-b border-border">
-            <a href={href} class="block h-full p-5 hover:bg-secondary">
-              <span class="font-semibold underline underline-offset-4">{name}</span>
-              <span class="mt-2 block text-sm text-muted-foreground">{description}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <ComponentIndex />
 </DocsLayout>

@@ -33,3 +33,14 @@ describe("SwitchDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("SwitchDemo in Spanish", () => {
+  it("labels the switches and announces each change in Spanish", async () => {
+    render(<SwitchDemo locale="es" />);
+    await userEvent.click(screen.getByRole("switch", { name: "Notificaciones push" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Notificaciones push activadas.");
+    await userEvent.click(screen.getByRole("switch", { name: "Notificaciones por correo" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Notificaciones por correo desactivadas.");
+    expect(screen.getByRole("switch", { name: "Notificaciones por SMS" })).toBeDisabled();
+  });
+});

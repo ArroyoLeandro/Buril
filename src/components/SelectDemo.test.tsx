@@ -35,3 +35,15 @@ describe("SelectDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("SelectDemo in Spanish", () => {
+  it("labels the selects and reports errors and success in Spanish", async () => {
+    render(<SelectDemo locale="es" />);
+    const size = screen.getByRole("combobox", { name: /Talla/ });
+    await userEvent.click(screen.getByRole("button", { name: "Agregar al carrito" }));
+    expect(size).toHaveAccessibleDescription(/Elige una talla\./);
+    await userEvent.selectOptions(size, "m");
+    await userEvent.click(screen.getByRole("button", { name: "Agregar al carrito" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Se agregó la talla Mediana al carrito.");
+  });
+});

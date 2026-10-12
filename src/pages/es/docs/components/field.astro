@@ -1,0 +1,104 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import FieldDemo from "../../../../components/FieldDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { renderPropExample, childExample } = componentExamples.field;
+---
+
+<ComponentPage slug="field">
+  <Fragment slot="lead">
+    Renderiza un <code>&lt;label&gt;</code> real y vincula la ayuda y el error por id, así que nunca
+    conectas <code>aria-describedby</code> a mano. No importa ningún control, así que funciona con
+    cualquier input, textarea o select nativo.
+  </Fragment>
+
+  <FieldDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <p class="mt-4 text-muted-foreground">
+      La API principal es una render prop: una función que recibe las props del control y las
+      expande sobre tu elemento.
+    </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Descripción y error</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={renderPropExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Un elemento como hijo</h3>
+    <p class="mt-4 text-muted-foreground">
+      También funciona con un solo elemento como hijo. Field le agrega las mismas props con
+      <code>cloneElement</code>: conserva el <code>id</code> propio del hijo y suma sus ids al
+      <code>aria-describedby</code> que ya tenga el hijo.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={childExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Errores</h3>
+    <p class="mt-4 text-muted-foreground">
+      El error aparece debajo del control con un icono y texto en el color destructivo, así que el
+      color nunca es la única señal. Los lectores de pantalla lo oyen con el prefijo "Error:".
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      Está dentro de una región con <code>aria-live="polite"</code> que siempre está en la página,
+      incluso vacía. Los lectores de pantalla solo anuncian los cambios de una región viva que ya
+      existe, así que un error insertado junto con su región a menudo pasa desapercibido. Cuando el
+      envío de un formulario falla, mueve también el foco al primer campo no válido, como hace la
+      demo.
+    </p>
+
+    <h3 class="mt-8 font-display text-lg">Obligatorio</h3>
+    <p class="mt-4 text-muted-foreground">
+      Un campo obligatorio muestra "(required)" como texto junto a la etiqueta, nunca como un color
+      o un asterisco solo. El control recibe el atributo nativo <code>required</code>, que los
+      lectores de pantalla anuncian, así que la marca está oculta para ellos y no la oyen dos veces.
+      Las burbujas de validación nativas siguen apareciendo al enviar, salvo que el formulario tenga
+      <code>noValidate</code>.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      Con una render prop, expande todas las props que recibes, <code>required</code> incluida. Si
+      el control renderizado no es <code>required</code> ni tiene <code>aria-required="true"</code>,
+      el campo deja que los lectores de pantalla lean la marca como parte de la etiqueta, para que
+      el requisito nunca se pierda, y en desarrollo muestra una advertencia que nombra el control.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      El componente escribe "(required)" y "Error:" en inglés, también en esta demo. El código es
+      tuyo: si tu sitio está en otro idioma, cambia esos textos en tu copia de
+      <code>components/ui/field.tsx</code>.
+    </p>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/field.tsx</code> y solo necesita tu helper <code>cn()</code>. Si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo; responder que no es seguro.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Qué conecta</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      <strong>Un id</strong> para el control, generado salvo que el hijo ya tenga uno, y el
+      <code>for</code> de la etiqueta. Hacer clic en la etiqueta enfoca el control.
+    </li>
+    <li>
+      <strong>Una descripción:</strong> <code>aria-describedby</code> enumera la descripción y luego
+      el error. Los lectores de pantalla los leen después del nombre.
+    </li>
+    <li>
+      <strong>El estado no válido:</strong> <code>aria-invalid="true"</code> mientras
+      <code>error</code> tiene valor. Dale estilo al borde no válido a partir de él, pero lo que le
+      dice a la persona qué corregir es el texto del error.
+    </li>
+    <li>
+      <strong>El estado obligatorio:</strong> el atributo nativo <code>required</code> cuando el
+      campo es obligatorio.
+    </li>
+  </ul>
+</ComponentPage>

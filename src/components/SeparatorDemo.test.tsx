@@ -23,3 +23,12 @@ describe("SeparatorDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("SeparatorDemo in Spanish", () => {
+  it("names the navigation and its links in Spanish, linking Spanish pages", () => {
+    render(<SeparatorDemo locale="es" />);
+    expect(screen.getByRole("navigation", { name: "Proyecto" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Documentación" })).toHaveAttribute("href", "/es/docs");
+    expect(screen.getByRole("link", { name: "Inicio" })).toHaveAttribute("href", "/es/");
+  });
+});

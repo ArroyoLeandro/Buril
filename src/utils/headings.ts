@@ -28,6 +28,8 @@ export function plainText(html: string) {
 
 export function slugify(html: string) {
   return plainText(html)
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // "Instalación" → "instalacion", not "instalaci-n"
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");

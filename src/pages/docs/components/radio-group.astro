@@ -4,21 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import RadioGroupDemo from "../../../components/RadioGroupDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const example = `import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-<RadioGroup
-  legend="Delivery"
-  name="delivery"
-  value={delivery}
-  onValueChange={setDelivery}
->
-  <RadioGroupItem value="standard">Standard</RadioGroupItem>
-  <RadioGroupItem value="express">Express</RadioGroupItem>
-  <RadioGroupItem value="drone" disabled>
-    Drone (unavailable)
-  </RadioGroupItem>
-</RadioGroup>`;
+const { example } = componentExamples["radio-group"];
 ---
 
 <ComponentPage slug="radio-group">

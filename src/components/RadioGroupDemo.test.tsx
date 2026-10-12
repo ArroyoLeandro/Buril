@@ -31,3 +31,14 @@ describe("RadioGroupDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("RadioGroupDemo in Spanish", () => {
+  it("names the group and the options and follows the choice in Spanish", async () => {
+    render(<RadioGroupDemo locale="es" />);
+    expect(screen.getByRole("group", { name: "Entrega" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Estándar, de 3 a 5 días" })).toBeChecked();
+    await userEvent.click(screen.getByRole("radio", { name: "Exprés, al día siguiente" }));
+    expect(screen.getByText("Entrega: Exprés, al día siguiente.")).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Dron (no disponible)" })).toBeDisabled();
+  });
+});

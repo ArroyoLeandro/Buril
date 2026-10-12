@@ -1,0 +1,99 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import TokenTable from "../../../components/docs/TokenTable.astro";
+import { codeTheme } from "../../../components/code-theme";
+import { darkModeExample, overrideRedExample } from "../../../data/snippets";
+import { noFlashScript } from "../../../scripts/theme";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Temas | Buril UI"
+  description="Los tokens de diseño de Buril, el modo oscuro y cómo cambiar la paleta."
+>
+  <h1 class="font-display text-3xl">Temas</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Los componentes leen los tokens estándar de shadcn, así que funcionan con cualquier tema de
+    shadcn. El tema opcional de Buril los define como tinta sobre papel, con un único rojo para el
+    foco, la decoración y las acciones destructivas.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Capas de tokens</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>
+      <strong>Primitivos</strong>, <code>--buril-*</code>: la paleta en bruto, como
+      <code>--buril-paper</code> y <code>--buril-ink</code>. Nunca cambian con el esquema de color.
+      Solo los usa este sitio de documentación; el tema del registry escribe los valores finales.
+    </li>
+    <li>
+      <strong>Variables de shadcn</strong>, como <code>--background</code> y <code>--primary</code>.
+      Cambian entre claro y oscuro, y son los únicos tokens de los que dependen los componentes.
+    </li>
+    <li>
+      <strong>Extras de Buril</strong>: <code>--decor</code> para la decoración y{" "}
+      <code>--grid</code>
+      para las líneas de la grilla. La decoración siempre tiene un valor alternativo, así que los
+      componentes funcionan también sin ellos.
+    </li>
+  </ol>
+  <p class="mt-4">
+    Un bloque <code>@theme inline</code> asigna cada variable a un color de Tailwind, de modo que
+    <code>bg-background</code> y <code>text-primary</code> siguen el esquema activo.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tokens</h2>
+  <TokenTable />
+
+  <h2 class="mt-10 font-display text-xl">Modo oscuro</h2>
+  <p class="mt-4">
+    El tema lee dos clases en <code>&lt;html&gt;</code>: <code>.dark</code> activa el modo oscuro y
+    <code>.light</code> fuerza el modo claro. Sin ninguna de las dos, una media query
+    <code>prefers-color-scheme</code> sigue al sistema, así que la página respeta la configuración
+    de quien la visita sin JavaScript.
+  </p>
+  <div class={code}>
+    <Code code={darkModeExample} lang="html" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    El tema redefine la variante <code>dark:</code> de Tailwind con la misma regla, así que las
+    utilidades <code>dark:</code> coinciden con los tokens. Por eso un selector de tema debe poner
+    <code>.light</code> para forzar el modo claro; quitar <code>.dark</code> solo vuelve a la
+    configuración del sistema. Con next-themes, <code>attribute="class"</code> ya lo hace.
+  </p>
+
+  <h3 class="mt-8 font-display text-lg">Evitar un parpadeo</h3>
+  <p class="mt-4">
+    Si guardas la elección de quien visita la página, aplícala antes del primer pintado con un
+    script en línea al principio de <code>&lt;head&gt;</code>. Este sitio usa este:
+  </p>
+  <div class={code}>
+    <Code code={noFlashScript} lang="js" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Cambiar el rojo</h2>
+  <p class="mt-4">
+    El rojo tiene un significado, así que se limita a tres tokens: <code>--decor</code> para la
+    decoración, <code>--ring</code> para el anillo de foco y <code>--destructive</code> para las
+    acciones destructivas y los errores. Para usar tu propio color, redefínelos después del tema, en
+    los tres bloques:
+  </p>
+  <div class={code}>
+    <Code code={overrideRedExample} lang="css" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Mantén <code>--ring</code> en al menos 3:1 frente a <code>--background</code>, para que el
+      foco siga visible.
+    </li>
+    <li>
+      Mantén <code>--destructive</code> en al menos 4.5:1 frente a <code>--background</code>, porque
+      lo usa el texto de los errores.
+    </li>
+    <li>
+      Mide los dos esquemas: un color que pasa sobre el papel puede fallar sobre el fondo oscuro.
+    </li>
+  </ul>
+</DocsLayout>

@@ -1,0 +1,70 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import SeparatorDemo from "../../../../components/SeparatorDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { verticalExample } = componentExamples.separator;
+---
+
+<ComponentPage slug="separator">
+  <Fragment slot="lead">
+    Es horizontal por defecto, como un <code>&lt;hr&gt;</code> nativo.
+  </Fragment>
+
+  <SeparatorDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Semántico.</strong> Un separador horizontal es un <code>&lt;hr&gt;</code>, que los
+        lectores de pantalla anuncian como separador entre secciones. Uno vertical es un
+        <code>&lt;div&gt;</code> con <code>role="separator"</code> y
+        <code>aria-orientation="vertical"</code>. Ninguno de los dos recibe el foco.
+      </li>
+      <li>
+        <strong>Decorativo.</strong> Cuando la línea solo decora, por ejemplo entre enlaces que ya
+        son elementos separados, pasa <code>decorative</code>. Renderiza <code>role="none"</code>{" "}
+        con <code>aria-hidden</code>, así que los lectores de pantalla lo omiten.
+      </li>
+      <li>
+        <strong>Vertical en una fila.</strong> La línea vertical se estira hasta el alto de su fila
+        flex; dale una altura a la fila o deja que su contenido la defina.
+      </li>
+      <li>
+        <strong>Colores forzados.</strong> La línea es un borde, no un fondo, así que sigue visible
+        en el modo de colores forzados.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Vertical, entre enlaces</h3>
+    <p class="mt-4 text-muted-foreground">
+      Los enlaces ya son elementos separados, así que la línea solo decora:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={verticalExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/separator.tsx</code>, con la misma ruta y las mismas props que el
+    Separator de shadcn, pero sin Radix: el horizontal es un <code>&lt;hr&gt;</code> nativo. Solo
+    necesita tu helper <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión
+    actual de shadcn, la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Color</h2>
+  <p class="mt-4 text-muted-foreground">
+    Un separador que marca la estructura es un gráfico que hay que ver, así que debería alcanzar un
+    contraste de 3:1 con la página. Usa el color <code>border</code>, el token pensado para los
+    divisores. En el tema de Buril es tinta, muy por encima de 3:1, y coincide con las líneas
+    grabadas de la cuadrícula. Para una línea más discreta, pasa
+    <code>className="border-input"</code>: Buril la mide en 3.72:1 en modo claro y 3.35:1 en modo
+    oscuro. Las mezclas más claras quedan por debajo de 3:1, así que resérvalas para líneas
+    decorativas.
+  </p>
+</ComponentPage>

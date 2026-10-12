@@ -46,3 +46,15 @@ describe("BadgeDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("BadgeDemo in Spanish", () => {
+  it("labels the badges and announces the change in Spanish", async () => {
+    render(<BadgeDemo locale="es" />);
+    expect(screen.getByText("Fallido")).toBeInTheDocument();
+    expect(screen.getByText("En preparación")).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Marcar el pedido 1042 como enviado" }),
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("Pedido 1042 marcado como enviado.");
+  });
+});

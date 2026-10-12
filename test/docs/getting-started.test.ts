@@ -8,7 +8,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import astroConfig from "../../astro.config.mjs";
-import { componentHref, documentedComponents } from "../../src/data/components";
+import {
+  componentDescription,
+  componentHref,
+  documentedComponents,
+} from "../../src/data/components";
 import { noFlashScript } from "../../src/scripts/theme";
 import { readTokens } from "../../src/utils/tokens";
 
@@ -193,6 +197,159 @@ describe("component URLs", () => {
     const redirects = astroConfig.redirects ?? {};
     for (const { slug } of documentedComponents) {
       expect(redirects[`/components/${slug}`], slug).toBe(`/docs/components/${slug}`);
+    }
+  });
+});
+
+describe("Spanish Getting Started", () => {
+  const spanish = import.meta.glob<AstroComponentFactory>("../../src/pages/es/docs/*.astro", {
+    eager: true,
+    import: "default",
+  });
+  const pageEs = (name: string) => spanish[`../../src/pages/es/docs/${name}.astro`];
+  const renderEs = (name: string, path: string) => {
+    expect(pageEs(name), `src/pages/es/docs/${name}.astro`).toBeDefined();
+    return container.renderToString(pageEs(name)!, {
+      request: new Request(`http://localhost${path}`),
+    });
+  };
+
+  const pagesEs = [
+    ["index", "/es/docs", "Introducción", "/docs"],
+    ["installation", "/es/docs/installation", "Instalación", "/docs/installation"],
+    ["theming", "/es/docs/theming", "Temas", "/docs/theming"],
+    ["components", "/es/docs/components", "Componentes", "/docs/components"],
+  ] as const;
+
+  describe.each(pagesEs)("%s page", (name, path, title, twin) => {
+    it("is a Spanish document with a Spanish heading and title", async () => {
+      const html = await renderEs(name, path);
+      expect(html).toMatch(/<html lang="es"/);
+      expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+      expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0]).trim()).toBe(title);
+      expect(html).toContain(`<title>${title} | Buril UI</title>`);
+    });
+
+    it("sits in the Spanish docs shell, marked current, with a working On this page list", async () => {
+      const html = await renderEs(name, path);
+      const nav = /<nav[^>]*aria-label="Documentación"[\s\S]*?<\/nav>/.exec(html)![0];
+      const current = [...nav.matchAll(/<a[^>]+aria-current="page"[^>]*>/g)];
+      if (name === "components") {
+        expect(current).toHaveLength(0);
+        expect(html).toMatch(
+          /<nav[^>]*aria-label="Principal"[\s\S]*?href="\/es\/docs\/components"[^>]*aria-current="page"/,
+        );
+      } else {
+        expect(current).toHaveLength(1);
+        expect(current[0]![0]).toContain(`href="${path}"`);
+      }
+      const toc = /<nav[^>]*aria-label="En esta página"[\s\S]*?<\/nav>/.exec(html)![0];
+      const ids = [...toc.matchAll(/href="#([^"]+)"/g)].map(([, id]) => id!);
+      expect(ids.length).toBeGreaterThan(1);
+      for (const id of ids)
+        expect(html.match(new RegExp(`\\sid="${escape(id)}"`, "g"))).toHaveLength(1);
+    });
+
+    it("switches to its English twin, and the twin switches back", async () => {
+      const html = await renderEs(name, path);
+      const link = /<a[^>]*data-language-switcher[^>]*>/.exec(html)![0];
+      expect(link).toContain(`href="${twin}"`);
+      const english = await render(name === "index" ? "index" : name, twin);
+      expect(/<a[^>]*data-language-switcher[^>]*>/.exec(english)![0]).toContain(`href="${path}"`);
+    });
+
+    it("has the same outline as the English page", async () => {
+      const outline = (html: string) =>
+        [...main(html).matchAll(/<h([23])[\s>]/g)].map(([, d]) => d);
+      expect(outline(await renderEs(name, path))).toEqual(outline(await render(name, twin)));
+    });
+  });
+
+  it("introduces Buril and links the Spanish pages", async () => {
+    const html = main(await renderEs("index", "/es/docs"));
+    expect(text(html)).toMatch(/copias/);
+    expect(text(html)).toMatch(/shadcn/);
+    for (const href of ["/es/docs/installation", "/es/docs/theming", "/es/docs/components"]) {
+      expect(html).toMatch(new RegExp(`<a[^>]+href="${escape(href)}"`));
+    }
+  });
+
+  it("shows the same install commands, with Spanish explanations", async () => {
+    const visible = text(main(await renderEs("installation", "/es/docs/installation")));
+    expect(visible).toContain("npx shadcn@latest add https://example.com/r/button.json");
+    expect(visible).toContain(
+      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+    );
+    expect(visible).toContain("npx shadcn@latest add @buril/theme");
+    expect(visible).toMatch(/example\.com[^.]*provisional/);
+    expect(visible).toMatch(/no cambia tu tema/);
+    expect(visible).toMatch(/reexporta\s+cn\(\)\s+desde\s+el\s+paquete\s+de\s+npm\s+cn/);
+    // Spanish UI chrome on the install tabs.
+    expect(main(await renderEs("installation", "/es/docs/installation"))).toMatch(
+      /aria-label="Copiar el comando de npm"/,
+    );
+  });
+
+  it("tables every token from buril.css with Spanish headers", async () => {
+    const tokens = readTokens(readFileSync(resolve(root, "registry/styles/buril.css"), "utf8"));
+    const html = main(await renderEs("theming", "/es/docs/theming"));
+    const table = /<table[\s\S]*?<\/table>/.exec(html)![0];
+    expect(text(/<caption[\s\S]*?<\/caption>/.exec(table)![0])).toMatch(
+      /registry\/styles\/buril\.css/,
+    );
+    const headers = [...table.matchAll(/<th[^>]*scope="col"[^>]*>([\s\S]*?)<\/th>/g)].map(
+      ([, cell]) => text(cell!).trim(),
+    );
+    expect(headers).toEqual(["Token", "Claro", "Oscuro"]);
+    for (const { name, light, dark } of tokens) {
+      expect(text(table)).toContain(`--${name}`);
+      expect(text(table)).toContain(light);
+      expect(text(table)).toContain(dark);
+    }
+  });
+
+  it("explains dark mode and overriding the red in Spanish, with the same code", async () => {
+    const visible = text(main(await renderEs("theming", "/es/docs/theming")));
+    expect(visible).toMatch(/prefers-color-scheme/);
+    expect(visible.replace(/\s+/g, "")).toContain(noFlashScript.replace(/\s+/g, ""));
+    const start = visible.indexOf("Cambiar el rojo");
+    expect(start).toBeGreaterThan(-1);
+    for (const token of ["--decor", "--ring", "--destructive"])
+      expect(visible.slice(start)).toContain(token);
+    expect(visible.slice(start)).toMatch(/3:1/);
+    expect(visible.slice(start)).toMatch(/4\.5:1/);
+  });
+
+  it("indexes every component with its Spanish description and group", async () => {
+    const html = main(await renderEs("components", "/es/docs/components"));
+    for (const entry of documentedComponents) {
+      const link = new RegExp(
+        `<a[^>]+href="(?:/es)?${escape(componentHref(entry.slug))}"[\\s\\S]*?</a>`,
+      ).exec(html);
+      expect(link, entry.name).not.toBeNull();
+      expect(text(link![0])).toContain(entry.name);
+      expect(text(link![0])).toContain(text(componentDescription(entry, "es")));
+    }
+    const groups = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map(([, title]) =>
+      text(title!).trim(),
+    );
+    expect(groups).toEqual([
+      "Acciones",
+      "Formularios",
+      "Contenido",
+      "Avisos y estados",
+      "Navegación",
+    ]);
+  });
+});
+
+describe("Spanish component descriptions", () => {
+  it("exist for every documented component, and differ from the English", () => {
+    for (const entry of documentedComponents) {
+      const spanish = componentDescription(entry, "es");
+      expect(spanish.trim(), entry.slug).not.toBe("");
+      expect(spanish, entry.slug).not.toBe(entry.description);
+      expect(componentDescription(entry, "en")).toBe(entry.description);
     }
   });
 });

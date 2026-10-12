@@ -1,0 +1,81 @@
+---
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import { documentedComponents } from "../../../data/components";
+import { Link } from "../../../../registry/ui/link";
+
+const principles = [
+  [
+    "El código es tuyo.",
+    "Los componentes se copian en tu proyecto, no se instalan como una dependencia en tiempo de ejecución. Puedes editarlos sin restricciones.",
+  ],
+  [
+    "Accesible por defecto.",
+    "Todos los componentes apuntan a WCAG 2.2 AA y siguen su patrón de las WAI-ARIA Authoring Practices.",
+  ],
+  [
+    "La plataforma primero.",
+    "Los elementos nativos, el atributo popover y el HTML semántico van antes que cualquier solución en JavaScript.",
+  ],
+  [
+    "Construido desde cero.",
+    "Sin una librería de UI headless por debajo: el foco, el teclado y el comportamiento ARIA se escriben y se prueban aquí.",
+  ],
+  [
+    "Personalizable.",
+    "Los componentes usan solo los tokens estándar de shadcn, así que una paleta nueva no requiere cambiar ningún componente.",
+  ],
+];
+---
+
+<DocsLayout
+  title="Introducción | Buril UI"
+  description="Qué es Buril UI, los principios detrás del proyecto y por dónde empezar."
+>
+  <h1 class="font-display text-3xl">Introducción</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril UI es un conjunto de componentes de React accesibles que copias en tu proyecto para
+    leerlos, modificarlos y quedártelos.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Qué es</h2>
+  <p class="mt-4">
+    Buril es un registry compatible con shadcn, no un paquete. La CLI de shadcn copia el código
+    fuente de un componente en tu proyecto, junto a tu propio código, e instala los pocos paquetes
+    de npm que necesita. A partir de ahí el archivo es tuyo: no hay versiones que actualizar ni una
+    API de estilos que esquivar.
+  </p>
+  <p class="mt-4">
+    Los componentes están escritos con React y Tailwind CSS y leen los mismos tokens de diseño que
+    shadcn/ui, así que conviven con los componentes de shadcn en el mismo proyecto.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Principios</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {principles.map(([title, body]) => (
+      <li>
+        <strong>{title}</strong> {body}
+      </li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Estado</h2>
+  <p class="mt-4">
+    Buril está en desarrollo inicial. Hay {documentedComponents.length} componentes documentados,
+    cada uno con sus tests y su página. El registry todavía no está publicado, así que los comandos
+    de instalación usan el dominio de ejemplo
+    <code>example.com</code>.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Próximos pasos</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/es/docs/installation">Instalación</Link>: agrega tu primer componente.
+    </li>
+    <li>
+      <Link href="/es/docs/theming">Temas</Link>: los tokens, el modo oscuro y la paleta opcional.
+    </li>
+    <li>
+      <Link href="/es/docs/components">Componentes</Link>: todos los componentes, con demos en vivo.
+    </li>
+  </ul>
+</DocsLayout>

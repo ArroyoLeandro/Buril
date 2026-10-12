@@ -55,3 +55,16 @@ describe("SkeletonDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("SkeletonDemo in Spanish", () => {
+  it("names the region and announces completion in Spanish", () => {
+    vi.useFakeTimers();
+    render(<SkeletonDemo locale="es" />);
+    expect(screen.getByRole("region", { name: "Perfil" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Recargar el perfil" }));
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+    expect(screen.getByRole("status")).toHaveTextContent("Perfil cargado.");
+  });
+});

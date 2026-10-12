@@ -9,6 +9,12 @@ describe("slugify", () => {
     expect(slugify("What it wires")).toBe("what-it-wires");
   });
 
+  it("drops accents and Spanish punctuation, so Spanish headings get readable ids", () => {
+    expect(slugify("Instalación")).toBe("instalacion");
+    expect(slugify("¿Qué agrega la CLI?")).toBe("que-agrega-la-cli");
+    expect(slugify("Diseño y señales")).toBe("diseno-y-senales");
+  });
+
   it("decodes entities and ignores markup inside the heading", () => {
     expect(slugify("Use <code>aria-label</code> &amp; friends")).toBe("use-aria-label-friends");
   });

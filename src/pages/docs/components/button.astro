@@ -5,18 +5,9 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import ButtonDemo from "../../../components/ButtonDemo";
 import InstallCommand from "../../../components/InstallCommand.astro";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const variantsExample = `<Button>Publish</Button>
-<Button variant="outline">Preview</Button>
-<Button variant="destructive" size="sm">Delete</Button>
-<a href="/docs" className={buttonVariants({ variant: "secondary" })}>
-  Read the docs
-</a>`;
-
-const statusExample = `<Button type="submit" loading={saving}>
-  Save changes
-</Button>
-<p role="status">{saving ? "Saving changes…" : message}</p>`;
+const { variantsExample, statusExample } = componentExamples.button;
 ---
 
 <ComponentPage slug="button">

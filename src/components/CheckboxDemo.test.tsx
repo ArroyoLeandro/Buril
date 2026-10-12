@@ -44,3 +44,18 @@ describe("CheckboxDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("CheckboxDemo in Spanish", () => {
+  it("labels the group and each option in Spanish", async () => {
+    render(<CheckboxDemo locale="es" />);
+    expect(screen.getByRole("group", { name: "Ingredientes" })).toBeInTheDocument();
+    const all = screen.getByRole("checkbox", { name: "Todos los ingredientes" });
+    expect(all).toBePartiallyChecked();
+    expect(screen.getByRole("checkbox", { name: "Queso" })).toBeChecked();
+    await userEvent.click(all);
+    expect(screen.getByRole("checkbox", { name: "Aceitunas" })).toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: "Envoltorio de regalo (no disponible)" }),
+    ).toBeDisabled();
+  });
+});

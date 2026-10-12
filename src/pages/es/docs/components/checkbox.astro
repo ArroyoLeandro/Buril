@@ -1,0 +1,78 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import CheckboxDemo from "../../../../components/CheckboxDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { fieldExample, indeterminateExample } = componentExamples.checkbox;
+---
+
+<ComponentPage slug="checkbox">
+  <Fragment slot="lead">
+    Es un <code>&lt;input type="checkbox"&gt;</code> real, así que Espacio, el envío y el
+    restablecimiento del formulario y el estado <code>checked</code> funcionan de forma nativa.
+  </Fragment>
+
+  <CheckboxDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <p class="mt-4 text-muted-foreground">
+      La casilla no tiene texto propio. Envuelve la casilla y su texto en un
+      <code>&lt;label&gt;</code>, como arriba, para que el texto le dé nombre y que hacer clic en el
+      texto la marque o la desmarque.
+    </p>
+    <p class="mt-4 text-muted-foreground">
+      La casilla mide 20px. Con <code>min-h-6</code> en la fila de la etiqueta, toda la fila es un
+      objetivo de clic de al menos 24px de alto, por encima del tamaño mínimo del objetivo, de 24px.
+      Si necesitas una descripción o un mensaje de error, ponla en un Field, que muestra la etiqueta
+      encima de la casilla.
+    </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">En un Field</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={fieldExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Indeterminado</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>indeterminate</code> muestra un guion e informa un estado "mixto" a los lectores de
+      pantalla, para una opción que controla un grupo marcado en parte, como en la demo. HTML no
+      tiene un atributo para este estado, así que el componente asigna la propiedad del DOM. Un clic
+      lo quita, como hacen los navegadores, y el componente vuelve a aplicar la prop en el siguiente
+      render, así que calcúlala a partir de tu estado.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={indeterminateExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Estados</h3>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Marcado y mixto</strong> rellenan la casilla con el color primario y dibujan una
+        marca o un guion, así que el estado es una forma, no solo un color.
+      </li>
+      <li>
+        <strong>El foco</strong> muestra el anillo. <code>aria-invalid="true"</code> pone el borde
+        en el color destructivo, incluso con la casilla marcada. <code>disabled</code> la atenúa.
+      </li>
+      <li>
+        <strong>El modo de colores forzados</strong> reemplaza los rellenos personalizados, así que
+        ahí la casilla vuelve al control nativo, que el sistema dibuja con sus propios estados
+        marcado y mixto.
+      </li>
+    </ul>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/checkbox.tsx</code>, en la misma ruta que el Checkbox de shadcn. A
+    diferencia del de shadcn, es un input nativo: <code>onChange</code> reemplaza a
+    <code>onCheckedChange</code>, e <code>indeterminate</code> reemplaza a
+    <code>checked="indeterminate"</code>. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

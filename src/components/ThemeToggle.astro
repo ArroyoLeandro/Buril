@@ -2,14 +2,20 @@
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { themeChoices } from "../scripts/theme";
+import { translator, type Locale } from "../i18n/ui";
 
-const labels = { light: "Light", dark: "Dark", system: "System" } as const;
+interface Props {
+  locale?: Locale;
+}
+
+const t = translator(Astro.props.locale ?? "en");
+const labels = { light: t("theme.light"), dark: t("theme.dark"), system: t("theme.system") };
 
 // The group is hidden until the script runs: without JavaScript the buttons could not do
 // anything, and the CSS already follows the system preference.
 ---
 
-<div role="group" aria-label="Theme" data-theme-toggle hidden class="flex gap-1">
+<div role="group" aria-label={t("theme.label")} data-theme-toggle hidden class="flex gap-1">
   {themeChoices.map((choice) => (
     <button
       type="button"

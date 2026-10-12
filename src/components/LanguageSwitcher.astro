@@ -1,0 +1,43 @@
+---
+import { localeNames, type Locale } from "../i18n/ui";
+
+/**
+ * A plain link to the same page in the other language. It shows that language's own name
+ * ("Español", "English") and marks it with `lang` and `hreflang`, so screen readers pronounce it
+ * correctly and readers of that language recognise it. No redirect ever picks a language for the
+ * visitor. A page that is not translated yet shows no switcher.
+ */
+interface Props {
+  locale: Locale;
+  versions: { locale: Locale; href: string }[];
+}
+
+const { locale, versions } = Astro.props;
+const target = versions.find((version) => version.locale !== locale);
+---
+
+{target && (
+  <a
+    href={target.href}
+    hreflang={target.locale}
+    lang={target.locale}
+    data-language-switcher
+    class="inline-flex min-h-8 shrink-0 items-center gap-1 rounded-full px-2 text-sm underline-offset-4 hover:underline"
+  >
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      class="size-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"></path>
+    </svg>
+    {localeNames[target.locale]}
+  </a>
+)}

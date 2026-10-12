@@ -1,0 +1,79 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../../../layouts/ComponentPage.astro";
+import CardDemo from "../../../../components/CardDemo";
+import { codeTheme } from "../../../../components/code-theme";
+import { componentExamples } from "../../../../data/snippets";
+
+const { decorExample, linkExample } = componentExamples.card;
+---
+
+<ComponentPage slug="card">
+  <Fragment slot="lead">
+    Es un <code>&lt;div&gt;</code> simple: agrupa contenido, pero por sí solo no es interactivo.
+  </Fragment>
+
+  <CardDemo slot="demo" locale="es" client:visible />
+
+  <Fragment slot="usage">
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Nivel del encabezado.</strong> <code>CardTitle</code> renderiza un <code>h3</code>{" "}
+        por defecto. Pasa de <code>as="h2"</code> a <code>as="h6"</code> para que encaje en el
+        esquema de la página; el aspecto no cambia.
+      </li>
+      <li>
+        <strong>Decoración.</strong> <code>decor</code> agrega una franja rayada en la parte
+        superior. Tiene <code>aria-hidden</code>, usa el color <code>--decor</code> con{" "}
+        <code>--primary</code>
+        como alternativa y se elimina en el modo de colores forzados.
+      </li>
+      <li>
+        <strong>Colores.</strong> El borde usa <code>border</code>; la superficie, <code>card</code>{" "}
+        y <code>card-foreground</code>; y la descripción, <code>muted-foreground</code>.
+      </li>
+    </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Nivel del encabezado y decoración</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={decorExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Toda la tarjeta como enlace</h3>
+    <p class="mt-4 text-muted-foreground">
+      Nunca pongas un <code>onClick</code> en la tarjeta: un <code>&lt;div&gt;</code> en el que se
+      puede hacer clic no recibe el foco y no tiene rol ni nombre. Pon un enlace real en el título y
+      extiéndelo sobre la tarjeta con un pseudoelemento. La tarjeta es <code>relative</code>, así
+      que <code>after:absolute after:inset-0</code> la cubre:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={linkExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Una parada de Tab y un nombre corto.</strong> Los lectores de pantalla oyen el
+        título como nombre del enlace, no cada línea de la tarjeta.
+      </li>
+      <li>
+        <strong>Otros controles.</strong> Un botón o un segundo enlace dentro de la tarjeta queda
+        debajo del enlace extendido. Dale <code>relative z-10</code> para que se pueda seguir
+        haciendo clic en él.
+      </li>
+      <li>
+        <strong>La contrapartida.</strong> El enlace extendido cubre el texto, así que no se puede
+        seleccionar. No pongas textos largos en una tarjeta enlazada.
+      </li>
+    </ul>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    Crea <code>components/ui/card.tsx</code>, con la misma ruta y los mismos nombres de partes que
+    la Card de shadcn. A diferencia de la de shadcn, <code>CardTitle</code> es un encabezado real y
+    <code>CardDescription</code>, un párrafo. Solo necesita tu helper <code>cn()</code>; si tu
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
+  </p>
+</ComponentPage>

@@ -30,3 +30,17 @@ describe("AlertDemo", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("AlertDemo in Spanish", () => {
+  it("writes the callouts and the inserted alert in Spanish", async () => {
+    render(<AlertDemo locale="es" />);
+    expect(screen.getByText("Nueva versión disponible")).toBeInTheDocument();
+    expect(screen.getByText("Error en el pago")).toBeInTheDocument();
+    const status = screen.getByRole("status");
+    await userEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+    expect(status).toHaveTextContent("Borrador guardado");
+    expect(status).toHaveTextContent("Guardado una vez.");
+    await userEvent.click(screen.getByRole("button", { name: "Guardar borrador" }));
+    expect(status).toHaveTextContent("Guardado 2 veces.");
+  });
+});

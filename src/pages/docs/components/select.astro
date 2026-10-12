@@ -4,19 +4,9 @@ import { Code } from "astro:components";
 import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SelectDemo from "../../../components/SelectDemo";
 import { codeTheme } from "../../../components/code-theme";
+import { componentExamples } from "../../../data/snippets";
 
-const example = `import { Field } from "@/components/ui/field";
-import { Select } from "@/components/ui/select";
-
-<Field label="Size" error={errors.size} required>
-  {(control) => (
-    <Select name="size" defaultValue="" {...control}>
-      <option value="">Choose a size</option>
-      <option value="s">Small</option>
-      <option value="m">Medium</option>
-    </Select>
-  )}
-</Field>`;
+const { example } = componentExamples.select;
 ---
 
 <ComponentPage slug="select">
