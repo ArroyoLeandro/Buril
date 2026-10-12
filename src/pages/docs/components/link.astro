@@ -5,11 +5,12 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import LinkDemo from "../../../components/LinkDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Link } from "@/components/ui/link";
-
-<Link href="/pricing">See pricing</Link>
-<Link href="https://example.com/changelog" external>
+const externalExample = `<Link href="https://example.com/changelog" external>
   Changelog
+</Link>`;
+
+const mutedExample = `<Link href="/privacy" variant="muted">
+  Privacy policy
 </Link>`;
 ---
 
@@ -22,10 +23,6 @@ const usageExample = `import { Link } from "@/components/ui/link";
   <LinkDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>
@@ -43,8 +40,10 @@ const usageExample = `import { Link } from "@/components/ui/link";
         visible in forced-colors mode.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">Opening a new tab</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Opening a new tab</h3>
     <p class="mt-4 text-muted-foreground">
       <code>external</code>, or passing <code>target="_blank"</code> yourself, opens the link in a
       new tab and warns about it, because a new tab breaks the Back button. Screen readers hear
@@ -55,6 +54,18 @@ const usageExample = `import { Link } from "@/components/ui/link";
       An <code>aria-label</code> or <code>aria-labelledby</code> replaces the link text as its name,
       so the link adds the hint to that name as well, and screen readers still hear it.
     </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={externalExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Muted</h3>
+    <p class="mt-4 text-muted-foreground">
+      <code>variant="muted"</code> uses the muted text color for secondary links, such as a footer.
+      It keeps the underline and turns to the foreground color on hover.
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={mutedExample} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

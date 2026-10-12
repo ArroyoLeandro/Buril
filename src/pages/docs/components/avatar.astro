@@ -5,10 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import AvatarDemo from "../../../components/AvatarDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Avatar } from "@/components/ui/avatar";
-
-<Avatar src={user.photo} alt={user.name} />
-<Avatar alt="Grace Hopper" size="sm" />
+const fallbackExample = `<Avatar alt="Grace Hopper" size="sm" />
 <Avatar alt="Grace Hopper" fallback="GMH" size="lg" />`;
 
 const decorativeExample = `<p className="flex items-center gap-2">
@@ -25,10 +22,6 @@ const decorativeExample = `<p className="flex items-center gap-2">
   <AvatarDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Name it with alt.</strong> Use the person's name, such as "Ada Lovelace", not
@@ -46,8 +39,15 @@ const decorativeExample = `<p className="flex items-center gap-2">
         keeps the circle visible.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">Decorative avatars</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Sizes and a custom fallback</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={fallbackExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">Decorative avatars</h3>
     <p class="mt-4 text-muted-foreground">
       When the name is already next to the avatar, pass <code>alt=""</code>. The image, or its
       fallback, is then hidden from screen readers, so the name is not read twice:

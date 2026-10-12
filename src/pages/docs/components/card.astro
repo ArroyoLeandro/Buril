@@ -5,16 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import CardDemo from "../../../components/CardDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-<Card decor>
+const decorExample = `<Card decor>
   <CardHeader>
     <CardTitle as="h2">Starter plan</CardTitle>
     <CardDescription>For a single project.</CardDescription>
@@ -45,10 +36,6 @@ const linkExample = `<Card>
   <CardDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Heading level.</strong> <code>CardTitle</code> renders an <code>h3</code> by
@@ -65,8 +52,15 @@ const linkExample = `<Card>
         and <code>card-foreground</code>, and the description <code>muted-foreground</code>.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">The whole card as a link</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Heading level and decoration</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={decorExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">The whole card as a link</h3>
     <p class="mt-4 text-muted-foreground">
       Never put an <code>onClick</code> on the card: a clickable <code>&lt;div&gt;</code> is not
       focusable, has no role and no name. Put one real link in the title and stretch it over the

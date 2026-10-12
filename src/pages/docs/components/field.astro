@@ -5,9 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import FieldDemo from "../../../components/FieldDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const renderPropExample = `import { Field } from "@/components/ui/field";
-
-<Field
+const renderPropExample = `<Field
   label="Email"
   description="We only use it to send the newsletter."
   error={errors.email}
@@ -31,14 +29,19 @@ const childExample = `<Field label="Message" description="Up to 500 characters."
   <FieldDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
     <p class="mt-4 text-muted-foreground">
       The main API is a render prop: a function that receives the control props and spreads them
       onto your element.
     </p>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Description and error</h3>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={renderPropExample} lang="tsx" theme={codeTheme} />
     </div>
+
+    <h3 class="mt-8 font-display text-lg">Element child</h3>
     <p class="mt-4 text-muted-foreground">
       A single element child also works. Field adds the same props with <code>cloneElement</code>:
       it keeps the child's own <code>id</code> and adds its ids to the child's own
@@ -48,28 +51,7 @@ const childExample = `<Field label="Message" description="Up to 500 characters."
       <Code code={childExample} lang="tsx" theme={codeTheme} />
     </div>
 
-    <h2 class="mt-10 font-display text-xl">What it wires</h2>
-    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
-      <li>
-        <strong>An id</strong> for the control, generated unless the child has one, and the label's
-        <code>for</code>. Clicking the label focuses the control.
-      </li>
-      <li>
-        <strong>A description:</strong> <code>aria-describedby</code> lists the description, then
-        the error. Screen readers read them after the name.
-      </li>
-      <li>
-        <strong>The invalid state:</strong> <code>aria-invalid="true"</code> while{" "}
-        <code>error</code> is set. Style the invalid border from it, but the error text is what
-        tells users what to fix.
-      </li>
-      <li>
-        <strong>The required state:</strong> the native <code>required</code> attribute when the
-        field is required.
-      </li>
-    </ul>
-
-    <h2 class="mt-10 font-display text-xl">Errors</h2>
+    <h3 class="mt-8 font-display text-lg">Errors</h3>
     <p class="mt-4 text-muted-foreground">
       The error shows below the control with an icon and text in the destructive color, so color is
       never the only signal. Screen readers hear it with an "Error:" prefix.
@@ -81,7 +63,7 @@ const childExample = `<Field label="Message" description="Up to 500 characters."
       move focus to the first invalid field, as the demo does.
     </p>
 
-    <h2 class="mt-10 font-display text-xl">Required</h2>
+    <h3 class="mt-8 font-display text-lg">Required</h3>
     <p class="mt-4 text-muted-foreground">
       A required field shows "(required)" in text next to the label, never a color or a lone
       asterisk. The control gets the native <code>required</code> attribute, which screen readers
@@ -102,4 +84,24 @@ const childExample = `<Field label="Message" description="Up to 500 characters."
     <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
     it; answering no is safe.
   </p>
+
+  <h2 class="mt-10 font-display text-xl">What it wires</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      <strong>An id</strong> for the control, generated unless the child has one, and the label's
+      <code>for</code>. Clicking the label focuses the control.
+    </li>
+    <li>
+      <strong>A description:</strong> <code>aria-describedby</code> lists the description, then the
+      error. Screen readers read them after the name.
+    </li>
+    <li>
+      <strong>The invalid state:</strong> <code>aria-invalid="true"</code> while <code>error</code>{" "}
+      is set. Style the invalid border from it, but the error text is what tells users what to fix.
+    </li>
+    <li>
+      <strong>The required state:</strong> the native <code>required</code> attribute when the field
+      is required.
+    </li>
+  </ul>
 </ComponentPage>

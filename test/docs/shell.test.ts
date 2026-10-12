@@ -137,7 +137,9 @@ describe("docs shell on a component page", () => {
 
   it("leaves demo headings inside the island out of the TOC", async () => {
     const html = await renderComponentPage("button");
-    expect(text(toc(html))).not.toMatch(/Variants/);
+    // ButtonDemo renders its own h3 headings, with ids such as demo-variants.
+    expect(html).toMatch(/<h3 id="demo-variants"/);
+    expect(toc(html)).not.toMatch(/href="#demo-/);
   });
 
   it("hides the TOC on small screens", async () => {

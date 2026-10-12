@@ -5,9 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SkeletonDemo from "../../../components/SkeletonDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Skeleton } from "@/components/ui/skeleton";
-
-<section aria-label="Profile" aria-busy={loading || undefined}>
+const regionExample = `<section aria-label="Profile" aria-busy={loading || undefined}>
   {loading ? (
     <>
       <Skeleton className="size-12 rounded-full" />
@@ -29,10 +27,6 @@ const usageExample = `import { Skeleton } from "@/components/ui/skeleton";
   <SkeletonDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Decoration only.</strong> A skeleton is an empty <code>&lt;div&gt;</code> with
@@ -54,6 +48,17 @@ const usageExample = `import { Skeleton } from "@/components/ui/skeleton";
         motion. In forced-colors mode, where fills are dropped, a border keeps each block visible.
       </li>
     </ul>
+  </Fragment>
+
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">A loading region</h3>
+    <p class="mt-4 text-muted-foreground">
+      Shape each block like the content it stands for, mark the region busy, and announce when the
+      content is in:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={regionExample} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">

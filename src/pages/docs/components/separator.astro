@@ -5,13 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import SeparatorDemo from "../../../components/SeparatorDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Separator } from "@/components/ui/separator";
-
-<section>…</section>
-<Separator />
-<section>…</section>
-
-<nav className="flex items-center gap-3">
+const verticalExample = `<nav className="flex items-center gap-3">
   <a href="/docs">Docs</a>
   <Separator orientation="vertical" decorative />
   <a href="/blog">Blog</a>
@@ -26,10 +20,6 @@ const usageExample = `import { Separator } from "@/components/ui/separator";
   <SeparatorDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Semantic.</strong> A horizontal separator is an <code>&lt;hr&gt;</code>, which
@@ -51,15 +41,16 @@ const usageExample = `import { Separator } from "@/components/ui/separator";
         in forced-colors mode.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">Color</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Vertical, between links</h3>
     <p class="mt-4 text-muted-foreground">
-      A separator that marks structure is a graphic people need to see, so it should reach 3:1
-      against the page. It uses the <code>border</code> color, the token meant for dividers. In the
-      Buril theme that is ink, far above 3:1, which matches the engraved grid lines. For a quieter
-      line, pass <code>className="border-input"</code>: Buril measures it at 3.72:1 in light mode
-      and 3.35:1 in dark mode. Lighter mixes fall below 3:1, so keep them for decorative lines.
+      The links are already separate items, so the line only decorates:
     </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={verticalExample} lang="tsx" theme={codeTheme} />
+    </div>
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
@@ -67,5 +58,14 @@ const usageExample = `import { Separator } from "@/components/ui/separator";
     Separator, without Radix: the horizontal one is a native <code>&lt;hr&gt;</code>. It needs only
     your <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
     version, the CLI asks before replacing it, and answering no is safe.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Color</h2>
+  <p class="mt-4 text-muted-foreground">
+    A separator that marks structure is a graphic people need to see, so it should reach 3:1 against
+    the page. It uses the <code>border</code> color, the token meant for dividers. In the Buril
+    theme that is ink, far above 3:1, which matches the engraved grid lines. For a quieter line,
+    pass <code>className="border-input"</code>: Buril measures it at 3.72:1 in light mode and 3.35:1
+    in dark mode. Lighter mixes fall below 3:1, so keep them for decorative lines.
   </p>
 </ComponentPage>

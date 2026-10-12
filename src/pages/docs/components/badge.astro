@@ -5,9 +5,7 @@ import ComponentPage from "../../../layouts/ComponentPage.astro";
 import BadgeDemo from "../../../components/BadgeDemo";
 import { codeTheme } from "../../../components/code-theme";
 
-const usageExample = `import { Badge } from "@/components/ui/badge";
-
-<Badge>New</Badge>
+const variantsExample = `<Badge>New</Badge>
 <Badge variant="secondary">Draft</Badge>
 <Badge variant="outline">Beta</Badge>
 <Badge variant="destructive">Failed</Badge>`;
@@ -27,10 +25,6 @@ const statusExample = `<p>
   <BadgeDemo slot="demo" client:visible />
 
   <Fragment slot="usage">
-    <h2 class="mt-10 font-display text-xl">Usage</h2>
-    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-      <Code code={usageExample} lang="tsx" theme={codeTheme} />
-    </div>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>The text is the meaning, never color alone.</strong> "Failed" in red still says
@@ -47,8 +41,15 @@ const statusExample = `<p>
         and the border keeps the shape.
       </li>
     </ul>
+  </Fragment>
 
-    <h2 class="mt-10 font-display text-xl">A status that changes</h2>
+  <Fragment slot="examples">
+    <h3 class="mt-8 font-display text-lg">Variants</h3>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={variantsExample} lang="tsx" theme={codeTheme} />
+    </div>
+
+    <h3 class="mt-8 font-display text-lg">A status that changes</h3>
     <p class="mt-4 text-muted-foreground">
       Screen readers do not announce a badge whose text changes. Announce the change from a
       <code>role="status"</code> region that is already on the page, as the demo does:
