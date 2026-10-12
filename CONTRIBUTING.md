@@ -60,10 +60,10 @@ The project uses test-driven development: write a failing test first, watch it f
 
 ## Motion
 
-Motion is short and decelerating, with no bounce: "ink settles, the plate presses". It is plain CSS, with no animation library.
+Motion is unhurried and settles softly: "ink settles, the plate presses". Press and hover feedback stay quick, while state changes and entries take longer and end on a gentle spring. It is plain CSS, with no animation library.
 
-- **Tokens.** Durations (`--buril-duration-instant` 80ms, `fast` 120ms, `base` 180ms, `slow` 240ms, `slower` 320ms) and easings (`--buril-ease-out`, `-in`, `-in-out`, `-linear`) live in `:root` in `registry/styles/buril.css` and in the theme item's `css[":root"]`, never in `cssVars`.
-- **Fallbacks.** Components stay standalone, so every token use carries its literal value as a fallback, such as `duration-(--buril-duration-fast,120ms)` and `ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))`. Without the theme a component looks and moves the same. `test/motion.test.ts` fails if a fallback drifts from `buril.css`.
+- **Tokens.** Durations (`--buril-duration-instant` 100ms for presses, `fast` 200ms for hover and color, `base` 420ms for state changes, `slow` 460ms and `slower` 560ms for entries, and `--buril-duration-gesture` 720ms for one-shot icon gestures) and easings (`--buril-ease-out`, `-in`, `-in-out`, `-linear`) live in `:root` in `registry/styles/buril.css` and in the theme item's `css[":root"]`, never in `cssVars`. `--buril-ease-out` and `--buril-ease-in-out` are a soft `linear()` spring that passes its target by about 3% and settles; `--buril-ease-in` stays a plain accelerating curve for exits.
+- **Fallbacks.** Components stay standalone, so every token use carries its literal value as a fallback, such as `duration-(--buril-duration-fast,200ms)` and `ease-(--buril-ease-out,linear(0,0.045,…,1))` (the full spring, without spaces). Without the theme a component looks and moves the same. `test/motion.test.ts` fails if a fallback drifts from `buril.css`.
 - **Reduced motion.** Movement (translate, scale, rotate, size) goes behind `motion-safe:`. Color and opacity may change in every mode. See rule 10 in [COMPONENTS.md](./COMPONENTS.md).
 - **Focus.** Never transition `outline-color` or any other part of a focus indicator. List the properties, such as `transition-[color,background-color,border-color]`; `transition`, `transition-all` and `transition-colors` include `outline-color`.
 - **Performance.** Animate opacity, translate, scale and rotate. Never transition `left`, `top`, `width` or `height`.

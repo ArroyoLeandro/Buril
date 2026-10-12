@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 /**
  * Components are standalone, so they cannot rely on the theme being installed. Every motion token
- * they use carries a literal fallback, such as `duration-(--buril-duration-fast,120ms)`, and these
+ * they use carries a literal fallback, such as `duration-(--buril-duration-fast,200ms)`, and these
  * tests keep each fallback equal to the token's value in buril.css. Without the theme a component
  * then moves exactly as it does with it.
  */
@@ -69,7 +69,7 @@ describe("motion token references", () => {
   });
 
   it("finds the motion tokens in buril.css", () => {
-    expect(Object.keys(tokens)).toHaveLength(9);
+    expect(Object.keys(tokens)).toHaveLength(10);
   });
 
   // Until a component uses a motion token, this passes with nothing to check.
