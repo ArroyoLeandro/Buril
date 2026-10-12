@@ -2,11 +2,14 @@
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { docsNav } from "../data/docs-nav";
+import { getLocale, translator } from "../i18n/ui";
 import { slugify } from "../utils/headings";
 
+const locale = getLocale(Astro.url);
+const t = translator(locale);
 const path = (Astro.url?.pathname ?? "").replace(/(.)\/$/, "$1");
-const groups = docsNav();
-const statusLabels = { new: "New", beta: "Beta" } as const;
+const groups = docsNav(locale);
+const statusLabels = { new: t("status.new"), beta: t("status.beta") };
 ---
 
 <div class="border-b border-border px-4 py-3 sm:px-6 lg:border-r lg:border-b-0 lg:p-0">
@@ -34,15 +37,16 @@ const statusLabels = { new: "New", beta: "Beta" } as const;
     >
       <path d="M4 7h16M4 12h16M4 17h16"></path>
     </svg>
-    Menu
+    {t("docsNav.menu")}
   </button>
   <nav
     id="docs-sidebar"
-    aria-label="Docs"
+    aria-label={t("docsNav.label")}
     class="pt-4 max-lg:data-collapsed:hidden lg:docs-panel lg:px-3 lg:py-6"
   >
     {groups.map((group) => {
-      const id = `docs-nav-${slugify(group.title)}`;
+      // Ids stay ASCII and stable across languages: the category, or Getting Started.
+      const id = `docs-nav-${slugify(group.category ?? "getting-started")}`;
       return (
         <div class="mb-5 last:mb-0">
           <p id={id} class="px-2 py-1 font-display text-xs text-muted-foreground">

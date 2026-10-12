@@ -16,6 +16,13 @@ export default defineConfig({
   // Compression drops the line-break space between text and an inline element that starts the
   // next source line ("creates<code>…"), which runs words together. Keep the HTML as written.
   compressHTML: false,
+  // English stays unprefixed (/docs) and Spanish lives under /es/. No automatic redirect from the
+  // browser language: the header's language switcher leaves the choice to the reader.
+  i18n: {
+    locales: ["en", "es"],
+    defaultLocale: "en",
+    routing: { prefixDefaultLocale: false },
+  },
   redirects: { "/components": "/docs/components", ...legacyComponentRedirects },
   vite: {
     resolve: {

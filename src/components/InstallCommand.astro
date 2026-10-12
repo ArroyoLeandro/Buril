@@ -4,6 +4,7 @@ import { Code } from "astro:components";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { codeTheme } from "./code-theme";
+import { getLocale, translator } from "../i18n/ui";
 
 interface Props {
   /** Unique on the page; prefixes the tab and panel ids. */
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const { id, commands } = Astro.props;
+const t = translator(getLocale(Astro.url));
 
 // The runners shadcn documents for each package manager.
 const managers = [
@@ -26,8 +28,13 @@ const managers = [
 }));
 ---
 
-<div data-install-tabs class="mt-4">
-  <div role="tablist" aria-label="Package manager" class="flex flex-wrap gap-1">
+<div
+  data-install-tabs
+  data-copied={t("install.copied")}
+  data-copy-failed={t("install.copyFailed")}
+  class="mt-4"
+>
+  <div role="tablist" aria-label={t("install.managers")} class="flex flex-wrap gap-1">
     {managers.map((manager, index) => (
       <button
         type="button"
@@ -59,10 +66,10 @@ const managers = [
       <button
         type="button"
         data-copy={manager.code}
-        aria-label={`Copy ${manager.name} command`}
+        aria-label={t("install.copyLabel", { name: manager.name })}
         class={buttonVariants({ variant: "outline", size: "sm" })}
       >
-        Copy
+        {t("install.copy")}
       </button>
     </div>
   ))}
