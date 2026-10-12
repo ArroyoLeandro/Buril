@@ -144,3 +144,26 @@ describe("dark mechanism", () => {
     expect(css).toMatch(/--font-body:/);
   });
 });
+
+describe("registry theme item", () => {
+  type Rule = Record<string, string>;
+  const registry = JSON.parse(readFileSync(resolve(__dirname, "../registry.json"), "utf8")) as {
+    items: { name: string; css?: Record<string, Record<string, unknown>> }[];
+  };
+  const shipped = registry.items.find((item) => item.name === "theme")?.css ?? {};
+
+  const customProperties = (rule: unknown): Tokens =>
+    Object.fromEntries(Object.entries(rule as Rule).filter(([name]) => name.startsWith("--")));
+
+  it("ships the same light, dark and system fallback tokens as buril.css", () => {
+    const media = shipped["@media (prefers-color-scheme: dark)"] ?? {};
+    expect(customProperties(shipped[":root"])).toEqual(light);
+    expect(customProperties(shipped[".dark"])).toEqual(dark);
+    expect(customProperties(media[":root:not(.light)"])).toEqual(dark);
+  });
+
+  it("sets color-scheme per mode", () => {
+    expect((shipped[":root"] as Rule)["color-scheme"]).toBe("light");
+    expect((shipped[".dark"] as Rule)["color-scheme"]).toBe("dark");
+  });
+});

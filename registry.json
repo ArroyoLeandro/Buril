@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "buril",
+  "homepage": "https://example.com/buril-ui",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "Utils",
+      "description": "The cn() helper: clsx plus tailwind-merge.",
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "files": [
+        {
+          "path": "registry/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "theme",
+      "type": "registry:theme",
+      "title": "Buril theme",
+      "description": "Buril design tokens: red lacquer palette with light and dark schemes.",
+      "css": {
+        ":root": {
+          "color-scheme": "light",
+          "--buril-bg": "#f4efe6",
+          "--buril-fg": "#1a1714",
+          "--buril-muted": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
+          "--buril-grid": "color-mix(in oklab, #1a1714 9%, transparent)",
+          "--buril-border": "#1a1714",
+          "--buril-accent": "#d72828",
+          "--buril-accent-strong": "#c90f1a",
+          "--buril-accent-strong-fg": "#ffffff",
+          "--buril-focus": "var(--buril-accent-strong)"
+        },
+        ".dark": {
+          "color-scheme": "dark",
+          "--buril-bg": "#161310",
+          "--buril-fg": "#ede6da",
+          "--buril-muted": "#b5ada0",
+          "--buril-grid": "color-mix(in oklab, #ede6da 7%, transparent)",
+          "--buril-border": "#ede6da",
+          "--buril-accent": "#d72828",
+          "--buril-accent-strong": "#ff5a51",
+          "--buril-accent-strong-fg": "#161310",
+          "--buril-focus": "var(--buril-accent-strong)"
+        },
+        "@media (prefers-color-scheme: dark)": {
+          ":root:not(.light)": {
+            "color-scheme": "dark",
+            "--buril-bg": "#161310",
+            "--buril-fg": "#ede6da",
+            "--buril-muted": "#b5ada0",
+            "--buril-grid": "color-mix(in oklab, #ede6da 7%, transparent)",
+            "--buril-border": "#ede6da",
+            "--buril-accent": "#d72828",
+            "--buril-accent-strong": "#ff5a51",
+            "--buril-accent-strong-fg": "#161310",
+            "--buril-focus": "var(--buril-accent-strong)"
+          }
+        },
+        "@custom-variant dark": {
+          "&:where(.dark, .dark *)": {
+            "@slot": {}
+          },
+          "@media (prefers-color-scheme: dark)": {
+            "&:where(:root:not(.light), :root:not(.light) *)": {
+              "@slot": {}
+            }
+          }
+        }
+      },
+      "cssVars": {
+        "theme": {
+          "color-bg": "var(--buril-bg)",
+          "color-fg": "var(--buril-fg)",
+          "color-muted": "var(--buril-muted)",
+          "color-grid": "var(--buril-grid)",
+          "color-border": "var(--buril-border)",
+          "color-accent": "var(--buril-accent)",
+          "color-accent-strong": "var(--buril-accent-strong)",
+          "color-accent-strong-fg": "var(--buril-accent-strong-fg)",
+          "color-focus": "var(--buril-focus)",
+          "font-display": "ui-monospace, monospace",
+          "font-body": "system-ui, sans-serif"
+        }
+      }
+    }
+  ]
+}
