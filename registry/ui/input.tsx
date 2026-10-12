@@ -14,6 +14,8 @@ function Input({ className, ...props }: InputProps) {
       className={cn(
         // At least 40px tall, like the default Button. A 16px font stops mobile browsers zooming in.
         "min-h-10 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-base text-foreground placeholder:text-muted-foreground",
+        // The border and colors fade; outline-color is left out so the focus ring appears at once.
+        "transition-[color,background-color,border-color] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
         // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         // The red border only reinforces the error; the Field's error text says what is wrong.

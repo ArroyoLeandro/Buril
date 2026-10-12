@@ -81,3 +81,29 @@ describe("motion token references", () => {
     }
   });
 });
+
+/** The utility each class in the string literals of a source applies, without its variants. */
+const utilitiesIn = (source: string) =>
+  [...source.matchAll(/"([^"\n]*)"/g)]
+    .flatMap((match) => match[1]!.split(/\s+/))
+    .map((name) => name.slice(name.lastIndexOf(":") + 1));
+
+describe("component transitions", () => {
+  it("finds the utilities in a class string", () => {
+    expect(utilitiesIn('cn("transition-colors motion-safe:transition", "hover:bg-x")')).toEqual([
+      "transition-colors",
+      "transition",
+      "bg-x",
+    ]);
+  });
+
+  // `transition`, `transition-all` and `transition-colors` all include outline-color, which would
+  // fade the focus ring in instead of showing it at once (rule 10), and `transition-all` animates
+  // layout too. Components list the properties they transition.
+  it.each(components)("in %s list their properties explicitly", (_, source) => {
+    const broad = utilitiesIn(source).filter((name) =>
+      ["transition", "transition-all", "transition-colors"].includes(name),
+    );
+    expect(broad).toEqual([]);
+  });
+});

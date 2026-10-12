@@ -3,6 +3,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Input } from "./input";
 import { Select } from "./select";
 
@@ -67,5 +73,17 @@ describe("Select compiled with Tailwind", () => {
   it("falls back to the native arrow in forced-colors mode", () => {
     expect(cascade.computed(select, "appearance", { forcedColors: true })).toBe("auto");
     expect(cascade.computed(chevron, "display", { forcedColors: true })).toBe("none");
+  });
+});
+
+describe("Select motion", () => {
+  it("fades its border and colors with the fast token, never the focus ring", () => {
+    for (const states of [[], [":focus", ":focus-visible"], ['[aria-invalid="true"]']]) {
+      const transition = transitionOf(cascade.computed, select, { states });
+      expectInstantFocusRing(transition.properties);
+      expect(transition.properties).toEqual(["color", "background-color", "border-color"]);
+      expect(transition.durations).toEqual([durations.fast]);
+      expect(transition.easings).toEqual([easings.out]);
+    }
   });
 });

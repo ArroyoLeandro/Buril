@@ -6,7 +6,10 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva(
   [
     // Long labels wrap instead of overflowing at a 320px width; sizes set a minimum height.
-    "inline-flex items-center justify-center gap-2 rounded-full border text-center font-semibold transition-colors",
+    "inline-flex items-center justify-center gap-2 rounded-full border text-center font-semibold",
+    // Colors fade with the motion tokens (literal fallbacks, so no theme is needed). The listed
+    // properties leave out outline-color: the focus ring appears at once (rule 10).
+    "transition-[color,background-color,border-color,text-decoration-color] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1))",
     // Visible focus (rule 4): outline stays visible in forced-colors mode, unlike a shadow ring.
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
     // Borders stay visible when forced-colors replaces the palette.

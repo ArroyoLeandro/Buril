@@ -3,6 +3,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import {
+  durations,
+  easings,
+  expectInstantFocusRing,
+  transitionOf,
+} from "../../test/motion-assertions";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 
@@ -39,5 +45,17 @@ describe("Textarea compiled with Tailwind", () => {
   it("starts at about three lines tall and only resizes vertically", () => {
     expect(cascade.computed(textarea, "min-height")).toBe("calc(var(--spacing) * 20)");
     expect(cascade.computed(textarea, "resize")).toBe("vertical");
+  });
+});
+
+describe("Textarea motion", () => {
+  it("fades its border and colors with the fast token, never the focus ring", () => {
+    for (const states of [[], [":focus", ":focus-visible"], ['[aria-invalid="true"]']]) {
+      const transition = transitionOf(cascade.computed, textarea, { states });
+      expectInstantFocusRing(transition.properties);
+      expect(transition.properties).toEqual(["color", "background-color", "border-color"]);
+      expect(transition.durations).toEqual([durations.fast]);
+      expect(transition.easings).toEqual([easings.out]);
+    }
   });
 });
