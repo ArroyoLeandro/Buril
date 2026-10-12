@@ -1,0 +1,162 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { Code } from "astro:components";
+
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { codeTheme } from "../../components/code-theme";
+import { noFlashScript } from "../../scripts/theme";
+import { readTokens } from "../../utils/tokens";
+// Read from the file the registry ships, so the table never drifts from the real values. A `?raw`
+// CSS import would be empty under Vitest (`css: false`), so read it from the project root.
+const tokens = readTokens(readFileSync(resolve("registry/styles/buril.css"), "utf8"));
+
+const darkExample = `<html class="dark">  <!-- always dark -->
+<html class="light"> <!-- always light -->
+<html>               <!-- follows the system -->`;
+
+const overrideExample = `:root {
+  --decor: #1d4ed8;
+  --ring: #1d4ed8;
+}
+
+.dark {
+  --decor: #60a5fa;
+  --ring: #60a5fa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --decor: #60a5fa;
+    --ring: #60a5fa;
+  }
+}`;
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Theming | Buril UI"
+  description="Buril's design tokens, dark mode and how to change the palette."
+>
+  <h1 class="font-display text-3xl">Theming</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Components read the standard shadcn tokens, so any shadcn theme works. The optional Buril theme
+    sets them to ink on paper, with one red for focus, decoration and destructive actions.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Token layers</h2>
+  <ol class="mt-4 list-decimal space-y-2 pl-6">
+    <li>
+      <strong>Primitives</strong>, <code>--buril-*</code>: the raw palette, such as
+      <code>--buril-paper</code> and <code>--buril-ink</code>. They never change with the color
+      scheme. Only this docs site uses them; the registry theme writes the final values.
+    </li>
+    <li>
+      <strong>shadcn variables</strong>, such as <code>--background</code> and
+      <code>--primary</code>. They switch between light and dark, and they are the only tokens
+      components depend on.
+    </li>
+    <li>
+      <strong>Buril extras</strong>: <code>--decor</code> for decoration and <code>--grid</code> for
+      grid lines. Decoration always has a fallback, so components still work without them.
+    </li>
+  </ol>
+  <p class="mt-4">
+    An <code>@theme inline</code> block maps each variable to a Tailwind color, so
+    <code>bg-background</code> and <code>text-primary</code> follow the active scheme.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Tokens</h2>
+  {/* Values wrap anywhere, so the table fits a 320px screen without scrolling sideways. */}
+  <div class="mt-4 border border-border">
+    <table class="w-full border-collapse text-left text-sm">
+      <caption id="tokens-caption" class="px-4 py-3 text-left text-muted-foreground">
+        {/* An expression keeps the space: Prettier drops a plain one before <code> here. */}
+        {"Buril values for each token, read from "}
+        <code>registry/styles/buril.css</code>.
+      </caption>
+      <thead>
+        <tr class="border-y border-border">
+          <th scope="col" class="px-4 py-2 font-semibold">
+            Token
+          </th>
+          <th scope="col" class="px-4 py-2 font-semibold">
+            Light
+          </th>
+          <th scope="col" class="px-4 py-2 font-semibold">
+            Dark
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {tokens.map(({ name, light, dark }) => (
+          <tr class="border-b border-border last:border-b-0">
+            <th scope="row" class="px-4 py-2 font-normal wrap-anywhere">
+              <code>--{name}</code>
+            </th>
+            {[light, dark].map((value) => (
+              <td class="px-4 py-2">
+                <span class="flex items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    class="size-4 shrink-0 rounded-full border border-border"
+                    style={`background: ${value}`}
+                  />
+                  <code class="min-w-0 wrap-anywhere">{value}</code>
+                </span>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Dark mode</h2>
+  <p class="mt-4">
+    The theme reads two classes on <code>&lt;html&gt;</code>: <code>.dark</code> turns dark mode on
+    and <code>.light</code> forces light mode. With neither class, a
+    <code>prefers-color-scheme</code> media query follows the system, so the page matches the user's
+    setting without JavaScript.
+  </p>
+  <div class={code}>
+    <Code code={darkExample} lang="html" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    The theme redefines Tailwind's <code>dark:</code> variant with the same rule, so
+    <code>dark:</code> utilities agree with the tokens. A toggle must therefore set
+    <code>.light</code> to force light mode; removing <code>.dark</code> only returns to the system
+    setting. With next-themes, <code>attribute="class"</code> already does this.
+  </p>
+
+  <h3 class="mt-8 font-display text-lg">Avoid a flash</h3>
+  <p class="mt-4">
+    If you store the visitor's choice, apply it before the first paint with an inline script at the
+    top of <code>&lt;head&gt;</code>. This site runs this one:
+  </p>
+  <div class={code}>
+    <Code code={noFlashScript} lang="js" theme={codeTheme} />
+  </div>
+
+  <h2 class="mt-10 font-display text-xl">Override the red</h2>
+  <p class="mt-4">
+    The red carries meaning, so it is limited to three tokens: <code>--decor</code> for decoration,
+    <code>--ring</code> for the focus ring and <code>--destructive</code> for destructive actions
+    and errors. To use your own color, redefine them after the theme, in all three blocks:
+  </p>
+  <div class={code}>
+    <Code code={overrideExample} lang="css" theme={codeTheme} />
+  </div>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      Keep <code>--ring</code> at least 3:1 against <code>--background</code>, so focus stays
+      visible.
+    </li>
+    <li>
+      Keep <code>--destructive</code> at least 4.5:1 against <code>--background</code>, because
+      error text uses it.
+    </li>
+    <li>Measure both schemes: a color that passes on paper can fail on the dark background.</li>
+  </ul>
+</DocsLayout>

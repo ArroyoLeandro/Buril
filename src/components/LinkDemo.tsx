@@ -8,7 +8,7 @@ export default function LinkDemo() {
           Variants
         </h3>
         <p>
-          Read the <Link href="/components/button">Button docs</Link> first.
+          Read the <Link href="/docs/components/button">Button docs</Link> first.
         </p>
         <p className="text-sm text-muted-foreground">
           Muted links suit secondary text, such as a{" "}

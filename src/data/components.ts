@@ -10,7 +10,7 @@ export type ComponentStatus = "new" | "beta";
  * sidebar, the index page and each component page's title, description, install item and source.
  */
 export interface DocumentedComponent {
-  /** URL segment: the page lives at `src/pages/components/<slug>.astro`. */
+  /** URL segment: the page lives at `src/pages/docs/components/<slug>.astro`. */
   slug: string;
   name: string;
   /** One sentence, used as the page lead and its meta description. */
@@ -157,7 +157,7 @@ export const documentedComponents: readonly DocumentedComponent[] = [
   },
 ];
 
-export const componentHref = (slug: string) => `/components/${slug}`;
+export const componentHref = (slug: string) => `/docs/components/${slug}`;
 
 /** The entry's own category, else its catalog category, else "Other". */
 export function componentCategory(entry: DocumentedComponent): ComponentCategory | "Other" {

@@ -1,0 +1,91 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import InstallCommand from "../../components/InstallCommand.astro";
+import { Link } from "../../../registry/ui/link";
+---
+
+<DocsLayout
+  title="Installation | Buril UI"
+  description="Install Buril components with the shadcn CLI, from a URL or by name."
+>
+  <h1 class="font-display text-3xl">Installation</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril components install with the shadcn CLI, one component at a time, from a URL or by name.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Requirements</h2>
+  <p class="mt-4">
+    A React 19 project with Tailwind CSS v4 that is set up for shadcn, which means it has a
+    <code>components.json</code> file. If it does not, run the CLI's <code>init</code> first:
+  </p>
+  <InstallCommand id="install-init" commands={["init"]} />
+
+  <h2 class="mt-10 font-display text-xl">Install from a URL</h2>
+  <p class="mt-4">Every component has its own JSON file in the registry. Pass its URL to add:</p>
+  <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
+  <p class="mt-4 text-muted-foreground">
+    The domain example.com is a placeholder until the registry is hosted. The paths after it stay
+    the same.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Install by name</h2>
+  <p class="mt-4">
+    Register the <code>@buril</code> namespace once. The CLI saves it in
+    <code>components.json</code>, and from then on every component installs by name:
+  </p>
+  <InstallCommand
+    id="install-namespace"
+    commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
+  />
+
+  <h2 class="mt-10 font-display text-xl">What the CLI adds</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      The component file in <code>components/ui/</code>, at the same path shadcn uses. If a file is
+      already there, the CLI asks before replacing it.
+    </li>
+    <li>
+      Its npm dependencies, such as <code>class-variance-authority</code> for the Button.
+    </li>
+    <li>
+      Components use the standard shadcn tokens and your <code>cn()</code> helper, so installing one
+      does not change your theme.
+    </li>
+  </ul>
+  <p class="mt-4">
+    Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
+    version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so when
+    the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to your
+    dependencies. If your <code>lib/utils.ts</code> differs, the CLI asks before replacing it;
+    answering no is safe.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Optional theme</h2>
+  <p class="mt-4">
+    The Buril palette, ink on paper with a red reserved for focus, decoration and destructive
+    actions, is a separate install:
+  </p>
+  <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
+  <p class="mt-4">It edits your global CSS file:</p>
+  <ul class="mt-2 list-disc space-y-2 pl-6">
+    <li>
+      It replaces your shadcn color tokens in <code>:root</code> and <code>.dark</code>. Other
+      variables, such as <code>--radius</code>, stay as they are.
+    </li>
+    <li>
+      It adds two decorative tokens, <code>--decor</code> and <code>--grid</code>, and font tokens.
+    </li>
+    <li>
+      It follows the system without JavaScript, and redefines the <code>dark:</code> variant the
+      same way. <Link href="/docs/theming">Theming</Link> explains dark mode and how to change the
+      colors.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Fonts</h2>
+  <p class="mt-4">
+    Buril ships no font files. Headings use <code>--font-display</code> and body text uses
+    <code>--font-body</code>, both with system fallbacks. This site pairs Silkscreen, a pixel font
+    kept for headings only, with Inter for everything else; both are free on Google Fonts.
+  </p>
+</DocsLayout>

@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import IndexPage from "../../src/pages/index.astro";
-import ButtonPage from "../../src/pages/components/button.astro";
+import ButtonPage from "../../src/pages/docs/components/button.astro";
 
 let container: AstroContainer;
 
@@ -24,7 +24,7 @@ const text = (html: string) =>
 const render = () => container.renderToString(IndexPage, { request: new Request("http://x/") });
 const main = (html: string) => /<main[\s\S]*<\/main>/.exec(html)![0];
 const section = (html: string, title: string) => {
-  const start = html.indexOf(`>${title}</h2>`);
+  const start = html.search(new RegExp(`>\\s*${title}\\s*</h2>`));
   expect(start, title).toBeGreaterThan(-1);
   const end = html.indexOf("<h2", start);
   return html.slice(start, end === -1 ? undefined : end);
