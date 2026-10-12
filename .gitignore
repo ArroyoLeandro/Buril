@@ -22,3 +22,6 @@ public/r/
 Thumbs.db
 .vscode/*
 !.vscode/extensions.json
+
+# Local agent tooling and worktrees
+.claude/
