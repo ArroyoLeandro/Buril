@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import { componentHref, documentedComponents } from "../data/components";
 import { noFlashScript } from "../scripts/theme";
 
 interface Props {
@@ -50,16 +51,18 @@ const current = (href: string) => (path === href ? "page" : undefined);
               <span id="nav-components" class="text-muted-foreground">
                 Components
               </span>
-              <ul aria-labelledby="nav-components" class="flex gap-x-4">
-                <li>
-                  <a
-                    href="/components/button"
-                    aria-current={current("/components/button")}
-                    class="underline-offset-4 hover:underline aria-[current=page]:underline"
-                  >
-                    Button
-                  </a>
-                </li>
+              <ul aria-labelledby="nav-components" class="flex flex-wrap gap-x-4 gap-y-2">
+                {documentedComponents.map(({ slug, name }) => (
+                  <li>
+                    <a
+                      href={componentHref(slug)}
+                      aria-current={current(componentHref(slug))}
+                      class="underline-offset-4 hover:underline aria-[current=page]:underline"
+                    >
+                      {name}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </li>
           </ul>

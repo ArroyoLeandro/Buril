@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { buttonVariants } from "../../registry/ui/button";
+import { componentHref, documentedComponents } from "../data/components";
 ---
 
 <BaseLayout title="Buril UI">
@@ -18,6 +19,18 @@ import { buttonVariants } from "../../registry/ui/button";
       style="background-image: repeating-linear-gradient(45deg, var(--color-decor) 0 2px, transparent 2px 8px)"
     ></div>
   </div>
+
+  <h2 class="mt-10 font-display text-xl">Components</h2>
+  <ul class="mt-4 space-y-3">
+    {documentedComponents.map(({ slug, name, description }) => (
+      <li>
+        <a href={componentHref(slug)} class="font-semibold underline underline-offset-4">
+          {name}
+        </a>
+        <p class="text-muted-foreground">{description}</p>
+      </li>
+    ))}
+  </ul>
 
   <p class="mt-8 border border-border p-4 dark:border-decor">
     Border and text follow the active color scheme.

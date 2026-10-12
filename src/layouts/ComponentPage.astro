@@ -1,0 +1,68 @@
+---
+import { Code } from "astro:components";
+
+import BaseLayout from "./BaseLayout.astro";
+import InstallCommand from "../components/InstallCommand.astro";
+import { codeTheme } from "../components/code-theme";
+import { findComponent } from "../data/components";
+
+/**
+ * Shared page for one documented component. Name, description, install item and source file come
+ * from `src/data/components.ts`, so the page, the nav and the index never drift apart.
+ *
+ * Slots, in page order:
+ * - `lead`: optional text appended to the description paragraph.
+ * - `demo`: the live demo, usually one React island.
+ * - `usage`: optional sections between the demo and the install commands.
+ * - `install-notes`: optional paragraphs after the install commands.
+ * - default: API notes and other sections before the source.
+ */
+interface Props {
+  slug: string;
+}
+
+const entry = findComponent(Astro.props.slug);
+
+// Every shipped component file, as raw text at build time: the snippet is never copied by hand.
+const sources = import.meta.glob<string>(
+  ["../../registry/ui/*.tsx", "!../../registry/ui/*.test.tsx"],
+  { query: "?raw", import: "default", eager: true },
+);
+const source = sources[`../../${entry.source}`];
+if (source === undefined) throw new Error(`Source file not found: ${entry.source}`);
+---
+
+<BaseLayout title={`${entry.name} | Buril UI`} description={entry.description}>
+  <h1 class="font-display text-3xl">{entry.name}</h1>
+  <p class="mt-4 text-muted-foreground">
+    {entry.description}
+    <slot name="lead" />
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Demo</h2>
+  <div class="mt-4 border border-border p-6">
+    <slot name="demo" />
+  </div>
+
+  <slot name="usage" />
+
+  <h2 class="mt-10 font-display text-xl">Install</h2>
+  <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
+  <InstallCommand id="install-url" commands={[`add https://example.com/r/${entry.item}.json`]} />
+  <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
+  <InstallCommand
+    id="install-namespace"
+    commands={["registry add @buril=https://example.com/r/{name}.json", `add @buril/${entry.item}`]}
+  />
+  <slot name="install-notes" />
+
+  <slot />
+
+  <h2 class="mt-10 font-display text-xl">Source</h2>
+  <p class="mt-4 text-muted-foreground">
+    Read from <code>{entry.source}</code> at build time.
+  </p>
+  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+    <Code code={source} lang="tsx" theme={codeTheme} />
+  </div>
+</BaseLayout>
