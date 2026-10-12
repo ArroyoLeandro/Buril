@@ -348,6 +348,12 @@ describe("switch page", () => {
     expect(visible).toMatch(/stateLabels/);
     expect(visible).toMatch(/reduced motion/i);
   });
+
+  it("explains how to resize the track and the invalid state", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/h-8 w-14/);
+    expect(visible).toMatch(/aria-invalid=(&quot;|")true(&quot;|")/);
+  });
 });
 
 describe("select page", () => {

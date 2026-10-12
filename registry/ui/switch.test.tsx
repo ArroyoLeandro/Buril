@@ -70,6 +70,14 @@ describe("Switch", () => {
     expect(control).not.toBeChecked();
   });
 
+  it("keeps the thumb in the track when the track is resized", () => {
+    const { container } = render(<WiFi className="h-8 w-14" />);
+    const thumb = container.querySelector("[data-thumb]")!;
+    // No fixed size or travel: the thumb is sized and moved from the track box.
+    expect(thumb.className).not.toMatch(/\bsize-\d|\btranslate-x-\d/);
+    expect(screen.getByRole("switch")).toHaveClass("h-8", "w-14");
+  });
+
   it("hides the thumb from assistive technology", () => {
     const { container } = render(<WiFi />);
     const thumb = container.querySelector("[data-thumb]");
@@ -108,6 +116,31 @@ describe("Switch", () => {
     expect(screen.getByRole("switch", { name: "Dark mode" })).toHaveAccessibleDescription(
       "Follows the system when off.",
     );
+  });
+
+  describe("invalid", () => {
+    it("reports aria-invalid on the switch itself", () => {
+      render(<WiFi aria-invalid="true" />);
+      const control = screen.getByRole("switch", { name: "Wi-Fi" });
+      expect(control).toHaveAttribute("aria-invalid", "true");
+      expect(control).toBeInvalid();
+    });
+
+    it("is marked invalid and described by a Field error", () => {
+      render(
+        <Field label="Terms of service" error="Accept the terms to continue.">
+          <Switch />
+        </Field>,
+      );
+      const control = screen.getByRole("switch", { name: "Terms of service" });
+      expect(control).toBeInvalid();
+      expect(control).toHaveAccessibleDescription("Error: Accept the terms to continue.");
+    });
+
+    it("has no axe violations", async () => {
+      const { container } = render(<WiFi aria-invalid="true" />);
+      expect(await axe(container)).toHaveNoViolations();
+    });
   });
 
   describe("accessibility", () => {
