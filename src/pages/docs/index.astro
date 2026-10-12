@@ -1,0 +1,80 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { documentedComponents } from "../../data/components";
+import { Link } from "../../../registry/ui/link";
+
+const principles = [
+  [
+    "You own the code.",
+    "Components are copied into your project, not installed as a runtime dependency. Edit them freely.",
+  ],
+  [
+    "Accessible by default.",
+    "Every component targets WCAG 2.2 AA and follows its WAI-ARIA Authoring Practices pattern.",
+  ],
+  [
+    "Platform first.",
+    "Native elements, the popover attribute and semantic HTML come before any JavaScript workaround.",
+  ],
+  [
+    "Built from scratch.",
+    "No headless UI library underneath: focus, keyboard and ARIA behavior are written and tested here.",
+  ],
+  [
+    "Themeable.",
+    "Components use the standard shadcn tokens only, so a new palette needs no component changes.",
+  ],
+];
+---
+
+<DocsLayout
+  title="Introduction | Buril UI"
+  description="What Buril UI is, the principles behind it and where to start."
+>
+  <h1 class="font-display text-3xl">Introduction</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Buril UI is a set of accessible React components that you copy into your project, then read,
+    change and keep.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">What it is</h2>
+  <p class="mt-4">
+    Buril is a shadcn-compatible registry, not a package. The shadcn CLI copies a component's source
+    into your project, next to your own code, and installs the few npm packages it needs. From then
+    on the file is yours: there is no version to upgrade and no styling API to work around.
+  </p>
+  <p class="mt-4">
+    The components are written with React and Tailwind CSS and read the same design tokens as
+    shadcn/ui, so they sit next to shadcn components in the same project.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Principles</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {principles.map(([title, body]) => (
+      <li>
+        <strong>{title}</strong> {body}
+      </li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Status</h2>
+  <p class="mt-4">
+    Buril is in early development. {documentedComponents.length} components are documented, each
+    with tests and a page. The registry is not hosted yet, so install commands use the placeholder
+    domain
+    <code>example.com</code>.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Next steps</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/docs/installation">Installation</Link>: add your first component.
+    </li>
+    <li>
+      <Link href="/docs/theming">Theming</Link>: the tokens, dark mode and the optional palette.
+    </li>
+    <li>
+      <Link href="/docs/components">Components</Link>: every component, with live demos.
+    </li>
+  </ul>
+</DocsLayout>

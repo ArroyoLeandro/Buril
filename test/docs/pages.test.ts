@@ -8,7 +8,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 import IndexPage from "../../src/pages/index.astro";
-import ButtonPage from "../../src/pages/components/button.astro";
+import ButtonPage from "../../src/pages/docs/components/button.astro";
 import { componentHref, documentedComponents } from "../../src/data/components";
 
 let container: AstroContainer;
@@ -55,7 +55,7 @@ function codeColors(html: string) {
 /** Every component page, keyed by slug, so new pages get the shared checks automatically. */
 const componentPages = Object.fromEntries(
   Object.entries(
-    import.meta.glob<AstroComponentFactory>("../../src/pages/components/*.astro", {
+    import.meta.glob<AstroComponentFactory>("../../src/pages/docs/components/*.astro", {
       eager: true,
       import: "default",
     }),

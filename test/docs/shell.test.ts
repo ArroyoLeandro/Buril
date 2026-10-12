@@ -22,7 +22,7 @@ const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const componentPages = Object.fromEntries(
   Object.entries(
-    import.meta.glob<AstroComponentFactory>("../../src/pages/components/*.astro", {
+    import.meta.glob<AstroComponentFactory>("../../src/pages/docs/components/*.astro", {
       eager: true,
       import: "default",
     }),
