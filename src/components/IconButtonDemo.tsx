@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { IconButton } from "../../registry/ui/button";
 
@@ -29,6 +29,10 @@ const icons = {
 
 export default function IconButtonDemo() {
   const [loading, setLoading] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+
+  // A pending timer must not outlive the demo, for example when the page navigates away.
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   return (
     <div className="flex flex-col gap-8">
@@ -76,7 +80,8 @@ export default function IconButtonDemo() {
             loading={loading}
             onClick={() => {
               setLoading(true);
-              window.setTimeout(() => setLoading(false), 1500);
+              window.clearTimeout(timer.current);
+              timer.current = window.setTimeout(() => setLoading(false), 1500);
             }}
           >
             <Icon path={icons.refresh} />
