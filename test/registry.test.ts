@@ -58,6 +58,7 @@ describe("registry items", () => {
     ["card", "registry/ui/card.tsx"],
     ["badge", "registry/ui/badge.tsx"],
     ["avatar", "registry/ui/avatar.tsx"],
+    ["separator", "registry/ui/separator.tsx"],
   ])("%s is a standalone component that needs only utils", (name, path) => {
     const item = byName.get(name) as Item & { files?: { path: string; type: string }[] };
     expect(item?.type).toBe("registry:ui");

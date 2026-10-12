@@ -422,6 +422,24 @@ describe("avatar page", () => {
   });
 });
 
+describe("separator page", () => {
+  const render = () => container.renderToString(componentPages["separator"]!);
+
+  it("explains semantic versus decorative separators and the orientation", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/&lt;hr&gt;|<hr>/);
+    expect(visible).toMatch(/aria-orientation=(&quot;|")vertical(&quot;|")/);
+    expect(visible).toMatch(/decorative/);
+    expect(visible).toMatch(/role=(&quot;|")none(&quot;|")/);
+  });
+
+  it("documents the color decision with measured contrast", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/3:1/);
+    expect(visible).toMatch(/border-input/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 
