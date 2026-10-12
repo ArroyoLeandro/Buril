@@ -3,7 +3,10 @@ import { useState } from "react";
 import { Field } from "../../registry/ui/field";
 import { Input } from "../../registry/ui/input";
 
-/** Three inputs in Fields: a plain one, one that validates as you type, and a disabled one. */
+/**
+ * Inputs in Fields: a plain one, one that validates as you type, a read-only value people can
+ * still focus and copy, and a disabled one that is skipped by the keyboard.
+ */
 export default function InputDemo() {
   const [username, setUsername] = useState("");
   const error = /\s/.test(username) ? "Usernames cannot contain spaces." : undefined;
@@ -22,7 +25,10 @@ export default function InputDemo() {
         )}
       </Field>
       <Field label="Account ID" description="Assigned when you sign up.">
-        {(control) => <Input value="ACC-20491" readOnly disabled {...control} />}
+        {(control) => <Input value="ACC-20491" readOnly {...control} />}
+      </Field>
+      <Field label="Promo code" description="Not available on the free plan.">
+        {(control) => <Input disabled {...control} />}
       </Field>
     </div>
   );
