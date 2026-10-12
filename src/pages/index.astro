@@ -3,8 +3,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Buril UI">
-  <main>
-    <h1>Buril UI</h1>
-    <p>Accessible React components you copy into your project.</p>
+  <main class="mx-auto max-w-2xl px-4 py-12">
+    <h1 class="font-display text-3xl">Buril UI</h1>
+    <p class="mt-4 text-muted">Accessible React components you copy into your project.</p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-4">
+      <button
+        type="button"
+        class="min-h-6 rounded-full bg-accent-strong px-6 py-2 font-semibold text-accent-strong-fg"
+      >
+        Accent button
+      </button>
+      <div
+        role="img"
+        aria-label="Hatched block using the decorative accent color"
+        class="size-16 border border-border"
+        style="background-image: repeating-linear-gradient(45deg, var(--color-accent) 0 2px, transparent 2px 8px)"
+      >
+      </div>
+    </div>
+
+    <p class="mt-8 border border-border p-4 dark:border-accent">
+      Border and text follow the active color scheme.
+    </p>
   </main>
 </BaseLayout>

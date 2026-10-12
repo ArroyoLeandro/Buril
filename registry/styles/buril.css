@@ -1,0 +1,94 @@
+/*
+ * Buril UI design tokens (decision 016, "Red lacquer").
+ *
+ * Two layers:
+ *   1. Primitives, `--buril-*`, declared per color scheme. Override these in :root to re-skin.
+ *   2. Semantics, `--color-*`, mapped through `@theme inline` so Tailwind generates
+ *      utilities such as `bg-accent`. Components use semantic tokens only.
+ *
+ * Dark mode: `.dark` on <html> turns it on, `.light` forces light. Without JavaScript the
+ * system preference applies unless `.light` is present. Keep the three dark blocks in sync;
+ * `test/tokens.test.ts` asserts it.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* paper #F4EFE6, ink #1A1714 */
+  --buril-bg: #f4efe6;
+  --buril-fg: #1a1714;
+  --buril-muted: color-mix(in oklab, #1a1714 72%, #f4efe6);
+  --buril-grid: color-mix(in oklab, #1a1714 9%, transparent);
+  --buril-border: #1a1714;
+  /* Decorative only (borders, icons, hatching). Not for text. */
+  --buril-accent: #d72828;
+  /* Text-safe accent for buttons, links and accent text. */
+  --buril-accent-strong: #c90f1a;
+  --buril-accent-strong-fg: #ffffff;
+  --buril-focus: var(--buril-accent-strong);
+}
+
+/* Explicit dark: class on <html>. */
+.dark {
+  color-scheme: dark;
+
+  /* night #161310, bone #EDE6DA */
+  --buril-bg: #161310;
+  --buril-fg: #ede6da;
+  --buril-muted: #b5ada0;
+  --buril-grid: color-mix(in oklab, #ede6da 7%, transparent);
+  --buril-border: #ede6da;
+  --buril-accent: #d72828;
+  --buril-accent-strong: #ff5a51;
+  --buril-accent-strong-fg: #161310;
+  --buril-focus: var(--buril-accent-strong);
+}
+
+/* No-JS fallback: follow the system unless the page forces light. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+
+    --buril-bg: #161310;
+    --buril-fg: #ede6da;
+    --buril-muted: #b5ada0;
+    --buril-grid: color-mix(in oklab, #ede6da 7%, transparent);
+    --buril-border: #ede6da;
+    --buril-accent: #d72828;
+    --buril-accent-strong: #ff5a51;
+    --buril-accent-strong-fg: #161310;
+    --buril-focus: var(--buril-accent-strong);
+  }
+}
+
+/* `dark:` utilities agree with the tokens: .dark, or system dark when not forced light. */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light), :root:not(.light) *) {
+      @slot;
+    }
+  }
+}
+
+/* Semantic tokens: they reference the primitives, so they follow the active scheme. */
+@theme inline {
+  --color-bg: var(--buril-bg);
+  --color-fg: var(--buril-fg);
+  --color-muted: var(--buril-muted);
+  --color-grid: var(--buril-grid);
+  --color-border: var(--buril-border);
+  --color-accent: var(--buril-accent);
+  --color-accent-strong: var(--buril-accent-strong);
+  --color-accent-strong-fg: var(--buril-accent-strong-fg);
+  --color-focus: var(--buril-focus);
+}
+
+/* Fonts are not shipped. Override these with your own families. */
+@theme {
+  --font-display: ui-monospace, monospace;
+  --font-body: system-ui, sans-serif;
+}
