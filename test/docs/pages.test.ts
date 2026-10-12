@@ -236,6 +236,24 @@ describe("icon button page", () => {
   });
 });
 
+describe("link page", () => {
+  const render = () => container.renderToString(componentPages["link"]!);
+
+  it("explains the new-tab behavior and why href is required", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/opens in a new tab/);
+    expect(visible).toMatch(/noopener noreferrer/);
+    expect(visible).toMatch(/href/);
+    expect(visible).toMatch(/Button/);
+  });
+
+  it("demos a link that opens in a new tab with its hint in the name", async () => {
+    const html = await render();
+    expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
+    expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+  });
+});
+
 describe("button page", () => {
   it("renders one document with a single main landmark", async () => {
     expectWellFormedPage(await container.renderToString(ButtonPage));
