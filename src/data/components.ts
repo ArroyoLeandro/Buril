@@ -73,7 +73,7 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     slug: "checkbox",
     name: "Checkbox",
     description:
-      "A native checkbox with a drawn check, an indeterminate state and a clickable label.",
+      "A native checkbox with a drawn check and an indeterminate state. Wrap it in a label to name it.",
     item: "checkbox",
     source: "registry/ui/checkbox.tsx",
   },
@@ -181,7 +181,7 @@ const spanishDescriptions: Readonly<Record<string, string>> = {
   input: "Un campo de texto nativo con borde visible, anillo de foco y estado no válido.",
   textarea: "Un campo de texto nativo de varias líneas, con el mismo estilo que el Input.",
   checkbox:
-    "Una casilla de verificación nativa con una marca dibujada, un estado indeterminado y una etiqueta en la que se puede hacer clic.",
+    "Una casilla de verificación nativa con una marca dibujada y un estado indeterminado. Envuélvela en una etiqueta para darle nombre.",
   "radio-group":
     "Botones de opción nativos en un fieldset: una sola parada de Tab, flechas para elegir y una leyenda como nombre.",
   switch:

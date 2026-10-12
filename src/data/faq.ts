@@ -119,9 +119,11 @@ export const faq: FaqItem[] = [
     answer: {
       en: [
         "No. Buril is a shadcn registry: the CLI copies each component's source into your project, and from then on the code is yours. There is no Buril runtime to update; reinstall a component to get a newer version.",
+        "Reinstalling overwrites the file, including any edits you made to it. Check what would change first with `npx shadcn@latest add @buril/<item> --diff`, which only shows the diff and writes nothing.",
       ],
       es: [
         "No. Buril es un registry de shadcn: la CLI copia el código fuente de cada componente en tu proyecto y, a partir de ahí, el código es tuyo. No hay un runtime de Buril que actualizar; vuelve a instalar un componente para obtener una versión más nueva.",
+        "Reinstalar sobrescribe el archivo, incluidos los cambios que le hayas hecho. Revisa antes qué cambiaría con `npx shadcn@latest add @buril/<item> --diff`, que solo muestra las diferencias y no escribe nada.",
       ],
     },
     link: { href: "/docs/installation", label: { en: "Installation", es: "Instalación" } },

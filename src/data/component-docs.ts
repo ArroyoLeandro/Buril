@@ -128,7 +128,9 @@ export const componentDocs: Record<string, ComponentDocs> = {
     ],
   },
   "icon-button": {
-    usage: `import { IconButton } from "@/components/ui/button";
+    usage: `import { XIcon } from "lucide-react";
+
+import { IconButton } from "@/components/ui/button";
 
 <IconButton aria-label="Close dialog" variant="ghost" onClick={close}>
   <XIcon />
@@ -167,6 +169,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
             description:
               "A gesture the icon plays once on hover and keyboard focus. `pop` also squeezes the icon on press and lets it spring back on release; `wiggle` lifts a lid marked with `data-lid`.",
           },
+          className,
         ],
       },
     ],
@@ -212,6 +215,12 @@ export const componentDocs: Record<string, ComponentDocs> = {
             default: "false",
             description:
               'Opens a new tab with `rel="noopener noreferrer"` and says so to every user.',
+          },
+          {
+            name: "target",
+            type: "string",
+            description:
+              'Where the link opens. `"_blank"` works like `external`: it adds `rel` and the new-tab hint.',
           },
           {
             name: "newTabLabel",
@@ -389,8 +398,8 @@ export const componentDocs: Record<string, ComponentDocs> = {
     usage: `import { Checkbox } from "@/components/ui/checkbox";
 
 <label className="flex min-h-6 items-center gap-2">
-  <Checkbox name="terms" />
-  I accept the terms
+  <Checkbox name="remember" defaultChecked />
+  Remember me on this device
 </label>`,
     api: [
       {
@@ -401,6 +410,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "checked",
             type: "boolean",
             description: "The checked state, for a controlled checkbox. Update it from `onChange`.",
+          },
+          {
+            name: "defaultChecked",
+            type: "boolean",
+            description: "The checked state at first, for an uncontrolled checkbox.",
           },
           {
             name: "indeterminate",
@@ -474,6 +488,12 @@ export const componentDocs: Record<string, ComponentDocs> = {
             default: "false",
             description: "Disables every radio through the fieldset.",
           },
+          {
+            name: "children",
+            type: "ReactNode",
+            description: "The `RadioGroupItem` radios.",
+          },
+          className,
         ],
       },
       {
@@ -495,6 +515,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
             type: "boolean",
             default: "false",
             description: "Disables this radio only.",
+          },
+          {
+            name: "className",
+            type: "string",
+            description: "Extra classes for the label row, merged with `cn()`.",
           },
         ],
       },
@@ -531,6 +556,11 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "checked",
             type: "boolean",
             description: "On or off, for a controlled switch. Update it from `onChange`.",
+          },
+          {
+            name: "defaultChecked",
+            type: "boolean",
+            description: "On or off at first, for an uncontrolled switch.",
           },
           {
             name: "stateLabels",
@@ -759,6 +789,18 @@ export const componentDocs: Record<string, ComponentDocs> = {
             type: '"sm" | "default" | "lg"',
             default: '"default"',
             description: "The same sizes as the Avatar.",
+          },
+        ],
+      },
+      {
+        component: "initialsOf()",
+        description: "The initials the fallback shows, for your own avatar markup.",
+        props: [
+          {
+            name: "name",
+            type: "string",
+            description:
+              'Required. A name, such as "Ada Lovelace", which gives "AL": the first letters of the first and last words.',
           },
         ],
       },
@@ -1066,6 +1108,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
           loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
           motion:
             "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado. `pop` además encoge el icono al pulsar y lo deja volver con un rebote suave al soltar; `wiggle` levanta una tapa marcada con `data-lid`.",
+          className: classNameEs,
         },
       },
     },
@@ -1091,6 +1134,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: "Color del texto. Las dos conservan el subrayado.",
           external:
             'Abre una pestaña nueva con `rel="noopener noreferrer"` y se lo indica a todos los usuarios.',
+          target:
+            'Dónde se abre el enlace. `"_blank"` funciona como `external`: agrega `rel` y el aviso de pestaña nueva.',
           newTabLabel:
             "El aviso oculto que oyen los lectores de pantalla en un enlace que abre una pestaña nueva. Pásalo en el idioma de tu sitio.",
           className: classNameEs,
@@ -1195,6 +1240,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
         description: "Todas las demás props, `ref` incluida, van al `<input>` nativo.",
         props: {
           checked: "El estado marcado, para una casilla controlada. Actualízalo desde `onChange`.",
+          defaultChecked: "El estado marcado al principio, para una casilla no controlada.",
           indeterminate: "Muestra un guion e informa un estado mixto.",
           className: classNameEs,
         },
@@ -1224,6 +1270,8 @@ const spanishDocs: Record<string, SpanishDocs> = {
           onValueChange: "Se llama con el valor que marca el usuario.",
           required: "El formulario no se puede enviar sin elegir una opción.",
           disabled: "Deshabilita todos los botones de opción a través del fieldset.",
+          children: "Los botones de opción `RadioGroupItem`.",
+          className: classNameEs,
         },
         defaultTexts: { name: "generado" },
       },
@@ -1234,6 +1282,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
           value: "Obligatoria. El valor que informa este botón de opción.",
           children: "Obligatoria. La etiqueta visible.",
           disabled: "Deshabilita solo este botón de opción.",
+          className: "Clases adicionales para la fila de la etiqueta, combinadas con `cn()`.",
         },
       },
     },
@@ -1263,6 +1312,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
         props: {
           checked:
             "Activado o desactivado, para un Switch controlado. Actualízalo desde `onChange`.",
+          defaultChecked: "Activado o desactivado al principio, para un Switch no controlado.",
           stateLabels: "Texto visible para cada estado, oculto para los lectores de pantalla.",
           className: classNameEs,
         },
@@ -1391,6 +1441,12 @@ const spanishDocs: Record<string, SpanishDocs> = {
       "avatarVariants()": {
         description: "Las mismas clases como cadena, para tu propio marcado de avatar.",
         props: { size: "Los mismos tamaños que el Avatar." },
+      },
+      "initialsOf()": {
+        description: "Las iniciales que muestra el respaldo, para tu propio marcado de avatar.",
+        props: {
+          name: 'Obligatoria. Un nombre, como "Ada Lovelace", que da "AL": las primeras letras de la primera y la última palabra.',
+        },
       },
     },
     aria: {

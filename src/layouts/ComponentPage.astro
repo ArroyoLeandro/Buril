@@ -10,6 +10,7 @@ import { codeTheme } from "../components/code-theme";
 import { localizedComponentDocs } from "../data/component-docs";
 import { componentDescription, findComponent } from "../data/components";
 import { plainDemoSource } from "../i18n/demo-source";
+import { iconKeyframesCss } from "../utils/icon-keyframes";
 import { getLocale, translator } from "../i18n/ui";
 import registry from "../../registry.json";
 
@@ -58,9 +59,11 @@ const raw = demos[`../components/${demoName}.tsx`];
 const demoSource =
   raw && plainDemoSource(raw).replace(/(["'])(?:\.\.\/)+registry\/ui\//g, "$1@/components/ui/");
 
-const item = (registry.items as { name: string; dependencies?: string[] }[]).find(
+const item = (registry.items as { name: string; dependencies?: string[]; css?: object }[]).find(
   ({ name }) => name === entry.item,
 );
+// The button item appends the IconButton keyframes to your CSS; a manual install pastes them.
+const appendsKeyframes = item?.css !== undefined;
 const dependencies = item?.dependencies ?? [];
 const fileName = entry.source.split("/").pop() ?? entry.source;
 
@@ -122,6 +125,7 @@ const typeParts = (type: string) =>
       <p class="mt-4 text-muted-foreground">{t("component.installByName")}</p>
       <InstallCommand
         id="install-namespace"
+        placeholderNote={false}
         commands={[
           "registry add @buril=https://example.com/r/{name}.json",
           `add @buril/${entry.item}`,
@@ -151,6 +155,14 @@ const typeParts = (type: string) =>
             <Code code={source} lang="tsx" theme={codeTheme} />
           </div>
         </li>
+        {appendsKeyframes && (
+          <li>
+            <InlineCode text={t("component.copyKeyframes")} />
+            <div class={code}>
+              <Code code={iconKeyframesCss()} lang="css" theme={codeTheme} />
+            </div>
+          </li>
+        )}
       </ol>
     </div>
   </Tabs>

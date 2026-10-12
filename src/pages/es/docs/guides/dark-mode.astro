@@ -8,6 +8,7 @@ import {
   astroToggleExample,
   darkModeExample,
   nextThemesLayoutExample,
+  systemDarkScriptExample,
   themeSelectExample,
   viteHeadExample,
   viteMainExample,
@@ -22,9 +23,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 >
   <h1 class="font-display text-3xl">Modo oscuro</h1>
   <p class="mt-4 text-lg text-muted-foreground">
-    El tema de Buril lee una clase en <code>&lt;html&gt;</code>. Sirve cualquier herramienta que la
-    ponga: next-themes en aplicaciones de React, o unas pocas líneas de script en cualquier otro
-    lugar.
+    El tema de Buril lee dos clases en <code>&lt;html&gt;</code>, <code>.dark</code> y
+    <code>.light</code>. Sirve cualquier herramienta que las ponga: next-themes en aplicaciones de
+    React, o unas pocas líneas de script en cualquier otro lugar.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Cómo decide el tema</h2>
@@ -36,8 +37,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       <code>.dark</code> activa el modo oscuro; <code>.light</code> fuerza el modo claro.
     </li>
     <li>
-      Sin ninguna de las dos clases, una media query <code>prefers-color-scheme</code> sigue al
-      sistema, así que la página se ve bien incluso antes de que se ejecute JavaScript.
+      Sin ninguna de las dos clases, una media query <code>prefers-color-scheme</code> de
+      <code>@buril/theme</code> sigue al sistema, así que la página se ve bien incluso antes de que
+      se ejecute JavaScript.
     </li>
     <li>
       El tema también redefine la variante <code>dark:</code> de Tailwind con la misma regla, así
@@ -48,6 +50,22 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
     Una consecuencia: para forzar el modo claro en un sistema oscuro, pon <code>.light</code>.
     Quitar
     <code>.dark</code> solo vuelve a la configuración del sistema.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Sin el tema de Buril</h2>
+  <p class="mt-4">
+    La alternativa del sistema viene de <code>@buril/theme</code>. Los demás temas de shadcn solo
+    leen <code>.dark</code>, así que, sin ninguna clase, la página se queda clara en un sistema
+    oscuro. Para seguir al sistema en ese caso, pon <code>.dark</code> según la media query al
+    principio de <code>&lt;head&gt;</code>, y actualízala cuando cambie la configuración:
+  </p>
+  <div class={code}>
+    <Code code={systemDarkScriptExample} lang="html" theme={codeTheme} />
+  </div>
+  <p class="mt-4">
+    Si los visitantes también pueden elegir un tema, aplica en su lugar la elección guardada cuando
+    exista. next-themes sigue al sistema por defecto, mediante <code>enableSystem</code>, así que no
+    necesita otro script.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Next.js con next-themes</h2>
