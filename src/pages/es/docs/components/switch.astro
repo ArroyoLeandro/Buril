@@ -66,9 +66,9 @@ const { example, sizesExample } = componentExamples.switch;
 
     <h3 class="mt-8 font-display text-lg">Tamaños</h3>
     <p class="mt-4 text-muted-foreground">
-      La pista mide 44 por 24px. Pon otro tamaño con <code>className</code>: el punto se mantiene a
-      4px del borde de la pista en cualquier tamaño. Mantén la pista en al menos 24px de alto, el
-      tamaño mínimo del objetivo.
+      La pista mide 44 por 24px. Pon otro tamaño con <code>className</code>: el indicador se
+      mantiene a 4px del borde de la pista en cualquier tamaño. Mantén la pista en al menos 24px de
+      alto, el tamaño mínimo del objetivo.
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={sizesExample} lang="tsx" theme={codeTheme} />
@@ -78,8 +78,6 @@ const { example, sizesExample } = componentExamples.switch;
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     Crea <code>components/ui/switch.tsx</code>, en la misma ruta que el Switch de shadcn. A
     diferencia del de shadcn, es un input nativo: <code>onChange</code> reemplaza a
-    <code>onCheckedChange</code>. Solo necesita tu helper <code>cn()</code>; si tu
-    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
-    reemplazarlo, y puedes responder que no sin problema.
+    <code>onCheckedChange</code>. Solo necesita tu helper <code>cn()</code>.
   </p>
 </ComponentPage>

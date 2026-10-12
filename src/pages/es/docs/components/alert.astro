@@ -20,9 +20,7 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Nunca solo el color.</strong> Cada variante tiene su propio icono, y el título dice
-        qué tipo de mensaje es. El icono tiene <code>aria-hidden</code>, así que el título debe
-        transmitir el significado. Pasa <code>icon</code> para cambiarlo, o
-        <code>icon={"{null}"}</code> para no mostrar ninguno.
+        qué tipo de mensaje es.
       </li>
       <li>
         <strong>Variantes.</strong> <code>default</code> usa los colores de la tarjeta y el borde de
@@ -98,7 +96,6 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
     Crea <code>components/ui/alert.tsx</code>, con la misma ruta y los mismos nombres de partes que
     el componente Alert de shadcn. A diferencia del de shadcn, no tiene <code>role="alert"</code>{" "}
     por defecto: usa <code>live</code>. Necesita <code>class-variance-authority</code> y tu helper
-    <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión actual de shadcn,
-    la CLI pregunta antes de reemplazarlo, y puedes responder que no sin problema.
+    <code>cn()</code>.
   </p>
 </ComponentPage>
