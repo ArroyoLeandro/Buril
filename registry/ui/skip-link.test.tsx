@@ -86,6 +86,29 @@ describe("SkipLink", () => {
     expect(link).toHaveFocus();
   });
 
+  it("decodes a percent-encoded target", async () => {
+    render(
+      <>
+        <SkipLink href="#caf%C3%A9" />
+        <section id="café" tabIndex={-1} aria-label="Café" />
+      </>,
+    );
+    await userEvent.click(screen.getByRole("link"));
+    expect(screen.getByRole("region", { name: "Café" })).toHaveFocus();
+  });
+
+  it("falls back to the raw target when it is not valid percent-encoding", async () => {
+    // decodeURIComponent throws on a lone "%", which must not break the click.
+    render(
+      <>
+        <SkipLink href="#100%" />
+        <section id="100%" tabIndex={-1} aria-label="Full" />
+      </>,
+    );
+    await userEvent.click(screen.getByRole("link"));
+    expect(screen.getByRole("region", { name: "Full" })).toHaveFocus();
+  });
+
   it("is visually hidden until it has keyboard focus", () => {
     render(<SkipLink />);
     expect(screen.getByRole("link")).toHaveClass("sr-only", "focus-visible:not-sr-only");

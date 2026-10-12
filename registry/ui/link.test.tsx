@@ -87,6 +87,40 @@ describe("Link", () => {
       expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
     });
 
+    it("keeps the hint at the end of an aria-label it is given", () => {
+      render(
+        <Link href="https://example.com/changelog" external aria-label="Changelog for version 2">
+          v2
+        </Link>,
+      );
+      expect(
+        screen.getByRole("link", { name: "Changelog for version 2 (opens in a new tab)" }),
+      ).toHaveAttribute("aria-label", "Changelog for version 2 (opens in a new tab)");
+    });
+
+    it("keeps the hint when aria-labelledby names the link", () => {
+      render(
+        <>
+          <h2 id="release">Release notes</h2>
+          <Link href="https://example.com/notes" external aria-labelledby="release">
+            Read
+          </Link>
+        </>,
+      );
+      expect(
+        screen.getByRole("link", { name: "Release notes (opens in a new tab)" }),
+      ).toBeInTheDocument();
+    });
+
+    it("leaves aria-label untouched on a same-tab link", () => {
+      render(
+        <Link href="/changelog" aria-label="Changelog for version 2">
+          v2
+        </Link>,
+      );
+      expect(screen.getByRole("link")).toHaveAttribute("aria-label", "Changelog for version 2");
+    });
+
     it("adds noopener and noreferrer to a rel it is given, without duplicates", () => {
       render(
         <Link href="https://example.com" external rel="author noopener">
@@ -132,6 +166,15 @@ describe("Link", () => {
         expect(await axe(container)).toHaveNoViolations();
       },
     );
+
+    it("has no axe violations when it opens a new tab with an aria-label", async () => {
+      const { container } = render(
+        <Link href="https://example.com" external aria-label="Example site">
+          Example
+        </Link>,
+      );
+      expect(await axe(container)).toHaveNoViolations();
+    });
 
     it("has no axe violations when it opens a new tab", async () => {
       const { container } = render(

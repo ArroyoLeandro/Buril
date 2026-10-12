@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import { useId, type ComponentProps } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -30,7 +30,8 @@ type LinkProps = Omit<ComponentProps<"a">, "href"> &
     /**
      * Opens the link in a new tab. It sets `target="_blank"` and `rel="noopener noreferrer"`, and
      * tells every user: screen readers hear "(opens in a new tab)" and sighted users see an icon.
-     * Passing `target="_blank"` yourself does the same.
+     * Passing `target="_blank"` yourself does the same. With `aria-label` or `aria-labelledby`, the
+     * hint is added to that name too.
      */
     external?: boolean;
   };
@@ -61,6 +62,8 @@ function newTabRel(rel: string | undefined) {
   return [...tokens].join(" ");
 }
 
+const newTabHint = "(opens in a new tab)";
+
 function Link({
   className,
   variant,
@@ -68,15 +71,22 @@ function Link({
   target,
   rel,
   children,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: LinkProps) {
   const newTab = external || target === "_blank";
+  const hintId = useId();
 
   return (
     <a
       target={newTab ? "_blank" : target}
       rel={newTab ? newTabRel(rel) : rel}
       className={cn(linkVariants({ variant }), className)}
+      // aria-label and aria-labelledby replace the link text as its name, which would drop the
+      // hidden hint, so the hint is added to whichever of them names the link.
+      aria-label={newTab && ariaLabel ? `${ariaLabel} ${newTabHint}` : ariaLabel}
+      aria-labelledby={newTab && ariaLabelledBy ? `${ariaLabelledBy} ${hintId}` : ariaLabelledBy}
       {...props}
     >
       {children}
@@ -84,7 +94,9 @@ function Link({
       {newTab && (
         <>
           {" "}
-          <span className="sr-only">(opens in a new tab)</span>
+          <span id={hintId} className="sr-only">
+            {newTabHint}
+          </span>
           <ExternalIcon />
         </>
       )}

@@ -204,6 +204,13 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
     });
 
+    it("notes that shadcn's utils item can add the cn npm package", async () => {
+      const html = await render();
+      const install = text(html.slice(html.indexOf(">Install</h2>"), html.indexOf(">Source</h2>")));
+      expect(install).toMatch(/re-exports\s+cn\(\)\s+from\s+the\s+cn\s+npm\s+package/);
+      expect(install).toMatch(/also\s+adds\s+cn\s+to\s+your\s+dependencies/);
+    });
+
     it("shows the source file it documents, read at build time", async () => {
       const html = await render();
       const source = html.slice(html.indexOf(">Source</h2>"));
@@ -250,12 +257,13 @@ describe("link page", () => {
     expect(visible).toMatch(/noopener noreferrer/);
     expect(visible).toMatch(/href/);
     expect(visible).toMatch(/Button/);
+    expect(visible).toMatch(/aria-labelledby\s+replaces the link text/);
   });
 
   it("demos a link that opens in a new tab with its hint in the name", async () => {
     const html = await render();
     expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
-    expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+    expect(html).toMatch(/<span[^>]*class="sr-only"[^>]*>\(opens in a new tab\)<\/span>/);
   });
 });
 
