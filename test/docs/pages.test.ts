@@ -129,15 +129,62 @@ describe("button page", () => {
   it("renders the Install section exactly once with URL and namespaced commands", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Install<\/h2>/g)).toBe(1);
-    expect(count(text(html), /shadcn@latest add https:\/\/example\.com\/r\/button\.json/g)).toBe(1);
-    expect(count(text(html), /registry add @buril=https:\/\/example\.com/g)).toBe(1);
-    expect(count(text(html), /shadcn@latest add @buril\/button/g)).toBe(1);
+    expect(
+      count(text(html), /npx shadcn@latest add https:\/\/example\.com\/r\/button\.json/g),
+    ).toBe(1);
+    expect(count(text(html), /npx shadcn@latest registry add @buril=https:\/\/example\.com/g)).toBe(
+      1,
+    );
+    expect(count(text(html), /npx shadcn@latest add @buril\/button/g)).toBe(1);
+  });
+
+  it("shows every install command for npm, pnpm, yarn and bun in accessible tabs", async () => {
+    const html = await container.renderToString(ButtonPage);
+    const groups = [...html.matchAll(/<div[^>]*data-install-tabs[\s\S]*?data-copy-status[^>]*>/g)];
+    expect(groups).toHaveLength(3);
+    for (const [group] of groups) {
+      const tabs = [...group.matchAll(/<button\b([^>]*role="tab"[^>]*)>([^<]*)<\/button>/g)];
+      expect(tabs.map(([, , label]) => label!.trim())).toEqual(["npm", "pnpm", "yarn", "bun"]);
+      expect(group).toMatch(/role="tablist"[^>]*aria-label="[^"]+"/);
+      for (const [index, [, attributes]] of tabs.entries()) {
+        const selected = index === 0;
+        expect(attributes).toContain(`aria-selected="${selected}"`);
+        expect(attributes).toContain(`tabindex="${selected ? 0 : -1}"`);
+        const panelId = /aria-controls="([^"]+)"/.exec(attributes!)![1]!;
+        const panel = new RegExp(`<div[^>]*role="tabpanel"[^>]*id="${panelId}"[^>]*>`).exec(group);
+        expect(panel?.[0]).toBeDefined();
+        expect(panel![0].includes(" hidden")).toBe(!selected);
+      }
+      for (const name of ["npm", "pnpm", "yarn", "bun"]) {
+        expect(group).toMatch(new RegExp(`<button[^>]*aria-label="Copy ${name} command"`));
+      }
+      expect(group).toMatch(/role="status"[^>]*data-copy-status/);
+    }
+    for (const runner of [
+      "pnpm dlx shadcn@latest",
+      "yarn dlx shadcn@latest",
+      "bunx --bun shadcn@latest",
+    ]) {
+      expect(
+        count(text(html), new RegExp(runner.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")),
+      ).toBe(4);
+    }
+  });
+
+  it("documents the API differences from shadcn's Button", async () => {
+    const html = await container.renderToString(ButtonPage);
+    expect(count(html, />Coming from shadcn\/ui<\/h2>/g)).toBe(1);
+    const section = text(html.slice(html.indexOf(">Coming from shadcn/ui</h2>")));
+    expect(section).toMatch(/asChild/);
+    expect(section).toMatch(/size=(&quot;|")icon(&quot;|")/);
+    expect(section).toMatch(/type=(&quot;|")button(&quot;|")/);
+    expect(section).toMatch(/components\/ui\/button\.tsx/);
   });
 
   it("documents the theme as a separate opt-in install and its dark-mode behavior", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Optional theme<\/h2>/g)).toBe(1);
-    expect(count(text(html), /shadcn@latest add @buril\/theme/g)).toBe(1);
+    expect(count(text(html), /npx shadcn@latest add @buril\/theme/g)).toBe(1);
     expect(text(html)).toMatch(/does not change your theme/);
     expect(text(html)).toMatch(/prefers-color-scheme: dark/);
     expect(text(html)).toMatch(/class="light"|class=&quot;light&quot;/);

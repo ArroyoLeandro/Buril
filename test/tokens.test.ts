@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 
 /**
  * The CSS file is the single source of truth for the palette. This test parses it,
- * resolves var() references and color-mix(), and checks the WCAG contrast pairs
- * from decision 016.
+ * resolves var() references and color-mix(), and checks the WCAG 2.2 AA contrast pairs
+ * below: 4.5:1 for text, 3:1 for borders, decoration and focus indicators.
  */
 const css = readFileSync(resolve(__dirname, "../registry/styles/buril.css"), "utf8");
 
@@ -154,8 +154,10 @@ describe.each([
     expect(actual).toBeCloseTo(expected, 1);
   });
 
-  it("focus ring meets 3:1 against the background", () => {
-    expect(ratio({ ...light, ...tokens }, "ring", "background")).toBeGreaterThanOrEqual(3);
+  // The ring vs background pair is in the table above. The focus outline also sits next to the
+  // secondary and accent (hover) surfaces, so it must stay visible on those too.
+  it.each(["secondary", "accent"])("focus ring meets 3:1 against the %s surface", (surface) => {
+    expect(ratio({ ...light, ...tokens }, "ring", surface)).toBeGreaterThanOrEqual(3);
   });
 });
 

@@ -3,16 +3,9 @@ import { Code } from "astro:components";
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ButtonDemo from "../../components/ButtonDemo";
+import InstallCommand from "../../components/InstallCommand.astro";
+import { codeTheme } from "../../components/code-theme";
 import source from "../../../registry/ui/button.tsx?raw";
-
-const urlInstall = "npx shadcn@latest add https://example.com/r/button.json";
-const namespaceInstall = `npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
-npx shadcn@latest add @buril/button`;
-const themeInstall = "npx shadcn@latest add @buril/theme";
-
-// Every token color, comments included, meets 4.5:1 on this theme's background (the worst is
-// about 6.1:1). The docs tests measure it. github-dark fails: its comments are 3.05:1.
-const codeTheme = "github-dark-default";
 
 const statusExample = `<Button type="submit" loading={saving}>
   Save changes
@@ -49,13 +42,12 @@ const statusExample = `<Button type="submit" loading={saving}>
 
   <h2 class="mt-10 font-display text-xl">Install</h2>
   <p class="mt-4 text-muted-foreground">Install the component from its URL:</p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={urlInstall} lang="bash" theme={codeTheme} />
-  </div>
+  <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
   <p class="mt-4 text-muted-foreground">Or add the Buril namespace once and install by name:</p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={namespaceInstall} lang="bash" theme={codeTheme} />
-  </div>
+  <InstallCommand
+    id="install-namespace"
+    commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
+  />
   <p class="mt-4 text-muted-foreground">
     The button uses the standard shadcn tokens and the <code>cn()</code> helper you already have, so
     installing it does not change your theme. It creates
@@ -64,14 +56,58 @@ const statusExample = `<Button type="submit" loading={saving}>
     it; answering no is safe, because the button only needs <code>cn()</code>.
   </p>
 
+  <h2 class="mt-10 font-display text-xl">Coming from shadcn/ui</h2>
+  <p class="mt-4 text-muted-foreground">
+    Buril installs to the same path as shadcn's Button, <code>components/ui/button.tsx</code>. If
+    you already have that file, the CLI asks before replacing it. The variant names match, but the
+    API differs:
+  </p>
+  <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
+    <li>
+      <strong>
+        No <code>asChild</code>.
+      </strong>{" "}
+      A link stays a link: style an <code>&lt;a&gt;</code>
+      with <code>className=&#123;buttonVariants()&#125;</code> instead of wrapping it.
+    </li>
+    <li>
+      <strong>No icon or extra-small sizes.</strong> shadcn's <code>size="icon"</code>,
+      <code>icon-xs</code>, <code>icon-sm</code>, <code>icon-lg</code> and <code>xs</code> do not
+      exist. Sizes are <code>sm</code>, <code>default</code> and <code>lg</code>, all at least 32px
+      tall. A dedicated Icon Button is planned.
+    </li>
+    <li>
+      <strong>
+        <code>type="button"</code> by default.
+      </strong>{" "}
+      shadcn leaves the native default, which submits inside a form. Pass <code>type="submit"</code>{" "}
+      for submit buttons.
+    </li>
+    <li>
+      <strong>
+        A <code>loading</code> prop.
+      </strong>{" "}
+      It blocks activation while keeping focus and the accessible name.
+    </li>
+    <li>
+      <strong>
+        No <code>data-slot</code>, <code>data-variant</code> or <code>data-size</code> attributes.
+      </strong>
+      Update any CSS or tests that select on them.
+    </li>
+  </ul>
+  <p class="mt-4 text-muted-foreground">
+    Before replacing shadcn's file, search your project for <code>asChild</code>,
+    <code>size="icon</code> and <code>data-slot="button"</code>. To try Buril next to shadcn's
+    Button, answer no when the CLI asks, and copy the source below into a file with another name.
+  </p>
+
   <h2 class="mt-10 font-display text-xl">Optional theme</h2>
   <p class="mt-4 text-muted-foreground">
     The Buril palette (ink primary, red lacquer for focus, decoration and destructive actions) is a
     separate install:
   </p>
-  <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
-    <Code code={themeInstall} lang="bash" theme={codeTheme} />
-  </div>
+  <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
   <p class="mt-4 text-muted-foreground">It edits your global CSS file:</p>
   <ul class="mt-2 list-disc space-y-2 pl-6 text-muted-foreground">
     <li>
