@@ -374,6 +374,25 @@ describe("select page", () => {
   });
 });
 
+describe("card page", () => {
+  const render = () => container.renderToString(componentPages["card"]!);
+
+  it("explains the stretched link pattern instead of a clickable div", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/after:absolute after:inset-0/);
+    expect(visible).toMatch(/stretched link/i);
+    expect(visible).toMatch(/onClick/);
+    expect(visible).toMatch(/relative z-10/);
+  });
+
+  it("explains the heading level and the decoration", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/as=(&quot;|")h2(&quot;|")/);
+    expect(visible).toMatch(/decor/);
+    expect(visible).toMatch(/aria-hidden/);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 
