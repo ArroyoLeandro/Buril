@@ -48,6 +48,11 @@ describe("CONTRIBUTING.md", () => {
     }
   });
 
+  it("pins TypeScript to 6.0.x, the range typescript-eslint supports", () => {
+    const pkg = JSON.parse(read("package.json")) as { devDependencies: Record<string, string> };
+    expect(pkg.devDependencies.typescript).toMatch(/^~6\.0\.\d+$/);
+  });
+
   it("explains why TypeScript and ESLint are pinned", () => {
     const doc = read("CONTRIBUTING.md");
     expect(doc).toMatch(/TypeScript 6/);
