@@ -43,7 +43,12 @@ function Select({ className, multiple, size, ...props }: SelectProps) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-foreground peer-disabled:opacity-50 forced-colors:hidden"
+          className={cn(
+            "pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-foreground peer-disabled:opacity-50 forced-colors:hidden",
+            // Turns over while the picker is open, where browsers support `:open`. Rotation is
+            // movement, so it only runs when the user allows motion.
+            "motion-safe:transition-[rotate] motion-safe:duration-(--buril-duration-base,180ms) motion-safe:ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) motion-safe:peer-open:rotate-180",
+          )}
         >
           <path d="M6 9l6 6 6-6" />
         </svg>

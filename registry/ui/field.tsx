@@ -205,13 +205,15 @@ function Field({
         aria-live="polite"
         className="flex items-start gap-1.5 text-sm text-destructive empty:sr-only"
       >
+        {/* The content is inserted into the region, so it fades in from its starting style, and
+            drops 2px into place only when the user allows motion. */}
         {invalid && (
-          <>
+          <span className="flex items-start gap-1.5 transition-[opacity,translate] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) starting:opacity-0 motion-safe:starting:-translate-y-0.5">
             <ErrorIcon />
             <span>
               <span className="sr-only">Error:</span> {error}
             </span>
-          </>
+          </span>
         )}
       </div>
     </div>
