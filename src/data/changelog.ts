@@ -19,6 +19,25 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    branch: "copy-edit",
+    date: "2026-10-12",
+    title: { en: "Plainer docs copy", es: "Textos más directos en la documentación" },
+    changes: {
+      en: [
+        "Plainer wording on every docs page and in the README, in English and Spanish.",
+        "Component pages say once, in the shared install note, that the CLI asks before replacing `lib/utils.ts`.",
+        "The FAQ presents `<dialog>` and the `popover` attribute as the plan for the overlays still to come, and the README no longer lists `<dialog>` as shipped.",
+        "The Spanish docs give the soft spring and the Switch thumb one name each, everywhere.",
+      ],
+      es: [
+        "Redacción más directa en todas las páginas de la documentación y en el README, en inglés y en español.",
+        "Las páginas de componentes dicen una sola vez, en la nota de instalación compartida, que la CLI pregunta antes de reemplazar `lib/utils.ts`.",
+        "Las preguntas frecuentes presentan `<dialog>` y el atributo `popover` como el plan para los componentes superpuestos que todavía no existen, y el README ya no menciona `<dialog>` como disponible.",
+        'La documentación en español usa un solo nombre para cada idea: "resorte suave" para el movimiento final e "indicador" para la pieza móvil del Switch.',
+      ],
+    },
+  },
+  {
     branch: "docs-fixes",
     date: "2026-10-12",
     title: { en: "Ready for Server Components", es: "Listos para los Server Components" },
