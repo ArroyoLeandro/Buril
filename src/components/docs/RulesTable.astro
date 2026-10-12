@@ -1,0 +1,49 @@
+---
+import InlineCode from "../InlineCode.astro";
+import { accessibilityChecks, accessibilityRules } from "../../data/accessibility";
+import { getLocale, translator } from "../../i18n/ui";
+
+/** The 11 rules, each with its plain-words summary and how it is checked, from the shared data. */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const cell = "px-2 py-3 align-top hyphens-auto wrap-anywhere sm:px-4";
+---
+
+<div class="mt-4 border border-border">
+  <table class="w-full border-collapse text-left text-sm">
+    <caption class="px-2 py-3 text-left text-muted-foreground sm:px-4">
+      {t("a11y.rulesCaption")}
+    </caption>
+    <thead>
+      <tr class="border-y border-border">
+        <th scope="col" class={`${cell} w-1/3 font-semibold`}>
+          {t("a11y.rule")}
+        </th>
+        <th scope="col" class={`${cell} font-semibold`}>
+          {t("a11y.howChecked")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {accessibilityRules.map((rule) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class={`${cell} font-semibold`}>
+            {rule.number}. <InlineCode text={rule.title[locale]} />
+          </th>
+          <td class={cell}>
+            <p>
+              <InlineCode text={rule.summary[locale]} />
+            </p>
+            <p class="mt-2 text-muted-foreground">
+              <InlineCode text={rule.how[locale]} />
+            </p>
+            <p class="mt-2 text-muted-foreground">
+              {t("a11y.checkedBy")}{" "}
+              {rule.checks.map((check) => accessibilityChecks[check].name[locale]).join(", ")}.
+            </p>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
