@@ -1,10 +1,15 @@
 // @vitest-environment node
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import reactRenderer from "@astrojs/react/server.js";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+
 import IndexPage from "../../src/pages/index.astro";
 import ButtonPage from "../../src/pages/components/button.astro";
+import { componentHref, documentedComponents } from "../../src/data/components";
 
 let container: AstroContainer;
 
@@ -47,10 +52,20 @@ function codeColors(html: string) {
   return pairs;
 }
 
+/** Every component page, keyed by slug, so new pages get the shared checks automatically. */
+const componentPages = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<AstroComponentFactory>("../../src/pages/components/*.astro", {
+      eager: true,
+      import: "default",
+    }),
+  ).map(([path, page]) => [/([^/]+)\.astro$/.exec(path)![1]!, page]),
+);
+
 const pages = [
-  ["index", () => IndexPage],
-  ["button", () => ButtonPage],
-] as const;
+  ["index", () => IndexPage] as const,
+  ...Object.entries(componentPages).map(([slug, page]) => [slug, () => page] as const),
+];
 
 /** Rules every page must satisfy: one document, one main landmark, nothing after </html>. */
 function expectWellFormedPage(html: string) {
@@ -81,7 +96,11 @@ describe.each(pages)("%s page layout", (_, page) => {
     const nav = /<nav[^>]*aria-label="Main"[\s\S]*?<\/nav>/.exec(header)?.[0] ?? "";
     expect(nav).toMatch(/<a[^>]+href="\/"[^>]*>\s*Home\s*<\/a>/);
     expect(text(nav)).toMatch(/Components/);
-    expect(nav).toMatch(/<a[^>]+href="\/components\/button"[^>]*>\s*Button\s*<\/a>/);
+    for (const { slug, name } of documentedComponents) {
+      expect(nav).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
+      );
+    }
   });
 
   it("has a theme toggle with light, dark and system choices", async () => {
@@ -108,9 +127,14 @@ describe("index page", () => {
     expectWellFormedPage(await container.renderToString(IndexPage));
   });
 
-  it("links to the button page", async () => {
+  it("links to every documented component from its main content", async () => {
     const html = await container.renderToString(IndexPage);
-    expect(html).toMatch(/<a[^>]+href="\/components\/button"/);
+    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
+    for (const { slug, name } of documentedComponents) {
+      expect(main).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
+      );
+    }
   });
 
   it("uses buttonVariants for its call to action instead of a dead button", async () => {
@@ -120,6 +144,72 @@ describe("index page", () => {
     expect(main).toMatch(/<a[^>]+href="\/components\/button"[^>]+class="[^"]*rounded-full/);
   });
 });
+
+describe("component list", () => {
+  it("has exactly one page per documented component", () => {
+    expect(Object.keys(componentPages).sort()).toEqual(
+      documentedComponents.map(({ slug }) => slug).sort(),
+    );
+  });
+});
+
+describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))(
+  "%s page from the shared template",
+  (slug, entry) => {
+    const render = () =>
+      container.renderToString(componentPages[slug]!, {
+        request: new Request(`http://localhost${componentHref(slug)}`),
+      });
+
+    it("renders one document with a single main landmark", async () => {
+      expectWellFormedPage(await render());
+    });
+
+    it("uses the component name as its heading and title", async () => {
+      const html = await render();
+      expect(count(html, /<h1[\s>]/g)).toBe(1);
+      expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0]).trim()).toBe(entry.name);
+      expect(html).toContain(`<title>${entry.name} | Buril UI</title>`);
+      expect(html).toContain(`content="${entry.description}"`);
+    });
+
+    it("marks its own nav link as the current page", async () => {
+      const html = await render();
+      expect(html).toMatch(
+        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]+aria-current="page"`),
+      );
+    });
+
+    it("has Demo, Install and Source sections in that order", async () => {
+      const html = await render();
+      const order = ["Demo", "Install", "Source"].map((title) => {
+        expect(count(html, new RegExp(`>${title}</h2>`, "g"))).toBe(1);
+        return html.indexOf(`>${title}</h2>`);
+      });
+      expect(order).toEqual([...order].sort((a, b) => a - b));
+    });
+
+    it("renders the demo as a single island", async () => {
+      expect(count(await render(), /<astro-island/g)).toBe(1);
+    });
+
+    it("installs its registry item from a URL or by name", async () => {
+      const visible = text(await render());
+      expect(visible).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
+      expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
+    });
+
+    it("shows the source file it documents, read at build time", async () => {
+      const html = await render();
+      const source = html.slice(html.indexOf(">Source</h2>"));
+      expect(text(source)).toContain(entry.source);
+      // The export line is plain text in the highlighted output, so it proves the real file.
+      const file = readFileSync(resolve(__dirname, "../..", entry.source), "utf8");
+      expect(text(source)).toContain(/^export \{.*$/m.exec(file)![0]);
+      expect(source).toMatch(/<pre class="astro-code/);
+    });
+  },
+);
 
 describe("button page", () => {
   it("renders one document with a single main landmark", async () => {
