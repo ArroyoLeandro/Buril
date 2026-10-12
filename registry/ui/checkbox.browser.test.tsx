@@ -49,7 +49,7 @@ describe("Checkbox motion in a real browser", () => {
         <Checkbox /> Accept the terms
       </label>,
     );
-    const box = screen.getByRole("checkbox").element();
+    const box = screen.getByRole("checkbox").element() as HTMLInputElement;
     const [check, dash] = box.parentElement!.querySelectorAll("svg");
     return { screen, box, check: check!, dash: dash! };
   }
@@ -73,12 +73,18 @@ describe("Checkbox motion in a real browser", () => {
   // the whole path, or the start of the check would flicker out at the peak.
   it("keeps the whole check drawn while the spring passes its target", async () => {
     await setReducedMotion(false);
-    const { screen, check } = await renderCheckbox();
-    await screen.getByRole("checkbox").click();
-    const draw = check.getAnimations()[0]!;
-    draw.pause();
+    const { box, check } = await renderCheckbox();
+    // Check it in this task and read its transitions straight away: getAnimations() flushes the
+    // style change, so the draw exists and has not started moving. A round trip to the test
+    // runner could take longer than the whole draw on a busy machine, and then nothing is left.
+    box.click();
+    const draw = check
+      .getAnimations()
+      .find((animation) => (animation as CSSTransition).transitionProperty === "stroke-dashoffset");
+    expect(draw, "the draw transition").toBeDefined();
+    draw!.pause();
     // The spring peaks at 14/24 of its stops.
-    draw.currentTime = (420 * 14) / 24;
+    draw!.currentTime = (420 * 14) / 24;
     const path = check.querySelector("path")!;
     const offset = parseFloat(getComputedStyle(path).strokeDashoffset);
     const [dashLength = 0] = getComputedStyle(path)
@@ -88,7 +94,7 @@ describe("Checkbox motion in a real browser", () => {
     expect(offset).toBeLessThan(0.1);
     expect(offset).toBeGreaterThanOrEqual(0);
     expect(offset + 1).toBeLessThanOrEqual(dashLength);
-    draw.finish();
+    draw!.finish();
   });
 
   it("shows the check and the dash at once under reduced motion; the fill still fades", async () => {
