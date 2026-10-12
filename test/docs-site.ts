@@ -146,8 +146,128 @@ export const inspectPage: BrowserCommand<[origin: string, path: string, width: n
   }
 };
 
+export interface HeaderInspection {
+  status: number;
+  /** The header's height, and the vertical centres of its visible items: one value, one row. */
+  height: number;
+  rows: number[];
+  /** Whether any header item reaches past the viewport. */
+  overflows: boolean;
+  scrollWidth: number;
+  clientWidth: number;
+  /** The theme control a reader sees: the icon button below lg, or the button group. */
+  cycleVisible: boolean;
+  groupVisible: boolean;
+  /** Pressing the visible cycle button: its name before and after, and what was announced. */
+  cycle?: { before: string; after: string; announced: string; htmlClass: string; size: number };
+  /** The main navigation: visible from the start, or behind a menu button that opens it. */
+  navVisible: boolean;
+  menu?: {
+    visible: boolean;
+    size: number;
+    expandedAfterOpen: string | null;
+    navVisibleAfterOpen: boolean;
+    linksAfterOpen: number;
+    /** Escape closes the menu and returns focus to the button. */
+    expandedAfterEscape: string | null;
+    focusOnButton: boolean;
+  };
+}
+
+/**
+ * Opens `path` at `width` px and measures the header: how many rows it takes, whether anything
+ * overflows, and whether the compact theme button and the menu button work from the keyboard.
+ */
+export const inspectHeader: BrowserCommand<[origin: string, path: string, width: number]> = async (
+  context,
+  origin,
+  path,
+  width,
+): Promise<HeaderInspection> => {
+  const page = await context.context.newPage();
+  try {
+    await page.setViewportSize({ width, height: 720 });
+    // Tabs share storage: start every page from the system theme, whatever a test chose before.
+    await page.addInitScript(() => localStorage.clear());
+    const response = await page.goto(new URL(path, origin).href, { waitUntil: "load" });
+    // The header scripts unhide the compact controls; wait for them instead of guessing a delay.
+    await page.waitForFunction(
+      () => !document.querySelector("[data-theme-toggle]")?.hasAttribute("hidden"),
+    );
+    const layout = await page.evaluate(() => {
+      const header = document.querySelector("header")!;
+      const shown = (element: Element | null) =>
+        !!element && (element as HTMLElement).offsetParent !== null;
+      const items = [...header.querySelectorAll(":scope > div > *")].filter(
+        // Screen-reader-only text is 1px wide and takes no room in the row.
+        (item) => shown(item) && item.getBoundingClientRect().width > 1,
+      );
+      const centre = (item: Element) => {
+        const box = item.getBoundingClientRect();
+        return Math.round(box.top + box.height / 2);
+      };
+      const rows = [...new Set(items.map(centre))];
+      return {
+        height: header.getBoundingClientRect().height,
+        rows,
+        overflows: items.some(
+          (item) => item.getBoundingClientRect().right > document.documentElement.clientWidth,
+        ),
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        cycleVisible: shown(document.querySelector("[data-theme-cycle]")),
+        groupVisible: shown(document.querySelector("[data-theme-toggle]")),
+        navVisible: shown(document.querySelector("header nav")),
+      };
+    });
+
+    let cycle: HeaderInspection["cycle"];
+    if (layout.cycleVisible) {
+      const button = page.locator("[data-theme-cycle]");
+      const before = (await button.getAttribute("aria-label")) ?? "";
+      await button.focus();
+      await page.keyboard.press("Enter");
+      cycle = {
+        before,
+        after: (await button.getAttribute("aria-label")) ?? "",
+        announced: (await page.locator("[data-theme-status]").textContent()) ?? "",
+        htmlClass: await page.evaluate(() => document.documentElement.className),
+        size: (await button.boundingBox())?.height ?? 0,
+      };
+    }
+
+    let menu: HeaderInspection["menu"];
+    const toggle = page.locator("[data-site-nav-toggle]");
+    if (await toggle.isVisible()) {
+      await toggle.focus();
+      await page.keyboard.press("Enter");
+      const navAfterOpen = page.locator("header nav");
+      const expandedAfterOpen = await toggle.getAttribute("aria-expanded");
+      const navVisibleAfterOpen = await navAfterOpen.isVisible();
+      const linksAfterOpen = await navAfterOpen.locator("a:visible").count();
+      await navAfterOpen.locator("a").first().focus();
+      await page.keyboard.press("Escape");
+      menu = {
+        visible: true,
+        size: (await toggle.boundingBox())?.height ?? 0,
+        expandedAfterOpen,
+        navVisibleAfterOpen,
+        linksAfterOpen,
+        expandedAfterEscape: await toggle.getAttribute("aria-expanded"),
+        focusOnButton: await page.evaluate(() =>
+          document.activeElement!.hasAttribute("data-site-nav-toggle"),
+        ),
+      };
+    }
+    return { status: response?.status() ?? 0, ...layout, cycle, menu };
+  } finally {
+    await page.close();
+  }
+};
+
 declare module "vitest/browser" {
   interface BrowserCommands {
     inspectPage: (origin: string, path: string, width: number) => Promise<PageInspection>;
+    inspectHeader: (origin: string, path: string, width: number) => Promise<HeaderInspection>;
   }
 }
