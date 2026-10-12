@@ -27,6 +27,22 @@ describe("linkVariants compiled with Tailwind", () => {
     expect(computed(classes, "text-decoration-line", { states: [":hover"] })).toBe("underline");
   });
 
+  // Hover thickens the underline instead of removing it, so the hover state is never color alone.
+  it.each(["default", "muted"] as const)(
+    "the %s variant thickens its underline only on hover",
+    (variant) => {
+      const classes = classesOf(variant);
+      expect(computed(classes, "text-decoration-thickness")).toBeUndefined();
+      expect(computed(classes, "text-decoration-thickness", { states: [":hover"] })).toBe("2px");
+    },
+  );
+
+  it("the muted variant darkens to the foreground color on hover", () => {
+    const classes = classesOf("muted");
+    expect(computed(classes, "color")).toBe("var(--muted-foreground)");
+    expect(computed(classes, "color", { states: [":hover"] })).toBe("var(--foreground)");
+  });
+
   it.each(["default", "muted"] as const)(
     "the %s variant shows a 2px ring outline with an offset on keyboard focus",
     (variant) => {

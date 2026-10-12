@@ -54,6 +54,12 @@ if (source === undefined) throw new Error(`Source file not found: ${entry.source
     id="install-namespace"
     commands={["registry add @buril=https://example.com/r/{name}.json", `add @buril/${entry.item}`]}
   />
+  <p class="mt-4 text-muted-foreground">
+    Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
+    version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so when
+    the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to your
+    dependencies.
+  </p>
   <slot name="install-notes" />
 
   <slot />

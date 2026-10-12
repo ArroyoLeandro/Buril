@@ -204,6 +204,13 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
     });
 
+    it("notes that shadcn's utils item can add the cn npm package", async () => {
+      const html = await render();
+      const install = text(html.slice(html.indexOf(">Install</h2>"), html.indexOf(">Source</h2>")));
+      expect(install).toMatch(/re-exports\s+cn\(\)\s+from\s+the\s+cn\s+npm\s+package/);
+      expect(install).toMatch(/also\s+adds\s+cn\s+to\s+your\s+dependencies/);
+    });
+
     it("shows the source file it documents, read at build time", async () => {
       const html = await render();
       const source = html.slice(html.indexOf(">Source</h2>"));
@@ -250,12 +257,102 @@ describe("link page", () => {
     expect(visible).toMatch(/noopener noreferrer/);
     expect(visible).toMatch(/href/);
     expect(visible).toMatch(/Button/);
+    expect(visible).toMatch(/aria-labelledby\s+replaces the link text/);
   });
 
   it("demos a link that opens in a new tab with its hint in the name", async () => {
     const html = await render();
     expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
-    expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+    expect(html).toMatch(/<span[^>]*class="sr-only"[^>]*>\(opens in a new tab\)<\/span>/);
+  });
+});
+
+describe("field page", () => {
+  const render = () => container.renderToString(componentPages["field"]!);
+
+  it("explains the render prop, the element child and what each wires", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/render prop/i);
+    expect(visible).toMatch(/aria-describedby/);
+    expect(visible).toMatch(/aria-invalid/);
+    expect(visible).toMatch(/cloneElement|single element/);
+  });
+
+  it("explains how errors are announced and how required is shown", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/aria-live=(&quot;|")polite(&quot;|")/);
+    expect(visible).toMatch(/\(required\)/);
+    expect(visible).toMatch(/icon/);
+  });
+});
+
+describe("input page", () => {
+  const render = () => container.renderToString(componentPages["input"]!);
+
+  it("shows it inside a Field and explains the invalid and disabled states", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/Field/);
+    expect(visible).toMatch(/aria-invalid/);
+    expect(visible).toMatch(/disabled/);
+    expect(visible).toMatch(/40px/);
+  });
+});
+
+describe("textarea page", () => {
+  const render = () => container.renderToString(componentPages["textarea"]!);
+
+  it("explains why it is a separate item from the Input", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/components\/ui\/textarea\.tsx/);
+    expect(visible).toMatch(/same path as shadcn/);
+  });
+});
+
+describe("checkbox page", () => {
+  const render = () => container.renderToString(componentPages["checkbox"]!);
+
+  it("explains labels, the target size, indeterminate and forced colors", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/<label>|&lt;label&gt;/);
+    expect(visible).toMatch(/24px/);
+    expect(visible).toMatch(/indeterminate/);
+    expect(visible).toMatch(/forced-colors/);
+  });
+});
+
+describe("radio group page", () => {
+  const render = () => container.renderToString(componentPages["radio-group"]!);
+
+  it("explains the legend, the single Tab stop and the arrow keys", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/legend/);
+    expect(visible).toMatch(/one Tab stop/i);
+    expect(visible).toMatch(/arrow keys/i);
+    expect(visible).toMatch(/onValueChange/);
+  });
+});
+
+describe("switch page", () => {
+  const render = () => container.renderToString(componentPages["switch"]!);
+
+  it("explains the role, the immediate effect and the state not shown by color alone", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")switch(&quot;|")/);
+    expect(visible).toMatch(/immediately/);
+    expect(visible).toMatch(/stateLabels/);
+    expect(visible).toMatch(/reduced motion/i);
+  });
+});
+
+describe("select page", () => {
+  const render = () => container.renderToString(componentPages["select"]!);
+
+  it("explains why it stays native and how to size it", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/&lt;select&gt;|<select>/);
+    expect(visible).toMatch(/Field/);
+    expect(visible).toMatch(/full width/i);
+    expect(visible).toMatch(/forced-colors/);
   });
 });
 

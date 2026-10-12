@@ -11,6 +11,20 @@ type SkipLinkProps = Omit<ComponentProps<"a">, "href"> & {
 };
 
 /**
+ * The element id a fragment points to. A percent-encoded fragment is decoded, as browsers do; one
+ * that is not valid percent-encoding (a lone "%") would make decodeURIComponent throw, so it is
+ * used as written.
+ */
+function fragmentId(href: string) {
+  const raw = href.slice(1);
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+/**
  * A link that lets keyboard users jump past repeated content, such as the header. Place it first
  * in `<body>`. It is visually hidden until it has keyboard focus, then appears at the top left
  * above any sticky header (WCAG 2.4.11).
@@ -27,7 +41,7 @@ function SkipLink({
     if (event.defaultPrevented) return;
     // Browsers move focus to a focusable fragment target; focusing it here also covers those
     // that only scroll. The default navigation still runs, so the URL and scroll stay native.
-    document.getElementById(decodeURIComponent(href.slice(1)))?.focus();
+    document.getElementById(fragmentId(href))?.focus();
   };
 
   return (
