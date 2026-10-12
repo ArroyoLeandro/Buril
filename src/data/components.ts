@@ -29,6 +29,13 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     item: "button",
     source: "registry/ui/button.tsx",
   },
+  {
+    slug: "link",
+    name: "Link",
+    description: "An underlined text link with visible focus and a safe way to open a new tab.",
+    item: "link",
+    source: "registry/ui/link.tsx",
+  },
 ];
 
 export const componentHref = (slug: string) => `/components/${slug}`;

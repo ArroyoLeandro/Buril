@@ -45,6 +45,16 @@ describe("registry items", () => {
     expect(byName.has("utils")).toBe(false);
   });
 
+  it.each([["link", "registry/ui/link.tsx"]])(
+    "%s is a standalone component that needs only utils",
+    (name, path) => {
+      const item = byName.get(name) as Item & { files?: { path: string; type: string }[] };
+      expect(item?.type).toBe("registry:ui");
+      expect(item?.registryDependencies).toEqual(["utils"]);
+      expect(item?.files).toEqual([{ path, type: "registry:ui" }]);
+    },
+  );
+
   it("keeps the theme as a separate item", () => {
     expect(byName.get("theme")?.type).toBe("registry:theme");
   });

@@ -1,0 +1,63 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../layouts/ComponentPage.astro";
+import LinkDemo from "../../components/LinkDemo";
+import { codeTheme } from "../../components/code-theme";
+
+const usageExample = `import { Link } from "@/components/ui/link";
+
+<Link href="/pricing">See pricing</Link>
+<Link href="https://example.com/changelog" external>
+  Changelog
+</Link>`;
+---
+
+<ComponentPage slug="link">
+  <Fragment slot="lead">
+    It is always a real <code>&lt;a href&gt;</code>, so it works with the keyboard, the middle click
+    and the browser's link menu.
+  </Fragment>
+
+  <LinkDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <h2 class="mt-10 font-display text-xl">Usage</h2>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={usageExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>
+          <code>href</code> is required.
+        </strong>{" "}
+        An anchor without it is not a link: keyboard users cannot reach it and screen readers do not
+        announce it as one. For an action that does not navigate, use a Button.
+      </li>
+      <li>
+        <strong>Always underlined.</strong> Color alone never marks a link, so both variants keep
+        the underline, and hover makes it thicker instead of removing it.
+      </li>
+      <li>
+        <strong>Visible focus.</strong> Keyboard focus shows the ring outline, which also stays
+        visible in forced-colors mode.
+      </li>
+    </ul>
+
+    <h2 class="mt-10 font-display text-xl">Opening a new tab</h2>
+    <p class="mt-4 text-muted-foreground">
+      <code>external</code>, or passing <code>target="_blank"</code> yourself, opens the link in a
+      new tab and warns about it, because a new tab breaks the Back button. Screen readers hear
+      "(opens in a new tab)" as part of the link name, and sighted users see an icon. It also adds
+      <code>rel="noopener noreferrer"</code>, keeping any other <code>rel</code> values you pass.
+    </p>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/link.tsx</code> and adds <code>class-variance-authority</code>.
+    Like the Button, it uses the standard shadcn tokens and your <code>cn()</code> helper, so it
+    does not change your theme. If your <code>lib/utils.ts</code> differs from the current shadcn
+    version, the CLI asks before replacing it; answering no is safe, because the link only needs
+    <code>cn()</code>.
+  </p>
+</ComponentPage>

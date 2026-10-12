@@ -89,6 +89,11 @@ export async function createCascade() {
           if (forcedColors) visit(node.children);
           continue;
         }
+        // Tailwind only applies hover: on devices that can hover.
+        if (node.prelude === "@media (hover: hover)") {
+          if (states.includes(":hover")) visit(node.children);
+          continue;
+        }
         if (!selectors.has(node.prelude)) continue;
         for (const [name, declared] of node.declarations) if (name === property) value = declared;
       }
