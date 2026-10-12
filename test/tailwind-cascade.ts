@@ -72,9 +72,17 @@ export async function createCascade() {
    * Winning value of a property on an element with these classes. Variant rules come after the
    * plain utilities in Tailwind's output, so the last matching declaration wins.
    */
-  function computed(
+  function computed(classes: string[], property: string, options: CascadeOptions = {}) {
+    return lastOf(classes, [property], options)?.value;
+  }
+
+  /**
+   * The last declaration among several properties, such as `padding` and `padding-inline`, so a
+   * shorthand that comes later in the output is seen to override a longhand.
+   */
+  function lastOf(
     classes: string[],
-    property: string,
+    properties: string[],
     { forcedColors = false, states = [] }: CascadeOptions = {},
   ) {
     const selectors = new Set(
@@ -82,7 +90,7 @@ export async function createCascade() {
     );
     const layer = parse(build(classes)).find((node) => node.prelude === "@layer utilities");
     if (!layer) throw new Error("No utilities layer in the generated CSS");
-    let value: string | undefined;
+    let winner: { property: string; value: string } | undefined;
     const visit = (nodes: Node[]) => {
       for (const node of nodes) {
         if (node.prelude === "@media (forced-colors: active)") {
@@ -95,14 +103,16 @@ export async function createCascade() {
           continue;
         }
         if (!selectors.has(node.prelude)) continue;
-        for (const [name, declared] of node.declarations) if (name === property) value = declared;
+        for (const [name, declared] of node.declarations) {
+          if (properties.includes(name)) winner = { property: name, value: declared };
+        }
       }
     };
     visit(layer.children);
-    return value;
+    return winner;
   }
 
-  return { build, computed };
+  return { build, computed, lastOf };
 }
 
 /** Split a class string from a cva() call into the candidates Tailwind compiles. */

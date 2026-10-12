@@ -85,9 +85,14 @@ describe.each(pages)("%s page layout", (_, page) => {
     const firstLink = /<a\b[^>]*>[\s\S]*?<\/a>/.exec(body)![0];
     expect(firstLink).toMatch(/href="#main"/);
     expect(text(firstLink)).toMatch(/Skip to content/);
+    // Rendered by the SkipLink component: hidden until keyboard focus, then above the header.
     expect(firstLink).toMatch(/\bsr-only\b/);
-    expect(firstLink).toMatch(/focus:not-sr-only/);
+    expect(firstLink).toMatch(/focus-visible:not-sr-only/);
+    expect(firstLink).toMatch(/focus-visible:fixed/);
+    expect(firstLink).toMatch(/focus-visible:z-\[100\]/);
+    // The target can take focus, so the next Tab continues from the main content.
     expect(html).toMatch(/<main[^>]*id="main"/);
+    expect(/<main[^>]*>/.exec(html)![0]).toMatch(/tabindex="-1"/);
   });
 
   it("has a header with the main navigation", async () => {
@@ -251,6 +256,18 @@ describe("link page", () => {
     const html = await render();
     expect(html).toMatch(/<a[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
     expect(html).toMatch(/<span class="sr-only">\(opens in a new tab\)<\/span>/);
+  });
+});
+
+describe("skip link page", () => {
+  const render = () => container.renderToString(componentPages["skip-link"]!);
+
+  it("explains placement, the focusable target and the sticky-header rule", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/tabindex=(&quot;|")-1(&quot;|")/);
+    expect(visible).toMatch(/first/i);
+    expect(visible).toMatch(/2\.4\.11/);
+    expect(visible).toMatch(/this site/i);
   });
 });
 

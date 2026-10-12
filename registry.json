@@ -149,6 +149,19 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "skip-link",
+      "type": "registry:ui",
+      "title": "Skip Link",
+      "description": "Skip-to-content link, hidden until keyboard focus and shown above sticky headers.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/skip-link.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
