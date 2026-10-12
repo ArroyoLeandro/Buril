@@ -19,6 +19,23 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    branch: "docs-fixes",
+    date: "2026-10-12",
+    title: { en: "Ready for Server Components", es: "Listos para los Server Components" },
+    changes: {
+      en: [
+        'Button, IconButton and SkipLink start with `"use client"`, so a Next.js Server Component can render them without throwing.',
+        "Props and token tables keep names such as `variant` and `--buril-duration-instant` whole; on a phone they scroll instead of breaking mid-word.",
+        "Corrected docs: the urgent Alert example, the font tokens you apply yourself, the brand red that includes `--accent`, dark mode without the Buril theme and a `--diff` check before reinstalling.",
+      ],
+      es: [
+        'Button, IconButton y SkipLink empiezan con `"use client"`, así que un Server Component de Next.js puede renderizarlos sin errores.',
+        "Las tablas de props y de tokens mantienen enteros nombres como `variant` y `--buril-duration-instant`; en un teléfono se desplazan en lugar de cortarlos a mitad de palabra.",
+        "Documentación corregida: el ejemplo de la alerta urgente, los tokens de fuente que aplicas tú, el rojo de marca que incluye `--accent`, el modo oscuro sin el tema de Buril y una comprobación con `--diff` antes de reinstalar.",
+      ],
+    },
+  },
+  {
     branch: "docs-content",
     date: "2026-10-12",
     title: { en: "Documentation you can rely on", es: "Una documentación en la que confiar" },

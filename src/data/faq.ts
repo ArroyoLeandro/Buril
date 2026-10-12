@@ -114,6 +114,21 @@ export const faq: FaqItem[] = [
     },
   },
   {
+    id: "server-components",
+    question: {
+      en: "Do the components work in React Server Components?",
+      es: "¿Los componentes funcionan en React Server Components?",
+    },
+    answer: {
+      en: [
+        'Yes. A component that handles events or keeps state, such as the Button, IconButton, SkipLink, Avatar, Checkbox, Field or Radio Group, starts with `"use client"`, so you can render it from a Server Component in Next.js. The others, such as Card, Badge or Link, have no client code and stay Server Components.',
+      ],
+      es: [
+        'Sí. Los componentes que manejan eventos o guardan estado, como el Button, el IconButton, el SkipLink, el Avatar, el Checkbox, el Field o el Radio Group, empiezan con `"use client"`, así que puedes renderizarlos desde un Server Component en Next.js. Los demás, como Card, Badge o Link, no tienen código de cliente y siguen siendo Server Components.',
+      ],
+    },
+  },
+  {
     id: "npm-package",
     question: { en: "Is Buril an npm package?", es: "¿Buril es un paquete de npm?" },
     answer: {
