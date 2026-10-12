@@ -440,6 +440,25 @@ describe("separator page", () => {
   });
 });
 
+describe("alert page", () => {
+  const render = () => container.renderToString(componentPages["alert"]!);
+
+  it("explains when to use role alert and that the region must exist first", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/role=(&quot;|")alert(&quot;|")/);
+    expect(visible).toMatch(/role=(&quot;|")status(&quot;|")/);
+    expect(visible).toMatch(/important/i);
+    expect(visible).toMatch(/already (exists|on the page)/);
+  });
+
+  it("explains that color is never the only signal", async () => {
+    const visible = text(await render());
+    expect(visible).toMatch(/icon/);
+    expect(visible).toMatch(/title/);
+    expect(visible).toMatch(/color alone|only signal/i);
+  });
+});
+
 describe("skip link page", () => {
   const render = () => container.renderToString(componentPages["skip-link"]!);
 

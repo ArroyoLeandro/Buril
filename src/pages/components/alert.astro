@@ -1,0 +1,95 @@
+---
+import { Code } from "astro:components";
+
+import ComponentPage from "../../layouts/ComponentPage.astro";
+import AlertDemo from "../../components/AlertDemo";
+import { codeTheme } from "../../components/code-theme";
+
+const usageExample = `import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+<Alert variant="destructive">
+  <AlertTitle>Payment failed</AlertTitle>
+  <AlertDescription>Your card was declined.</AlertDescription>
+</Alert>`;
+
+const insertExample = `{/* On the page from the start, empty. */}
+<div role="status">
+  {saved && (
+    <Alert>
+      <AlertTitle>Draft saved</AlertTitle>
+    </Alert>
+  )}
+</div>`;
+
+const liveExample = `{/* Rendered before the upload starts; only its text changes. */}
+<Alert live="polite">
+  <AlertTitle>Upload</AlertTitle>
+  <AlertDescription>{progressMessage}</AlertDescription>
+</Alert>`;
+---
+
+<ComponentPage slug="alert">
+  <Fragment slot="lead">
+    Also known as a callout. It does not interrupt screen readers unless you ask it to.
+  </Fragment>
+
+  <AlertDemo slot="demo" client:visible />
+
+  <Fragment slot="usage">
+    <h2 class="mt-10 font-display text-xl">Usage</h2>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={usageExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <strong>Never color alone.</strong> Each variant has its own icon, and the title says what
+        kind of message it is. The icon is <code>aria-hidden</code>, so the title must carry the
+        meaning. Pass <code>icon</code> to change it, or <code>icon={"{null}"}</code> for none.
+      </li>
+      <li>
+        <strong>Variants.</strong> <code>default</code> uses the card colors and the ink border;
+        <code>destructive</code> colors the border, icon and title, and keeps the description in the
+        muted foreground so it stays easy to read.
+      </li>
+    </ul>
+
+    <h2 class="mt-10 font-display text-xl">Announcing alerts</h2>
+    <p class="mt-4 text-muted-foreground">
+      By default an alert is static: it has no role, because text that is on the page from the start
+      needs no announcement. The <code>live</code> prop turns it into a live region:
+    </p>
+    <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <li>
+        <code>live="polite"</code> gives it <code>role="status"</code>. Screen readers announce
+        changes when the user is idle. Use it for most messages.
+      </li>
+      <li>
+        <code>live="assertive"</code> gives it <code>role="alert"</code>, which interrupts whatever
+        the screen reader is saying. Use it only for important, time-sensitive messages that appear
+        or change while the user works, such as a lost connection, never for static content.
+      </li>
+    </ul>
+    <p class="mt-4 text-muted-foreground">
+      Screen readers only announce changes to a live region that already exists. A region inserted
+      together with its text is often missed. Keep a live alert mounted and change its text:
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={liveExample} lang="tsx" theme={codeTheme} />
+    </div>
+    <p class="mt-4 text-muted-foreground">
+      To show an alert that appears, insert it into a <code>role="status"</code> region that is
+      already on the page, as the demo does with "Save draft":
+    </p>
+    <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
+      <Code code={insertExample} lang="tsx" theme={codeTheme} />
+    </div>
+  </Fragment>
+
+  <p slot="install-notes" class="mt-4 text-muted-foreground">
+    It creates <code>components/ui/alert.tsx</code>, the same path and part names as shadcn's Alert.
+    Unlike shadcn's, it has no <code>role="alert"</code> by default; use <code>live</code>. It needs{" "}
+    <code>class-variance-authority</code> and your <code>cn()</code> helper; if your
+    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
+    it, and answering no is safe.
+  </p>
+</ComponentPage>
