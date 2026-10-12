@@ -49,9 +49,11 @@ describe("docs scroll model", () => {
     const header = classesOf(openTag(/<header[^>]*>/));
     expect(header).toEqual(expect.arrayContaining(["lg:sticky", "lg:top-0", "bg-background"]));
     expect(header.some((name) => /^lg:z-\d+$/.test(name))).toBe(true);
-    // The row inside takes the shared header height, so the panels below can offset by it.
+    // The header itself, bottom border included, is the shared height the panels offset by;
+    // sizing only the row inside would leave the border 1px under the panels.
+    expect(header).toContain("lg:h-(--header-height)");
     const row = classesOf(openTag(/<header[^>]*>\s*<div[^>]*>/).replace(/^<header[^>]*>/, ""));
-    expect(row).toContain("lg:h-(--header-height)");
+    expect(row).toContain("lg:h-full");
   });
 
   it("makes the sidebar a sticky, viewport-sized panel on large screens", () => {
