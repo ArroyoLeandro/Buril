@@ -22,6 +22,16 @@
       "title": "Buril theme",
       "description": "Buril design tokens: red lacquer palette with light and dark schemes.",
       "css": {
+        ":root": {
+          "color-scheme": "light",
+          "--muted-foreground": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
+          "--grid": "color-mix(in oklab, #1a1714 9%, transparent)"
+        },
+        ".dark": {
+          "color-scheme": "dark",
+          "--muted-foreground": "#b5ada0",
+          "--grid": "color-mix(in oklab, #ede6da 7%, transparent)"
+        },
         "@media (prefers-color-scheme: dark)": {
           ":root:not(.light)": {
             "color-scheme": "dark",
@@ -31,10 +41,17 @@
             "--card-foreground": "#ede6da",
             "--popover": "#161310",
             "--popover-foreground": "#ede6da",
-            "--primary": "#ff5a51",
+            "--primary": "#ede6da",
             "--primary-foreground": "#161310",
+            "--secondary": "#282420",
+            "--secondary-foreground": "#ede6da",
+            "--muted": "#282420",
             "--muted-foreground": "#b5ada0",
+            "--accent": "#321a15",
+            "--accent-foreground": "#ede6da",
+            "--destructive": "#ff5a51",
             "--border": "#ede6da",
+            "--input": "#6d6862",
             "--ring": "#ff5a51",
             "--decor": "#d72828",
             "--grid": "color-mix(in oklab, #ede6da 7%, transparent)"
@@ -49,16 +66,6 @@
               "@slot": {}
             }
           }
-        },
-        ":root": {
-          "color-scheme": "light",
-          "--muted-foreground": "color-mix(in oklab, #1a1714 72%, #f4efe6)",
-          "--grid": "color-mix(in oklab, #1a1714 9%, transparent)"
-        },
-        ".dark": {
-          "color-scheme": "dark",
-          "--muted-foreground": "#b5ada0",
-          "--grid": "color-mix(in oklab, #ede6da 7%, transparent)"
         }
       },
       "cssVars": {
@@ -71,8 +78,15 @@
           "color-popover-foreground": "var(--popover-foreground)",
           "color-primary": "var(--primary)",
           "color-primary-foreground": "var(--primary-foreground)",
+          "color-secondary": "var(--secondary)",
+          "color-secondary-foreground": "var(--secondary-foreground)",
+          "color-muted": "var(--muted)",
           "color-muted-foreground": "var(--muted-foreground)",
+          "color-accent": "var(--accent)",
+          "color-accent-foreground": "var(--accent-foreground)",
+          "color-destructive": "var(--destructive)",
           "color-border": "var(--border)",
+          "color-input": "var(--input)",
           "color-ring": "var(--ring)",
           "color-decor": "var(--decor)",
           "color-grid": "var(--grid)",
@@ -86,9 +100,16 @@
           "card-foreground": "#1a1714",
           "popover": "#f4efe6",
           "popover-foreground": "#1a1714",
-          "primary": "#c90f1a",
-          "primary-foreground": "#ffffff",
+          "primary": "#1a1714",
+          "primary-foreground": "#f4efe6",
+          "secondary": "#e3ded5",
+          "secondary-foreground": "#1a1714",
+          "muted": "#e3ded5",
+          "accent": "#f5ded3",
+          "accent-foreground": "#1a1714",
+          "destructive": "#c90f1a",
           "border": "#1a1714",
+          "input": "#7e7a74",
           "ring": "#c90f1a",
           "decor": "#d72828"
         },
@@ -99,9 +120,16 @@
           "card-foreground": "#ede6da",
           "popover": "#161310",
           "popover-foreground": "#ede6da",
-          "primary": "#ff5a51",
+          "primary": "#ede6da",
           "primary-foreground": "#161310",
+          "secondary": "#282420",
+          "secondary-foreground": "#ede6da",
+          "muted": "#282420",
+          "accent": "#321a15",
+          "accent-foreground": "#ede6da",
+          "destructive": "#ff5a51",
           "border": "#ede6da",
+          "input": "#6d6862",
           "ring": "#ff5a51",
           "decor": "#d72828"
         }

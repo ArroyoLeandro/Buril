@@ -26,6 +26,12 @@
   --buril-vermilion-strong: #c90f1a;
   --buril-vermilion-bright: #ff5a51;
   --buril-white: #ffffff;
+  --buril-paper-shade: #e3ded5;
+  --buril-night-shade: #282420;
+  --buril-vermilion-wash: #f5ded3;
+  --buril-night-wash: #321a15;
+  --buril-ink-soft: #7e7a74;
+  --buril-bone-soft: #6d6862;
 
   /* shadcn variables */
   --background: var(--buril-paper);
@@ -34,11 +40,18 @@
   --card-foreground: var(--foreground);
   --popover: var(--background);
   --popover-foreground: var(--foreground);
-  --primary: var(--buril-vermilion-strong);
-  --primary-foreground: var(--buril-white);
+  --primary: var(--buril-ink);
+  --primary-foreground: var(--buril-paper);
+  --secondary: var(--buril-paper-shade);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--buril-paper-shade);
   --muted-foreground: color-mix(in oklab, var(--buril-ink) 72%, var(--buril-paper));
+  --accent: var(--buril-vermilion-wash);
+  --accent-foreground: var(--foreground);
+  --destructive: var(--buril-vermilion-strong);
   --border: var(--buril-ink);
-  --ring: var(--primary);
+  --input: var(--buril-ink-soft);
+  --ring: var(--buril-vermilion-strong);
 
   /* Buril extras */
   --decor: var(--buril-vermilion);
@@ -55,11 +68,18 @@
   --card-foreground: var(--foreground);
   --popover: var(--background);
   --popover-foreground: var(--foreground);
-  --primary: var(--buril-vermilion-bright);
+  --primary: var(--buril-bone);
   --primary-foreground: var(--buril-night);
+  --secondary: var(--buril-night-shade);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--buril-night-shade);
   --muted-foreground: var(--buril-bone-muted);
+  --accent: var(--buril-night-wash);
+  --accent-foreground: var(--foreground);
+  --destructive: var(--buril-vermilion-bright);
   --border: var(--buril-bone);
-  --ring: var(--primary);
+  --input: var(--buril-bone-soft);
+  --ring: var(--buril-vermilion-bright);
 
   --decor: var(--buril-vermilion);
   --grid: color-mix(in oklab, var(--buril-bone) 7%, transparent);
@@ -76,11 +96,18 @@
     --card-foreground: var(--foreground);
     --popover: var(--background);
     --popover-foreground: var(--foreground);
-    --primary: var(--buril-vermilion-bright);
+    --primary: var(--buril-bone);
     --primary-foreground: var(--buril-night);
+    --secondary: var(--buril-night-shade);
+    --secondary-foreground: var(--foreground);
+    --muted: var(--buril-night-shade);
     --muted-foreground: var(--buril-bone-muted);
+    --accent: var(--buril-night-wash);
+    --accent-foreground: var(--foreground);
+    --destructive: var(--buril-vermilion-bright);
     --border: var(--buril-bone);
-    --ring: var(--primary);
+    --input: var(--buril-bone-soft);
+    --ring: var(--buril-vermilion-bright);
 
     --decor: var(--buril-vermilion);
     --grid: color-mix(in oklab, var(--buril-bone) 7%, transparent);
@@ -109,8 +136,15 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
   --color-border: var(--border);
+  --color-input: var(--input);
   --color-ring: var(--ring);
   --color-decor: var(--decor);
   --color-grid: var(--grid);
