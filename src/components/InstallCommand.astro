@@ -1,0 +1,78 @@
+---
+import { Code } from "astro:components";
+
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "../../registry/ui/button";
+import { codeTheme } from "./code-theme";
+
+interface Props {
+  /** Unique on the page; prefixes the tab and panel ids. */
+  id: string;
+  /** shadcn CLI arguments, one command per line, for example `add @buril/button`. */
+  commands: string[];
+}
+
+const { id, commands } = Astro.props;
+
+// The runners shadcn documents for each package manager.
+const managers = [
+  { name: "npm", runner: "npx" },
+  { name: "pnpm", runner: "pnpm dlx" },
+  { name: "yarn", runner: "yarn dlx" },
+  { name: "bun", runner: "bunx --bun" },
+].map((manager) => ({
+  ...manager,
+  code: commands.map((command) => `${manager.runner} shadcn@latest ${command}`).join("\n"),
+}));
+---
+
+<div data-install-tabs class="mt-4">
+  <div role="tablist" aria-label="Package manager" class="flex flex-wrap gap-1">
+    {managers.map((manager, index) => (
+      <button
+        type="button"
+        role="tab"
+        id={`${id}-tab-${manager.name}`}
+        aria-selected={index === 0 ? "true" : "false"}
+        aria-controls={`${id}-panel-${manager.name}`}
+        tabindex={index === 0 ? 0 : -1}
+        class={cn(
+          buttonVariants({ variant: "ghost", size: "sm" }),
+          "px-3 aria-selected:border-border aria-selected:bg-secondary aria-selected:text-secondary-foreground",
+        )}
+      >
+        {manager.name}
+      </button>
+    ))}
+  </div>
+  {managers.map((manager, index) => (
+    <div
+      role="tabpanel"
+      id={`${id}-panel-${manager.name}`}
+      aria-labelledby={`${id}-tab-${manager.name}`}
+      hidden={index !== 0}
+      class="mt-2 flex flex-wrap items-start gap-2"
+    >
+      <div class="min-w-0 flex-1 overflow-x-auto text-sm [&_pre]:p-4">
+        <Code code={manager.code} lang="bash" theme={codeTheme} />
+      </div>
+      <button
+        type="button"
+        data-copy={manager.code}
+        aria-label={`Copy ${manager.name} command`}
+        class={buttonVariants({ variant: "outline", size: "sm" })}
+      >
+        Copy
+      </button>
+    </div>
+  ))}
+  <p role="status" data-copy-status class="mt-2 min-h-5 text-sm text-muted-foreground"></p>
+</div>
+
+<script>
+  import { initInstallTabs } from "../scripts/install-tabs";
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-install-tabs]")) {
+    initInstallTabs(root);
+  }
+</script>
