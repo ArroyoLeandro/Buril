@@ -89,6 +89,7 @@ Target: **WCAG 2.2 level AA**.
 - [ ] Automated tests with Testing Library + `axe`.
 - [ ] Manual screen reader pass with NVDA (Phase 2 and 3 components).
 - [ ] Uses semantic tokens only (no hardcoded colors), so future visual styles stay cheap.
+  - **Known exception:** the destructive Button uses `text-white` in light mode and `dark:text-background` in dark mode. White on the dark-mode red fails contrast, and no shadcn token is white in both modes. Any new exception needs the same kind of measured reason, written next to the class.
 - [ ] Copyable snippet is read from the real source file at build time, never duplicated by hand.
 
 ## Visual style notes

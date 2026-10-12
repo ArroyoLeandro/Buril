@@ -4,23 +4,10 @@
   "homepage": "https://example.com/buril-ui",
   "items": [
     {
-      "name": "utils",
-      "type": "registry:lib",
-      "title": "Utils",
-      "description": "The cn() helper: clsx plus tailwind-merge.",
-      "dependencies": ["clsx", "tailwind-merge"],
-      "files": [
-        {
-          "path": "registry/lib/utils.ts",
-          "type": "registry:lib"
-        }
-      ]
-    },
-    {
       "name": "theme",
       "type": "registry:theme",
       "title": "Buril theme",
-      "description": "Buril design tokens: red lacquer palette with light and dark schemes.",
+      "description": "Opt-in Buril palette (ink primary, red lacquer accents) for light and dark. Replaces your shadcn color tokens and makes dark: follow the system unless <html> has .light.",
       "css": {
         ":root": {
           "color-scheme": "light",
@@ -141,7 +128,7 @@
       "title": "Button",
       "description": "Accessible button with variants, sizes and a loading state.",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["@buril/utils", "@buril/theme"],
+      "registryDependencies": ["utils"],
       "files": [
         {
           "path": "registry/ui/button.tsx",

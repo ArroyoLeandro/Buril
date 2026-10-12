@@ -7,7 +7,7 @@
   "packageManager": "pnpm@11.4.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "shadcn build && astro build",
     "preview": "astro preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "astro check && tsc --noEmit"
+    "check": "astro check && tsc --noEmit && shadcn registry validate"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.3",
