@@ -16,7 +16,11 @@ beforeAll(async () => {
 });
 
 const pages = import.meta.glob<AstroComponentFactory>(
-  ["../../src/pages/index.astro", "../../src/pages/docs/**/*.astro"],
+  [
+    "../../src/pages/index.astro",
+    "../../src/pages/docs/**/*.astro",
+    "../../src/pages/es/**/*.astro",
+  ],
   { eager: true, import: "default" },
 );
 

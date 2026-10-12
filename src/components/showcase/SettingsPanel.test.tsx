@@ -32,4 +32,22 @@ describe("SettingsPanel", () => {
     await user.selectOptions(screen.getByRole("combobox", { name: "Language" }), "es");
     expect(status).toHaveTextContent("Language set to Español.");
   });
+
+  it("speaks Spanish on Spanish pages: labels, options and announcements", async () => {
+    render(<SettingsPanel locale="es" />);
+    const user = userEvent.setup();
+    const status = screen.getByRole("status");
+    expect(screen.getByRole("group", { name: "Resumen" })).toBeInTheDocument();
+    // Spanish readers see Spanish selected first.
+    expect(screen.getByRole("combobox", { name: "Idioma" })).toHaveValue("es");
+
+    await user.click(screen.getByRole("radio", { name: "Diario" }));
+    expect(status).toHaveTextContent("Resumen: diario.");
+
+    await user.click(screen.getByRole("switch", { name: "Notificaciones por correo" }));
+    expect(status).toHaveTextContent("Notificaciones por correo desactivadas.");
+
+    await user.selectOptions(screen.getByRole("combobox", { name: "Idioma" }), "en");
+    expect(status).toHaveTextContent("Idioma: English.");
+  });
 });

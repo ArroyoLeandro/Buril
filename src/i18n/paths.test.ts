@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { alternates, localizePath, pageRoutes, routeOf, unlocalizePath } from "./paths";
+import {
+  alternates,
+  localizedHref,
+  localizePath,
+  pageRoutes,
+  routeOf,
+  unlocalizePath,
+} from "./paths";
 
 describe("localizePath", () => {
   it.each([
@@ -66,5 +73,19 @@ describe("alternates", () => {
 
   it("is empty when the page has no translation yet", () => {
     expect(alternates("/docs/theming", routes)).toEqual([]);
+  });
+});
+
+describe("localizedHref", () => {
+  const routes = ["/", "/es/", "/docs", "/es/docs", "/docs/theming"];
+
+  it("links the page in the reader's language when it exists", () => {
+    expect(localizedHref("/docs", "es", routes)).toBe("/es/docs");
+    expect(localizedHref("/", "es", routes)).toBe("/es/");
+    expect(localizedHref("/docs/theming", "en", routes)).toBe("/docs/theming");
+  });
+
+  it("falls back to the English page until the translation exists", () => {
+    expect(localizedHref("/docs/theming", "es", routes)).toBe("/docs/theming");
   });
 });

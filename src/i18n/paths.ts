@@ -1,6 +1,6 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 
-import { getLocale, locales, type Locale } from "./ui";
+import { defaultLocale, getLocale, locales, type Locale } from "./ui";
 
 /**
  * Locale-aware page paths. English pages are unprefixed (`/docs`) and Spanish pages live under
@@ -34,6 +34,19 @@ export function routeOf(file: string) {
 export const pageRoutes: readonly string[] = Object.keys(
   import.meta.glob("../pages/**/*.astro"),
 ).map(routeOf);
+
+/**
+ * Where a link to `path` should go for a reader of `locale`: the page in that language, or the
+ * English page while the translation does not exist yet, so a link never leads to a 404.
+ */
+export function localizedHref(
+  path: string,
+  locale: Locale,
+  routes: readonly string[] = pageRoutes,
+) {
+  const href = localizePath(path, locale);
+  return routes.includes(href) ? href : localizePath(path, defaultLocale);
+}
 
 /**
  * The language versions of a page, in locale order, when it has more than one: the hreflang

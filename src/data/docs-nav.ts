@@ -7,7 +7,7 @@ import {
   type ComponentStatus,
   type DocumentedComponent,
 } from "./components";
-import { localizePath } from "../i18n/paths";
+import { localizedHref } from "../i18n/paths";
 import { translator, type Locale } from "../i18n/ui";
 
 export interface NavItem {
@@ -24,13 +24,13 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-/** The Getting Started pages, with titles and links in `locale`. */
+/** The Getting Started pages, with titles and links in `locale` (English until translated). */
 export function gettingStarted(locale: Locale = "en"): NavItem[] {
   const t = translator(locale);
   return [
-    { name: t("docsNav.introduction"), href: localizePath("/docs", locale) },
-    { name: t("docsNav.installation"), href: localizePath("/docs/installation", locale) },
-    { name: t("docsNav.theming"), href: localizePath("/docs/theming", locale) },
+    { name: t("docsNav.introduction"), href: localizedHref("/docs", locale) },
+    { name: t("docsNav.installation"), href: localizedHref("/docs/installation", locale) },
+    { name: t("docsNav.theming"), href: localizedHref("/docs/theming", locale) },
   ];
 }
 
@@ -53,7 +53,7 @@ export function docsNav(
         .filter((entry) => componentCategory(entry) === category)
         .map(({ slug, name, status }) => ({
           name,
-          href: localizePath(componentHref(slug), locale),
+          href: localizedHref(componentHref(slug), locale),
           status,
         })),
     }))
