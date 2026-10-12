@@ -76,19 +76,20 @@ const sections = (html: string) => {
 
 describe("the example.com placeholder", () => {
   const routes = Object.keys(pages).map(routeOf);
+  let checked = 0;
 
-  it("is explained next to every copyable command that uses it", async () => {
-    let checked = 0;
-    for (const route of routes) {
-      const locale: Locale = route.startsWith("/es") ? "es" : "en";
-      const note = ui[locale]["install.placeholder"];
-      for (const section of sections(await render(route))) {
-        const commands = [...section.matchAll(/data-copy="([^"]*)"/g)].map(([, code]) => code!);
-        if (!commands.some((code) => code.includes("example.com"))) continue;
-        checked++;
-        expect(text(section), route).toContain(note);
-      }
+  it.each(routes)("%s explains it next to every copyable command that uses it", async (route) => {
+    const locale: Locale = route.startsWith("/es") ? "es" : "en";
+    const note = ui[locale]["install.placeholder"];
+    for (const section of sections(await render(route))) {
+      const commands = [...section.matchAll(/data-copy="([^"]*)"/g)].map(([, code]) => code!);
+      if (!commands.some((code) => code.includes("example.com"))) continue;
+      checked++;
+      expect(text(section), route).toContain(note);
     }
+  });
+
+  it("checked the install sections of every component page, guide and the landing page", () => {
     expect(checked).toBeGreaterThan(40);
   });
 });

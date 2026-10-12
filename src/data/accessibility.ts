@@ -115,7 +115,7 @@ export const accessibilityRules: AccessibilityRule[] = [
     title: { en: "Everything works with the keyboard", es: "Todo funciona con el teclado" },
     summary: {
       en: "The Tab order follows the page. Escape closes overlays. A group of options, such as a radio group, is one Tab stop and the arrow keys move inside it.",
-      es: "El orden de Tab sigue a la página. Escape cierra las superposiciones. Un grupo de opciones, como un grupo de botones de opción, es una sola parada de Tab, y las flechas se mueven dentro de él.",
+      es: "El orden de Tab sigue el orden de la página. Escape cierra las superposiciones. Un grupo de opciones, como un grupo de botones de opción, es una sola parada de Tab, y las flechas mueven el foco dentro de él.",
     },
     how: {
       en: "Behavior tests drive each component with Tab, Enter, Space and the arrow keys; browser tests check real keyboard focus.",
@@ -225,7 +225,7 @@ export const accessibilityRules: AccessibilityRule[] = [
     title: { en: "Respect user preferences", es: "Respetar las preferencias del usuario" },
     summary: {
       en: "Anything that moves waits for `motion-safe`, so reduced motion stops it; fades may stay. Focus rings never animate. Forced-colors mode, 200% zoom and a 320px width all work.",
-      es: "Todo lo que se mueve espera a `motion-safe`, así que el movimiento reducido lo detiene; los fundidos pueden quedarse. Los anillos de foco nunca se animan. El modo de colores forzados, el zoom al 200% y un ancho de 320px funcionan.",
+      es: "Todo lo que se mueve depende de `motion-safe`, así que el movimiento reducido lo detiene; los fundidos pueden mantenerse. Los anillos de foco nunca se animan. El modo de colores forzados, el zoom al 200% y un ancho de 320px funcionan.",
     },
     how: {
       en: "Style tests check `motion-safe` and forced colors; a test rejects transitions that would animate the outline; browser tests emulate reduced motion and load docs pages at 320px.",
@@ -245,7 +245,7 @@ export const accessibilityRules: AccessibilityRule[] = [
     },
     how: {
       en: "There is no Tooltip yet. The rule is part of its definition of done, with axe and behavior tests.",
-      es: "Todavía no hay un Tooltip. La regla forma parte de su definición de terminado, con axe y tests de comportamiento.",
+      es: "Todavía no hay un Tooltip. La regla forma parte de los requisitos para darlo por terminado, con axe y tests de comportamiento.",
     },
     checks: ["behavior", "axe"],
   },

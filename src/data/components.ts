@@ -198,7 +198,7 @@ const spanishDescriptions: Readonly<Record<string, string>> = {
   skeleton:
     "Un bloque de relleno que se muestra mientras carga el contenido, oculto para las tecnologías de apoyo.",
   "skip-link":
-    "Un enlace que permite a quienes usan el teclado saltar el encabezado e ir directo al contenido principal.",
+    "Un enlace que permite a quienes usan el teclado saltar el encabezado e ir directamente al contenido principal.",
 };
 
 /** The entry's one-sentence description in `locale`. */
