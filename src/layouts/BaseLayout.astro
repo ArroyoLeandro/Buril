@@ -3,7 +3,7 @@ import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { SkipLink } from "../../registry/ui/skip-link";
 import { noFlashScript } from "../scripts/theme";
-import { githubUrl } from "../data/site";
+import { githubUrl, licenseUrl } from "../data/site";
 
 interface Props {
   title: string;
@@ -105,14 +105,30 @@ const linkClass =
         id="main"
         tabindex="-1"
         class:list={[
-          docs
-            ? "mx-auto w-full max-w-3xl min-w-0 px-4 py-10 sm:px-8 lg:py-12"
-            : "mx-auto w-full max-w-2xl min-w-0 px-4 py-12",
+          docs ? "mx-auto w-full max-w-3xl min-w-0 px-4 py-10 sm:px-8 lg:py-12" : "w-full min-w-0",
         ]}
       >
         <slot />
       </main>
       <slot name="toc" />
     </div>
+    <footer class="border-t border-border">
+      <div class="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-6 text-sm text-muted-foreground sm:px-6">
+        <p>
+          Buril UI is released under the{" "}
+          <a href={licenseUrl} class="text-foreground underline underline-offset-4">
+            MIT license
+          </a>
+          .
+        </p>
+        <p>
+          Source code on{" "}
+          <a href={githubUrl} class="text-foreground underline underline-offset-4">
+            GitHub
+          </a>
+          .
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
