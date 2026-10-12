@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ComponentProps } from "react";
+import { useLayoutEffect, useRef, useState, type ComponentProps } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -58,6 +58,17 @@ function Avatar({ src, alt, fallback, size, className, ...props }: AvatarProps) 
   const [failedSrc, setFailedSrc] = useState<string>();
   const showImage = src !== undefined && src !== failedSrc;
   const decorative = alt === "";
+  const image = useRef<HTMLImageElement>(null);
+
+  // An image still loading is marked before the first paint, so it waits hidden over the initials
+  // and fades in once it loads. An image already complete (cached, or loaded before hydration)
+  // shows at once, and without JavaScript nothing marks it, so it is never hidden. A direct DOM
+  // update: React never renders this attribute, so it keeps what this sets.
+  useLayoutEffect(() => {
+    if (image.current && !image.current.complete) image.current.setAttribute("data-loading", "");
+  }, [src]);
+
+  const initials = fallback ?? initialsOf(alt);
 
   const fallbackProps = decorative
     ? { "aria-hidden": true as const }
@@ -71,15 +82,27 @@ function Avatar({ src, alt, fallback, size, className, ...props }: AvatarProps) 
       {...props}
     >
       {showImage ? (
-        <img
-          src={src}
-          alt={alt}
-          onError={() => setFailedSrc(src)}
-          className="size-full object-cover"
-        />
+        <>
+          <img
+            ref={image}
+            src={src}
+            alt={alt}
+            onLoad={(event) => event.currentTarget.removeAttribute("data-loading")}
+            onError={() => setFailedSrc(src)}
+            className="peer absolute inset-0 size-full object-cover transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) data-loading:opacity-0"
+          />
+          {/* Under the image while it loads, then faded out, so a transparent picture does not
+              show letters through it. The image's alt is the name. */}
+          <span
+            aria-hidden="true"
+            className="opacity-0 transition-[opacity] duration-(--buril-duration-fast,120ms) ease-(--buril-ease-out,cubic-bezier(0.2,0,0,1)) peer-data-loading:opacity-100"
+          >
+            {initials}
+          </span>
+        </>
       ) : (
         // The name comes from the root's aria-label; the letters would only be spelled out.
-        <span aria-hidden="true">{fallback ?? initialsOf(alt)}</span>
+        <span aria-hidden="true">{initials}</span>
       )}
     </span>
   );

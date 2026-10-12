@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
+import { durations, easings, motionReduced, transitionOf } from "../../test/motion-assertions";
 import { Avatar } from "./avatar";
 
 let cascade: Awaited<ReturnType<typeof createCascade>>;
@@ -33,5 +34,46 @@ describe("Avatar compiled with Tailwind", () => {
   it("keeps the circle's edge in forced-colors mode", () => {
     expect(cascade.computed(fallback, "border-width")).toBeUndefined();
     expect(cascade.computed(fallback, "border-width", { forcedColors: true })).toBe("1px");
+  });
+});
+
+// While the image loads, the initials show; once it loads, it fades in over them and they fade
+// out, so a transparent picture does not show letters through it.
+describe("Avatar image fade", () => {
+  const initials = classList(/<img[^>]*>\s*<span[^>]*class="([^"]*)"/.exec(imageHtml)![1]!);
+  const loading = { states: ["[data-loading]"] };
+  const imageLoading = { states: [":is(:where(.peer)[data-loading] ~ *)"] };
+
+  it("lays the image over the initials", () => {
+    expect(cascade.computed(image, "position")).toBe("absolute");
+    expect(cascade.computed(image, "inset")).toBe("0px");
+  });
+
+  it("shows the image without JavaScript: only a script marks it as loading", () => {
+    expect(/<img[^>]*>/.exec(imageHtml)![0]).not.toMatch(/\sdata-loading(=|\s|\/?>)/);
+    expect(cascade.computed(image, "opacity")).toBeUndefined();
+  });
+
+  it("hides the image while it loads and shows the initials under it", () => {
+    expect(cascade.computed(image, "opacity", loading)).toBe("0%");
+    expect(cascade.computed(initials, "opacity")).toBe("0%");
+    expect(cascade.computed(initials, "opacity", imageLoading)).toBe("100%");
+  });
+
+  it("cross-fades with the fast token in every motion mode", () => {
+    for (const element of [image, initials]) {
+      for (const options of [{}, motionReduced]) {
+        const transition = transitionOf(cascade.computed, element, options);
+        expect(transition.properties).toEqual(["opacity"]);
+        expect(transition.durations).toEqual([durations.fast]);
+        expect(transition.easings).toEqual([easings.out]);
+      }
+    }
+  });
+
+  it("does not hide the initials of an avatar without an image", () => {
+    const html = renderToStaticMarkup(<Avatar alt="Ada Lovelace" />);
+    const letters = classList(/<span[^>]*><span[^>]*class="([^"]*)"/.exec(html)?.[1] ?? "");
+    expect(cascade.computed(letters, "opacity")).toBeUndefined();
   });
 });
