@@ -296,6 +296,20 @@
       ]
     },
     {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "Callout with a default icon per variant, a title and a description; static unless made a polite or assertive live region.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skip-link",
       "type": "registry:ui",
       "title": "Skip Link",

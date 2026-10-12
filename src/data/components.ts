@@ -116,6 +116,14 @@ export const documentedComponents: readonly DocumentedComponent[] = [
     source: "registry/ui/separator.tsx",
   },
   {
+    slug: "alert",
+    name: "Alert",
+    description:
+      "A callout with an icon, a title and a description, static unless you make it live.",
+    item: "alert",
+    source: "registry/ui/alert.tsx",
+  },
+  {
     slug: "skip-link",
     name: "Skip Link",
     description: "A link that lets keyboard users jump past the header to the main content.",
