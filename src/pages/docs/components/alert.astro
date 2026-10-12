@@ -78,9 +78,11 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
 
     <h3 class="mt-8 font-display text-lg">An urgent error</h3>
     <p class="mt-4 text-muted-foreground">
-      <code>live="assertive"</code> gives the alert <code>role="alert"</code>, which interrupts
-      whatever the screen reader is saying. Keep it for errors that block the user's work, and
-      render it before its text appears.
+      <code>role="alert"</code> interrupts whatever the screen reader is saying, so keep it for
+      errors that block the user's work. For an error that appears, insert the alert into an empty
+      <code>role="alert"</code> region that is already on the page, so no empty alert shows before
+      the error. For an alert that is already on screen and whose text changes, keep it mounted with{" "}
+      <code>live="assertive"</code>, which gives it <code>role="alert"</code>:
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={assertiveExample} lang="tsx" theme={codeTheme} />

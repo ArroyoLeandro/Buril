@@ -243,9 +243,19 @@ export const componentExamples = {
 <Alert icon={null}>
   <AlertTitle>Maintenance tonight from 22:00</AlertTitle>
 </Alert>`,
-    assertiveExample: `{/* On the page from the start; it interrupts only when its text appears. */}
+    assertiveExample: `{/* An error that appears: an empty region, on the page from the start. */}
+<div role="alert">
+  {expired && (
+    <Alert variant="destructive">
+      <AlertTitle>Your session expired. Sign in again to save.</AlertTitle>
+    </Alert>
+  )}
+</div>
+
+{/* An error already on screen whose text changes: the alert stays mounted. */}
 <Alert variant="destructive" live="assertive">
-  {expired && <AlertTitle>Your session expired. Sign in again to save.</AlertTitle>}
+  <AlertTitle>Connection lost</AlertTitle>
+  <AlertDescription>{retryMessage}</AlertDescription>
 </Alert>`,
   },
   avatar: {

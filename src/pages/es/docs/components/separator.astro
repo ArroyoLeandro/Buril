@@ -51,10 +51,13 @@ const { verticalExample } = componentExamples.separator;
   </Fragment>
 
   <p slot="install-notes" class="mt-4 text-muted-foreground">
-    Crea <code>components/ui/separator.tsx</code>, con la misma ruta y las mismas props que el
-    Separator de shadcn, pero sin Radix: el horizontal es un <code>&lt;hr&gt;</code> nativo. Solo
-    necesita tu helper <code>cn()</code>; si tu <code>lib/utils.ts</code> es distinto de la versión
-    actual de shadcn, la CLI pregunta antes de reemplazarlo, y responder que no es seguro.
+    Crea <code>components/ui/separator.tsx</code>, con la misma ruta y los mismos nombres de props
+    que el Separator de shadcn, pero sin Radix: el horizontal es un <code>&lt;hr&gt;</code> nativo.
+    Un valor por defecto cambia: <code>decorative</code> vale <code>false</code> por defecto,
+    mientras que en shadcn vale <code>true</code>, así que un separador de Buril se anuncia salvo
+    que pases <code>decorative</code>. Solo necesita tu helper <code>cn()</code>; si tu{" "}
+    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
+    reemplazarlo, y responder que no es seguro.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Color</h2>
