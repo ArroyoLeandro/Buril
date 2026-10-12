@@ -149,7 +149,7 @@ export const componentDocs: Record<string, ComponentDocs> = {
             name: "motion",
             type: '"rotate" | "spin" | "wiggle" | "swing" | "nudge-x" | "nudge-up" | "nudge-diagonal" | "pop"',
             description:
-              "A gesture the icon plays once on hover and keyboard focus (`pop` also on press). `wiggle` lifts a lid marked with `data-lid`.",
+              "A gesture the icon plays once on hover and keyboard focus. `pop` also squeezes the icon on press and lets it spring back on release; `wiggle` lifts a lid marked with `data-lid`.",
           },
         ],
       },
@@ -930,7 +930,7 @@ const spanishDocs: Record<string, SpanishDocs> = {
           variant: buttonVariantEs,
           loading: "Reemplaza el icono por un indicador de carga y bloquea la activación.",
           motion:
-            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado (`pop`, también al pulsar). `wiggle` levanta una tapa marcada con `data-lid`.",
+            "Un gesto que el icono reproduce una vez al pasar el puntero y al recibir el foco con el teclado. `pop` además encoge el icono al pulsar y lo deja volver con un rebote suave al soltar; `wiggle` levanta una tapa marcada con `data-lid`.",
         },
       },
     },

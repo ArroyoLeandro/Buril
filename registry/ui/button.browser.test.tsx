@@ -160,17 +160,28 @@ describe("IconButton motion in a real browser", () => {
     expect(getComputedStyle(rtl.icon).getPropertyValue("--buril-nudge-x")).toBe("-3.75px");
   });
 
-  // Space holds the button :active, like a pointer press that has not been released yet.
-  it("pops again when pressed, without restarting the first pop", async () => {
+  // Space holds the button :active, like a pointer press that has not been released yet. CSS
+  // cannot keep an animation running once :active ends, so the press is a transition: it squeezes
+  // the icon at once, and on release the transition back runs to its end and settles.
+  it("squeezes the pop icon while pressed and lets it settle with the spring on release", async () => {
     await setReducedMotion(false);
     const { icon } = await renderButton("pop");
     await userEvent.tab();
     const [focusPop] = gesturesOn(icon);
+    const release = transitionTiming(icon, "transform");
+    expect(release?.duration).toBeCloseTo(644, 6);
+    expect(isSoftSpring(release!.easing), release!.easing).toBe(true);
+
     await userEvent.keyboard("{Space>}");
-    const names = gesturesOn(icon).map(({ animationName }) => animationName);
-    expect(names).toEqual(["buril-icon-pop", "buril-icon-press"]);
-    expect(gesturesOn(icon)[0]).toBe(focusPop);
+    // The press starts no animation of its own, so releasing never cuts one off half-way.
+    expect(gesturesOn(icon)).toEqual([focusPop]);
+    expect(transitionTiming(icon, "transform")?.duration).toBe(100);
+    await settle();
+    expect(getComputedStyle(icon).transform).toBe("matrix(0.88, 0, 0, 0.88, 0, 0)");
+
     await userEvent.keyboard("{/Space}");
+    await settle();
+    expect(getComputedStyle(icon).transform).toBe("none");
   });
 
   it("turns the close icon 90° with the soft spring while hovered, and back after", async () => {
@@ -205,6 +216,7 @@ describe("IconButton motion in a real browser", () => {
       await userEvent.hover(button);
       expect(gesturesOn(icon)).toEqual([]);
       expect(transitionTiming(icon, "rotate")).toBeUndefined();
+      expect(transitionTiming(icon, "transform")).toBeUndefined();
       await settle();
       expect(getComputedStyle(icon).rotate).toBe("none");
       expect(getComputedStyle(icon.querySelector("[data-lid]")!).translate).toBe("none");
