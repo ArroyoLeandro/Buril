@@ -12,9 +12,9 @@ const managers = [
 ] as const;
 
 /** Same markup as InstallCommand.astro renders on the server. */
-function renderTabs() {
+function renderTabs(messages = "") {
   document.body.innerHTML = `
-    <div data-install-tabs>
+    <div data-install-tabs ${messages}>
       <div role="tablist" aria-label="Package manager">
         ${managers
           .map(
@@ -100,5 +100,18 @@ describe("install tabs", () => {
     vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(new Error("denied"));
     await user.click(screen.getByRole("button", { name: "Copy npm command" }));
     expect(screen.getByRole("status")).toHaveTextContent(/Could not copy/);
+  });
+
+  it("reports in the page language when the server passes the messages", async () => {
+    renderTabs(
+      'data-copied="Se copió el comando de {name}." data-copy-failed="No se pudo copiar."',
+    );
+    const user = userEvent.setup();
+    const writeText = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue();
+    await user.click(screen.getByRole("button", { name: "Copy npm command" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Se copió el comando de npm.");
+    writeText.mockRejectedValue(new Error("denied"));
+    await user.click(screen.getByRole("button", { name: "Copy npm command" }));
+    expect(screen.getByRole("status")).toHaveTextContent("No se pudo copiar.");
   });
 });

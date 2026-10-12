@@ -1,6 +1,6 @@
 ---
 import DocsLayout from "../../layouts/DocsLayout.astro";
-import { componentCategory, documentedComponents } from "../../data/components";
+import { documentedComponents } from "../../data/components";
 import { docsNav } from "../../data/docs-nav";
 
 // Same grouping and order as the sidebar, with each component's description.
@@ -8,7 +8,7 @@ const descriptions = new Map(
   documentedComponents.map((entry) => [entry.name, entry.description] as const),
 );
 const groups = docsNav()
-  .filter(({ title }) => documentedComponents.some((entry) => componentCategory(entry) === title))
+  .filter(({ category }) => category !== undefined)
   .map(({ title, items }) => ({
     title,
     items: items.map((item) => ({ ...item, description: descriptions.get(item.name) ?? "" })),
