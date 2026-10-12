@@ -44,6 +44,9 @@ const textProps = new Set([
   "placeholder",
   "alt",
   "title",
+  "requiredLabel",
+  "errorPrefix",
+  "newTabLabel",
 ]);
 
 /**
@@ -150,6 +153,25 @@ describe("demo text dictionary", () => {
       expect(untranslatedText(source(path))).toEqual([]);
     },
   );
+});
+
+// Field and Link write text of their own: the required marker, the error prefix and the new-tab
+// hint. A demo that uses them passes that text through t(), so Spanish pages never show English.
+describe("the library's own strings in the demos", () => {
+  const tags = (code: string, name: string) =>
+    [...code.matchAll(new RegExp(`<${name}\\b[^>]*?(?:/>|>)`, "gs"))].map(([tag]) => tag);
+
+  it.each(islands.map((path) => [relative(path), path]))("%s localizes them", (_, path) => {
+    const code = source(path);
+    for (const tag of tags(code, "Field")) {
+      if (/\brequired\b/.test(tag)) expect(tag).toMatch(/requiredLabel=\{t\("\(required\)"\)\}/);
+      if (/\berror=/.test(tag)) expect(tag).toMatch(/errorPrefix=\{t\("Error:"\)\}/);
+    }
+    for (const tag of tags(code, "Link")) {
+      if (/\bexternal\b|target="_blank"/.test(tag))
+        expect(tag).toMatch(/newTabLabel=\{t\("\(opens in a new tab\)"\)\}/);
+    }
+  });
 });
 
 describe("demoHref", () => {

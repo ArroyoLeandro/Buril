@@ -51,10 +51,22 @@ export default function SignInPanel({ delay = 1200, locale = "en" }: Props) {
 
   return (
     <form noValidate onSubmit={submit} className="flex flex-col gap-4">
-      <Field label={t("Email")} error={errors.email} required>
+      <Field
+        label={t("Email")}
+        error={errors.email}
+        required
+        requiredLabel={t("(required)")}
+        errorPrefix={t("Error:")}
+      >
         {(control) => <Input ref={email} type="email" autoComplete="email" {...control} />}
       </Field>
-      <Field label={t("Password")} error={errors.password} required>
+      <Field
+        label={t("Password")}
+        error={errors.password}
+        required
+        requiredLabel={t("(required)")}
+        errorPrefix={t("Error:")}
+      >
         {(control) => (
           <Input ref={password} type="password" autoComplete="current-password" {...control} />
         )}

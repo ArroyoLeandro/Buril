@@ -28,6 +28,7 @@ export default function TextareaDemo({ locale = "en" }: Props) {
         label={t("Message")}
         description={t("Up to {limit} characters.", { limit })}
         error={error}
+        errorPrefix={t("Error:")}
       >
         {(control) => (
           <Textarea

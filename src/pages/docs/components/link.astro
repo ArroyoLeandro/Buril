@@ -47,7 +47,9 @@ const { externalExample, mutedExample } = componentExamples.link;
     </p>
     <p class="mt-4 text-muted-foreground">
       An <code>aria-label</code> or <code>aria-labelledby</code> replaces the link text as its name,
-      so the link adds the hint to that name as well, and screen readers still hear it.
+      so the link adds the hint to that name as well, and screen readers still hear it. In another
+      language, pass the hint as <code>newTabLabel</code>, such as
+      <code>"(se abre en una pestaña nueva)"</code> in Spanish.
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
       <Code code={externalExample} lang="tsx" theme={codeTheme} />

@@ -24,7 +24,12 @@ export default function InputDemo({ locale = "en" }: Props) {
       <Field label={t("Full name")}>
         {(control) => <Input autoComplete="name" {...control} />}
       </Field>
-      <Field label={t("Username")} description={t("Letters, numbers and dashes.")} error={error}>
+      <Field
+        label={t("Username")}
+        description={t("Letters, numbers and dashes.")}
+        error={error}
+        errorPrefix={t("Error:")}
+      >
         {(control) => (
           <Input
             autoComplete="username"
