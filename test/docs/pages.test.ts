@@ -129,22 +129,7 @@ describe("index page", () => {
     expectWellFormedPage(await container.renderToString(IndexPage));
   });
 
-  it("links to every documented component from its main content", async () => {
-    const html = await container.renderToString(IndexPage);
-    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
-    for (const { slug, name } of documentedComponents) {
-      expect(main).toMatch(
-        new RegExp(`<a[^>]+href="${componentHref(slug)}"[^>]*>\\s*${name}\\s*</a>`),
-      );
-    }
-  });
-
-  it("uses buttonVariants for its call to action instead of a dead button", async () => {
-    const html = await container.renderToString(IndexPage);
-    const main = /<main[\s\S]*<\/main>/.exec(html)![0];
-    expect(main).not.toMatch(/<button/);
-    expect(main).toMatch(/<a[^>]+href="\/components\/button"[^>]+class="[^"]*rounded-full/);
-  });
+  // The hero, the showcase and the footer are covered in landing.test.ts.
 });
 
 describe("component list", () => {
