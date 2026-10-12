@@ -23,7 +23,7 @@ describe("Button", () => {
   it("applies the default variant and size", () => {
     render(<Button>Save</Button>);
     const button = screen.getByRole("button");
-    expect(button).toHaveClass("bg-primary", "text-primary-foreground", "h-10", "rounded-full");
+    expect(button).toHaveClass("bg-primary", "text-primary-foreground", "min-h-10", "rounded-full");
   });
 
   it.each([
@@ -43,9 +43,9 @@ describe("Button", () => {
   });
 
   it.each([
-    ["sm", "h-8"],
-    ["default", "h-10"],
-    ["lg", "h-12"],
+    ["sm", "min-h-8"],
+    ["default", "min-h-10"],
+    ["lg", "min-h-12"],
   ] as const)("applies the %s size", (size, expected) => {
     render(<Button size={size}>Label</Button>);
     expect(screen.getByRole("button")).toHaveClass(expected);
@@ -147,16 +147,23 @@ describe("Button", () => {
 
     it("submits implicitly again once loading ends", async () => {
       const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
-      render(
+      const form = (loading: boolean) => (
         <form onSubmit={onSubmit}>
           <label>
             Name
             <input type="text" />
           </label>
-          <Button type="submit">Save</Button>
-        </form>,
+          <Button type="submit" loading={loading}>
+            Save
+          </Button>
+        </form>
       );
+      const { rerender } = render(form(true));
       await userEvent.type(screen.getByLabelText("Name"), "Ada{Enter}");
+      expect(onSubmit).not.toHaveBeenCalled();
+
+      rerender(form(false));
+      await userEvent.type(screen.getByLabelText("Name"), "{Enter}");
       expect(onSubmit).toHaveBeenCalledTimes(1);
     });
 
@@ -168,6 +175,7 @@ describe("Button", () => {
         </Button>,
       );
       await userEvent.tab();
+      expect(screen.getByRole("button", { name: "Save" })).toHaveFocus();
       await userEvent.keyboard("{Enter}");
       await userEvent.keyboard(" ");
       expect(onClick).not.toHaveBeenCalled();
@@ -238,6 +246,9 @@ describe("buttonVariants", () => {
     );
     const link = screen.getByRole("link", { name: "Docs" });
     expect(link).toHaveAttribute("href", "/docs");
-    expect(link).toHaveClass("border-border", "h-12", "rounded-full");
+    expect(link).toHaveClass("border-border", "min-h-12", "rounded-full");
+    // The cascade outcome (a visible border, no transparent override) is covered by
+    // button.styles.test.ts, which compiles these classes with Tailwind.
+    expect(link).not.toHaveClass("border-transparent");
   });
 });

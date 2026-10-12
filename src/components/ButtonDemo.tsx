@@ -7,6 +7,12 @@ const sizes = ["sm", "default", "lg"] as const;
 
 export default function ButtonDemo() {
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const toggleLoading = () => {
+    setMessage(loading ? "Changes saved." : "Saving changes…");
+    setLoading(!loading);
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -42,12 +48,18 @@ export default function ButtonDemo() {
         </h3>
         <div className="flex flex-wrap items-center gap-3">
           <Button loading={loading}>Save changes</Button>
-          <Button variant="outline" onClick={() => setLoading((value) => !value)}>
+          <Button variant="outline" onClick={toggleLoading}>
             {loading ? "Stop loading" : "Start loading"}
           </Button>
         </div>
+        {/* Always rendered, so screen readers notice when its text changes. */}
+        <p role="status" className="min-h-5 text-sm">
+          {message}
+        </p>
         <p className="text-sm text-muted-foreground">
-          The loading button stays focusable and announces <code>aria-busy</code>.
+          The loading button stays focusable and keeps its name. The status message above announces
+          progress, because screen readers generally do not announce <code>aria-busy</code> on a
+          button.
         </p>
       </section>
 
