@@ -109,3 +109,53 @@ describe("docs scroll model", () => {
     );
   });
 });
+
+describe("page scrollbar", () => {
+  it("is thin and drawn with the muted ink on the page background, in both themes", async () => {
+    const css = await buildCss([]);
+    // The thumb and track are muted-foreground on background, a pair `test/tokens.test.ts`
+    // measures above 4.5:1 in light and dark (3:1 is the bar for a UI component). The tokens
+    // switch with the theme, so one rule covers both.
+    expect(css).toMatch(
+      /html \{[^}]*scrollbar-color: var\(--muted-foreground\) var\(--background\);[^}]*\}/,
+    );
+    expect(css).toMatch(/\* \{[^}]*scrollbar-width: thin;[^}]*\}/);
+  });
+
+  it("styles the scrollbar pseudo-elements where scrollbar-color is not supported", async () => {
+    const css = await buildCss([]);
+    const fallback = /@supports not \(scrollbar-color: auto\) \{(.*?\} ){4,}\}/.exec(css)?.[0];
+    expect(fallback, "fallback").toBeDefined();
+    expect(fallback).toMatch(/::-webkit-scrollbar \{[^}]*width: [\d.]+rem;[^}]*height: [\d.]+rem;/);
+    expect(fallback).toMatch(
+      /::-webkit-scrollbar-thumb \{[^}]*background-color: var\(--muted-foreground\);/,
+    );
+    expect(fallback).toMatch(
+      /::-webkit-scrollbar-track \{[^}]*background-color: var\(--background\);/,
+    );
+  });
+
+  it("leaves the system scrollbar under forced colors", async () => {
+    const css = await buildCss([]);
+    expect(css).toMatch(
+      /@media \(forced-colors: active\) \{ html \{ scrollbar-color: auto;? \} \* \{ scrollbar-width: auto;? \} \}/,
+    );
+  });
+});
+
+describe("in-page jumps", () => {
+  it("scroll smoothly only when the reader has not asked for reduced motion", async () => {
+    const css = await buildCss([]);
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: no-preference\) \{ html \{ scroll-behavior: smooth;? \} \}/,
+    );
+    // Nowhere else: a reduced-motion reader jumps at once.
+    expect(css.match(/scroll-behavior/g)).toHaveLength(1);
+  });
+
+  it("move focus to the target from every page of the site", () => {
+    const layout = readFileSync(resolve(__dirname, "../../src/layouts/BaseLayout.astro"), "utf8");
+    expect(layout).toMatch(/import \{ initInPageLinks \} from "\.\.\/scripts\/in-page-links";/);
+    expect(layout).toMatch(/initInPageLinks\(document\)/);
+  });
+});

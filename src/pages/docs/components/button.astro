@@ -36,6 +36,10 @@ const { variantsExample, statusExample } = componentExamples.button;
       but screen readers generally do not announce <code>aria-busy</code> on a button.
     </p>
     <p class="mt-4 text-muted-foreground">
+      The button shows the pointer cursor. While loading it shows the progress cursor, and a
+      disabled button ignores the pointer.
+    </p>
+    <p class="mt-4 text-muted-foreground">
       Announce progress yourself with a status region next to the button. Render it before the
       message changes, and keep it outside the button so the button's name stays stable:
     </p>

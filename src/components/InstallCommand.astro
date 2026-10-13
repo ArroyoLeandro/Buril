@@ -4,6 +4,8 @@ import { Code } from "astro:components";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { codeTheme } from "./code-theme";
+import Icon from "./icons/Icon.astro";
+import { packageManagerLogos } from "./icons/package-managers";
 import { getLocale, translator } from "../i18n/ui";
 
 interface Props {
@@ -23,12 +25,14 @@ const showNote = placeholderNote && commands.some((command) => command.includes(
 const t = translator(getLocale(Astro.url));
 
 // The runners shadcn documents for each package manager.
-const managers = [
-  { name: "npm", runner: "npx" },
-  { name: "pnpm", runner: "pnpm dlx" },
-  { name: "yarn", runner: "yarn dlx" },
-  { name: "bun", runner: "bunx --bun" },
-].map((manager) => ({
+const managers = (
+  [
+    { name: "npm", runner: "npx" },
+    { name: "pnpm", runner: "pnpm dlx" },
+    { name: "yarn", runner: "yarn dlx" },
+    { name: "bun", runner: "bunx --bun" },
+  ] as const
+).map((manager) => ({
   ...manager,
   code: commands.map((command) => `${manager.runner} shadcn@latest ${command}`).join("\n"),
 }));
@@ -54,6 +58,16 @@ const managers = [
           "px-3 aria-selected:border-border aria-selected:bg-secondary aria-selected:text-secondary-foreground",
         )}
       >
+        <svg
+          data-logo={manager.name}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          focusable="false"
+          class="size-3.5 shrink-0"
+        >
+          <path d={packageManagerLogos[manager.name]}></path>
+        </svg>
         {manager.name}
       </button>
     ))}
@@ -76,6 +90,9 @@ const managers = [
         aria-label={t("install.copyLabel", { name: manager.name })}
         class={buttonVariants({ variant: "outline", size: "sm" })}
       >
+        {/* The copy icon turns into a check while the script marks the button `data-copy-done`. */}
+        <Icon name="copy" class="size-4 in-data-copy-done:hidden" />
+        <Icon name="check" class="hidden size-4 in-data-copy-done:inline" />
         {t("install.copy")}
       </button>
     </div>

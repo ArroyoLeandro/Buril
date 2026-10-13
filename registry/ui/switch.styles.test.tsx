@@ -167,3 +167,14 @@ describe("Switch compiled with Tailwind", () => {
     expect(cascade.computed(track, "border-width")).toBe("1px");
   });
 });
+
+describe("Switch cursor", () => {
+  it("shows the pointer over the track, and not-allowed when disabled", () => {
+    expect(cascade.computed(track, "cursor")).toBe("pointer");
+    expect(cascade.computed(track, "cursor", { states: [":disabled"] })).toBe("not-allowed");
+  });
+
+  it("lets the pointer reach the track through the thumb", () => {
+    expect(cascade.computed(thumb, "pointer-events")).toBe("none");
+  });
+});

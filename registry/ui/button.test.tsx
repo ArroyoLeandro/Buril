@@ -248,7 +248,7 @@ describe("buttonVariants", () => {
     expect(link).toHaveAttribute("href", "/docs");
     expect(link).toHaveClass("border-border", "min-h-12", "rounded-full");
     // The cascade outcome (a visible border, no transparent override) is covered by
-    // button.styles.test.ts, which compiles these classes with Tailwind.
+    // button.styles.test.tsx, which compiles these classes with Tailwind.
     expect(link).not.toHaveClass("border-transparent");
   });
 });

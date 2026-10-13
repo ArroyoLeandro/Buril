@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <style>
+    .ink { color: #1a1714; }
+    .cut { color: #d72828; }
+    @media (prefers-color-scheme: dark) {
+      .ink { color: #ede6da; }
+      .cut { color: #ff5a51; }
+    }
+  </style>
+  <defs>
+    <mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
+      <rect width="48" height="48" fill="white"/>
+      <polygon transform="translate(27.3 20.7) rotate(-45)" points="0,0 9.88,-3.8 22,-3.8 22,3.8 2.66,3.8" fill="black" stroke="black" stroke-width="5" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <g class="ink">
+    <g mask="url(#cut)">
+      <g fill="none" stroke="currentColor" stroke-width="4">
+        <circle cx="22" cy="26" r="7.5"/>
+        <circle cx="22" cy="26" r="16.5"/>
+      </g>
+      <path class="cut" d="M15.2 22.83 A7.5 7.5 0 0 1 27.3 20.7" fill="none" stroke="currentColor" stroke-width="4"/>
+    </g>
+    <polygon transform="translate(27.3 20.7) rotate(-45)" points="0,0 9.88,-3.8 22,-3.8 22,3.8 2.66,3.8" fill="currentColor"/>
+  </g>
+</svg>

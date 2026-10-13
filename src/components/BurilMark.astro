@@ -1,0 +1,55 @@
+---
+/**
+ * The Buril mark, site-only and decorative: two concentric rings, engraved lines, with a graver
+ * entering from the top right. Its tip rests on the inner ring, and the stretch of ring it just
+ * cut is the decoration red. Drawn on a 48 grid (centre 22,26); the rings break where the tool
+ * crosses them, through a mask of the tool outline widened by a 5 unit gap. `public/favicon.svg`
+ * draws the same shapes.
+ */
+interface Props {
+  class?: string;
+  /** The mask's id. A page that shows the mark more than once gives each copy its own. */
+  id?: string;
+}
+
+const { id = "buril-mark-cut" } = Astro.props;
+const tool = {
+  transform: "translate(27.3 20.7) rotate(-45)",
+  points: "0,0 9.88,-3.8 22,-3.8 22,3.8 2.66,3.8",
+};
+---
+
+<svg
+  data-logo="buril"
+  viewBox="0 0 48 48"
+  aria-hidden="true"
+  focusable="false"
+  class:list={["shrink-0", Astro.props.class]}
+>
+  <defs>
+    <mask id={id} maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
+      <rect width="48" height="48" fill="white"></rect>
+      <polygon
+        {...tool}
+        fill="black"
+        stroke="black"
+        stroke-width="5"
+        stroke-linejoin="round"
+      ></polygon>
+    </mask>
+  </defs>
+  <g mask={`url(#${id})`}>
+    <g fill="none" stroke="currentColor" stroke-width="4">
+      <circle cx="22" cy="26" r="7.5"></circle>
+      <circle cx="22" cy="26" r="16.5"></circle>
+    </g>
+    <path
+      d="M15.2 22.83 A7.5 7.5 0 0 1 27.3 20.7"
+      class="text-decor"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="4"
+    ></path>
+  </g>
+  <polygon {...tool} fill="currentColor"></polygon>
+</svg>

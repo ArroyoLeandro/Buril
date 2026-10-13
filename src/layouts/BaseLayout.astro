@@ -2,6 +2,8 @@
 import "../styles/global.css";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import BurilMark from "../components/BurilMark.astro";
+import Icon from "../components/icons/Icon.astro";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { SkipLink } from "../../registry/ui/skip-link";
@@ -49,6 +51,7 @@ const linkClass =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline set:html={noFlashScript} />
     <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {versions.map(({ locale, href }) => (
       <link rel="alternate" hreflang={locale} href={href} />
     ))}
@@ -76,19 +79,7 @@ const linkClass =
           href={localizedHref("/", locale)}
           class="inline-flex min-h-10 items-center gap-2 rounded-full font-display max-md:me-auto md:me-2"
         >
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            viewBox="0 0 24 24"
-            class="size-5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          >
-            <path d="M3 21 15 9" stroke-linecap="square"></path>
-            <path d="M14 4l6 6-5 5-6-6z" fill="currentColor"></path>
-            <path d="M5 21h16" class="text-decor" stroke="currentColor"></path>
-          </svg>
+          <BurilMark class="size-5.5" />
           <span class="text-lg">Buril UI</span>
         </a>
         <nav
@@ -107,6 +98,7 @@ const linkClass =
             <li class="lg:ms-auto">
               <a href={githubUrl} class:list={[linkClass, "inline-flex items-center gap-1.5"]}>
                 <svg
+                  data-logo="github"
                   aria-hidden="true"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -131,18 +123,7 @@ const linkClass =
           hidden
           class={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "md:hidden")}
         >
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            viewBox="0 0 24 24"
-            class="size-4 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          >
-            <path d="M4 7h16M4 12h16M4 17h16"></path>
-          </svg>
+          <Icon name="menu" class="size-4" />
         </button>
       </div>
     </header>
@@ -188,10 +169,12 @@ const linkClass =
     )}
     <script>
       import { initDocsNav } from "../scripts/docs-nav";
+      import { initInPageLinks } from "../scripts/in-page-links";
 
       for (const toggle of document.querySelectorAll<HTMLButtonElement>("[data-site-nav-toggle]")) {
         initDocsNav(toggle);
       }
+      initInPageLinks(document);
     </script>
   </body>
 </html>

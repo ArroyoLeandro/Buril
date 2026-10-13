@@ -49,8 +49,65 @@
     }
   }
 
+  /*
+   * In-page links (the skip link, "On this page", heading links) glide to their target, unless the
+   * reader asks for reduced motion: then the page jumps at once. src/scripts/in-page-links.ts
+   * moves focus to the target.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   body {
     @apply bg-background font-body text-foreground;
+  }
+
+  /*
+   * The page scrollbar: thin, a muted ink thumb on the page background (4.5:1 or more in both
+   * themes, measured in test/tokens.test.ts), so it reads as part of the paper instead of the
+   * browser's gray. The color inherits into every scroller on the site. Forced colors keep the
+   * system scrollbar.
+   */
+  html {
+    scrollbar-color: var(--muted-foreground) var(--background);
+  }
+
+  * {
+    scrollbar-width: thin;
+  }
+
+  @media (forced-colors: active) {
+    html {
+      scrollbar-color: auto;
+    }
+
+    * {
+      scrollbar-width: auto;
+    }
+  }
+
+  /* Browsers without scrollbar-color, such as older Safari, style the pseudo-elements instead. */
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 0.625rem;
+      height: 0.625rem;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: var(--background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--muted-foreground);
+      border: 2px solid var(--background);
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--foreground);
+    }
   }
 
   :focus-visible {
