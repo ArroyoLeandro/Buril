@@ -1,72 +1,18 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Closing from "./landing/Closing.astro";
 import Hero from "./landing/Hero.astro";
 import Showcase from "./landing/Showcase.astro";
-import InlineCode from "./InlineCode.astro";
-import InstallCommand from "./InstallCommand.astro";
-import { cn } from "@/lib/utils";
-import { Alert, AlertDescription, AlertTitle } from "../../registry/ui/alert";
-import { Link } from "../../registry/ui/link";
-import { localizedHref } from "../i18n/paths";
-import { getLocale, translator } from "../i18n/ui";
 
 /**
- * The landing page, shared by `/` and `/es/`. The language comes from the URL; the copy comes
- * from the UI dictionary and the live panels get the same locale.
+ * The landing page, shared by `/` and `/es/`. The language comes from the URL; every part reads
+ * its copy from the UI dictionary in that language. It shows the product: a short hero, the
+ * showcase of real components, then a link to the docs. "Why Buril" lives on the Introduction.
  */
-const locale = getLocale(Astro.url);
-const t = translator(locale);
-const href = (path: string) => localizedHref(path, locale);
-
-const principles = [
-  { title: t("landing.ownTitle"), body: t("landing.ownBody") },
-  { title: t("landing.accessibleTitle"), body: t("landing.accessibleBody") },
-  { title: t("landing.platformTitle"), body: t("landing.platformBody") },
-  { title: t("landing.themeableTitle"), body: t("landing.themeableBody") },
-];
-
-const container = "mx-auto w-full max-w-6xl px-4 sm:px-6";
-const sectionTitle = "font-display text-2xl";
 ---
 
 <BaseLayout title="Buril UI" footer>
   <Hero />
-
   <Showcase />
-
-  <section aria-labelledby="why" class={cn(container, "py-16")}>
-    <h2 id="why" class={sectionTitle}>
-      {t("landing.why")}
-    </h2>
-    <ul class="mt-8 grid border-t border-l border-border sm:grid-cols-2 lg:grid-cols-4">
-      {principles.map(({ title, body }) => (
-        <li class="border-r border-b border-border p-6">
-          <h3 class="font-display text-base">{title}</h3>
-          <p class="mt-3 text-sm text-muted-foreground">{body}</p>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section aria-labelledby="install" class={cn(container, "py-16")}>
-    <h2 id="install" class={sectionTitle}>
-      {t("landing.install")}
-    </h2>
-    <p class="mt-4 max-w-2xl text-muted-foreground">{t("landing.installBody")}</p>
-    <div class="max-w-3xl">
-      <Alert className="mt-6">
-        <AlertTitle>{t("landing.requirementTitle")}</AlertTitle>
-        <AlertDescription>
-          <InlineCode text={t("landing.requirementBody")} />
-        </AlertDescription>
-      </Alert>
-      <InstallCommand
-        id="install-landing"
-        commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
-      />
-    </div>
-    <p class="mt-6">
-      <Link href={href("/docs/installation")}>{t("landing.guide")}</Link>
-    </p>
-  </section>
+  <Closing />
 </BaseLayout>

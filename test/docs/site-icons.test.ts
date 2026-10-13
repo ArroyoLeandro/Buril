@@ -10,6 +10,8 @@ import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import IndexPage from "../../src/pages/index.astro";
 import SpanishIndexPage from "../../src/pages/es/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
+import InstallationPage from "../../src/pages/docs/installation.astro";
+import SpanishInstallationPage from "../../src/pages/es/docs/installation.astro";
 import Icon from "../../src/components/icons/Icon.astro";
 import { iconNames, type IconName } from "../../src/components/icons/icons";
 import {
@@ -129,10 +131,12 @@ describe.each([
   });
 });
 
+// The landing shows no install command until the registry has its real URL; the installation
+// guide has the Copy buttons.
 describe.each([
-  ["en", IndexPage, "/"],
-  ["es", SpanishIndexPage, "/es/"],
-] as const)("%s landing icons", (_, page, path) => {
+  ["en", InstallationPage, "/docs/installation"],
+  ["es", SpanishInstallationPage, "/es/docs/installation"],
+] as const)("%s installation page icons", (_, page, path) => {
   it("shows a copy icon that turns into a check on every Copy button", async () => {
     const html = await render(page, path);
     const copies = [...html.matchAll(/<button[^>]*data-copy=[\s\S]*?<\/button>/g)].map(
@@ -148,7 +152,12 @@ describe.each([
       expect(copy).toMatch(/class="[^"]*\bin-data-copy-done:hidden\b/);
     }
   });
+});
 
+describe.each([
+  ["en", IndexPage, "/"],
+  ["es", SpanishIndexPage, "/es/"],
+] as const)("%s landing icons", (_, page, path) => {
   it("points the primary call to action forward with the arrow", async () => {
     const html = await render(page, path);
     const cta = /<a[^>]*href="(?:\/es)?\/docs"[^>]*>[\s\S]*?<\/a>/.exec(
@@ -159,8 +168,8 @@ describe.each([
 });
 
 describe.each([
-  ["en", IndexPage, "/"],
-  ["es", SpanishIndexPage, "/es/"],
+  ["en", InstallationPage, "/docs/installation"],
+  ["es", SpanishInstallationPage, "/es/docs/installation"],
   ["en", ButtonPage, "/docs/components/button"],
 ] as const)("%s install tab logos on %s", (_, page, path) => {
   it("shows each package manager's logo, monochrome and hidden, before its name", async () => {

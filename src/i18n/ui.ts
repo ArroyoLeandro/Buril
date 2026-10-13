@@ -69,9 +69,9 @@ const en = {
   "category.Advanced": "Advanced",
   "category.Other": "Other",
   "toc.title": "On this page",
-  "footer.licensePrefix": "Buril UI is released under the",
+  "footer.licensePrefix": "Buril UI is open source under the",
   "footer.licenseLink": "MIT license",
-  "footer.source": "Source code on",
+  "footer.source": "Source on",
   "install.managers": "Package manager",
   "install.copy": "Copy",
   "install.copyLabel": "Copy {name} command",
@@ -90,19 +90,6 @@ const en = {
   "landing.traitNative": "Native HTML",
   "landing.traitKeyboard": "Keyboard first",
   "landing.traitContrast": "AA in both themes",
-  "landing.why": "Why Buril",
-  "landing.ownTitle": "You own the code",
-  "landing.ownBody":
-    "Components are copied into your project as source, not installed as a dependency. Edit them freely.",
-  "landing.accessibleTitle": "Accessible by default",
-  "landing.accessibleBody":
-    "Every component targets WCAG 2.2 AA and follows its WAI-ARIA pattern, with keyboard and accessibility-tree tests.",
-  "landing.platformTitle": "Platform first",
-  "landing.platformBody":
-    "Native elements and browser features come before JavaScript: a select stays a select, a link stays a link.",
-  "landing.themeableTitle": "Themeable",
-  "landing.themeableBody":
-    "Components read the standard shadcn tokens, so your palette applies without touching a component.",
   "landing.showcase": "Examples built with Buril UI",
   "landing.viewCode": "View code",
   "landing.viewCodeFor": "for {name}",
@@ -119,13 +106,10 @@ const en = {
   "landing.captionButtons": "Pill-shaped, from 32 to 48 pixels tall.",
   "landing.cellGestures": "Gestures",
   "landing.captionGestures": "Hover or Tab to them. Each gesture plays once.",
-  "landing.install": "Install",
-  "landing.installBody":
-    "In a project set up with shadcn, add the Buril namespace once, then install components by name.",
-  "landing.requirementTitle": "Needs a shadcn project",
-  "landing.requirementBody":
-    "Your project needs a `components.json` file. If it does not have one, run `npx shadcn@latest init` first.",
-  "landing.guide": "Read the installation guide",
+  "landing.closingTitle": "Add your first component",
+  "landing.closingBody":
+    "The installation guide takes two commands: one registers Buril, the other copies a component into your project.",
+  "landing.readDocs": "Read the docs",
   "tokens.token": "Token",
   "tokens.caption": "Buril values for each token, read from `registry/styles/buril.css`.",
   "component.example": "Example",
@@ -230,7 +214,7 @@ const es: Record<UiKey, string> = {
   "category.Advanced": "Avanzados",
   "category.Other": "Otros",
   "toc.title": "En esta página",
-  "footer.licensePrefix": "Buril UI se distribuye bajo la",
+  "footer.licensePrefix": "Buril UI es de código abierto con la",
   "footer.licenseLink": "licencia MIT",
   "footer.source": "Código fuente en",
   "install.managers": "Gestor de paquetes",
@@ -251,19 +235,6 @@ const es: Record<UiKey, string> = {
   "landing.traitNative": "HTML nativo",
   "landing.traitKeyboard": "Primero el teclado",
   "landing.traitContrast": "AA en los dos temas",
-  "landing.why": "Por qué Buril",
-  "landing.ownTitle": "El código es tuyo",
-  "landing.ownBody":
-    "Los componentes se copian en tu proyecto como código fuente, no se instalan como una dependencia. Puedes editarlos sin restricciones.",
-  "landing.accessibleTitle": "Accesible por defecto",
-  "landing.accessibleBody":
-    "Todos los componentes apuntan a WCAG 2.2 AA y siguen su patrón de WAI-ARIA, con tests de teclado y del árbol de accesibilidad.",
-  "landing.platformTitle": "La plataforma primero",
-  "landing.platformBody":
-    "Los elementos nativos y las funciones del navegador van antes que JavaScript: un select sigue siendo un select y un enlace sigue siendo un enlace.",
-  "landing.themeableTitle": "Personalizable",
-  "landing.themeableBody":
-    "Los componentes leen los tokens estándar de shadcn, así que tu paleta se aplica sin tocar ningún componente.",
   "landing.showcase": "Ejemplos hechos con Buril UI",
   "landing.viewCode": "Ver código",
   "landing.viewCodeFor": "de {name}",
@@ -281,13 +252,10 @@ const es: Record<UiKey, string> = {
   "landing.captionButtons": "Con forma de píldora, de 32 a 48 píxeles de alto.",
   "landing.cellGestures": "Gestos",
   "landing.captionGestures": "Pasa el puntero o llega con Tab. Cada gesto se reproduce una vez.",
-  "landing.install": "Instalación",
-  "landing.installBody":
-    "En un proyecto configurado con shadcn, registra el namespace de Buril una sola vez y después instala los componentes por nombre.",
-  "landing.requirementTitle": "Requiere un proyecto con shadcn",
-  "landing.requirementBody":
-    "Tu proyecto necesita un archivo `components.json`. Si no lo tiene, ejecuta primero `npx shadcn@latest init`.",
-  "landing.guide": "Lee la guía de instalación",
+  "landing.closingTitle": "Agrega tu primer componente",
+  "landing.closingBody":
+    "La guía de instalación usa dos comandos: uno registra Buril y el otro copia un componente en tu proyecto.",
+  "landing.readDocs": "Lee la documentación",
   "tokens.token": "Token",
   "tokens.caption": "Valores de Buril para cada token, leídos de `registry/styles/buril.css`.",
   "component.example": "Ejemplo",

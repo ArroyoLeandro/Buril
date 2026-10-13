@@ -308,41 +308,95 @@ describe.each(showcases)("$locale landing showcase", (showcase) => {
   });
 });
 
-describe("landing page", () => {
-  it("states the four principles", async () => {
-    const values = text(section(main(await render()), "Why Buril"));
-    for (const principle of [
-      "You own the code",
-      "Accessible by default",
-      "Platform first",
-      "Themeable",
-    ]) {
-      expect(values).toContain(principle);
-    }
+const endings = [
+  {
+    locale: "en",
+    page: IndexPage,
+    intro: DocsIndexPage,
+    path: "/",
+    heading: "Add your first component",
+    body: "The installation guide takes two commands: one registers Buril, the other copies a component into your project.",
+    cta: "Read the docs",
+    footer: "Buril UI is open source under the MIT license. Source on GitHub.",
+    why: "Why Buril",
+    principles: [
+      "You own the code.",
+      "Accessible by default.",
+      "Platform first.",
+      "Built from scratch.",
+      "Themeable.",
+    ],
+    claim: /keyboard and accessibility-tree tests/,
+  },
+  {
+    locale: "es",
+    page: IndexPageEs,
+    intro: DocsIndexPageEs,
+    path: "/es/",
+    heading: "Agrega tu primer componente",
+    body: "La guía de instalación usa dos comandos: uno registra Buril y el otro copia un componente en tu proyecto.",
+    cta: "Lee la documentación",
+    footer: "Buril UI es de código abierto con la licencia MIT. Código fuente en GitHub.",
+    why: "Por qué Buril",
+    principles: [
+      "El código es tuyo.",
+      "Accesible por defecto.",
+      "La plataforma primero.",
+      "Construido desde cero.",
+      "Personalizable.",
+    ],
+    claim: /tests de teclado y del árbol de accesibilidad/,
+  },
+] as const;
+
+describe.each(endings)("$locale landing ending", (ending) => {
+  const renderPage = () =>
+    container.renderToString(ending.page, { request: new Request(`http://x${ending.path}`) });
+
+  it("closes with a short strip that sends readers to the docs", async () => {
+    const html = main(await renderPage());
+    const strip = /<section[^>]*data-closing[\s\S]*?<\/section>/.exec(html)![0];
+    expect(html.indexOf(strip)).toBeGreaterThan(html.indexOf("data-showcase"));
+    // The strip is the last thing in the main.
+    expect(html.slice(html.indexOf(strip) + strip.length)).not.toMatch(/<section/);
+    expect(text(/<h2[^>]*>[\s\S]*?<\/h2>/.exec(strip)![0])).toBe(ending.heading);
+    expect(text(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/.exec(strip)![1]!)).toBe(ending.body);
+    const cta = /<a[^>]*>[\s\S]*?<\/a>/.exec(strip)![0];
+    expect(text(cta)).toBe(ending.cta);
+    expect(cta).toMatch(new RegExp(`href="${localizedHref("/docs/installation", ending.locale)}"`));
+    expect(cta).toMatch(/^<a[^>]*class="[^"]*\brounded-full\b/);
   });
 
-  it("states the shadcn requirement in a static Alert before the commands", async () => {
-    const html = section(main(await render()), "Install");
-    const alert = /<div[^>]*data-slot="alert"[^>]*>/.exec(html);
-    expect(alert).not.toBeNull();
-    // Static content on load: no live role that would announce it.
-    expect(alert![0]).not.toMatch(/role=/);
-    expect(alert!.index).toBeLessThan(html.indexOf("data-install-tabs"));
-    const callout = text(html.slice(alert!.index));
-    expect(callout).toMatch(/components\.json/);
-    expect(callout).toMatch(/npx shadcn@latest init/);
+  it("shows no install command, so the placeholder registry URL never reaches the landing", async () => {
+    const html = main(await renderPage());
+    expect(html).not.toMatch(/example\.com/);
+    expect(html).not.toMatch(/data-install-tabs/);
+    expect(text(html)).not.toContain(ending.why);
   });
 
-  it("ends with the install commands and a link to the guide", async () => {
-    const html = section(main(await render()), "Install");
-    expect(html).toMatch(/data-install-tabs/);
-    expect(text(html)).toContain(
-      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+  it("ends with a one-line, centered footer", async () => {
+    const footer = /<footer[\s\S]*?<\/footer>/.exec(await renderPage())![0];
+    expect(footer.match(/<p[\s>]/g)).toHaveLength(1);
+    expect(footer).toMatch(/class="[^"]*\btext-center\b/);
+    expect(text(footer)).toBe(ending.footer);
+  });
+
+  it("moves Why Buril to the Introduction page, with every principle", async () => {
+    const html = main(
+      await container.renderToString(ending.intro, {
+        request: new Request(`http://x${localizedHref("/docs", ending.locale)}`),
+      }),
     );
-    expect(text(html)).toContain("npx shadcn@latest add @buril/button");
-    expect(html).toMatch(/<a[^>]+href="\/docs\/installation"/);
+    const why = section(html, ending.why);
+    const titles = [...why.matchAll(/<strong>([\s\S]*?)<\/strong>/g)].map(([, title]) =>
+      text(title!),
+    );
+    expect(titles).toEqual([...ending.principles]);
+    expect(text(why)).toMatch(ending.claim);
   });
+});
 
+describe("landing page", () => {
   it("has no docs sidebar or page TOC", async () => {
     const html = await render();
     expect(html).not.toMatch(/aria-label="Docs"/);
@@ -385,28 +439,6 @@ describe("Spanish landing page", () => {
     expect(html).toMatch(/<html lang="es"/);
     expect(html).toContain("<title>Buril UI</title>");
     expect(html).toMatch(/<meta name="description" content="Componentes de React accesibles/);
-  });
-
-  it("states the four principles in Spanish", async () => {
-    const values = text(section(main(await renderEs()), "Por qué Buril"));
-    for (const principle of [
-      "El código es tuyo",
-      "Accesible por defecto",
-      "La plataforma primero",
-      "Personalizable",
-    ]) {
-      expect(values).toContain(principle);
-    }
-  });
-
-  it("explains the shadcn requirement and links the Spanish installation guide", async () => {
-    const html = section(main(await renderEs()), "Instalación");
-    expect(text(html)).toMatch(/Requiere un proyecto con shadcn/);
-    expect(text(html)).toMatch(/components\.json/);
-    expect(text(html)).toContain(
-      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
-    );
-    expect(html).toContain(`href="${localizedHref("/docs/installation", "es")}"`);
   });
 
   it("lists both languages and x-default as alternates, on both landing pages", async () => {

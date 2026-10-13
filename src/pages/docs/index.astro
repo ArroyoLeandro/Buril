@@ -7,11 +7,11 @@ const principles = [
   ["You own the code.", "Components are copied into your project as source. Edit them freely."],
   [
     "Accessible by default.",
-    "Every component targets WCAG 2.2 AA and follows its WAI-ARIA Authoring Practices pattern.",
+    "Every component targets WCAG 2.2 AA, follows its WAI-ARIA Authoring Practices pattern and ships with keyboard and accessibility-tree tests.",
   ],
   [
     "Platform first.",
-    "Native elements, the popover attribute and semantic HTML come before any JavaScript workaround.",
+    "Native elements, the popover attribute and semantic HTML come before any JavaScript workaround: a select stays a select, a link stays a link.",
   ],
   [
     "Built from scratch.",
@@ -45,7 +45,7 @@ const principles = [
     shadcn/ui, so they sit next to shadcn components in the same project.
   </p>
 
-  <h2 class="mt-10 font-display text-xl">Principles</h2>
+  <h2 class="mt-10 font-display text-xl">Why Buril</h2>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     {principles.map(([title, body]) => (
       <li>
