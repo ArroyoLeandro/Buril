@@ -8,6 +8,33 @@ import type { Locale } from "./ui";
  */
 export const demoText = {
   Email: "Correo electrónico",
+  // Landing: team block
+  "Team members": "Miembros del equipo",
+  "{count} more members": "{count} miembros más",
+  Owner: "Propietario",
+  Editor: "Editor",
+  Viewer: "Lector",
+  Pending: "Pendiente",
+  "Invited 2 days ago": "Invitación enviada hace 2 días",
+  // Landing: settings block
+  "Choose what reaches you.": "Elige qué te llega.",
+  "Replies and mentions.": "Respuestas y menciones.",
+  "Review requests": "Solicitudes de revisión",
+  "When someone asks for your review.": "Cuando alguien te pide una revisión.",
+  "Daily digest": "Resumen diario",
+  "One email at 9:00.": "Un correo a las 9:00.",
+  Push: "Push",
+  "On your phone.": "En tu teléfono.",
+  Save: "Guardar",
+  Plan: "Plan",
+  Hobby: "Personal",
+  Pro: "Pro",
+  Team: "Equipo",
+  "/mo": "/mes",
+  // Landing: checkbox and field blocks
+  "Email me the changelog": "Envíame los cambios por correo",
+  "Once a month.": "Una vez al mes.",
+  "Add the domain, like ada@studio.dev.": "Agrega el dominio, como ada@studio.dev.",
   "Email notifications": "Notificaciones por correo",
   On: "Sí",
   Off: "No",

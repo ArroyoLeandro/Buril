@@ -113,3 +113,48 @@ describe("the showcase rows", () => {
     expect(cell.checkbox!.width).toBeLessThan(cell.team!.width / 1.9);
   });
 });
+
+/** Live content inside each fading block: it must end above the fade, so it stays readable. */
+const fades = `(() => {
+  const live = "input, label, p, h4, button, a, [data-slot=badge], [data-slot=avatar], li";
+  return [...document.querySelectorAll("[data-bento] [data-fade]")].map((fade) => {
+    const cell = fade.closest("[data-cell]");
+    const size = parseFloat(getComputedStyle(fade).getPropertyValue("--fade")) || 150;
+    const box = fade.getBoundingClientRect();
+    const limit = Math.min(box.bottom, cell.getBoundingClientRect().bottom) - size;
+    const parts = [...fade.querySelectorAll(live)].filter(
+      (el) => !el.closest("[inert]") && el.getBoundingClientRect().height > 0,
+    );
+    return {
+      cell: cell.dataset.cell,
+      count: parts.length,
+      below: parts
+        .filter((el) => el.getBoundingClientRect().bottom > limit + 1)
+        .map((el) => el.outerHTML.slice(0, 60)),
+      wide: parts
+        .filter((el) => el.getBoundingClientRect().right > cell.getBoundingClientRect().right + 1)
+        .map((el) => el.outerHTML.slice(0, 60)),
+    };
+  });
+})()`;
+
+describe("the fading blocks", () => {
+  it.each([
+    [320, "/"],
+    [320, "/es/"],
+    [768, "/es/"],
+    [1024, "/es/"],
+    [1440, "/"],
+    [1440, "/es/"],
+  ] as const)("at %ipx, %s keeps every live control above the fade", async (width, path) => {
+    const { result } = await commands.probePage<
+      { cell: string; count: number; below: string[]; wide: string[] }[]
+    >(origin, path, { width, evaluate: fades });
+    expect(result.map(({ cell }) => cell)).toEqual(expect.arrayContaining(["team", "settings"]));
+    for (const fade of result) {
+      expect(fade.count, fade.cell).toBeGreaterThan(2);
+      expect(fade.below, fade.cell).toEqual([]);
+      expect(fade.wide, fade.cell).toEqual([]);
+    }
+  });
+});

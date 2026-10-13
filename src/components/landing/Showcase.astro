@@ -1,11 +1,17 @@
 ---
 import BentoCell from "./BentoCell.astro";
+import Engraving from "../Engraving.astro";
+import CheckboxBlock from "../showcase/CheckboxBlock";
+import FieldBlock from "../showcase/FieldBlock";
+import SettingsBlock from "../showcase/SettingsBlock";
+import TeamBlock from "../showcase/TeamBlock";
 import { getLocale, translator } from "../../i18n/ui";
 
 /**
  * The landing showcase: real Buril components composed into small app scenes, on a bento grid of
  * 12 columns (3 | 6 | 3) capped at 1320px. Cells are in reading order; the grid places them on
- * explicit lines from lg up.
+ * explicit lines from lg up. Blocks built from native controls are static HTML; only a block that
+ * needs state hydrates, when it scrolls into view, so the showcase never competes with the hero.
  */
 const locale = getLocale(Astro.url);
 const t = translator(locale);
@@ -24,13 +30,23 @@ const t = translator(locale);
       label={t("landing.cellTeam")}
       caption={t("landing.captionTeam")}
       component={{ slug: "avatar", name: "Avatar" }}
-    />
+    >
+      <TeamBlock locale={locale} />
+    </BentoCell>
     <BentoCell
       id="settings"
       label={t("landing.cellSettings")}
       caption={t("landing.captionSettings")}
       component={{ slug: "switch", name: "Switch" }}
-    />
+    >
+      <Engraving
+        clipId="engraving-settings"
+        thin={0.3}
+        bold={0.8}
+        class="pointer-events-none absolute -top-[250px] -right-[230px] -z-10 w-[560px] max-w-none opacity-15 [mask-image:radial-gradient(closest-side,transparent_32%,#000_52%,transparent_100%)] dark:opacity-20"
+      />
+      <SettingsBlock locale={locale} />
+    </BentoCell>
     <BentoCell
       id="checkbox"
       label={t("landing.cellCheckbox")}
@@ -38,14 +54,18 @@ const t = translator(locale);
       component={{ slug: "checkbox", name: "Checkbox" }}
       tone="bare"
       paper="top-right"
-    />
+    >
+      <CheckboxBlock locale={locale} />
+    </BentoCell>
     <BentoCell
       id="field"
       label={t("landing.cellField")}
       caption={t("landing.captionField")}
       component={{ slug: "field", name: "Field" }}
       tone="tint"
-    />
+    >
+      <FieldBlock locale={locale} client:visible />
+    </BentoCell>
     <BentoCell
       id="alert"
       label={t("landing.cellAlert")}

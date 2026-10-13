@@ -251,6 +251,43 @@ describe.each(showcases)("$locale landing showcase", (showcase) => {
       expect(anchor).toMatch(/class="[^"]*\btext-muted-foreground\b/);
     });
   });
+  const cell = (section: string, id: string) =>
+    articles(section).find((part) => part.includes(`data-cell="${id}"`))!;
+
+  it("renders the top row as static HTML except the Field, which hydrates when visible", async () => {
+    const { showcase: section } = await renderShowcase();
+    for (const id of ["team", "settings", "checkbox"]) {
+      expect(cell(section, id), id).not.toMatch(/<astro-island/);
+    }
+    const islands = cell(section, "field").match(/<astro-island[^>]*>/g)!;
+    expect(islands).toHaveLength(1);
+    expect(islands[0]).toMatch(/client="visible"/);
+    expect(islands[0]).toMatch(new RegExp(`props="[^"]*locale[^"]*${showcase.locale}`));
+  });
+
+  it("fills the top row with the team, the settings stage, a Checkbox and a Field", async () => {
+    const { showcase: section } = await renderShowcase();
+    expect(cell(section, "team")).toMatch(/data-slot="avatar"/);
+    expect(cell(section, "team")).toMatch(/data-slot="badge"/);
+    expect(cell(section, "settings")).toMatch(/<input[^>]+role="switch"/);
+    expect(cell(section, "checkbox")).toMatch(/<input[^>]+type="checkbox"(?![^>]*role="switch")/);
+    expect(cell(section, "field")).toMatch(/<input[^>]+type="email"/);
+  });
+
+  it("draws the engraved band on one card only, in the settings stage", async () => {
+    const { showcase: section } = await renderShowcase();
+    expect(section.match(/data-decor/g)).toHaveLength(1);
+    expect(cell(section, "settings")).toMatch(/data-decor/);
+    const fragment = /<svg\b[^>]*data-engraving[^>]*>/.exec(cell(section, "settings"))![0];
+    expect(fragment).toMatch(/aria-hidden="true"/);
+  });
+
+  it("marks every faded copy inert and hidden from assistive technology", async () => {
+    const { showcase: section } = await renderShowcase();
+    const inert = [...section.matchAll(/<[a-z]+\b[^>]*\binert\b[^>]*>/g)].map(([tag]) => tag);
+    expect(inert.length).toBeGreaterThanOrEqual(3);
+    for (const tag of inert) expect(tag).toMatch(/aria-hidden="true"/);
+  });
 });
 
 describe("landing page", () => {
