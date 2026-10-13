@@ -169,10 +169,12 @@ const linkClass =
     )}
     <script>
       import { initDocsNav } from "../scripts/docs-nav";
+      import { initInPageLinks } from "../scripts/in-page-links";
 
       for (const toggle of document.querySelectorAll<HTMLButtonElement>("[data-site-nav-toggle]")) {
         initDocsNav(toggle);
       }
+      initInPageLinks(document);
     </script>
   </body>
 </html>

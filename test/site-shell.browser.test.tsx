@@ -231,3 +231,91 @@ describe("page scrollbar", () => {
     expect(result.width).toBe("auto");
   });
 });
+
+/** Follows the last "On this page" link from the page, recording the scroll on every frame. */
+const followTocLink = `(async () => {
+  const link = [...document.querySelectorAll('nav[aria-label] a[href^="#"]')].filter(
+    (a) => a.closest("main + nav"),
+  ).at(-1);
+  const positions = [window.scrollY];
+  link.click();
+  const start = performance.now();
+  while (performance.now() - start < 1200) {
+    await new Promise(requestAnimationFrame);
+    if (positions.at(-1) !== window.scrollY) positions.push(window.scrollY);
+  }
+  const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+  return {
+    steps: positions.length,
+    focused: document.activeElement === target,
+    targetTop: target.getBoundingClientRect().top,
+    headerBottom: document.querySelector("header").getBoundingClientRect().bottom,
+    behavior: getComputedStyle(document.documentElement).scrollBehavior,
+  };
+})()`;
+
+describe("in-page jumps", () => {
+  it.each(["/docs/components/button", "/es/docs/components/button"])(
+    "%s glides to an On this page target and focuses it",
+    async (path) => {
+      const { result } = await commands.probePage<{
+        steps: number;
+        focused: boolean;
+        targetTop: number;
+        headerBottom: number;
+        behavior: string;
+      }>(origin, path, { width: 1440, evaluate: followTocLink });
+      expect(result.behavior).toBe("smooth");
+      // Several frames between the start and the end: a glide, not a jump.
+      expect(result.steps).toBeGreaterThan(3);
+      expect(result.focused).toBe(true);
+      // scroll-padding-top keeps the target clear of the sticky header.
+      expect(result.targetTop).toBeGreaterThanOrEqual(result.headerBottom);
+    },
+  );
+
+  it("jumps at once when the reader asks for reduced motion, and still moves focus", async () => {
+    const { result } = await commands.probePage<{
+      steps: number;
+      focused: boolean;
+      behavior: string;
+    }>(origin, "/docs/components/button", {
+      width: 1440,
+      reducedMotion: "reduce",
+      evaluate: followTocLink,
+    });
+    expect(result.behavior).toBe("auto");
+    expect(result.steps).toBe(2);
+    expect(result.focused).toBe(true);
+  });
+
+  it.each(["/docs/components/button", "/es/"])(
+    "%s keeps the skip link working from the keyboard",
+    async (path) => {
+      const { result } = await commands.probePage<{ id: string; tabindex: string | null }>(
+        origin,
+        path,
+        {
+          width: 1440,
+          steps: [{ press: "Tab" }, { press: "Enter" }, { wait: 800 }],
+          evaluate: `({ id: document.activeElement.id, tabindex: document.activeElement.getAttribute("tabindex") })`,
+        },
+      );
+      expect(result).toEqual({ id: "main", tabindex: "-1" });
+    },
+  );
+
+  it("follows a heading link from the keyboard and moves focus there", async () => {
+    const { result } = await commands.probePage<{ focused: string; hash: string }>(
+      origin,
+      "/docs/components/button",
+      {
+        width: 1440,
+        steps: [{ focus: 'main + nav a[href^="#"]' }, { press: "Enter" }, { wait: 1000 }],
+        evaluate: `({ focused: document.activeElement.id, hash: decodeURIComponent(location.hash.slice(1)) })`,
+      },
+    );
+    expect(result.focused).not.toBe("");
+    expect(result.focused).toBe(result.hash);
+  });
+});

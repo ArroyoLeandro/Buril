@@ -49,6 +49,17 @@
     }
   }
 
+  /*
+   * In-page links (the skip link, "On this page", heading links) glide to their target, unless the
+   * reader asks for reduced motion: then the page jumps at once. src/scripts/in-page-links.ts
+   * moves focus to the target.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   body {
     @apply bg-background font-body text-foreground;
   }
