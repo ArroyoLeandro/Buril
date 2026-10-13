@@ -171,9 +171,12 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       const visible = text(main(es));
       expect(visible).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
       expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
-      expect(squash(text(section(es, "Instalación")))).toMatch(
-        /reexporta cn\(\) desde el paquete de npm cn/,
+      const install = squash(text(section(es, "Instalación")));
+      expect(install).toMatch(/reexporta cn\(\) desde el paquete de npm cn/);
+      expect(install).toContain(
+        "Si tu lib/utils.ts es distinto de la versión actual de shadcn, la CLI pregunta antes de reemplazarlo, y puedes responder que no sin problema.",
       );
+      expect(install.match(/responder que no sin problema/g)).toHaveLength(1);
     });
 
     it("documents the API and accessibility in Spanish", async () => {

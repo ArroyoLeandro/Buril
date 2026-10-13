@@ -20,11 +20,11 @@ export const faq: FaqItem[] = [
     answer: {
       en: [
         "`asChild` merges a component's props into whatever child you pass, so a Button can render a link. Buril keeps one element per component instead: a Button is always a `<button>`, and the element in your JSX is the element in the page.",
-        "For a link that looks like a button, put `buttonVariants()` on an `<a>`. For a text link, use the Link component. Neither needs a slot component, and a link never pretends to be a button.",
+        "For a link that looks like a button, put `buttonVariants()` on an `<a>`. For a text link, use the Link component. Neither needs a slot component.",
       ],
       es: [
         "`asChild` combina las props de un componente con el hijo que le pases, así que un Button puede renderizar un enlace. Buril mantiene un elemento por componente: un Button siempre es un `<button>`, y el elemento que escribes en JSX es el elemento que aparece en la página.",
-        "Para un enlace con aspecto de botón, aplica `buttonVariants()` a un `<a>`. Para un enlace de texto, usa el componente Link. Ninguno de los dos necesita un componente slot, y un enlace nunca se hace pasar por un botón.",
+        "Para un enlace con aspecto de botón, aplica `buttonVariants()` a un `<a>`. Para un enlace de texto, usa el componente Link. Ninguno de los dos necesita un componente slot.",
       ],
     },
     link: { href: "/docs/components/button", label: { en: "Button", es: "Button" } },
@@ -38,11 +38,11 @@ export const faq: FaqItem[] = [
     answer: {
       en: [
         "Native controls already work with the keyboard, forms, autofill, zoom and screen readers, and browsers have tested that for years. A styled `<select>` or a checkbox `<input>` needs no JavaScript to behave correctly.",
-        "The trade-off is control: the platform draws a Select's picker, so options hold text only. Where HTML has a native answer, such as `<dialog>` and the `popover` attribute for overlays, Buril uses it; where it has none, Buril writes the behavior and tests it against its WAI-ARIA pattern.",
+        "In exchange, the platform draws a Select's picker, so options hold text only. Where HTML has a native answer, Buril uses it; where it has none, Buril writes the behavior and tests it against its WAI-ARIA pattern. The overlays still to come are planned on `<dialog>` and the `popover` attribute.",
       ],
       es: [
         "Los controles nativos ya funcionan con el teclado, los formularios, el autocompletado, el zoom y los lectores de pantalla, y los navegadores llevan años probándolo. Un `<select>` con estilo o un `<input>` de tipo casilla no necesitan JavaScript para comportarse bien.",
-        "La contrapartida es el control: el selector de un Select lo dibuja la plataforma, así que las opciones solo contienen texto. Donde HTML tiene una respuesta nativa, como `<dialog>` y el atributo `popover` para las superposiciones, Buril la usa; donde no la tiene, Buril escribe el comportamiento y lo prueba contra su patrón de WAI-ARIA.",
+        "A cambio, el selector de un Select lo dibuja la plataforma, así que las opciones solo contienen texto. Donde HTML tiene una respuesta nativa, Buril la usa; donde no la tiene, Buril escribe el comportamiento y lo prueba contra su patrón de WAI-ARIA. Los componentes superpuestos que todavía no existen se planean sobre `<dialog>` y el atributo `popover`.",
       ],
     },
     link: { href: "/docs/accessibility", label: { en: "Accessibility", es: "Accesibilidad" } },
@@ -88,11 +88,11 @@ export const faq: FaqItem[] = [
     answer: {
       en: [
         "The IconButton, which ships in the Button's file, plays its `motion` gestures with CSS keyframes. The Button item appends them to your CSS: only `@keyframes` rules named `buril-icon-*`. Your tokens, variants and other rules stay as they are.",
-        "If you copy `button.tsx` by hand, paste the keyframes too. Without them the icons simply stay still.",
+        "If you copy `button.tsx` by hand, paste the keyframes too. Without them the icons stay still.",
       ],
       es: [
         "El IconButton, que viene en el archivo del Button, reproduce sus gestos de `motion` con keyframes de CSS. El item del Button los agrega a tu CSS: solo reglas `@keyframes` llamadas `buril-icon-*`. Tus tokens, tus variantes y el resto de las reglas no cambian.",
-        "Si copias `button.tsx` a mano, pega también los keyframes. Sin ellos, los iconos simplemente se quedan quietos.",
+        "Si copias `button.tsx` a mano, pega también los keyframes. Sin ellos, los iconos se quedan quietos.",
       ],
     },
     link: { href: "/docs/components/icon-button", label: { en: "Icon Button", es: "Icon Button" } },
@@ -108,7 +108,7 @@ export const faq: FaqItem[] = [
       ],
       es: [
         "Los que admite Tailwind CSS v4: Chrome 111, Safari 16.4 y Firefox 128 o posteriores.",
-        "Algunos efectos son mejoras progresivas y hacen menos, sin fallar, donde faltan: el rebote suave usa la curva `linear()`, y sin ella las transiciones usan la curva por defecto; los fundidos de entrada usan `@starting-style`; la flecha del Select gira con `:open`. Nada depende de ellos para funcionar.",
+        "Algunos efectos son mejoras progresivas y hacen menos, sin fallar, donde faltan: el resorte suave usa la curva `linear()`, y sin ella las transiciones usan la curva por defecto; los fundidos de entrada usan `@starting-style`; la flecha del Select gira con `:open`. Nada depende de ellos para funcionar.",
         "Los tests automáticos en navegador real solo se ejecutan en Chromium.",
       ],
     },

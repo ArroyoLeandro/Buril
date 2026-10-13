@@ -60,12 +60,9 @@ import { applyFontsExample } from "../../../data/snippets";
     <li>
       Sus dependencias de npm, como <code>class-variance-authority</code> en el caso del Button.
     </li>
-    <li>
-      Los componentes usan los tokens estándar de shadcn y tu helper <code>cn()</code>, así que
-      instalar uno no cambia tu tema.
-    </li>
   </ul>
   <p class="mt-4">
+    Los componentes usan los tokens estándar de shadcn, así que instalar uno no cambia tu tema.
     Todos los componentes importan <code>cn()</code> del item <code>utils</code> de shadcn. La
     versión actual de ese item reexporta <code>cn()</code> desde el paquete de npm <code>cn</code>,
     así que, cuando la CLI instala o actualiza <code>lib/utils.ts</code>, también agrega{" "}
@@ -103,8 +100,8 @@ import { applyFontsExample } from "../../../data/snippets";
     </li>
   </ul>
   <p class="mt-4">
-    El tema no es el único item que modifica tu CSS: el item <code>button</code> agrega al final los
-    keyframes de los gestos de los iconos, llamados <code>buril-icon-*</code>, que reproduce la prop
+    El item <code>button</code> también modifica tu CSS. Agrega al final los keyframes de los gestos
+    de los iconos, llamados <code>buril-icon-*</code>, que reproduce la prop
     <code>motion</code> de IconButton.
   </p>
 
@@ -120,8 +117,8 @@ import { applyFontsExample } from "../../../data/snippets";
   <p class="mt-4">
     Buril no incluye archivos de fuentes, así que carga tus propias fuentes y luego apunta los
     tokens a ellas, como muestra <Link href="/es/docs/guides/theme">Personalizar el tema</Link>.
-    Este sitio combina Silkscreen, una fuente pixel reservada para los títulos, con Inter para todo
-    lo demás; las dos son gratuitas en Google Fonts.
+    Este sitio combina Silkscreen, una fuente pixelada reservada para los títulos, con Inter para
+    todo lo demás; las dos son gratuitas en Google Fonts.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Próximos pasos</h2>

@@ -4,10 +4,7 @@ import { documentedComponents } from "../../data/components";
 import { Link } from "../../../registry/ui/link";
 
 const principles = [
-  [
-    "You own the code.",
-    "Components are copied into your project, not installed as a runtime dependency. Edit them freely.",
-  ],
+  ["You own the code.", "Components are copied into your project as source. Edit them freely."],
   [
     "Accessible by default.",
     "Every component targets WCAG 2.2 AA and follows its WAI-ARIA Authoring Practices pattern.",
@@ -18,7 +15,7 @@ const principles = [
   ],
   [
     "Built from scratch.",
-    "No headless UI library underneath: focus, keyboard and ARIA behavior are written and tested here.",
+    "Focus, keyboard and ARIA behavior are written and tested here, with no headless UI library underneath.",
   ],
   [
     "Themeable.",
@@ -39,9 +36,9 @@ const principles = [
 
   <h2 class="mt-10 font-display text-xl">What it is</h2>
   <p class="mt-4">
-    Buril is a shadcn-compatible registry, not a package. The shadcn CLI copies a component's source
-    into your project, next to your own code, and installs the few npm packages it needs. From then
-    on the file is yours: there is no version to upgrade and no styling API to work around.
+    Buril is a shadcn-compatible registry. The shadcn CLI copies a component's source into your
+    project, next to your own code, and installs the few npm packages it needs. From then on you own
+    the file, with no version to upgrade and no styling API to work around.
   </p>
   <p class="mt-4">
     The components are written with React and Tailwind CSS and read the same design tokens as

@@ -20,8 +20,7 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
     <ul class="mt-4 list-disc space-y-2 pl-6 text-muted-foreground">
       <li>
         <strong>Never color alone.</strong> Each variant has its own icon, and the title says what
-        kind of message it is. The icon is <code>aria-hidden</code>, so the title must carry the
-        meaning. Pass <code>icon</code> to change it, or <code>icon={"{null}"}</code> for none.
+        kind of message it is.
       </li>
       <li>
         <strong>Variants.</strong> <code>default</code> uses the card colors and the ink border;
@@ -92,8 +91,6 @@ const { insertExample, liveExample, variantsExample, assertiveExample } = compon
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     It creates <code>components/ui/alert.tsx</code>, the same path and part names as shadcn's Alert.
     Unlike shadcn's, it has no <code>role="alert"</code> by default; use <code>live</code>. It needs{" "}
-    <code>class-variance-authority</code> and your <code>cn()</code> helper; if your
-    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
-    it, and answering no is safe.
+    <code>class-variance-authority</code> and your <code>cn()</code> helper.
   </p>
 </ComponentPage>

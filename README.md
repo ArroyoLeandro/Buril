@@ -10,11 +10,11 @@ Accessible, copy-paste React components with an engraved-print look. Built from 
 
 | Principle | What it means |
 |-----------|---------------|
-| **You own the code** | Components are copied into your project, not installed as a runtime dependency. Edit them freely. |
+| **You own the code** | Components are copied into your project as source. Edit them freely. |
 | **Accessible by default** | Every component targets WCAG 2.2 AA and follows its [WAI-ARIA APG](https://www.w3.org/WAI/ARIA/apg/patterns/) pattern. |
-| **Platform first** | Native `<dialog>`, the `popover` attribute and semantic HTML before any JavaScript workaround. |
+| **Platform first** | Native elements, the `popover` attribute and semantic HTML before any JavaScript workaround. |
 | **Built from scratch** | No headless UI primitives. Behavior (focus, keyboard, ARIA) is written and tested here. |
-| **Themeable** | Components use semantic design tokens only. Swap the palette without touching a component. |
+| **Themeable** | Components use the standard shadcn tokens only. Swap the palette without touching a component. |
 
 ## Install
 
@@ -47,10 +47,10 @@ It replaces your shadcn color tokens with the Buril values for light and dark mo
 
 ## Visual style
 
-The default theme pairs engraved print with a terminal:
+The default theme has an engraved-print look:
 
 - Ink on raw paper. The primary color is ink in light mode and bone in dark mode.
-- Red lacquer is reserved for the focus ring, decoration and destructive actions, so red always carries meaning.
+- Red lacquer is reserved for the focus ring, the hover wash (`--accent`), decoration and destructive actions, so red always carries meaning.
 - A pixel display font for headings and a neutral sans-serif for body text.
 - Thin grid lines, pill-shaped buttons and optional CSS hatching.
 
@@ -61,7 +61,7 @@ Light and dark modes ship from the first release. Decorative elements stay optio
 | Phase | Focus | Examples |
 |-------|-------|----------|
 | **1** | Foundations | Button, Field, Input, Checkbox, Radio Group, Switch, Card, Alert |
-| **2** | What makes the library useful | Dialog, Popover, Tooltip, Tabs, Toast, Dropdown Menu |
+| **2** | Overlays, menus and tabs | Dialog, Popover, Tooltip, Tabs, Toast, Dropdown Menu |
 | **3** | Hard components | Combobox, Command Palette, Date Picker, Carousel |
 
 React comes first. An Angular version is planned for a later stage.

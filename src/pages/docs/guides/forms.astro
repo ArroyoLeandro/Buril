@@ -83,8 +83,8 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       hear "Error:" before it.
     </li>
     <li>
-      Its region is always on the page and polite, so a new error is announced when it appears. You
-      do not need your own live region for field errors.
+      Its region is always on the page and uses <code>aria-live="polite"</code>, so a new error is
+      announced when it appears. You do not need your own live region for field errors.
     </li>
     <li>
       Add <code>noValidate</code> to the <code>&lt;form&gt;</code> when you validate yourself, so

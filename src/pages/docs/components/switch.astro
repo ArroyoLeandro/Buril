@@ -64,7 +64,7 @@ const { example, sizesExample } = componentExamples.switch;
 
     <h3 class="mt-8 font-display text-lg">Sizes</h3>
     <p class="mt-4 text-muted-foreground">
-      The track is 44 by 24px. Set another size with <code>className</code>: the dot stays 4px
+      The track is 44 by 24px. Set another size with <code>className</code>: the thumb stays 4px
       inside the track at any size. Keep the track at least 24px tall, the minimum target size.
     </p>
     <div class="mt-4 overflow-x-auto text-sm [&_pre]:p-4">
@@ -75,7 +75,6 @@ const { example, sizesExample } = componentExamples.switch;
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     It creates <code>components/ui/switch.tsx</code>, the same path as shadcn's Switch. Unlike
     shadcn's, it is a native input: <code>onChange</code> replaces <code>onCheckedChange</code>. It
-    needs only your <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the
-    current shadcn version, the CLI asks before replacing it, and answering no is safe.
+    needs only your <code>cn()</code> helper.
   </p>
 </ComponentPage>

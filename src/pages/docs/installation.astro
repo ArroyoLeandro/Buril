@@ -54,15 +54,12 @@ import { applyFontsExample } from "../../data/snippets";
     <li>
       Its npm dependencies, such as <code>class-variance-authority</code> for the Button.
     </li>
-    <li>
-      Components use the standard shadcn tokens and your <code>cn()</code> helper, so installing one
-      does not change your theme.
-    </li>
   </ul>
   <p class="mt-4">
-    Every component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current
-    version of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so when
-    the CLI installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to your
+    Components use the standard shadcn tokens, so installing one does not change your theme. Every
+    component imports <code>cn()</code> from shadcn's <code>utils</code> item. The current version
+    of that item re-exports <code>cn()</code> from the <code>cn</code> npm package, so when the CLI
+    installs or updates <code>lib/utils.ts</code>, it also adds <code>cn</code> to your
     dependencies. If your <code>lib/utils.ts</code> differs, the CLI asks before replacing it;
     answering no is safe.
   </p>
@@ -95,8 +92,8 @@ import { applyFontsExample } from "../../data/snippets";
     </li>
   </ul>
   <p class="mt-4">
-    The theme is not the only item that edits your CSS: the <code>button</code> item appends the
-    icon gesture keyframes, named <code>buril-icon-*</code>, which IconButton's
+    The <code>button</code> item also edits your CSS. It appends the icon gesture keyframes, named{" "}
+    <code>buril-icon-*</code>, which IconButton's
     <code>motion</code> prop plays.
   </p>
 

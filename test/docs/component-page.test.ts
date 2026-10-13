@@ -168,6 +168,11 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       const cli = text(tabs[0]!.panel);
       expect(cli).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
       expect(cli).toContain(`npx shadcn@latest add @buril/${entry.item}`);
+      // The shared note says once that replacing lib/utils.ts is optional; pages do not repeat it.
+      expect(squash(cli)).toContain(
+        "If your lib/utils.ts differs from the current shadcn version, the CLI asks before replacing it, and answering no is safe.",
+      );
+      expect(squash(cli).match(/answering no is safe/g)).toHaveLength(1);
 
       const manual = text(tabs[1]!.panel);
       const dependencies = items.find(({ name }) => name === entry.item)!.dependencies ?? [];
