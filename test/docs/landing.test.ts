@@ -282,6 +282,24 @@ describe.each(showcases)("$locale landing showcase", (showcase) => {
     expect(fragment).toMatch(/aria-hidden="true"/);
   });
 
+  it("renders the bottom row as static HTML except the Gestures, which hydrate when visible", async () => {
+    const { showcase: section } = await renderShowcase();
+    expect(cell(section, "alert")).not.toMatch(/<astro-island/);
+    expect(cell(section, "buttons")).not.toMatch(/<astro-island/);
+    const islands = cell(section, "gestures").match(/<astro-island[^>]*>/g)!;
+    expect(islands).toHaveLength(1);
+    expect(islands[0]).toMatch(/client="visible"/);
+    expect(islands[0]).toMatch(new RegExp(`props="[^"]*locale[^"]*${showcase.locale}`));
+    expect(cell(section, "alert")).toMatch(/data-slot="alert"/);
+    expect(cell(section, "buttons").match(/<button\b/g)!.length).toBeGreaterThanOrEqual(6);
+    expect(cell(section, "gestures").match(/data-motion=/g)).toHaveLength(6);
+  });
+
+  it("hydrates only the two blocks that keep state", async () => {
+    const { showcase: section } = await renderShowcase();
+    expect(section.match(/<astro-island/g)).toHaveLength(2);
+  });
+
   it("marks every faded copy inert and hidden from assistive technology", async () => {
     const { showcase: section } = await renderShowcase();
     const inert = [...section.matchAll(/<[a-z]+\b[^>]*\binert\b[^>]*>/g)].map(([tag]) => tag);

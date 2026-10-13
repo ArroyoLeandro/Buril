@@ -4,6 +4,9 @@ import Engraving from "../Engraving.astro";
 import CheckboxBlock from "../showcase/CheckboxBlock";
 import FieldBlock from "../showcase/FieldBlock";
 import SettingsBlock from "../showcase/SettingsBlock";
+import AlertBlock from "../showcase/AlertBlock";
+import ButtonsBlock from "../showcase/ButtonsBlock";
+import GesturesBlock from "../showcase/GesturesBlock";
 import TeamBlock from "../showcase/TeamBlock";
 import { getLocale, translator } from "../../i18n/ui";
 
@@ -72,19 +75,25 @@ const t = translator(locale);
       component={{ slug: "alert", name: "Alert" }}
       tone="bare"
       paper="bottom-left"
-    />
+    >
+      <AlertBlock locale={locale} />
+    </BentoCell>
     <BentoCell
       id="buttons"
       label={t("landing.cellButtons")}
       caption={t("landing.captionButtons")}
       component={{ slug: "button", name: "Button" }}
       tone="tint"
-    />
+    >
+      <ButtonsBlock locale={locale} />
+    </BentoCell>
     <BentoCell
       id="gestures"
       label={t("landing.cellGestures")}
       caption={t("landing.captionGestures")}
       component={{ slug: "icon-button", name: "IconButton" }}
-    />
+    >
+      <GesturesBlock locale={locale} client:visible />
+    </BentoCell>
   </div>
 </section>

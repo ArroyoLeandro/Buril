@@ -42,7 +42,13 @@ export default function TeamBlock({ locale = "en" }: Props) {
 
   const row = (person: { name: string; email: string; initials?: string }) => (
     <>
-      <Avatar size="sm" alt="" fallback={person.initials ?? initialsOf(person.name)} />
+      <Avatar
+        size="sm"
+        alt=""
+        fallback={person.initials ?? initialsOf(person.name)}
+        // The 3-column cell is narrowest between lg and xl: the name gets the room.
+        className="lg:max-xl:hidden"
+      />
       <span className="min-w-0 flex-1 text-sm">
         <span className="block truncate font-semibold">{person.name}</span>
         <span className="block truncate text-muted-foreground">{person.email}</span>

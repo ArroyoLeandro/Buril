@@ -158,3 +158,50 @@ describe("the fading blocks", () => {
     }
   });
 });
+
+const bottomRow = `(() => {
+  const inside = (cell, el) => {
+    const c = cell.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return r.left >= c.left && r.right <= c.right && r.top >= c.top && r.bottom <= c.bottom;
+  };
+  const cell = (id) => document.querySelector('[data-cell="' + id + '"]');
+  const gestures = [...cell("gestures").querySelectorAll("button")].map((b) => b.getBoundingClientRect());
+  const live = (id) => [...cell(id).querySelectorAll("button, [data-slot=alert]")].filter((el) => !el.closest("[inert]"));
+  return {
+    gestureRows: new Set(gestures.map((b) => Math.round(b.top))).size,
+    gestureColumns: new Set(gestures.map((b) => Math.round(b.left))).size,
+    buttonsInside: live("buttons").every((el) => inside(cell("buttons"), el)),
+    buttonRows: new Set(live("buttons").map((el) => Math.round(el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2))).size,
+    alertInside: live("alert").every((el) => inside(cell("alert"), el)),
+    alerts: live("alert").length,
+  };
+})()`;
+
+describe("the bottom row", () => {
+  it.each([
+    [320, "/es/", 2, 3],
+    [768, "/es/", 1, 6],
+    [1024, "/es/", 2, 3],
+    [1280, "/es/", 2, 3],
+    [1440, "/", 2, 3],
+  ] as const)(
+    "at %ipx, %s fits the Alert and the buttons and sets the gestures %i by %i",
+    async (width, path, rows, columns) => {
+      const { result } = await commands.probePage<{
+        gestureRows: number;
+        gestureColumns: number;
+        buttonsInside: boolean;
+        buttonRows: number;
+        alertInside: boolean;
+        alerts: number;
+      }>(origin, path, { width, evaluate: bottomRow });
+      expect([result.gestureRows, result.gestureColumns]).toEqual([rows, columns]);
+      expect(result.buttonsInside).toBe(true);
+      expect(result.alertInside).toBe(true);
+      expect(result.alerts).toBe(1);
+      // From xl up the six buttons share one row; below, they wrap inside the cell.
+      if (width >= 1280) expect(result.buttonRows).toBe(1);
+    },
+  );
+});

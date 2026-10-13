@@ -7,6 +7,6 @@
 export const fadeBottom =
   "[mask-image:linear-gradient(to_bottom,#000_calc(100%_-_var(--fade,150px)),transparent_calc(100%_-_12px))]";
 
-/** Fades a row out toward its end, for a strip that runs past the cell. */
+/** Fades a strip of copies out toward its end: it starts faint, so it never reads as live. */
 export const fadeEnd =
-  "[mask-image:linear-gradient(to_right,#000_58%,transparent_97%)] rtl:[mask-image:linear-gradient(to_left,#000_58%,transparent_97%)]";
+  "[mask-image:linear-gradient(to_right,rgb(0_0_0/0.5),transparent_85%)] rtl:[mask-image:linear-gradient(to_left,rgb(0_0_0/0.5),transparent_85%)]";
