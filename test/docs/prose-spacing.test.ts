@@ -19,8 +19,9 @@ describe("prose spacing", () => {
     ...astroFiles("src/layouts"),
   ];
 
+  // A comma or semicolon glued to the code after it ("--decor,--ring") counts too.
   it.each(files)("%s keeps a space between a word and inline code", (file) => {
-    const glued = readFileSync(file, "utf8").match(/\p{Ll}<code[\s>]/gu) ?? [];
+    const glued = readFileSync(file, "utf8").match(/[\p{Ll},;]<code[\s>]/gu) ?? [];
     expect(glued).toEqual([]);
   });
 

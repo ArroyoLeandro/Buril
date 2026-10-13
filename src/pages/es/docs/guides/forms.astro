@@ -85,8 +85,9 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
       lectores de pantalla oyen "Error:" antes del mensaje.
     </li>
     <li>
-      Su región siempre está en la página y es cortés (<code>polite</code>), así que un error nuevo
-      se anuncia al aparecer. No necesitas tu propia región viva para los errores de los campos.
+      Su región siempre está en la página y usa <code>aria-live="polite"</code>, así que un error
+      nuevo se anuncia al aparecer. No necesitas tu propia región viva para los errores de los
+      campos.
     </li>
     <li>
       Agrega <code>noValidate</code> al <code>&lt;form&gt;</code> cuando validas por tu cuenta, para
