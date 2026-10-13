@@ -13,7 +13,7 @@ interface Props {
 /** The three sizes, and a list that shows a spinner while it loads, then announces the result. */
 export default function SpinnerDemo({ locale = "en" }: Props) {
   const t = demoTranslator(locale);
-  const comments = [t("Lovely contrast."), t("Works with NVDA."), t("Ship it.")];
+  const comments = [t("Lovely contrast."), t("Clear focus ring."), t("Ship it.")];
   const [state, setState] = useState<"idle" | "loading" | "loaded">("idle");
   const timer = useRef<number>(undefined);
 

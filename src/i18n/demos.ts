@@ -195,7 +195,7 @@ export const demoText = {
     "Entra en este recuadro con Tab y el enlace de salto aparece primero. Pulsa Enter y el foco llega aquí, después de la barra de herramientas.",
   // Spinner
   "Lovely contrast.": "Qué buen contraste.",
-  "Works with NVDA.": "Funciona con NVDA.",
+  "Clear focus ring.": "Anillo de foco claro.",
   "Ship it.": "Listo para publicar.",
   "Loading files": "Cargando archivos",
   "Loading photos": "Cargando fotos",

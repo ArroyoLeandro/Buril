@@ -18,8 +18,8 @@ export const motionTokenUses: Record<string, Text> = {
     es: "Cambios de color y al pasar el puntero, y fundidos.",
   },
   "buril-duration-base": {
-    en: "State changes: the Switch dot, the Checkbox stroke, the Radio dot, the Card lift.",
-    es: "Cambios de estado: el punto del Switch, el trazo del Checkbox, el punto del Radio y la elevación de la Card.",
+    en: "State changes: the Switch thumb, the Checkbox stroke, the Radio dot, the Card lift.",
+    es: "Cambios de estado: el indicador del Switch, el trazo del Checkbox, el punto del Radio y la elevación de la Card.",
   },
   "buril-duration-slow": {
     en: "The pop gesture today. Kept for entries, such as a dialog or a popover appearing.",
@@ -35,15 +35,15 @@ export const motionTokenUses: Record<string, Text> = {
   },
   "buril-ease-out": {
     en: "Entries and state changes: a soft spring that passes its target by about 3% and settles.",
-    es: "Entradas y cambios de estado: un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
+    es: "Entradas y cambios de estado: un resorte suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
   },
   "buril-ease-in": {
     en: "Exits: a plain curve that speeds up as it leaves. Kept for the overlays to come.",
     es: "Salidas: una curva simple que acelera al irse. Reservada para las superposiciones que vendrán.",
   },
   "buril-ease-in-out": {
-    en: "Position changes and round trips: the Switch dot, the spin and the nudges. The same soft spring.",
-    es: "Cambios de posición y gestos de ida y vuelta: el punto del Switch, spin y los empujones. El mismo rebote suave.",
+    en: "Position changes and round trips: the Switch thumb, the spin and the nudges. The same soft spring.",
+    es: "Cambios de posición y gestos de ida y vuelta: el indicador del Switch, spin y los empujones. El mismo resorte suave.",
   },
   "buril-ease-linear": {
     en: "Constant motion, such as a progress stripe. Kept for components to come.",
@@ -134,7 +134,7 @@ export const iconPresets: IconPreset[] = [
     icon: { en: "Like", es: "Me gusta" },
     gesture: {
       en: "Grows, dips and settles. A press squeezes it, and the release springs it back.",
-      es: "Crece, baja y se asienta. Al pulsarlo se encoge, y al soltarlo vuelve con un rebote suave.",
+      es: "Crece, baja y se asienta. Al pulsarlo se encoge, y al soltarlo vuelve con un resorte suave.",
     },
     token: "slow",
     factor: 1.4,

@@ -19,6 +19,25 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    branch: "copy-edit",
+    date: "2026-10-12",
+    title: { en: "Plainer docs copy", es: "Textos más directos en la documentación" },
+    changes: {
+      en: [
+        "Plainer wording on every docs page and in the README, in English and Spanish.",
+        "Component pages say once, in the shared install note, that the CLI asks before replacing `lib/utils.ts`.",
+        "The FAQ presents `<dialog>` and the `popover` attribute as the plan for the overlays still to come, and the README no longer lists `<dialog>` as shipped.",
+        "The Spanish docs give the soft spring and the Switch thumb one name each, everywhere.",
+      ],
+      es: [
+        "Redacción más directa en todas las páginas de la documentación y en el README, en inglés y en español.",
+        "Las páginas de componentes dicen una sola vez, en la nota de instalación compartida, que la CLI pregunta antes de reemplazar `lib/utils.ts`.",
+        "Las preguntas frecuentes presentan `<dialog>` y el atributo `popover` como el plan para los componentes superpuestos que todavía no existen, y el README ya no menciona `<dialog>` como disponible.",
+        'La documentación en español usa un solo nombre para cada idea: "resorte suave" para el movimiento final e "indicador" para la pieza móvil del Switch.',
+      ],
+    },
+  },
+  {
     branch: "docs-fixes",
     date: "2026-10-12",
     title: { en: "Ready for Server Components", es: "Listos para los Server Components" },
@@ -38,7 +57,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "docs-content",
     date: "2026-10-12",
-    title: { en: "Documentation you can rely on", es: "Una documentación en la que confiar" },
+    title: { en: "New docs pages and guides", es: "Nuevas páginas y guías de la documentación" },
     changes: {
       en: [
         "New Accessibility, Motion, FAQ and Changelog pages, and five guides: forms, dark mode, theming, using Buril with shadcn and migrating from it.",
@@ -57,7 +76,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "motion-v2",
     date: "2026-10-12",
-    title: { en: "Motion with more presence", es: "Un movimiento con más presencia" },
+    title: { en: "Slower motion and icon gestures", es: "Movimiento más lento y gestos de icono" },
     changes: {
       en: [
         "Slower state changes and entries, ending on a soft spring that settles about 3% past its target.",
@@ -67,7 +86,7 @@ export const changelog: ChangelogEntry[] = [
         "More room between the loading Button's spinner and its label.",
       ],
       es: [
-        "Cambios de estado y entradas más lentos, que terminan con un rebote suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
+        "Cambios de estado y entradas más lentos, que terminan con un resorte suave que sobrepasa su destino en aproximadamente un 3% y se asienta.",
         "Presets de `motion` para el IconButton: rotate, spin, wiggle, swing, tres variantes de nudge y pop.",
         "Las Card `interactive` se elevan y muestran una sombra con el puntero y con el foco del teclado.",
         "Field acepta `requiredLabel` y `errorPrefix`, y Link acepta `newTabLabel`, para que el texto que escriben esté en tu idioma.",
@@ -110,7 +129,7 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "site-polish",
     date: "2026-10-12",
-    title: { en: "A calmer docs layout", es: "Un diseño de la documentación más tranquilo" },
+    title: { en: "A one-scroll docs layout", es: "La documentación en un solo desplazamiento" },
     changes: {
       en: ["One page scroll, a sticky header and side panels, and full-width proportions."],
       es: [
