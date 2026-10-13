@@ -1,15 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "./landing/Hero.astro";
+import Showcase from "./landing/Showcase.astro";
 import InlineCode from "./InlineCode.astro";
 import InstallCommand from "./InstallCommand.astro";
-import ButtonsPanel from "./showcase/ButtonsPanel";
-import SettingsPanel from "./showcase/SettingsPanel";
-import SignInPanel from "./showcase/SignInPanel";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "../../registry/ui/alert";
-import { Badge } from "../../registry/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../registry/ui/card";
 import { Link } from "../../registry/ui/link";
 import { localizedHref } from "../i18n/paths";
 import { getLocale, translator } from "../i18n/ui";
@@ -31,24 +27,12 @@ const principles = [
 
 const container = "mx-auto w-full max-w-6xl px-4 sm:px-6";
 const sectionTitle = "font-display text-2xl";
-// Component names are code identifiers, so the badges stay in English.
-const panels = [
-  {
-    id: "panel-sign-in",
-    title: t("landing.panelSignIn"),
-    uses: ["Field", "Input", "Checkbox", "Button"],
-  },
-  {
-    id: "panel-settings",
-    title: t("landing.panelSettings"),
-    uses: ["Field", "Switch", "Radio Group", "Select"],
-  },
-  { id: "panel-buttons", title: t("landing.panelButtons"), uses: ["Button"] },
-];
 ---
 
 <BaseLayout title="Buril UI" footer>
   <Hero />
+
+  <Showcase />
 
   <section aria-labelledby="why" class={cn(container, "py-16")}>
     <h2 id="why" class={sectionTitle}>
@@ -62,40 +46,6 @@ const panels = [
         </li>
       ))}
     </ul>
-  </section>
-
-  <section aria-labelledby="at-work" class="border-y border-border bg-secondary/40 py-16">
-    <div class={container}>
-      <h2 id="at-work" class={sectionTitle}>
-        {t("landing.atWork")}
-      </h2>
-      <p class="mt-4 max-w-2xl text-muted-foreground">{t("landing.atWorkBody")}</p>
-      <div class="mt-8 grid gap-6 lg:grid-cols-3">
-        {panels.map(({ id, title, uses }) => (
-          <Card decor className="min-w-0">
-            <CardHeader>
-              <CardTitle id={id} className="font-display text-base">
-                {title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {id === "panel-sign-in" && <SignInPanel locale={locale} client:visible />}
-              {id === "panel-settings" && <SettingsPanel locale={locale} client:visible />}
-              {id === "panel-buttons" && <ButtonsPanel locale={locale} client:visible />}
-            </CardContent>
-            <CardFooter className="mt-auto">
-              <ul aria-label={t("landing.componentsUsed")} class="flex flex-wrap gap-2">
-                {uses.map((name) => (
-                  <li>
-                    <Badge variant="outline">{name}</Badge>
-                  </li>
-                ))}
-              </ul>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </div>
   </section>
 
   <section aria-labelledby="install" class={cn(container, "py-16")}>

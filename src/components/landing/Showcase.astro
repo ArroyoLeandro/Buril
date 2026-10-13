@@ -1,0 +1,70 @@
+---
+import BentoCell from "./BentoCell.astro";
+import { getLocale, translator } from "../../i18n/ui";
+
+/**
+ * The landing showcase: real Buril components composed into small app scenes, on a bento grid of
+ * 12 columns (3 | 6 | 3) capped at 1320px. Cells are in reading order; the grid places them on
+ * explicit lines from lg up.
+ */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+---
+
+<section data-showcase aria-labelledby="showcase-title" class="px-4 pt-4 pb-20 sm:px-6">
+  <h2 id="showcase-title" class="sr-only">
+    {t("landing.showcase")}
+  </h2>
+  <div
+    data-bento
+    class="mx-auto grid max-w-[1320px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[252px_252px_236px]"
+  >
+    <BentoCell
+      id="team"
+      label={t("landing.cellTeam")}
+      caption={t("landing.captionTeam")}
+      component={{ slug: "avatar", name: "Avatar" }}
+    />
+    <BentoCell
+      id="settings"
+      label={t("landing.cellSettings")}
+      caption={t("landing.captionSettings")}
+      component={{ slug: "switch", name: "Switch" }}
+    />
+    <BentoCell
+      id="checkbox"
+      label={t("landing.cellCheckbox")}
+      caption={t("landing.captionCheckbox")}
+      component={{ slug: "checkbox", name: "Checkbox" }}
+      tone="bare"
+      paper="top-right"
+    />
+    <BentoCell
+      id="field"
+      label={t("landing.cellField")}
+      caption={t("landing.captionField")}
+      component={{ slug: "field", name: "Field" }}
+      tone="tint"
+    />
+    <BentoCell
+      id="alert"
+      label={t("landing.cellAlert")}
+      component={{ slug: "alert", name: "Alert" }}
+      tone="bare"
+      paper="bottom-left"
+    />
+    <BentoCell
+      id="buttons"
+      label={t("landing.cellButtons")}
+      caption={t("landing.captionButtons")}
+      component={{ slug: "button", name: "Button" }}
+      tone="tint"
+    />
+    <BentoCell
+      id="gestures"
+      label={t("landing.cellGestures")}
+      caption={t("landing.captionGestures")}
+      component={{ slug: "icon-button", name: "IconButton" }}
+    />
+  </div>
+</section>

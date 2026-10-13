@@ -149,6 +149,110 @@ describe.each(heroes)("$locale landing hero", (hero) => {
   });
 });
 
+const showcases = [
+  {
+    locale: "en",
+    page: IndexPage,
+    path: "/",
+    heading: "Examples built with Buril UI",
+    viewCode: "View code",
+    viewCodeFor: (name: string) => `View code for ${name}`,
+    labels: ["Team", "Settings", "Checkbox", "Field", "Alert", "Button", "Gestures"],
+  },
+  {
+    locale: "es",
+    page: IndexPageEs,
+    path: "/es/",
+    heading: "Ejemplos hechos con Buril UI",
+    viewCode: "Ver código",
+    viewCodeFor: (name: string) => `Ver código de ${name}`,
+    labels: ["Equipo", "Ajustes", "Checkbox", "Field", "Alert", "Button", "Gestos"],
+  },
+] as const;
+
+/** The cells in reading order and the component page each one links to. */
+const cells = [
+  ["team", "avatar", "Avatar"],
+  ["settings", "switch", "Switch"],
+  ["checkbox", "checkbox", "Checkbox"],
+  ["field", "field", "Field"],
+  ["alert", "alert", "Alert"],
+  ["buttons", "button", "Button"],
+  ["gestures", "icon-button", "IconButton"],
+] as const;
+
+describe.each(showcases)("$locale landing showcase", (showcase) => {
+  const renderShowcase = async () => {
+    const html = main(
+      await container.renderToString(showcase.page, {
+        request: new Request(`http://x${showcase.path}`),
+      }),
+    );
+    const found = /<section[^>]*data-showcase[\s\S]*?<\/section>/.exec(html);
+    expect(found, "showcase section").not.toBeNull();
+    return { html, showcase: found![0] };
+  };
+  const articles = (html: string) =>
+    html
+      .split(/(?=<article\b)/)
+      .slice(1)
+      .map((part) => part.slice(0, part.indexOf("</article>")));
+
+  it("follows the hero, named by a heading only screen readers see", async () => {
+    const { html, showcase: section } = await renderShowcase();
+    expect(html.indexOf(section)).toBeGreaterThan(html.indexOf("data-hero"));
+    const h2 = /<h2[^>]*>([\s\S]*?)<\/h2>/.exec(section)!;
+    expect(text(h2[1]!)).toBe(showcase.heading);
+    expect(h2[0]).toMatch(/class="[^"]*\bsr-only\b/);
+    const id = /<h2[^>]*id="([^"]+)"/.exec(h2[0])![1];
+    expect(section).toMatch(new RegExp(`^<section[^>]*aria-labelledby="${id}"`));
+  });
+
+  it("lays the cells on a 1, 2 then 12 column grid capped at 1320px", async () => {
+    const { showcase: section } = await renderShowcase();
+    const grid = /<div[^>]*data-bento[^>]*>/.exec(section)![0];
+    for (const name of ["grid", "grid-cols-1", "sm:grid-cols-2", "lg:grid-cols-12"]) {
+      expect(grid).toMatch(new RegExp(`class="[^"]*(?<=[" ])${name}(?=[" ])`));
+    }
+    expect(grid).toMatch(/max-w-\[1320px\]/);
+  });
+
+  it("puts the seven cells in reading order, each named by its pixel-font label", async () => {
+    const { showcase: section } = await renderShowcase();
+    const found = articles(section);
+    expect(found.map((cell) => /data-cell="([^"]+)"/.exec(cell)![1])).toEqual(
+      cells.map(([id]) => id),
+    );
+    found.forEach((cell, index) => {
+      const h3 = /<h3[^>]*>[\s\S]*?<\/h3>/.exec(cell)![0];
+      expect(text(h3)).toBe(showcase.labels[index]);
+      expect(h3).toMatch(/class="[^"]*\bfont-display\b/);
+      const id = /<h3[^>]*id="([^"]+)"/.exec(h3)![1];
+      expect(cell).toMatch(new RegExp(`^<article[^>]*aria-labelledby="${id}"`));
+    });
+  });
+
+  it("gives every cell a quiet View code link to its component page", async () => {
+    const { showcase: section } = await renderShowcase();
+    const slugs = documentedComponents.map(({ slug }) => slug);
+    articles(section).forEach((cell, index) => {
+      const [, slug, name] = cells[index]!;
+      expect(slugs).toContain(slug);
+      const link = [...cell.matchAll(/<a[^>]*data-view-code[^>]*>[\s\S]*?<\/a>/g)];
+      expect(link).toHaveLength(1);
+      const [anchor] = link[0]!;
+      expect(anchor).toMatch(
+        new RegExp(`href="${localizedHref(`/docs/components/${slug}`, showcase.locale)}"`),
+      );
+      // The visible words start the accessible name; the component name is for screen readers.
+      expect(text(anchor)).toBe(showcase.viewCodeFor(name));
+      const visible = text(anchor.replace(/<span class="sr-only">[\s\S]*?<\/span>/g, ""));
+      expect(visible).toBe(showcase.viewCode);
+      expect(anchor).toMatch(/class="[^"]*\btext-muted-foreground\b/);
+    });
+  });
+});
+
 describe("landing page", () => {
   it("states the four principles", async () => {
     const values = text(section(main(await render()), "Why Buril"));
@@ -160,51 +264,6 @@ describe("landing page", () => {
     ]) {
       expect(values).toContain(principle);
     }
-  });
-
-  it("shows real components at work in three live panels", async () => {
-    const html = section(main(await render()), "Components at work");
-    expect(html.match(/<astro-island/g)).toHaveLength(3);
-    // Server-rendered markup of the real components, readable before hydration.
-    expect(html).toMatch(/<input[^>]+type="email"/);
-    expect(html).toMatch(/<input[^>]+type="checkbox"(?![^>]*role="switch")/);
-    expect(html).toMatch(/<input[^>]+role="switch"/);
-    expect(html).toMatch(/<fieldset/);
-    expect(html).toMatch(/<select/);
-    expect(html).toMatch(/<button[^>]+type="submit"/);
-  });
-
-  it("frames each live panel in a real Card with a heading and the engraved band", async () => {
-    const html = section(main(await render()), "Components at work");
-    const cards = html.split(/(?=<div[^>]*data-slot="card")/).slice(1);
-    expect(cards).toHaveLength(3);
-    for (const card of cards) {
-      expect(card).toMatch(/^<div[^>]*class="[^"]*\bborder-border\b/);
-      expect(card).toMatch(/<div[^>]*data-decor[^>]*aria-hidden="true"/);
-      expect(card).toMatch(/<h3[^>]*data-slot="card-title"/);
-      // The island sits in the card's content, so the panel reads as one unit.
-      expect(card).toMatch(/data-slot="card-content"[\s\S]*<astro-island/);
-    }
-    const titles = cards.map((card) => text(/<h3[^>]*>[\s\S]*?<\/h3>/.exec(card)![0]));
-    expect(titles).toEqual(["Sign in", "Notifications", "Buttons"]);
-  });
-
-  it("names the components each panel uses with badges, not links or buttons", async () => {
-    const html = section(main(await render()), "Components at work");
-    const badges = [...html.matchAll(/<span[^>]*data-slot="badge"[^>]*>([\s\S]*?)<\/span>/g)];
-    expect(badges.map(([, label]) => text(label!))).toEqual([
-      "Field",
-      "Input",
-      "Checkbox",
-      "Button",
-      "Field",
-      "Switch",
-      "Radio Group",
-      "Select",
-      "Button",
-    ]);
-    for (const [badge] of badges) expect(badge).not.toMatch(/tabindex|role=/);
-    expect(html.match(/<ul[^>]*aria-label="Components used"/g)).toHaveLength(3);
   });
 
   it("states the shadcn requirement in a static Alert before the commands", async () => {
@@ -283,23 +342,6 @@ describe("Spanish landing page", () => {
     ]) {
       expect(values).toContain(principle);
     }
-  });
-
-  it("shows the live panels with Spanish titles and Spanish controls", async () => {
-    const html = section(main(await renderEs()), "Componentes en acción");
-    expect(html.match(/<astro-island/g)).toHaveLength(3);
-    const titles = [...html.matchAll(/<h3[^>]*data-slot="card-title"[^>]*>([\s\S]*?)<\/h3>/g)].map(
-      ([, title]) => text(title!),
-    );
-    expect(titles).toEqual(["Iniciar sesión", "Notificaciones", "Botones"]);
-    // Server-rendered island markup is already Spanish, and the islands hydrate in Spanish.
-    expect(text(html)).toContain("Mantener la sesión iniciada");
-    expect(text(html)).toContain("Notificaciones por correo");
-    expect(text(html)).toContain("Guardar borrador");
-    for (const island of html.match(/<astro-island[^>]*>/g)!) {
-      expect(island).toMatch(/props="[^"]*locale[^"]*es/);
-    }
-    expect(html.match(/<ul[^>]*aria-label="Componentes usados"/g)).toHaveLength(3);
   });
 
   it("explains the shadcn requirement and links the Spanish installation guide", async () => {
