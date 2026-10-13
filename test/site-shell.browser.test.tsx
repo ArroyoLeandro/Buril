@@ -78,3 +78,28 @@ describe("Copy button icon", () => {
     expect(result).toEqual({ before: ["copy"], after: ["check"] });
   });
 });
+
+describe("install tab logos", () => {
+  it.each(["light", "dark"] as const)(
+    "draw in the tab's text color in the %s theme",
+    async (colorScheme) => {
+      const { result } = await commands.probePage<
+        { name: string; width: number; fill: string; color: string }[]
+      >(origin, "/", {
+        width: 1440,
+        colorScheme,
+        evaluate: `[...document.querySelectorAll("main [role=tab] svg[data-logo]")].map((logo) => ({
+          name: logo.dataset.logo,
+          width: logo.getBoundingClientRect().width,
+          fill: getComputedStyle(logo).fill,
+          color: getComputedStyle(logo.closest("[role=tab]")).color,
+        }))`,
+      });
+      expect(result.map(({ name }) => name)).toEqual(["npm", "pnpm", "yarn", "bun"]);
+      for (const logo of result) {
+        expect(logo.width, logo.name).toBe(14);
+        expect(logo.fill, logo.name).toBe(logo.color);
+      }
+    },
+  );
+});

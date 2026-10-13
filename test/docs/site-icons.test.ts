@@ -12,6 +12,10 @@ import SpanishIndexPage from "../../src/pages/es/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
 import Icon from "../../src/components/icons/Icon.astro";
 import { iconNames, type IconName } from "../../src/components/icons/icons";
+import {
+  packageManagerLogos,
+  type PackageManager,
+} from "../../src/components/icons/package-managers";
 
 /**
  * The docs site's own stroke icons: one module under `src/components/icons/`, drawn on a 24 grid
@@ -151,5 +155,42 @@ describe.each([
       html.slice(html.indexOf("<main")),
     )![0];
     expect(iconsIn(cta)).toEqual(["arrow-right"]);
+  });
+});
+
+describe.each([
+  ["en", IndexPage, "/"],
+  ["es", SpanishIndexPage, "/es/"],
+  ["en", ButtonPage, "/docs/components/button"],
+] as const)("%s install tab logos on %s", (_, page, path) => {
+  it("shows each package manager's logo, monochrome and hidden, before its name", async () => {
+    const html = await render(page, path);
+    const tabs = [
+      ...html.matchAll(/<button[^>]*role="tab"[^>]*id="[^"]*-tab-(\w+)"[\s\S]*?<\/button>/g),
+    ].filter(([, name]) => name in packageManagerLogos);
+    expect(tabs.map(([, name]) => name)).toEqual(
+      expect.arrayContaining(["npm", "pnpm", "yarn", "bun"]),
+    );
+    for (const [tab, name] of tabs) {
+      const svg = /<svg[^>]*>/.exec(tab)![0];
+      expect(svg).toContain(`data-logo="${name}"`);
+      expect(svg).toContain('viewBox="0 0 24 24"');
+      expect(svg).toContain('fill="currentColor"');
+      expect(svg).toContain('aria-hidden="true"');
+      expect(svg).toContain('focusable="false"');
+      expect(tab).toContain(`d="${packageManagerLogos[name as PackageManager]}"`);
+      // The visible name stays and is the tab's whole accessible name.
+      expect(tab.replace(/<[^>]+>/g, "").trim()).toBe(name);
+    }
+  });
+});
+
+describe("package manager logo source", () => {
+  it("records the Simple Icons version and its licence next to the paths", () => {
+    const source = readFileSync(join(root, "src/components/icons/package-managers.ts"), "utf8");
+    expect(source).toContain("simple-icons@13.21.0");
+    expect(source).toContain("CC0-1.0");
+    expect(source).toMatch(/icons\/\{npm,pnpm,yarn,bun\}\.svg/);
+    for (const d of Object.values(packageManagerLogos)) expect(d).toMatch(/^M[\d.\s\w,-]+z?$/i);
   });
 });
