@@ -142,3 +142,20 @@ describe("page scrollbar", () => {
     );
   });
 });
+
+describe("in-page jumps", () => {
+  it("scroll smoothly only when the reader has not asked for reduced motion", async () => {
+    const css = await buildCss([]);
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: no-preference\) \{ html \{ scroll-behavior: smooth;? \} \}/,
+    );
+    // Nowhere else: a reduced-motion reader jumps at once.
+    expect(css.match(/scroll-behavior/g)).toHaveLength(1);
+  });
+
+  it("move focus to the target from every page of the site", () => {
+    const layout = readFileSync(resolve(__dirname, "../../src/layouts/BaseLayout.astro"), "utf8");
+    expect(layout).toMatch(/import \{ initInPageLinks \} from "\.\.\/scripts\/in-page-links";/);
+    expect(layout).toMatch(/initInPageLinks\(document\)/);
+  });
+});
