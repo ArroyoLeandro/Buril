@@ -282,6 +282,17 @@ describe.each(showcases)("$locale landing showcase", (showcase) => {
     expect(fragment).toMatch(/aria-hidden="true"/);
   });
 
+  it("draws the rosette's rings once: the settings fragment reuses the hero's", async () => {
+    const { html } = await renderShowcase();
+    const rings = (markup: string) => markup.match(/<path d="M[\d.]+ [\d.]+L/g)?.length ?? 0;
+    const hero = /<section[^>]*data-hero[\s\S]*?<\/section>/.exec(html)![0];
+    expect(rings(hero)).toBe(11);
+    expect(rings(html)).toBe(11);
+    const id = /<svg\b[^>]*data-engraving[\s\S]*?<g id="([^"]+)"/.exec(hero)![1];
+    const fragment = /<svg\b[^>]*data-engraving[\s\S]*?<\/svg>/.exec(cell(html, "settings"))![0];
+    expect(fragment).toMatch(new RegExp(`<use href="#${id}"`));
+  });
+
   it("renders the bottom row as static HTML except the Gestures, which hydrate when visible", async () => {
     const { showcase: section } = await renderShowcase();
     expect(cell(section, "alert")).not.toMatch(/<astro-island/);

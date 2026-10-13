@@ -17,7 +17,12 @@ import { nudgeArrow } from "./nudge";
 const locale = getLocale(Astro.url);
 const t = translator(locale);
 const href = (path: string) => localizedHref(path, locale);
-const [before, after] = t("landing.title").split("{engraved}");
+// The headline's lines are set in the copy ("|"), so the line breaks never depend on the font:
+// the fallback and Silkscreen wrap alike and the swap does not shift the page. A line can still
+// wrap on a narrow screen.
+const lines = t("landing.title")
+  .split("|")
+  .map((line) => line.split("{engraved}"));
 const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing.traitContrast")];
 ---
 
@@ -32,6 +37,7 @@ const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing
   ></div>
   <div class="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000_62%,transparent_96%)]">
     <Engraving
+      id="engraving-rosette"
       clipId="engraving-hero"
       thin={0.22}
       bold={0.6}
@@ -51,15 +57,22 @@ const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing
     </a>
     <h1
       id="hero-title"
-      class="max-w-[20ch] font-display text-[clamp(2rem,1rem+4vw,4.25rem)] leading-[1.12] text-balance [overflow-wrap:break-word]"
+      class="font-display text-[clamp(2rem,1rem+4vw,4.25rem)] leading-[1.12] text-balance [overflow-wrap:break-word]"
     >
-      {before}
-      <span
-        data-engraved
-        class="box-decoration-clone bg-[image:repeating-linear-gradient(135deg,var(--decor)_0_1.5px,transparent_1.5px_6px)] bg-[length:100%_0.14em] bg-bottom-left bg-no-repeat pb-[0.08em]"
-        set:text={t("landing.titleEngraved")}
-      />
-      {after}
+      {lines.map(([before, after], index) => [
+        index > 0 && " ",
+        <span class="block">
+          {before}
+          {after !== undefined && [
+            <span
+              data-engraved
+              class="box-decoration-clone bg-[image:repeating-linear-gradient(135deg,var(--decor)_0_1.5px,transparent_1.5px_6px)] bg-[length:100%_0.14em] bg-bottom-left bg-no-repeat pb-[0.08em]"
+              set:text={t("landing.titleEngraved")}
+            />,
+            after,
+          ]}
+        </span>,
+      ])}
     </h1>
     <p class="max-w-[38rem] text-lg text-pretty">{t("landing.lead")}</p>
     <div class="flex flex-wrap justify-center gap-3">

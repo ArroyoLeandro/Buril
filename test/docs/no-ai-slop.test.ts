@@ -21,6 +21,12 @@ function files(dir: string, extensions: string[]): string[] {
 
 const pages = files("src/pages", [".astro"]);
 const strings = [...files("src/data", [".ts"]), ...files("src/i18n", [".ts"])];
+// The landing's own components: its layout and the showcase blocks.
+const landing = [
+  "src/components/Landing.astro",
+  ...files("src/components/landing", [".astro", ".ts"]),
+  ...files("src/components/showcase", [".tsx", ".ts"]),
+];
 const readmes = ["README.md", "README.es.md"];
 
 /** The prose of a source file: inline code, code fences and import lines removed. */
@@ -142,6 +148,13 @@ describe("no AI slop", () => {
   it("scans the pages, dictionaries, data and READMEs", () => {
     expect(pages.length).toBeGreaterThan(60);
     expect(strings.length).toBeGreaterThan(10);
+    expect(landing).toEqual(
+      expect.arrayContaining([
+        "src/components/Landing.astro",
+        join("src/components/landing", "Hero.astro"),
+        join("src/components/showcase", "TeamBlock.tsx"),
+      ]),
+    );
   });
 
   it("matches whole words only", () => {
@@ -150,14 +163,17 @@ describe("no AI slop", () => {
     expect(banned.test("a simplyfied name")).toBe(false);
   });
 
-  it.each([...pages, ...strings, ...readmes])("%s uses none of the banned words", (file) => {
-    const found = [...prose(file).matchAll(new RegExp(banned.source, "giu"))].map(
-      ([match]) => match,
-    );
-    expect(found).toEqual([]);
-  });
+  it.each([...pages, ...strings, ...landing, ...readmes])(
+    "%s uses none of the banned words",
+    (file) => {
+      const found = [...prose(file).matchAll(new RegExp(banned.source, "giu"))].map(
+        ([match]) => match,
+      );
+      expect(found).toEqual([]);
+    },
+  );
 
-  it.each([...strings, ...readmes])("%s has no em dash", (file) => {
+  it.each([...strings, ...landing, ...readmes])("%s has no em dash", (file) => {
     expect(emDashes(prose(file))).toBe(0);
   });
 

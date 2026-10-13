@@ -28,9 +28,24 @@
   }
 }
 
+/*
+ * Silkscreen swaps in after the first paint. Until then headings use this local monospace face,
+ * scaled to Silkscreen's average advance (1.167 times Courier New), so a long heading wraps the
+ * same way before and after the swap and the page does not shift (test/docs/fonts.test.ts).
+ */
+@font-face {
+  font-family: "Silkscreen Fallback";
+  src: local("Courier New"), local("Liberation Mono"), local("Cousine");
+  size-adjust: 116.7%;
+  /* Silkscreen's ascent and descent (1.03 and 0.25 em), before the size adjustment. */
+  ascent-override: 88.3%;
+  descent-override: 21.4%;
+  line-gap-override: 0%;
+}
+
 /* Docs site fonts. Buril ships tokens only; the docs load Silkscreen and Inter. */
 @theme {
-  --font-display: "Silkscreen", ui-monospace, monospace;
+  --font-display: "Silkscreen", "Silkscreen Fallback", ui-monospace, monospace;
   --font-body: "Inter", system-ui, sans-serif;
 }
 

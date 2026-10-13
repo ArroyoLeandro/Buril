@@ -2,6 +2,10 @@
 /**
  * Decorative guilloche rosette, the kind a burin cuts into banknote plates. Ink lines with one
  * ring in the decor red. It carries no information, so it is hidden from assistive technology.
+ *
+ * The rings are long paths, so a page draws them once: give the first engraving an `id`, and any
+ * other engraving on the page passes that id as `reuse` and only references it with `<use>`. The
+ * stroke widths are CSS variables, so each copy keeps its own line weight.
  */
 interface Props {
   class?: string;
@@ -9,11 +13,16 @@ interface Props {
   thin?: number;
   /** The decor ring's stroke width. */
   bold?: number;
-  /** The clip path id: give each engraving on a page its own. */
+  /** The clip path id: give each drawn engraving on a page its own. */
   clipId?: string;
+  /** Names the drawing, so another engraving on the page can reuse it. */
+  id?: string;
+  /** Draws nothing and references the engraving with this id instead. */
+  reuse?: string;
 }
 
-const { thin = 0.5, bold = 1.25, clipId = "engraving-core" } = Astro.props;
+const { thin = 0.5, bold = 1.25, clipId = "engraving-core", id, reuse } = Astro.props;
+const weights = `--engraving-thin: ${thin}; --engraving-bold: ${bold}`;
 
 const center = 100;
 const ring = (k: number) => {
@@ -37,36 +46,53 @@ const hatching = Array.from({ length: 20 }, (_, i) => -40 + i * 4);
   viewBox="0 0 200 200"
   fill="none"
   class={Astro.props.class}
+  style={weights}
 >
-  <defs>
-    <clipPath id={clipId}>
-      <circle cx={center} cy={center} r="28"></circle>
-    </clipPath>
-  </defs>
-  <g stroke="currentColor" stroke-width={thin} class="text-foreground">
-    {rings
-      .filter(({ decor }) => !decor)
-      .map(({ d }) => (
-        <path d={d} />
-      ))}
-    <circle cx={center} cy={center} r="99" stroke-width={thin * 1.5}></circle>
-    <circle cx={center} cy={center} r="28" stroke-width={thin * 1.5}></circle>
-    <g clip-path={`url(#${clipId})`}>
-      {hatching.map((offset) => (
-        <line
-          x1={center + offset - 30}
-          y1={center + 30}
-          x2={center + offset + 30}
-          y2={center - 30}
+  {reuse ? (
+    <use href={`#${reuse}`} />
+  ) : (
+    <g id={id}>
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx={center} cy={center} r="28" />
+        </clipPath>
+      </defs>
+      <g stroke="currentColor" style="stroke-width: var(--engraving-thin)" class="text-foreground">
+        {rings
+          .filter(({ decor }) => !decor)
+          .map(({ d }) => (
+            <path d={d} />
+          ))}
+        <circle
+          cx={center}
+          cy={center}
+          r="99"
+          style="stroke-width: calc(var(--engraving-thin) * 1.5)"
         />
-      ))}
+        <circle
+          cx={center}
+          cy={center}
+          r="28"
+          style="stroke-width: calc(var(--engraving-thin) * 1.5)"
+        />
+        <g clip-path={`url(#${clipId})`}>
+          {hatching.map((offset) => (
+            <line
+              x1={center + offset - 30}
+              y1={center + 30}
+              x2={center + offset + 30}
+              y2={center - 30}
+            />
+          ))}
+        </g>
+      </g>
+      <g stroke="currentColor" style="stroke-width: var(--engraving-bold)" class="text-decor">
+        {rings
+          .filter(({ decor }) => decor)
+          .map(({ d }) => (
+            <path d={d} />
+          ))}
+      </g>
     </g>
-  </g>
-  <g stroke="currentColor" stroke-width={bold} class="text-decor">
-    {rings
-      .filter(({ decor }) => decor)
-      .map(({ d }) => (
-        <path d={d} />
-      ))}
-  </g>
+  )}
 </svg>
