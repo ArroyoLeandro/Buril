@@ -540,8 +540,10 @@ describe("button page", () => {
     const groups = [...html.matchAll(/<div[^>]*data-install-tabs[\s\S]*?data-copy-status[^>]*>/g)];
     expect(groups).toHaveLength(3);
     for (const [group] of groups) {
-      const tabs = [...group.matchAll(/<button\b([^>]*role="tab"[^>]*)>([^<]*)<\/button>/g)];
-      expect(tabs.map(([, , label]) => label!.trim())).toEqual(["npm", "pnpm", "yarn", "bun"]);
+      // Each tab shows its logo (decorative) before the name; the name is the whole text.
+      const tabs = [...group.matchAll(/<button\b([^>]*role="tab"[^>]*)>([\s\S]*?)<\/button>/g)];
+      const labels = tabs.map(([, , label]) => label!.replace(/<[^>]+>/g, "").trim());
+      expect(labels).toEqual(["npm", "pnpm", "yarn", "bun"]);
       expect(group).toMatch(/role="tablist"[^>]*aria-label="[^"]+"/);
       for (const [index, [, attributes]] of tabs.entries()) {
         const selected = index === 0;

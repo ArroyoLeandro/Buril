@@ -78,3 +78,91 @@ describe("Copy button icon", () => {
     expect(result).toEqual({ before: ["copy"], after: ["check"] });
   });
 });
+
+describe("install tab logos", () => {
+  it.each(["light", "dark"] as const)(
+    "draw in the tab's text color in the %s theme",
+    async (colorScheme) => {
+      const { result } = await commands.probePage<
+        { name: string; width: number; fill: string; color: string }[]
+      >(origin, "/", {
+        width: 1440,
+        colorScheme,
+        evaluate: `[...document.querySelectorAll("main [role=tab] svg[data-logo]")].map((logo) => ({
+          name: logo.dataset.logo,
+          width: logo.getBoundingClientRect().width,
+          fill: getComputedStyle(logo).fill,
+          color: getComputedStyle(logo.closest("[role=tab]")).color,
+        }))`,
+      });
+      expect(result.map(({ name }) => name)).toEqual(["npm", "pnpm", "yarn", "bun"]);
+      for (const logo of result) {
+        expect(logo.width, logo.name).toBe(14);
+        expect(logo.fill, logo.name).toBe(logo.color);
+      }
+    },
+  );
+});
+
+describe("Buril mark", () => {
+  it.each([
+    ["/", "light"],
+    ["/", "dark"],
+    ["/es/docs/components/button", "dark"],
+  ] as const)(
+    "%s draws the mark in ink with the cut in the decoration red (%s)",
+    async (path, colorScheme) => {
+      const { result } = await commands.probePage<{
+        size: number[];
+        rings: string;
+        cut: string;
+        decor: string;
+        color: string;
+        maskRendered: boolean;
+      }>(origin, path, {
+        width: 1440,
+        colorScheme,
+        evaluate: `(() => {
+        const mark = document.querySelector("header svg[data-logo=buril]");
+        const box = mark.getBoundingClientRect();
+        const probe = document.createElement("span");
+        probe.style.color = "var(--decor)";
+        document.body.append(probe);
+        const decor = getComputedStyle(probe).color;
+        probe.remove();
+        return {
+          size: [box.width, box.height],
+          rings: getComputedStyle(mark.querySelector("circle")).stroke,
+          cut: getComputedStyle(mark.querySelector("path.text-decor")).stroke,
+          decor,
+          color: getComputedStyle(mark.closest("a")).color,
+          maskRendered: !!document.getElementById(mark.querySelector("mask").id),
+        };
+      })()`,
+      });
+      expect(result.size).toEqual([22, 22]);
+      expect(result.rings).toBe(result.color);
+      expect(result.cut).toBe(result.decor);
+      expect(result.cut).not.toBe(result.color);
+      expect(result.maskRendered).toBe(true);
+    },
+  );
+
+  it("serves the SVG favicon the head links to", async () => {
+    const { result } = await commands.probePage<{ href: string; status: number; type: string }>(
+      origin,
+      "/es/",
+      {
+        width: 1440,
+        evaluate: `(async () => {
+          const link = document.querySelector('link[rel="icon"]');
+          const response = await fetch(link.href);
+          return { href: link.getAttribute("href"), status: response.status, type: response.headers.get("content-type") };
+        })()`,
+      },
+    );
+    expect(result.href).toBe("/favicon.svg");
+    expect(result.status).toBe(200);
+    expect(result.type).toMatch(/^image\/svg\+xml/);
+  });
+});
