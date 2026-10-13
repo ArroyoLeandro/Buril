@@ -17,12 +17,12 @@ import { nudgeArrow } from "./nudge";
 const locale = getLocale(Astro.url);
 const t = translator(locale);
 const href = (path: string) => localizedHref(path, locale);
-// The headline's lines are set in the copy ("|"), so the line breaks never depend on the font:
-// the fallback and Silkscreen wrap alike and the swap does not shift the page. A line can still
-// wrap on a narrow screen.
+// The headline is Inter, with one accent word in the pixel font. Its lines are set in the copy
+// ("|"), so the line breaks never depend on the font: the size-matched fallbacks and the web fonts
+// wrap alike and the swap does not shift the page. A line can still wrap on a narrow screen.
 const lines = t("landing.title")
   .split("|")
-  .map((line) => line.split("{engraved}"));
+  .map((line) => line.split("{accent}"));
 const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing.traitContrast")];
 ---
 
@@ -57,17 +57,20 @@ const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing
     </a>
     <h1
       id="hero-title"
-      class="font-display text-[clamp(2rem,1rem+4vw,4.25rem)] leading-[1.12] text-balance [overflow-wrap:break-word]"
+      class="font-headline pb-[0.12em] text-[clamp(2rem,0.9rem+4.4vw,4.5rem)] leading-[1.08] font-semibold tracking-normal text-balance [overflow-wrap:break-word]"
     >
       {lines.map(([before, after], index) => [
         index > 0 && " ",
         <span class="block">
           {before}
           {after !== undefined && [
+            // Silkscreen's capitals are 0.63em tall and Inter's 0.73em: at 1.15em the accent
+            // stands as tall as the words around it. A short line height keeps its line box
+            // the same as the other line's.
             <span
-              data-engraved
-              class="box-decoration-clone bg-[image:repeating-linear-gradient(135deg,var(--decor)_0_1.5px,transparent_1.5px_6px)] bg-[length:100%_0.14em] bg-bottom-left bg-no-repeat pb-[0.08em]"
-              set:text={t("landing.titleEngraved")}
+              data-accent
+              class="box-decoration-clone bg-[image:repeating-linear-gradient(135deg,var(--decor)_0_1.5px,transparent_1.5px_6px)] bg-[length:100%_0.12em] bg-bottom-left bg-no-repeat font-display text-[1.15em] leading-[0.75] font-normal"
+              set:text={t("landing.titleAccent")}
             />,
             after,
           ]}

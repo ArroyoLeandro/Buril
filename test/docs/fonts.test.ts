@@ -21,6 +21,20 @@ describe("the display font fallback", () => {
     expect(face![0]).toMatch(/descent-override:\s*21\.4%/);
   });
 
+  it("has an Inter headline fallback: local Arial Bold scaled to Inter semibold", () => {
+    const face = /@font-face\s*\{[^}]*font-family:\s*"Inter Headline Fallback"[^}]*\}/.exec(css);
+    expect(face, "@font-face Inter Headline Fallback").not.toBeNull();
+    expect(face![0]).toMatch(/src:\s*local\("Arial Bold"\)/);
+    expect(face![0]).toMatch(/font-weight:\s*600/);
+    // Inter semibold is 1.013 times as wide as Arial Bold on both headlines (measured in Chromium).
+    expect(face![0]).toMatch(/size-adjust:\s*101\.3%/);
+    expect(face![0]).toMatch(/ascent-override:\s*95\.8%/);
+    expect(face![0]).toMatch(/descent-override:\s*23\.7%/);
+    expect(css).toMatch(
+      /--font-headline:\s*"Inter",\s*"Inter Headline Fallback",\s*system-ui,\s*sans-serif;/,
+    );
+  });
+
   it("comes right after Silkscreen in the display font stack", () => {
     expect(css).toMatch(
       /--font-display:\s*"Silkscreen",\s*"Silkscreen Fallback",\s*ui-monospace,\s*monospace;/,

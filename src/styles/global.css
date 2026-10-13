@@ -43,10 +43,28 @@
   line-gap-override: 0%;
 }
 
+/*
+ * The landing headline is Inter semibold, which also swaps in after the first paint. Its fallback
+ * is Arial Bold scaled to Inter's width (1.013) and vertical metrics, so the headline keeps its
+ * line breaks through the swap (test/docs/fonts.test.ts).
+ */
+@font-face {
+  font-family: "Inter Headline Fallback";
+  src:
+    local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold");
+  font-weight: 600;
+  size-adjust: 101.3%;
+  /* Inter's ascent and descent (0.97 and 0.24 em), before the size adjustment. */
+  ascent-override: 95.8%;
+  descent-override: 23.7%;
+  line-gap-override: 0%;
+}
+
 /* Docs site fonts. Buril ships tokens only; the docs load Silkscreen and Inter. */
 @theme {
   --font-display: "Silkscreen", "Silkscreen Fallback", ui-monospace, monospace;
   --font-body: "Inter", system-ui, sans-serif;
+  --font-headline: "Inter", "Inter Headline Fallback", system-ui, sans-serif;
 }
 
 @layer base {

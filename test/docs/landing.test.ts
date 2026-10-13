@@ -42,7 +42,8 @@ const heroes = [
     page: IndexPage,
     path: "/",
     title: "Accessible components, engraved to last",
-    engraved: "engraved",
+    accent: "engraved",
+    lines: ["Accessible components,", "engraved to last"],
     pill: "See the changelog",
     count: `${documentedComponents.length} components`,
     lead: "React components that the shadcn CLI copies into your project as source you can edit. Each one ships with keyboard and accessibility-tree tests.",
@@ -53,8 +54,9 @@ const heroes = [
     locale: "es",
     page: IndexPageEs,
     path: "/es/",
-    title: "Componentes accesibles, grabados para durar",
-    engraved: "grabados",
+    title: "Componentes accesibles, hechos para durar",
+    accent: "durar",
+    lines: ["Componentes accesibles,", "hechos para durar"],
     pill: "Ver los cambios",
     count: `${documentedComponents.length} componentes`,
     lead: "Componentes de React que la CLI de shadcn copia en tu proyecto como código fuente que puedes editar. Cada uno incluye tests de teclado y del árbol de accesibilidad.",
@@ -86,12 +88,30 @@ describe.each(heroes)("$locale landing hero", (hero) => {
     expect(section).toMatch(new RegExp(`^<section[^>]*aria-labelledby="${id}"`));
   });
 
-  it("underlines one word of the headline with the engraved hatching", async () => {
+  it("sets one accent word in the pixel font, with the engraved hatching", async () => {
     const { hero: section } = await renderHero();
     const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(section)![0];
-    const marked = [...h1.matchAll(/<span[^>]*data-engraved[^>]*>([\s\S]*?)<\/span>/g)];
-    expect(marked.map(([, word]) => text(word!))).toEqual([hero.engraved]);
+    const marked = [...h1.matchAll(/<span[^>]*data-accent[^>]*>([\s\S]*?)<\/span>/g)];
+    // Exactly one accent word per language, wherever the language puts it.
+    expect(marked.map(([, word]) => text(word!))).toEqual([hero.accent]);
     expect(marked[0]![0]).toMatch(/repeating-linear-gradient\(135deg,var\(--decor\)/);
+    expect(marked[0]![0]).toMatch(/class="[^"]*\bfont-display\b/);
+    // Nothing else in the headline uses the pixel font.
+    expect(h1.match(/\bfont-display\b/g)).toHaveLength(1);
+  });
+
+  it("sets the headline in Inter semibold, sentence case, on two lines from the copy", async () => {
+    const { hero: section } = await renderHero();
+    const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(section)![0];
+    const tag = /<h1[^>]*>/.exec(h1)![0];
+    for (const name of ["font-headline", "font-semibold", "tracking-normal"]) {
+      expect(tag).toMatch(new RegExp(`class="[^"]*(?<=[" ])${name}(?=[" ])`));
+    }
+    expect(tag).not.toMatch(/\b(font-display|uppercase)\b/);
+    const lines = [
+      ...h1.matchAll(/<span class="block">([\s\S]*?)<\/span>\s*(?=<span class="block">|<\/h1>)/g),
+    ];
+    expect(lines.map(([, line]) => text(line!))).toEqual([...hero.lines]);
   });
 
   it("starts with a pill that counts the components and links to the changelog", async () => {

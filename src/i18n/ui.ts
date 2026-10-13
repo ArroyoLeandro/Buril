@@ -79,8 +79,8 @@ const en = {
   "install.copyFailed": "Could not copy. Select the command and copy it manually.",
   "install.placeholder":
     "example.com is a placeholder until the registry is hosted; the paths after it stay the same.",
-  "landing.title": "Accessible|components,|{engraved} to last",
-  "landing.titleEngraved": "engraved",
+  "landing.title": "Accessible components,|{accent} to last",
+  "landing.titleAccent": "engraved",
   "landing.count": "{count} components",
   "landing.changelog": "See the changelog",
   "landing.lead":
@@ -224,8 +224,8 @@ const es: Record<UiKey, string> = {
   "install.copyFailed": "No se pudo copiar. Selecciona el comando y cópialo manualmente.",
   "install.placeholder":
     "example.com es provisional hasta que el registry esté publicado; las rutas que siguen no cambian.",
-  "landing.title": "Componentes|accesibles,|{engraved} para durar",
-  "landing.titleEngraved": "grabados",
+  "landing.title": "Componentes accesibles,|hechos para {accent}",
+  "landing.titleAccent": "durar",
   "landing.count": "{count} componentes",
   "landing.changelog": "Ver los cambios",
   "landing.lead":

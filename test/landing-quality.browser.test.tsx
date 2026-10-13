@@ -195,9 +195,12 @@ describe("the headline font swap", () => {
   it.each([
     [375, "/"],
     [375, "/es/"],
+    [768, "/"],
+    [768, "/es/"],
     [1024, "/es/"],
     [1440, "/"],
     [1440, "/es/"],
+    [1920, "/es/"],
   ] as const)(
     "at %ipx, %s breaks the same lines in the fallback and in Silkscreen, so the swap does not shift the page",
     async (width, path) => {
@@ -210,8 +213,121 @@ describe("the headline font swap", () => {
         width,
         evaluate: lineBreaks,
       });
-      expect(loaded.result.split("|").length).toBeGreaterThanOrEqual(3);
+      expect(loaded.result.split("|").length).toBeGreaterThanOrEqual(2);
       expect(fallback.result).toBe(loaded.result);
+    },
+  );
+});
+
+interface HeadlineType {
+  family: string;
+  weight: string;
+  spacing: string;
+  transform: string;
+  accentFamily: string;
+  accent: string;
+  capRatio: number;
+  lineHeights: number[];
+  fontSize: number;
+}
+
+/** The headline's computed type: Inter for the words, Silkscreen for the accent. */
+const headlineType = `(async () => {
+  await document.fonts.ready;
+  const h1 = document.querySelector("[data-hero] h1");
+  const accent = h1.querySelector("[data-accent]");
+  const style = getComputedStyle(h1);
+  const accentStyle = getComputedStyle(accent);
+  const ctx = document.createElement("canvas").getContext("2d");
+  const cap = (font) => { ctx.font = font; return ctx.measureText("E").actualBoundingBoxAscent; };
+  const interCap = cap("600 " + style.fontSize + " Inter");
+  const accentCap = cap("400 " + accentStyle.fontSize + " Silkscreen");
+  return {
+    family: style.fontFamily,
+    weight: style.fontWeight,
+    spacing: style.letterSpacing,
+    transform: style.textTransform,
+    accentFamily: accentStyle.fontFamily,
+    accent: accent.textContent.trim(),
+    capRatio: accentCap / interCap,
+    lineHeights: [...h1.querySelectorAll(":scope > span.block")].map((line) => Math.round(line.getBoundingClientRect().height)),
+    fontSize: parseFloat(style.fontSize),
+  };
+})()`;
+
+describe("the hero headline type", () => {
+  it.each([
+    [375, "/", "engraved"],
+    [375, "/es/", "durar"],
+    [768, "/es/", "durar"],
+    [1440, "/", "engraved"],
+    [1440, "/es/", "durar"],
+    [1920, "/", "engraved"],
+  ] as const)(
+    "at %ipx, %s reads in Inter semibold with one pixel-font accent",
+    async (width, path, word) => {
+      const { result } = await commands.probePage<HeadlineType>(origin, path, {
+        width,
+        evaluate: headlineType,
+      });
+      expect(result.family).toMatch(/^Inter,/);
+      expect(result.weight).toBe("600");
+      expect(result.spacing).toBe("normal");
+      expect(result.transform).toBe("none");
+      expect(result.accentFamily).toMatch(/^Silkscreen,/);
+      expect(result.accent).toBe(word);
+      // The accent's capitals stand as tall as Inter's, so the word sits on the line, not above it.
+      expect(result.capRatio).toBeGreaterThan(0.95);
+      expect(result.capRatio).toBeLessThan(1.05);
+      // A display size: at least 32px on a phone, at most 72px on a wide screen.
+      expect(result.fontSize).toBeGreaterThanOrEqual(32);
+      expect(result.fontSize).toBeLessThanOrEqual(72);
+      // The accent never makes its line taller than a line without it.
+      if (width >= 768) expect(new Set(result.lineHeights).size).toBe(1);
+    },
+  );
+});
+
+/** WCAG contrast of the headline and the lead against the paper under the darkest engraving line. */
+const contrastOverEngraving = `(() => {
+  const canvas = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+  const rgb = (value) => {
+    canvas.clearRect(0, 0, 1, 1);
+    canvas.fillStyle = value;
+    canvas.fillRect(0, 0, 1, 1);
+    return [...canvas.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+  };
+  const luminance = (c) => {
+    const [r, g, b] = c.map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const ratio = (a, b) => { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const art = document.querySelector("[data-hero] svg[data-engraving]");
+  let opacity = 1;
+  for (let el = art; el && el !== document.body; el = el.parentElement) opacity *= parseFloat(getComputedStyle(el).opacity);
+  const paper = rgb(getComputedStyle(document.body).backgroundColor);
+  const strokes = [...art.querySelectorAll("g[class]")].map((g) => rgb(getComputedStyle(g).color));
+  const under = strokes.map((stroke) => paper.map((p, i) => Math.round(p * (1 - opacity) + stroke[i] * opacity)));
+  const worst = (selector) => {
+    const color = rgb(getComputedStyle(document.querySelector(selector)).color);
+    return Math.min(ratio(color, paper), ...under.map((bg) => ratio(color, bg)));
+  };
+  return { opacity, headline: worst("[data-hero] h1"), lead: worst("[data-hero] p") };
+})()`;
+
+describe("the hero over the engraving", () => {
+  it.each(["light", "dark"] as const)(
+    "keeps the headline and the lead above 4.5:1 in the %s theme, at full engraving strength",
+    async (colorScheme) => {
+      const { result } = await commands.probePage<{
+        opacity: number;
+        headline: number;
+        lead: number;
+      }>(origin, "/", { width: 1440, colorScheme, evaluate: contrastOverEngraving });
+      // The engraving keeps its strength: 20% in light, 25% in dark.
+      expect(result.opacity).toBeGreaterThanOrEqual(0.2);
+      expect(result.headline).toBeGreaterThanOrEqual(4.5);
+      expect(result.lead).toBeGreaterThanOrEqual(4.5);
     },
   );
 });
