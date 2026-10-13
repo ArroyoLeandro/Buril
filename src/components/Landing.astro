@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Engraving from "./Engraving.astro";
 import InlineCode from "./InlineCode.astro";
 import InstallCommand from "./InstallCommand.astro";
+import Icon from "./icons/Icon.astro";
 import ButtonsPanel from "./showcase/ButtonsPanel";
 import SettingsPanel from "./showcase/SettingsPanel";
 import SignInPanel from "./showcase/SignInPanel";
@@ -58,6 +59,7 @@ const panels = [
         <div class="mt-8 flex flex-wrap gap-3">
           <a href={href("/docs")} class={buttonVariants({ size: "lg" })}>
             {t("landing.getStarted")}
+            <Icon name="arrow-right" class="size-4" />
           </a>
           <a
             href={href("/docs/components")}
