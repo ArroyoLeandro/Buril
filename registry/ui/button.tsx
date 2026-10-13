@@ -20,7 +20,9 @@ const buttonVariants = cva(
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
     // Borders stay visible when forced-colors replaces the palette.
     "forced-colors:border-current",
-    "disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-progress",
+    // Tailwind v4 gives buttons the default cursor; show the pointer, like the other controls. A
+    // disabled button takes no pointer events, and a loading one shows progress.
+    "cursor-pointer disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-progress",
   ],
   {
     variants: {

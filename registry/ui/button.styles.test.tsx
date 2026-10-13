@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { classList, createCascade } from "../../test/tailwind-cascade";
@@ -10,7 +11,7 @@ import {
   motionReduced,
   transitionOf,
 } from "../../test/motion-assertions";
-import { buttonVariants } from "./button";
+import { IconButton, buttonVariants } from "./button";
 
 // Compiled with Tailwind so the cascade is checked, including a raw <a> styled with
 // `buttonVariants()`, where no `cn()` removes conflicting classes.
@@ -186,4 +187,55 @@ describe("buttonVariants letterpress", () => {
     const transition = transitionOf(computed, classesOf({}), motionReduced);
     expect(transition.properties).not.toContain("translate");
   });
+});
+
+// Tailwind v4's preflight gives buttons the default cursor; Buril's buttons show the pointer, like
+// its Checkbox, Radio Group, Select and Switch. Disabled buttons take no pointer events, and a
+// loading button shows progress.
+describe("buttonVariants cursor", () => {
+  it.each(variants)("the %s variant shows the pointer", (variant) => {
+    expect(computed(classesOf({ variant }), "cursor")).toBe("pointer");
+  });
+
+  it.each(["sm", "default", "lg", "icon-sm", "icon", "icon-lg"] as const)(
+    "the %s size shows the pointer",
+    (size) => {
+      expect(computed(classesOf({ size }), "cursor")).toBe("pointer");
+    },
+  );
+
+  it("shows progress while loading", () => {
+    const busy = { states: ['[aria-busy="true"]'] };
+    expect(computed(classesOf({}), "cursor", busy)).toBe("progress");
+  });
+
+  it("takes no pointer events when disabled, so no cursor of its own", () => {
+    const disabled = { states: [":disabled"] };
+    expect(computed(classesOf({}), "pointer-events", disabled)).toBe("none");
+  });
+});
+
+describe("IconButton cursor", () => {
+  const classesOfMarkup = (markup: string) =>
+    classList(/<button[^>]*class="([^"]*)"/.exec(markup)![1]!);
+
+  it.each([undefined, "rotate", "pop"] as const)(
+    "shows the pointer with the %s gesture, and progress while loading",
+    (motion) => {
+      const idle = renderToStaticMarkup(
+        <IconButton aria-label="Close dialog" motion={motion}>
+          <svg />
+        </IconButton>,
+      );
+      expect(computed(classesOfMarkup(idle), "cursor")).toBe("pointer");
+      const loading = renderToStaticMarkup(
+        <IconButton aria-label="Close dialog" motion={motion} loading>
+          <svg />
+        </IconButton>,
+      );
+      expect(loading).toContain('aria-busy="true"');
+      const busy = { states: ['[aria-busy="true"]'] };
+      expect(computed(classesOfMarkup(loading), "cursor", busy)).toBe("progress");
+    },
+  );
 });
