@@ -269,3 +269,23 @@ describe("Button loading in a real browser", () => {
     },
   );
 });
+
+describe("Button cursor in a real browser", () => {
+  it("shows the pointer, progress while loading, and passes the pointer through when disabled", async () => {
+    const screen = await render(
+      <div>
+        <Button>Save</Button>
+        <Button loading>Saving</Button>
+        <Button disabled>Off</Button>
+        <IconButton aria-label="Close dialog" motion="rotate">
+          <svg viewBox="0 0 24 24" />
+        </IconButton>
+      </div>,
+    );
+    const [idle, loading, disabled, icon] = screen.container.querySelectorAll("button");
+    expect(getComputedStyle(idle!).cursor).toBe("pointer");
+    expect(getComputedStyle(loading!).cursor).toBe("progress");
+    expect(getComputedStyle(disabled!).pointerEvents).toBe("none");
+    expect(getComputedStyle(icon!).cursor).toBe("pointer");
+  });
+});

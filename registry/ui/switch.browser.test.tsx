@@ -188,3 +188,21 @@ describe("Switch motion in a real browser", () => {
     expect(slides(carrier)).toBe(false);
   });
 });
+
+describe("Switch cursor in a real browser", () => {
+  it("shows the pointer over the track and the dot, and not-allowed when disabled", async () => {
+    const screen = await render(
+      <div>
+        <Switch aria-label="Email" />
+        <Switch aria-label="SMS" disabled />
+      </div>,
+    );
+    const [on, off] = screen.container.querySelectorAll("input");
+    expect(getComputedStyle(on!).cursor).toBe("pointer");
+    expect(getComputedStyle(off!).cursor).toBe("not-allowed");
+    // The dot sits over the track and lets the pointer through to it.
+    const dot = on!.parentElement!.querySelector<HTMLElement>("[data-thumb]")!;
+    const box = dot.getBoundingClientRect();
+    expect(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)).toBe(on);
+  });
+});

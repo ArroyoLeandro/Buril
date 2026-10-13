@@ -319,3 +319,29 @@ describe("in-page jumps", () => {
     expect(result.focused).toBe(result.hash);
   });
 });
+
+describe("site button cursors", () => {
+  it.each([
+    [320, "/"],
+    [1440, "/docs/components/button"],
+    [1440, "/es/"],
+  ] as const)("at %ipx, %s shows the pointer on every visible site button", async (width, path) => {
+    const { result } = await commands.probePage<{ count: number; others: string[] }>(origin, path, {
+      width,
+      steps: [{ until: `!document.querySelector("[data-theme-toggle]")?.hidden` }],
+      evaluate: `(() => {
+        const buttons = [...document.querySelectorAll("button")].filter(
+          (button) => !button.closest("astro-island") && button.getBoundingClientRect().width > 0,
+        );
+        return {
+          count: buttons.length,
+          others: buttons
+            .filter((button) => getComputedStyle(button).cursor !== "pointer")
+            .map((button) => button.outerHTML.slice(0, 80)),
+        };
+      })()`,
+    });
+    expect(result.count).toBeGreaterThan(3);
+    expect(result.others).toEqual([]);
+  });
+});
