@@ -4,6 +4,7 @@ import { Code } from "astro:components";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { codeTheme } from "./code-theme";
+import Icon from "./icons/Icon.astro";
 import { getLocale, translator } from "../i18n/ui";
 
 interface Props {
@@ -76,6 +77,9 @@ const managers = [
         aria-label={t("install.copyLabel", { name: manager.name })}
         class={buttonVariants({ variant: "outline", size: "sm" })}
       >
+        {/* The copy icon turns into a check while the script marks the button `data-copy-done`. */}
+        <Icon name="copy" class="size-4 in-data-copy-done:hidden" />
+        <Icon name="check" class="hidden size-4 in-data-copy-done:inline" />
         {t("install.copy")}
       </button>
     </div>

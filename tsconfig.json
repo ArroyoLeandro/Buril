@@ -11,6 +11,7 @@
     "test/browser-commands.ts",
     "test/browser-setup.ts",
     "test/docs-site.ts",
+    "test/site-probe.ts",
     "vitest.config.ts",
     "vitest.browser.config.ts"
   ],

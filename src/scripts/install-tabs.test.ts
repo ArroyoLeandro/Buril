@@ -94,6 +94,31 @@ describe("install tabs", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Copied the bun command.");
   });
 
+  it("marks the button as copied for two seconds, so its icon turns into a check", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      renderTabs();
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue();
+      const button = screen.getByRole("button", { name: "Copy npm command" });
+      await user.click(button);
+      expect(button).toHaveAttribute("data-copy-done");
+      vi.advanceTimersByTime(2000);
+      expect(button).not.toHaveAttribute("data-copy-done");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("never marks a failed copy as copied", async () => {
+    renderTabs();
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(new Error("denied"));
+    const button = screen.getByRole("button", { name: "Copy npm command" });
+    await user.click(button);
+    expect(button).not.toHaveAttribute("data-copy-done");
+  });
+
   it("reports a failed copy instead of failing silently", async () => {
     renderTabs();
     const user = userEvent.setup();

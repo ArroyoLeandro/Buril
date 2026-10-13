@@ -1,0 +1,18 @@
+---
+import { iconAttributes, iconMarkup, icons, type IconName } from "./icons";
+
+/** A site stroke icon (see `icons.ts`), always decorative. Size it with a `size-*` class. */
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+
+<svg
+  data-icon={name}
+  class:list={["shrink-0", className]}
+  {...iconAttributes}
+  set:html={iconMarkup(icons[name])}
+/>

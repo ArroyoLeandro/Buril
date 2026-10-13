@@ -22,6 +22,23 @@ describe("MotionDemo", () => {
     expect(screen.getByRole("link", { name: "Accessible forms" })).toBeInTheDocument();
   });
 
+  it("draws its icons from the site icon set", () => {
+    render(<MotionDemo />);
+    const icon = (name: string) =>
+      screen.getByRole("button", { name }).querySelector("svg")?.getAttribute("data-icon");
+    expect(icon("Close dialog")).toBe("close");
+    expect(icon("Notifications")).toBe("bell");
+    expect(icon("Like")).toBe("heart");
+  });
+
+  it("fills the heart while Like is pressed", async () => {
+    render(<MotionDemo />);
+    const like = screen.getByRole("button", { name: "Like" });
+    expect(like.querySelector("svg")).toHaveAttribute("fill", "none");
+    await userEvent.click(like);
+    expect(like.querySelector("svg")).toHaveAttribute("fill", "currentColor");
+  });
+
   it("simulates reduced motion on the stage from a labelled switch, off by default", async () => {
     const { container } = render(<MotionDemo />);
     const simulate = screen.getByRole("switch", { name: "Simulate reduced motion" });

@@ -11,6 +11,7 @@ import {
   inspectPanels,
   inspectWrapping,
 } from "./test/docs-site.ts";
+import { probePage } from "./test/site-probe.ts";
 
 // Real-browser tests: geometry, computed styles, transitions and focus, which jsdom cannot see.
 // They run in headless Chromium with the compiled Tailwind stylesheet and the Buril theme.
@@ -48,6 +49,7 @@ export default defineConfig({
         inspectPage,
         inspectPanels,
         inspectWrapping,
+        probePage,
       },
       instances: [{ browser: "chromium", viewport: { width: 1024, height: 768 } }],
     },

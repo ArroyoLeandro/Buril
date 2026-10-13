@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import Icon from "../components/icons/Icon.astro";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../registry/ui/button";
 import { SkipLink } from "../../registry/ui/skip-link";
@@ -77,6 +78,7 @@ const linkClass =
           class="inline-flex min-h-10 items-center gap-2 rounded-full font-display max-md:me-auto md:me-2"
         >
           <svg
+            data-logo="buril"
             aria-hidden="true"
             focusable="false"
             viewBox="0 0 24 24"
@@ -107,6 +109,7 @@ const linkClass =
             <li class="lg:ms-auto">
               <a href={githubUrl} class:list={[linkClass, "inline-flex items-center gap-1.5"]}>
                 <svg
+                  data-logo="github"
                   aria-hidden="true"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -131,18 +134,7 @@ const linkClass =
           hidden
           class={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "md:hidden")}
         >
-          <svg
-            aria-hidden="true"
-            focusable="false"
-            viewBox="0 0 24 24"
-            class="size-4 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          >
-            <path d="M4 7h16M4 12h16M4 17h16"></path>
-          </svg>
+          <Icon name="menu" class="size-4" />
         </button>
       </div>
     </header>

@@ -7,30 +7,8 @@ import { RadioGroup, RadioGroupItem } from "../../registry/ui/radio-group";
 import { Spinner } from "../../registry/ui/spinner";
 import { Switch } from "../../registry/ui/switch";
 import { demoHref, demoTranslator } from "../i18n/demos";
+import { Icon } from "./icons/Icon";
 import type { Locale } from "../i18n/ui";
-
-/** Stroke icons drawn inline, so the demo needs no icon package. */
-function Icon({ path, filled = false }: { path: string; filled?: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill={filled ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d={path} />
-    </svg>
-  );
-}
-
-const icons = {
-  close: "M6 6l12 12M18 6L6 18",
-  bell: "M12 3v1.5M18 16.5V11a6 6 0 0 0-12 0v5.5L4.5 18.5h15zM10 21a2.2 2.2 0 0 0 4 0",
-  heart:
-    "M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z",
-};
 
 interface Props {
   /** Language of the labels. */
@@ -88,10 +66,10 @@ export default function MotionDemo({ locale = "en" }: Props) {
         <div className="flex flex-wrap items-center gap-3">
           <Button>{t("Save changes")}</Button>
           <IconButton variant="ghost" motion="rotate" aria-label={t("Close dialog")}>
-            <Icon path={icons.close} />
+            <Icon name="close" />
           </IconButton>
           <IconButton variant="ghost" motion="swing" aria-label={t("Notifications")}>
-            <Icon path={icons.bell} />
+            <Icon name="bell" />
           </IconButton>
           <IconButton
             variant="ghost"
@@ -100,7 +78,7 @@ export default function MotionDemo({ locale = "en" }: Props) {
             aria-pressed={liked}
             onClick={() => setLiked((value) => !value)}
           >
-            <Icon path={icons.heart} filled={liked} />
+            <Icon name="heart" filled={liked} />
           </IconButton>
         </div>
 
