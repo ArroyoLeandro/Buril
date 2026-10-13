@@ -50,10 +50,7 @@ const { variantsExample, statusExample } = componentExamples.button;
     El botón usa los tokens estándar de shadcn y el helper <code>cn()</code> que ya tienes, así que
     instalarlo no cambia tu tema. Crea <code>components/ui/button.tsx</code>, agrega
     <code>class-variance-authority</code> y suma a tu CSS los keyframes de <code>motion</code> de
-    los iconos (<code>@keyframes buril-icon-*</code>); el resto de tu CSS no cambia. Si tu{" "}
-    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
-    reemplazarlo; puedes responder que no sin problema, porque el botón solo necesita{" "}
-    <code>cn()</code>.
+    los iconos (<code>@keyframes buril-icon-*</code>); el resto de tu CSS no cambia.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Si vienes de shadcn/ui</h2>
@@ -107,8 +104,8 @@ const { variantsExample, statusExample } = componentExamples.button;
 
   <h2 class="mt-10 font-display text-xl">Tema opcional</h2>
   <p class="mt-4 text-muted-foreground">
-    La paleta de Buril (primario de tinta y rojo laca para el foco, la decoración y las acciones
-    destructivas) se instala por separado:
+    La paleta de Buril (primario de tinta; rojo laca para el foco, la decoración, el fondo al pasar
+    el puntero y las acciones destructivas) se instala por separado:
   </p>
   <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
   <p class="mt-4 text-muted-foreground">Modifica tu archivo CSS global:</p>

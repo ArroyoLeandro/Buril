@@ -24,8 +24,8 @@ const { fieldExample, indeterminateExample } = componentExamples.checkbox;
     </p>
     <p class="mt-4 text-muted-foreground">
       The box is 20px. With <code>min-h-6</code> on the label row, the whole row is a click target
-      at least 24px tall, above the 24px minimum target size. For a description or an error message,
-      put it in a Field instead, which labels it above the box.
+      at least 24px tall, which meets the 24px minimum target size. For a description or an error
+      message, put it in a Field instead, which labels it above the box.
     </p>
   </Fragment>
 
@@ -68,7 +68,6 @@ const { fieldExample, indeterminateExample } = componentExamples.checkbox;
     Checkbox. Unlike shadcn's, it is a native input: <code>onChange</code> replaces{" "}
     <code>onCheckedChange</code>, and
     <code>indeterminate</code> replaces <code>checked="indeterminate"</code>. It needs only your
-    <code>cn()</code> helper; if your <code>lib/utils.ts</code> differs from the current shadcn
-    version, the CLI asks before replacing it, and answering no is safe.
+    <code>cn()</code> helper.
   </p>
 </ComponentPage>

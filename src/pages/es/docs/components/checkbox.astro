@@ -25,7 +25,7 @@ const { fieldExample, indeterminateExample } = componentExamples.checkbox;
     </p>
     <p class="mt-4 text-muted-foreground">
       La casilla mide 20px. Con <code>min-h-6</code> en la fila de la etiqueta, toda la fila es un
-      objetivo de clic de al menos 24px de alto, por encima del tamaño mínimo del objetivo, de 24px.
+      objetivo de clic de al menos 24px de alto, que cumple el tamaño mínimo del objetivo, de 24px.
       Si necesitas una descripción o un mensaje de error, ponla en un Field, que muestra la etiqueta
       encima de la casilla.
     </p>
@@ -71,8 +71,6 @@ const { fieldExample, indeterminateExample } = componentExamples.checkbox;
     Crea <code data-wrap>components/ui/checkbox.tsx</code>, en la misma ruta que el Checkbox de
     shadcn. A diferencia del de shadcn, es un input nativo: <code>onChange</code> reemplaza a
     <code>onCheckedChange</code>, e <code>indeterminate</code> reemplaza a
-    <code>checked="indeterminate"</code>. Solo necesita tu helper <code>cn()</code>; si tu
-    <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI pregunta antes de
-    reemplazarlo, y puedes responder que no sin problema.
+    <code>checked="indeterminate"</code>. Solo necesita tu helper <code>cn()</code>.
   </p>
 </ComponentPage>

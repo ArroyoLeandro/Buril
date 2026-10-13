@@ -123,7 +123,7 @@ const en = {
   "component.installFromUrl": "Install the component from its URL:",
   "component.installByName": "Or add the Buril namespace once and install by name:",
   "component.cnNote":
-    "Every component imports `cn()` from shadcn's `utils` item. The current version of that item re-exports `cn()` from the `cn` npm package, so when the CLI installs or updates `lib/utils.ts`, it also adds `cn` to your dependencies.",
+    "Every component imports `cn()` from shadcn's `utils` item. The current version of that item re-exports `cn()` from the `cn` npm package, so when the CLI installs or updates `lib/utils.ts`, it also adds `cn` to your dependencies. If your `lib/utils.ts` differs from the current shadcn version, the CLI asks before replacing it, and answering no is safe.",
   "component.installDependencies": "Install the dependencies:",
   "component.checkUtils": "Check that `lib/utils.ts` exports `cn()`. shadcn's `init` creates it.",
   "component.copySource":
@@ -269,7 +269,7 @@ const es: Record<UiKey, string> = {
   "component.installByName":
     "O registra el namespace de Buril una sola vez e instálalo por nombre:",
   "component.cnNote":
-    "Todos los componentes importan `cn()` del item `utils` de shadcn. La versión actual de ese item reexporta `cn()` desde el paquete de npm `cn`, así que, cuando la CLI instala o actualiza `lib/utils.ts`, también agrega `cn` a tus dependencias.",
+    "Todos los componentes importan `cn()` del item `utils` de shadcn. La versión actual de ese item reexporta `cn()` desde el paquete de npm `cn`, así que, cuando la CLI instala o actualiza `lib/utils.ts`, también agrega `cn` a tus dependencias. Si tu `lib/utils.ts` es distinto de la versión actual de shadcn, la CLI pregunta antes de reemplazarlo, y puedes responder que no sin problema.",
   "component.installDependencies": "Instala las dependencias:",
   "component.checkUtils":
     "Comprueba que `lib/utils.ts` exporte `cn()`. El `init` de shadcn lo crea.",

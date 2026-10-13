@@ -49,9 +49,7 @@ const { variantsExample, statusExample } = componentExamples.button;
     installing it does not change your theme. It creates
     <code>components/ui/button.tsx</code>, adds <code>class-variance-authority</code> and appends
     the icon <code>motion</code> keyframes (<code>@keyframes buril-icon-*</code>) to your CSS;
-    nothing else in your CSS changes. If your
-    <code>lib/utils.ts</code> differs from the current shadcn version, the CLI asks before replacing
-    it; answering no is safe, because the button only needs <code>cn()</code>.
+    nothing else in your CSS changes.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Coming from shadcn/ui</h2>
@@ -104,8 +102,8 @@ const { variantsExample, statusExample } = componentExamples.button;
 
   <h2 class="mt-10 font-display text-xl">Optional theme</h2>
   <p class="mt-4 text-muted-foreground">
-    The Buril palette (ink primary, red lacquer for focus, decoration and destructive actions) is a
-    separate install:
+    The Buril palette (ink primary; red lacquer for focus, decoration, the hover wash and
+    destructive actions) is a separate install:
   </p>
   <InstallCommand id="install-theme" commands={["add @buril/theme"]} />
   <p class="mt-4 text-muted-foreground">It edits your global CSS file:</p>

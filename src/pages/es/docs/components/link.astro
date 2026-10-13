@@ -28,8 +28,8 @@ const { externalExample, mutedExample } = componentExamples.link;
         Button.
       </li>
       <li>
-        <strong>Siempre subrayado.</strong> El color solo nunca marca un enlace, así que las dos
-        variantes conservan el subrayado, y al pasar el puntero se vuelve más grueso en lugar de
+        <strong>Siempre subrayado.</strong> El color por sí solo nunca marca un enlace, así que las
+        dos variantes conservan el subrayado, y al pasar el puntero se vuelve más grueso en lugar de
         desaparecer.
       </li>
       <li>
@@ -73,9 +73,6 @@ const { externalExample, mutedExample } = componentExamples.link;
   <p slot="install-notes" class="mt-4 text-muted-foreground">
     Crea <code>components/ui/link.tsx</code> y agrega <code>class-variance-authority</code>. Como el
     Button, usa los tokens estándar de shadcn y tu helper <code>cn()</code>, así que no cambia tu
-    tema. Si tu <code>lib/utils.ts</code> es distinto de la versión actual de shadcn, la CLI
-    pregunta antes de reemplazarlo; puedes responder que no sin problema, porque el enlace solo
-    necesita
-    <code>cn()</code>.
+    tema.
   </p>
 </ComponentPage>
