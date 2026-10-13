@@ -79,10 +79,17 @@ const en = {
   "install.copyFailed": "Could not copy. Select the command and copy it manually.",
   "install.placeholder":
     "example.com is a placeholder until the registry is hosted; the paths after it stay the same.",
-  "landing.lead": "Accessible React components you copy into your project and make your own.",
-  "landing.sublead":
-    "Styled with Tailwind CSS, installed with the shadcn CLI, and tested with the keyboard and the accessibility tree in mind.",
+  "landing.title": "Accessible components, {engraved} to last",
+  "landing.titleEngraved": "engraved",
+  "landing.count": "{count} components",
+  "landing.changelog": "See the changelog",
+  "landing.lead":
+    "React components that the shadcn CLI copies into your project as source you can edit. Each one ships with keyboard and accessibility-tree tests.",
   "landing.getStarted": "Get started",
+  "landing.browse": "Browse components",
+  "landing.traitNative": "Native HTML",
+  "landing.traitKeyboard": "Keyboard first",
+  "landing.traitContrast": "AA in both themes",
   "landing.why": "Why Buril",
   "landing.ownTitle": "You own the code",
   "landing.ownBody":
@@ -224,10 +231,17 @@ const es: Record<UiKey, string> = {
   "install.copyFailed": "No se pudo copiar. Selecciona el comando y cópialo manualmente.",
   "install.placeholder":
     "example.com es provisional hasta que el registry esté publicado; las rutas que siguen no cambian.",
-  "landing.lead": "Componentes de React accesibles que copias en tu proyecto y haces tuyos.",
-  "landing.sublead":
-    "Estilizados con Tailwind CSS, se instalan con la CLI de shadcn y se prueban teniendo en cuenta el teclado y el árbol de accesibilidad.",
+  "landing.title": "Componentes accesibles, {engraved} para durar",
+  "landing.titleEngraved": "grabados",
+  "landing.count": "{count} componentes",
+  "landing.changelog": "Ver los cambios",
+  "landing.lead":
+    "Componentes de React que la CLI de shadcn copia en tu proyecto como código fuente que puedes editar. Cada uno incluye tests de teclado y del árbol de accesibilidad.",
   "landing.getStarted": "Empezar",
+  "landing.browse": "Explorar los componentes",
+  "landing.traitNative": "HTML nativo",
+  "landing.traitKeyboard": "Primero el teclado",
+  "landing.traitContrast": "AA en los dos temas",
   "landing.why": "Por qué Buril",
   "landing.ownTitle": "El código es tuyo",
   "landing.ownBody":

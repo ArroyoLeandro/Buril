@@ -11,6 +11,7 @@ import DocsIndexPage from "../../src/pages/docs/index.astro";
 import DocsIndexPageEs from "../../src/pages/es/docs/index.astro";
 import ButtonPage from "../../src/pages/docs/components/button.astro";
 import ButtonPageEs from "../../src/pages/es/docs/components/button.astro";
+import { documentedComponents } from "../../src/data/components";
 import { localizedHref } from "../../src/i18n/paths";
 
 let container: AstroContainer;
@@ -35,31 +36,120 @@ const section = (html: string, title: string) => {
   return html.slice(start, end === -1 ? undefined : end);
 };
 
-describe("landing page", () => {
-  it("has a hero with the name, a one-line value proposition and two link CTAs", async () => {
-    const html = main(await render());
+const heroes = [
+  {
+    locale: "en",
+    page: IndexPage,
+    path: "/",
+    title: "Accessible components, engraved to last",
+    engraved: "engraved",
+    pill: "See the changelog",
+    count: `${documentedComponents.length} components`,
+    lead: "React components that the shadcn CLI copies into your project as source you can edit. Each one ships with keyboard and accessibility-tree tests.",
+    ctas: ["Get started", "Browse components"],
+    traits: ["Native HTML", "Keyboard first", "AA in both themes"],
+  },
+  {
+    locale: "es",
+    page: IndexPageEs,
+    path: "/es/",
+    title: "Componentes accesibles, grabados para durar",
+    engraved: "grabados",
+    pill: "Ver los cambios",
+    count: `${documentedComponents.length} componentes`,
+    lead: "Componentes de React que la CLI de shadcn copia en tu proyecto como código fuente que puedes editar. Cada uno incluye tests de teclado y del árbol de accesibilidad.",
+    ctas: ["Empezar", "Explorar los componentes"],
+    traits: ["HTML nativo", "Primero el teclado", "AA en los dos temas"],
+  },
+] as const;
+
+describe.each(heroes)("$locale landing hero", (hero) => {
+  const renderHero = async () => {
+    const html = main(
+      await container.renderToString(hero.page, {
+        request: new Request(`http://x${hero.path}`),
+      }),
+    );
+    const section = /<section[^>]*data-hero[\s\S]*?<\/section>/.exec(html);
+    expect(section, "hero section").not.toBeNull();
+    return { html, hero: section![0] };
+  };
+  const href = (path: string) => localizedHref(path, hero.locale);
+
+  it("opens the page and is named by its one headline", async () => {
+    const { html, hero: section } = await renderHero();
+    expect(html.indexOf("<section")).toBe(html.indexOf(section));
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-    expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0])).toBe("Buril UI");
-    expect(text(html)).toMatch(/Accessible React components you copy into your project/);
-    // Real links styled as pill buttons, never a button that navigates.
-    expect(html).toMatch(
-      /<a[^>]+href="\/docs"[^>]+class="[^"]*rounded-full[^"]*"[^>]*>\s*Get started/,
-    );
-    expect(html).toMatch(
-      /<a[^>]+href="\/docs\/components"[^>]+class="[^"]*rounded-full[^"]*"[^>]*>\s*Components/,
-    );
+    const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(section)![0];
+    expect(text(h1)).toBe(hero.title);
+    const id = /<h1[^>]*id="([^"]+)"/.exec(h1)![1];
+    expect(section).toMatch(new RegExp(`^<section[^>]*aria-labelledby="${id}"`));
   });
 
-  it("keeps the engraved illustration out of the accessibility tree", async () => {
-    const html = main(await render());
-    const svgs = [...html.matchAll(/<svg\b[^>]*>/g)].map(([tag]) => tag);
-    const art = svgs.filter((tag) => tag.includes("data-engraving"));
-    expect(art).toHaveLength(1);
-    expect(art[0]).toMatch(/aria-hidden="true"/);
-    expect(art[0]).toMatch(/focusable="false"/);
-    expect(html).not.toMatch(/role="img"/);
+  it("underlines one word of the headline with the engraved hatching", async () => {
+    const { hero: section } = await renderHero();
+    const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(section)![0];
+    const marked = [...h1.matchAll(/<span[^>]*data-engraved[^>]*>([\s\S]*?)<\/span>/g)];
+    expect(marked.map(([, word]) => text(word!))).toEqual([hero.engraved]);
+    expect(marked[0]![0]).toMatch(/repeating-linear-gradient\(135deg,var\(--decor\)/);
   });
 
+  it("starts with a pill that counts the components and links to the changelog", async () => {
+    const { hero: section } = await renderHero();
+    const pill = /<a[^>]*>[\s\S]*?<\/a>/.exec(section)![0];
+    expect(pill).toMatch(new RegExp(`href="${href("/docs/changelog")}"`));
+    expect(pill).toMatch(/data-slot="badge"/);
+    expect(text(pill)).toBe(`${hero.count} ${hero.pill}`);
+    expect(pill).toMatch(/data-icon="arrow-right"/);
+  });
+
+  it("says what Buril is in one lead paragraph", async () => {
+    const { hero: section } = await renderHero();
+    const paragraphs = [...section.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)].map(([, p]) =>
+      text(p!),
+    );
+    expect(paragraphs).toEqual([hero.lead]);
+  });
+
+  it("offers two link CTAs styled as pill buttons, the first with a forward arrow", async () => {
+    const { hero: section } = await renderHero();
+    const links = [...section.matchAll(/<a[^>]*>[\s\S]*?<\/a>/g)].map(([a]) => a).slice(1);
+    expect(links.map((a) => text(a))).toEqual([...hero.ctas]);
+    expect(links[0]).toMatch(new RegExp(`href="${href("/docs")}"`));
+    expect(links[1]).toMatch(new RegExp(`href="${href("/docs/components")}"`));
+    for (const link of links) expect(link).toMatch(/^<a[^>]*class="[^"]*\brounded-full\b/);
+    expect(links[0]).toMatch(/data-icon="arrow-right"/);
+    expect(links[1]).not.toMatch(/<svg/);
+  });
+
+  it("ends with one line of traits, as a list", async () => {
+    const { hero: section } = await renderHero();
+    const list = /<ul[^>]*>[\s\S]*?<\/ul>/.exec(section)![0];
+    const items = [...list.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)].map(([, li]) =>
+      text(li!.replace(/<span aria-hidden="true"[^>]*>[\s\S]*?<\/span>/g, "")),
+    );
+    expect(items).toEqual([...hero.traits]);
+  });
+
+  it("draws the engraving behind the headline, hidden from assistive technology", async () => {
+    const { html, hero: section } = await renderHero();
+    const art = [...html.matchAll(/<svg\b[^>]*data-engraving[^>]*>/g)].map(([tag]) => tag);
+    expect(art.length).toBeGreaterThanOrEqual(1);
+    const behind = /<svg\b[^>]*data-engraving[^>]*>/.exec(section)![0];
+    expect(behind).toMatch(/aria-hidden="true"/);
+    expect(behind).toMatch(/focusable="false"/);
+    // Before the copy in the source, painted under it, and never in the way of the pointer.
+    expect(section.indexOf(behind)).toBeLessThan(section.indexOf("<h1"));
+    expect(section.slice(0, section.indexOf(behind))).toMatch(/pointer-events-none/);
+    for (const tag of art) {
+      expect(tag).toMatch(/aria-hidden="true"/);
+      expect(tag).toMatch(/focusable="false"/);
+    }
+    expect(html).not.toMatch(/<svg[^>]*role="img"/);
+  });
+});
+
+describe("landing page", () => {
   it("states the four principles", async () => {
     const values = text(section(main(await render()), "Why Buril"));
     for (const principle of [
@@ -181,17 +271,6 @@ describe("Spanish landing page", () => {
     expect(html).toMatch(/<html lang="es"/);
     expect(html).toContain("<title>Buril UI</title>");
     expect(html).toMatch(/<meta name="description" content="Componentes de React accesibles/);
-  });
-
-  it("has the Spanish hero and calls to action that stay in Spanish", async () => {
-    const html = main(await renderEs());
-    expect(text(/<h1[^>]*>[\s\S]*?<\/h1>/.exec(html)![0])).toBe("Buril UI");
-    expect(text(html)).toMatch(/Componentes de React accesibles que copias en tu proyecto/);
-    // The Spanish page, or the English one until it is translated.
-    const docs = localizedHref("/docs", "es");
-    const components = localizedHref("/docs/components", "es");
-    expect(html).toMatch(new RegExp(`<a[^>]+href="${docs}"[^>]*>\\s*Empezar`));
-    expect(html).toMatch(new RegExp(`<a[^>]+href="${components}"[^>]*>\\s*Componentes`));
   });
 
   it("states the four principles in Spanish", async () => {

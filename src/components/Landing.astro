@@ -1,16 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Engraving from "./Engraving.astro";
+import Hero from "./landing/Hero.astro";
 import InlineCode from "./InlineCode.astro";
 import InstallCommand from "./InstallCommand.astro";
-import Icon from "./icons/Icon.astro";
 import ButtonsPanel from "./showcase/ButtonsPanel";
 import SettingsPanel from "./showcase/SettingsPanel";
 import SignInPanel from "./showcase/SignInPanel";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "../../registry/ui/alert";
 import { Badge } from "../../registry/ui/badge";
-import { buttonVariants } from "../../registry/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../registry/ui/card";
 import { Link } from "../../registry/ui/link";
 import { localizedHref } from "../i18n/paths";
@@ -50,28 +48,7 @@ const panels = [
 ---
 
 <BaseLayout title="Buril UI" footer>
-  <section class="bg-paper-grid border-b border-border">
-    <div class={cn(container, "grid items-center gap-10 py-14 md:grid-cols-[1.2fr_1fr] md:py-20")}>
-      <div>
-        <h1 class="font-display text-5xl leading-none sm:text-6xl">Buril UI</h1>
-        <p class="mt-6 max-w-xl text-xl">{t("landing.lead")}</p>
-        <p class="mt-4 max-w-xl text-muted-foreground">{t("landing.sublead")}</p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href={href("/docs")} class={buttonVariants({ size: "lg" })}>
-            {t("landing.getStarted")}
-            <Icon name="arrow-right" class="size-4" />
-          </a>
-          <a
-            href={href("/docs/components")}
-            class={buttonVariants({ variant: "outline", size: "lg" })}
-          >
-            {t("nav.components")}
-          </a>
-        </div>
-      </div>
-      <Engraving class="mx-auto w-full max-w-sm md:max-w-md" />
-    </div>
-  </section>
+  <Hero />
 
   <section aria-labelledby="why" class={cn(container, "py-16")}>
     <h2 id="why" class={sectionTitle}>

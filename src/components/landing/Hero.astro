@@ -1,0 +1,87 @@
+---
+import Engraving from "../Engraving.astro";
+import Icon from "../icons/Icon.astro";
+import { cn } from "@/lib/utils";
+import { Badge } from "../../../registry/ui/badge";
+import { buttonVariants } from "../../../registry/ui/button";
+import { documentedComponents } from "../../data/components";
+import { localizedHref } from "../../i18n/paths";
+import { getLocale, translator } from "../../i18n/ui";
+import { nudgeArrow } from "./nudge";
+
+/**
+ * The landing hero: the engraving large and faint behind a centered headline, over the paper grid.
+ * Both fade out toward the showcase instead of ending on a rule. The rosette is hollowed out where
+ * the headline sits, so its rings frame the text instead of crossing it.
+ */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+const href = (path: string) => localizedHref(path, locale);
+const [before, after] = t("landing.title").split("{engraved}");
+const traits = [t("landing.traitNative"), t("landing.traitKeyboard"), t("landing.traitContrast")];
+---
+
+<section
+  data-hero
+  aria-labelledby="hero-title"
+  class="relative isolate overflow-hidden px-4 pt-14 pb-16 sm:px-6 lg:pt-20 lg:pb-18"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 -z-20 bg-paper-grid bg-top [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]"
+  ></div>
+  <div class="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000_62%,transparent_96%)]">
+    <Engraving
+      clipId="engraving-hero"
+      thin={0.22}
+      bold={0.6}
+      class="absolute top-[46%] left-1/2 aspect-square w-[min(1040px,170vw)] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-20 [mask-image:radial-gradient(closest-side,transparent_34%,#000_56%,#000_72%,transparent_100%)] dark:opacity-25"
+    />
+  </div>
+  <div class="mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
+    <a
+      href={href("/docs/changelog")}
+      class="group inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-background py-1 ps-1.5 pe-3 text-sm shadow-[0_1px_0_var(--color-border)] transition-colors duration-(--buril-duration-fast) hover:bg-accent"
+    >
+      <Badge>{t("landing.count", { count: String(documentedComponents.length) })}</Badge>
+      <span class="inline-flex items-center gap-1">
+        {t("landing.changelog")}
+        <Icon name="arrow-right" class={cn("size-4", nudgeArrow)} />
+      </span>
+    </a>
+    <h1
+      id="hero-title"
+      class="max-w-[20ch] font-display text-[clamp(2rem,1rem+4vw,4.25rem)] leading-[1.12] text-balance [overflow-wrap:break-word]"
+    >
+      {before}
+      <span
+        data-engraved
+        class="box-decoration-clone bg-[image:repeating-linear-gradient(135deg,var(--decor)_0_1.5px,transparent_1.5px_6px)] bg-[length:100%_0.14em] bg-bottom-left bg-no-repeat pb-[0.08em]"
+        set:text={t("landing.titleEngraved")}
+      />
+      {after}
+    </h1>
+    <p class="max-w-[38rem] text-lg text-pretty">{t("landing.lead")}</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href={href("/docs")} class={cn(buttonVariants({ size: "lg" }), "group")}>
+        {t("landing.getStarted")}
+        <Icon name="arrow-right" class={cn("size-4", nudgeArrow)} />
+      </a>
+      <a href={href("/docs/components")} class={buttonVariants({ variant: "outline", size: "lg" })}>
+        {t("landing.browse")}
+      </a>
+    </div>
+    <ul class="flex flex-wrap justify-center gap-x-3 text-[0.8125rem] leading-5 text-muted-foreground sm:gap-x-0">
+      {traits.map((trait, index) => (
+        <li>
+          {index > 0 && (
+            <span aria-hidden="true" class="mx-2 max-sm:hidden">
+              ·
+            </span>
+          )}
+          {trait}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

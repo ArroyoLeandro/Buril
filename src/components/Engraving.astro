@@ -5,7 +5,15 @@
  */
 interface Props {
   class?: string;
+  /** The ink stroke width in the 200-unit viewBox. A large render wants a thinner line. */
+  thin?: number;
+  /** The decor ring's stroke width. */
+  bold?: number;
+  /** The clip path id: give each engraving on a page its own. */
+  clipId?: string;
 }
+
+const { thin = 0.5, bold = 1.25, clipId = "engraving-core" } = Astro.props;
 
 const center = 100;
 const ring = (k: number) => {
@@ -31,19 +39,19 @@ const hatching = Array.from({ length: 20 }, (_, i) => -40 + i * 4);
   class={Astro.props.class}
 >
   <defs>
-    <clipPath id="engraving-core">
+    <clipPath id={clipId}>
       <circle cx={center} cy={center} r="28"></circle>
     </clipPath>
   </defs>
-  <g stroke="currentColor" stroke-width="0.5" class="text-foreground">
+  <g stroke="currentColor" stroke-width={thin} class="text-foreground">
     {rings
       .filter(({ decor }) => !decor)
       .map(({ d }) => (
         <path d={d} />
       ))}
-    <circle cx={center} cy={center} r="99" stroke-width="0.75"></circle>
-    <circle cx={center} cy={center} r="28" stroke-width="0.75"></circle>
-    <g clip-path="url(#engraving-core)">
+    <circle cx={center} cy={center} r="99" stroke-width={thin * 1.5}></circle>
+    <circle cx={center} cy={center} r="28" stroke-width={thin * 1.5}></circle>
+    <g clip-path={`url(#${clipId})`}>
       {hatching.map((offset) => (
         <line
           x1={center + offset - 30}
@@ -54,7 +62,7 @@ const hatching = Array.from({ length: 20 }, (_, i) => -40 + i * 4);
       ))}
     </g>
   </g>
-  <g stroke="currentColor" stroke-width="1.25" class="text-decor">
+  <g stroke="currentColor" stroke-width={bold} class="text-decor">
     {rings
       .filter(({ decor }) => decor)
       .map(({ d }) => (
