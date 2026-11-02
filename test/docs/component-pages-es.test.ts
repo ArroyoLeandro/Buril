@@ -169,7 +169,7 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       const [es, en] = [await renderEs(), await renderEn()];
       expect(codePanel(es)).toBe(codePanel(en));
       const visible = text(main(es));
-      expect(visible).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
+      expect(visible).toContain(`npx shadcn@latest add https://buril.site/r/${entry.item}.json`);
       expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
       const install = squash(text(section(es, "Instalación")));
       expect(install).toMatch(/reexporta cn\(\) desde el paquete de npm cn/);

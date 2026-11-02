@@ -5,6 +5,7 @@ import DocsLayout from "../../../layouts/DocsLayout.astro";
 import InstallCommand from "../../../components/InstallCommand.astro";
 import { codeTheme } from "../../../components/code-theme";
 import { sideBySideExample } from "../../../data/snippets";
+import { registryUrl } from "../../../data/site";
 
 const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
 ---
@@ -32,10 +33,7 @@ const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
   </ol>
   <InstallCommand
     id="install-side-by-side"
-    commands={[
-      "registry add @buril=https://example.com/r/{name}.json",
-      "add @buril/button --path components/buril",
-    ]}
+    commands={[`registry add @buril=${registryUrl}`, "add @buril/button --path components/buril"]}
   />
   <p class="mt-4">
     <code>--path components/buril</code> is relative to the project root. If your

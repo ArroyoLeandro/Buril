@@ -166,7 +166,7 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
       expectTabSemantics(tabs);
 
       const cli = text(tabs[0]!.panel);
-      expect(cli).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
+      expect(cli).toContain(`npx shadcn@latest add https://buril.site/r/${entry.item}.json`);
       expect(cli).toContain(`npx shadcn@latest add @buril/${entry.item}`);
       // The shared note says once that replacing lib/utils.ts is optional; pages do not repeat it.
       expect(squash(cli)).toContain(

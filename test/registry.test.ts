@@ -14,6 +14,7 @@ type Item = {
 };
 
 const registry = JSON.parse(readFileSync(resolve(__dirname, "../registry.json"), "utf8")) as {
+  homepage: string;
   items: Item[];
 };
 const pkg = JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf8")) as {
@@ -27,6 +28,10 @@ const components = registry.items.filter((item) => item.type === "registry:ui");
 const local = (dependency: string) => byName.get(dependency.replace(/^@buril\//, ""));
 
 describe("registry items", () => {
+  it("names the hosted docs site as the registry homepage", () => {
+    expect(registry.homepage).toBe("https://buril.site");
+  });
+
   it.each(components.map((item) => [item.name, item] as const))(
     "%s does not pull in a theme or style",
     (_, item) => {

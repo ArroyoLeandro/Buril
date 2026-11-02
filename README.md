@@ -4,7 +4,7 @@
 
 Accessible, copy-paste React components with an engraved-print look. Built from scratch, styled with Tailwind CSS, and distributed as source code you own.
 
-> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner and Skeleton are available, with tests and docs pages. The registry is not hosted yet: the commands below use the placeholder domain `example.com`, which changes once the site is live.
+> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner and Skeleton are available, with tests and docs pages. The docs and the registry are live at [buril.site](https://buril.site).
 
 ## Why Buril
 
@@ -21,13 +21,13 @@ Accessible, copy-paste React components with an engraved-print look. Built from 
 Buril is a [shadcn-compatible registry](https://ui.shadcn.com/docs/registry). In a project set up with shadcn (it has a `components.json`), install the Button from its URL:
 
 ```bash
-npx shadcn@latest add https://example.com/r/button.json
+npx shadcn@latest add https://buril.site/r/button.json
 ```
 
 Or register the `@buril` namespace once and install components by name:
 
 ```bash
-npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json
 npx shadcn@latest add @buril/button
 ```
 

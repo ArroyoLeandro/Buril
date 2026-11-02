@@ -9,6 +9,7 @@ import TableScroll from "../components/docs/TableScroll.astro";
 import { codeTheme } from "../components/code-theme";
 import { localizedComponentDocs } from "../data/component-docs";
 import { componentDescription, findComponent } from "../data/components";
+import { registryItemUrl, registryUrl } from "../data/site";
 import { plainDemoSource } from "../i18n/demo-source";
 import { iconKeyframesCss } from "../utils/icon-keyframes";
 import { getLocale, translator } from "../i18n/ui";
@@ -118,18 +119,11 @@ const typeParts = (type: string) =>
   >
     <div slot="cli">
       <p class="mt-4 text-muted-foreground">{t("component.installFromUrl")}</p>
-      <InstallCommand
-        id="install-url"
-        commands={[`add https://example.com/r/${entry.item}.json`]}
-      />
+      <InstallCommand id="install-url" commands={[`add ${registryItemUrl(entry.item)}`]} />
       <p class="mt-4 text-muted-foreground">{t("component.installByName")}</p>
       <InstallCommand
         id="install-namespace"
-        placeholderNote={false}
-        commands={[
-          "registry add @buril=https://example.com/r/{name}.json",
-          `add @buril/${entry.item}`,
-        ]}
+        commands={[`registry add @buril=${registryUrl}`, `add @buril/${entry.item}`]}
       />
       <p class="mt-4 text-muted-foreground">
         <InlineCode text={t("component.cnNote")} />

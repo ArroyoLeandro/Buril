@@ -1,6 +1,7 @@
 ---
 import DocsLayout from "../../layouts/DocsLayout.astro";
 import { documentedComponents } from "../../data/components";
+import { siteUrl } from "../../data/site";
 import { Link } from "../../../registry/ui/link";
 
 const principles = [
@@ -57,9 +58,8 @@ const principles = [
   <h2 class="mt-10 font-display text-xl">Status</h2>
   <p class="mt-4">
     Buril is in early development. {documentedComponents.length} components are documented, each
-    with tests and a page. The registry is not hosted yet, so install commands use the placeholder
-    domain
-    <code>example.com</code>.
+    with tests and a page. The registry is hosted at <code>{`${siteUrl}/r/`}</code>, one JSON file
+    per item.
   </p>
 
   <h2 class="mt-10 font-display text-xl">Next steps</h2>
