@@ -94,6 +94,23 @@ describe("internal links in the built site", () => {
     expect(broken).toEqual([]);
   });
 
+  it("writes llms.txt and llms-full.txt, whose links to the site lead to built files", () => {
+    expect(pages.get("/docs")).toContain(
+      '<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">',
+    );
+    for (const file of ["llms.txt", "llms-full.txt"]) {
+      const body = readFileSync(join(outDir, file), "utf8");
+      const paths = [...body.matchAll(/https:\/\/buril\.site(\/[^\s)`]*)/g)]
+        .map(([, path]) => path!.replace(/[.,:]+$/, ""))
+        .filter((path) => !path.includes("{"));
+      expect(paths.length, file).toBeGreaterThan(20);
+      expect(
+        paths.filter((path) => !exists(path.replace(/(.)\/$/, "$1"))),
+        file,
+      ).toEqual([]);
+    }
+  });
+
   it("checks a meaningful number of links", () => {
     const count = [...pages.values()].reduce((sum, html) => sum + links(html).length, 0);
     expect(count).toBeGreaterThan(2000);

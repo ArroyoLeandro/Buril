@@ -74,23 +74,34 @@ const sections = (html: string) => {
   return [0, ...starts].map((start, i) => body.slice(start, starts[i] ?? body.length));
 };
 
-describe("the example.com placeholder", () => {
+describe("registry URLs in copyable commands", () => {
   const routes = Object.keys(pages).map(routeOf);
   let checked = 0;
 
-  it.each(routes)("%s explains it next to every copyable command that uses it", async (route) => {
-    const locale: Locale = route.startsWith("/es") ? "es" : "en";
-    const note = ui[locale]["install.placeholder"];
-    for (const section of sections(await render(route))) {
+  it.each(routes)("%s points every registry command at https://buril.site", async (route) => {
+    const html = await render(route);
+    expect(html, route).not.toMatch(/example\.com\/r\//);
+    for (const section of sections(html)) {
       const commands = [...section.matchAll(/data-copy="([^"]*)"/g)].map(([, code]) => code!);
-      if (!commands.some((code) => code.includes("example.com"))) continue;
-      checked++;
-      expect(text(section), route).toContain(note);
+      for (const command of commands) {
+        expect(command, route).not.toContain("example.com");
+        const urls = [...command.matchAll(/https?:\/\/[^\s"]+/g)].map(([url]) => url);
+        for (const url of urls) {
+          expect(url, route).toMatch(/^https:\/\/buril\.site\/r\/(\{name\}|[\w-]+)\.json$/);
+          checked++;
+        }
+      }
     }
   });
 
-  it("checked the install sections of every component page, guide and the landing page", () => {
+  it("checked the install commands of every component page and guide", () => {
     expect(checked).toBeGreaterThan(40);
+  });
+
+  it("says nowhere that the registry is not hosted yet", () => {
+    for (const locale of locales) {
+      expect(Object.values(ui[locale]).join(" ")).not.toContain("example.com");
+    }
   });
 });
 

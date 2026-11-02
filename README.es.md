@@ -4,7 +4,7 @@
 
 Componentes de React accesibles, listos para copiar y pegar, con una estética de grabado sobre papel. Construidos desde cero, estilizados con Tailwind CSS y distribuidos como código fuente que te pertenece.
 
-> **Estado: desarrollo inicial.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner y Skeleton están disponibles, con tests y páginas de documentación. El registry todavía no está publicado: los comandos de abajo usan el dominio de ejemplo `example.com`, que cambiará cuando el sitio esté en línea.
+> **Estado: desarrollo inicial.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner y Skeleton están disponibles, con tests y páginas de documentación. La documentación y el registry están publicados en [buril.site](https://buril.site).
 
 ## Por qué Buril
 
@@ -21,13 +21,13 @@ Componentes de React accesibles, listos para copiar y pegar, con una estética d
 Buril es un [registry compatible con shadcn](https://ui.shadcn.com/docs/registry). En un proyecto configurado con shadcn (con un archivo `components.json`), instala Button desde su URL:
 
 ```bash
-npx shadcn@latest add https://example.com/r/button.json
+npx shadcn@latest add https://buril.site/r/button.json
 ```
 
 También puedes registrar el namespace `@buril` una sola vez e instalar los componentes por nombre:
 
 ```bash
-npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json
 npx shadcn@latest add @buril/button
 ```
 
@@ -44,6 +44,26 @@ npx shadcn@latest add @buril/theme
 ```
 
 Reemplaza los tokens de color de shadcn por los valores de Buril para los modos claro y oscuro, y agrega dos tokens decorativos, `--decor` y `--grid`. Además, sigue el esquema de color del sistema sin JavaScript: la paleta oscura se aplica con `prefers-color-scheme: dark`, salvo que `<html>` tenga la clase `light`, y la variante `dark:` sigue la misma regla. Para forzar el modo claro, el selector de tema debe poner `class="light"` en `<html>`; next-themes con `attribute="class"` ya lo hace.
+
+## Uso con agentes de IA
+
+El [servidor MCP de shadcn](https://ui.shadcn.com/docs/mcp) lee todos los registries de tu `components.json`, así que un agente de IA en tu editor puede explorar, buscar e instalar componentes de Buril. Agrega el registry:
+
+```json
+{
+  "registries": {
+    "@buril": "https://buril.site/r/{name}.json"
+  }
+}
+```
+
+Después, configura el servidor para tu cliente (`claude`, `cursor`, `vscode`, `opencode` o `codex`):
+
+```bash
+npx shadcn@latest mcp init --client claude
+```
+
+Para los agentes que leen la web, la documentación también se publica como texto plano, en inglés: [llms.txt](https://buril.site/llms.txt), un índice de cada página e item del registry, y [llms-full.txt](https://buril.site/llms-full.txt), toda la documentación en un solo archivo. La [página de agentes de IA](https://buril.site/es/docs/ai-agents) explica la configuración de cada cliente.
 
 ## Estilo visual
 

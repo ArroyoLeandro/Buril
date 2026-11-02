@@ -94,6 +94,8 @@ describe("introduction page", () => {
     const html = main(await render("index", "/docs"));
     expect(text(html)).toMatch(/copy/i);
     expect(text(html)).toMatch(/shadcn/);
+    expect(text(html)).not.toContain("example.com");
+    expect(text(html)).toContain("https://buril.site/r/");
     for (const href of ["/docs/installation", "/docs/theming", "/docs/components"]) {
       expect(html).toMatch(new RegExp(`<a[^>]+href="${escape(href)}"`));
     }
@@ -101,14 +103,14 @@ describe("introduction page", () => {
 });
 
 describe("installation page", () => {
-  it("shows the URL and namespaced install flows with the example.com placeholder", async () => {
+  it("shows the URL and namespaced install flows with the buril.site registry", async () => {
     const visible = text(main(await render("installation", "/docs/installation")));
-    expect(visible).toContain("npx shadcn@latest add https://example.com/r/button.json");
+    expect(visible).toContain("npx shadcn@latest add https://buril.site/r/button.json");
     expect(visible).toContain(
-      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+      "npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json",
     );
     expect(visible).toContain("npx shadcn@latest add @buril/button");
-    expect(visible).toMatch(/example\.com[^.]*placeholder/);
+    expect(visible).not.toContain("example.com");
   });
 
   it("documents the opt-in theme and the cn package note", async () => {
@@ -269,6 +271,8 @@ describe("Spanish Getting Started", () => {
     const html = main(await renderEs("index", "/es/docs"));
     expect(text(html)).toMatch(/copias/);
     expect(text(html)).toMatch(/shadcn/);
+    expect(text(html)).not.toContain("example.com");
+    expect(text(html)).toContain("https://buril.site/r/");
     for (const href of ["/es/docs/installation", "/es/docs/theming", "/es/docs/components"]) {
       expect(html).toMatch(new RegExp(`<a[^>]+href="${escape(href)}"`));
     }
@@ -276,12 +280,12 @@ describe("Spanish Getting Started", () => {
 
   it("shows the same install commands, with Spanish explanations", async () => {
     const visible = text(main(await renderEs("installation", "/es/docs/installation")));
-    expect(visible).toContain("npx shadcn@latest add https://example.com/r/button.json");
+    expect(visible).toContain("npx shadcn@latest add https://buril.site/r/button.json");
     expect(visible).toContain(
-      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+      "npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json",
     );
     expect(visible).toContain("npx shadcn@latest add @buril/theme");
-    expect(visible).toMatch(/example\.com[^.]*provisional/);
+    expect(visible).not.toContain("example.com");
     expect(visible).toMatch(/no cambia tu tema/);
     expect(visible).toMatch(/reexporta\s+cn\(\)\s+desde\s+el\s+paquete\s+de\s+npm\s+cn/);
     // Spanish UI chrome on the install tabs.

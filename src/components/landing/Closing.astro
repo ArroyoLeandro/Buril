@@ -7,9 +7,8 @@ import { getLocale, translator } from "../../i18n/ui";
 import { nudgeArrow } from "./nudge";
 
 /**
- * The landing's closing strip: one line on how to start and a link to the installation guide. It
- * shows no install command until the registry has its real URL, so the placeholder domain never
- * reaches the landing.
+ * The landing's closing strip: one line on how to start and a link to the installation guide,
+ * which holds the install commands.
  */
 const locale = getLocale(Astro.url);
 const t = translator(locale);

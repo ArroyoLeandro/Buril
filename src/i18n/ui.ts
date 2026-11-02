@@ -57,6 +57,7 @@ const en = {
   "docsNav.gettingStarted": "Getting Started",
   "docsNav.introduction": "Introduction",
   "docsNav.installation": "Installation",
+  "docsNav.aiAgents": "AI agents",
   "docsNav.theming": "Theming",
   "status.new": "New",
   "status.beta": "Beta",
@@ -77,8 +78,6 @@ const en = {
   "install.copyLabel": "Copy {name} command",
   "install.copied": "Copied the {name} command.",
   "install.copyFailed": "Could not copy. Select the command and copy it manually.",
-  "install.placeholder":
-    "example.com is a placeholder until the registry is hosted; the paths after it stay the same.",
   "landing.title": "Accessible components,|{accent} to last",
   "landing.titleAccent": "engraved",
   "landing.count": "{count} components",
@@ -202,6 +201,7 @@ const es: Record<UiKey, string> = {
   "docsNav.gettingStarted": "Primeros pasos",
   "docsNav.introduction": "Introducción",
   "docsNav.installation": "Instalación",
+  "docsNav.aiAgents": "Agentes de IA",
   "docsNav.theming": "Temas",
   "status.new": "Nuevo",
   "status.beta": "Beta",
@@ -222,8 +222,6 @@ const es: Record<UiKey, string> = {
   "install.copyLabel": "Copiar el comando de {name}",
   "install.copied": "Se copió el comando de {name}.",
   "install.copyFailed": "No se pudo copiar. Selecciona el comando y cópialo manualmente.",
-  "install.placeholder":
-    "example.com es provisional hasta que el registry esté publicado; las rutas que siguen no cambian.",
   "landing.title": "Componentes accesibles,|hechos para {accent}",
   "landing.titleAccent": "durar",
   "landing.count": "{count} componentes",

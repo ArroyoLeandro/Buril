@@ -4,7 +4,7 @@
 
 Accessible, copy-paste React components with an engraved-print look. Built from scratch, styled with Tailwind CSS, and distributed as source code you own.
 
-> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner and Skeleton are available, with tests and docs pages. The registry is not hosted yet: the commands below use the placeholder domain `example.com`, which changes once the site is live.
+> **Status: early development.** Button, Icon Button, Link, Skip Link, Field, Input, Textarea, Checkbox, Radio Group, Switch, Select, Card, Badge, Avatar, Separator, Alert, Spinner and Skeleton are available, with tests and docs pages. The docs and the registry are live at [buril.site](https://buril.site).
 
 ## Why Buril
 
@@ -21,13 +21,13 @@ Accessible, copy-paste React components with an engraved-print look. Built from 
 Buril is a [shadcn-compatible registry](https://ui.shadcn.com/docs/registry). In a project set up with shadcn (it has a `components.json`), install the Button from its URL:
 
 ```bash
-npx shadcn@latest add https://example.com/r/button.json
+npx shadcn@latest add https://buril.site/r/button.json
 ```
 
 Or register the `@buril` namespace once and install components by name:
 
 ```bash
-npx shadcn@latest registry add @buril=https://example.com/r/{name}.json
+npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json
 npx shadcn@latest add @buril/button
 ```
 
@@ -44,6 +44,26 @@ npx shadcn@latest add @buril/theme
 ```
 
 It replaces your shadcn color tokens with the Buril values for light and dark mode and adds two decorative tokens, `--decor` and `--grid`. It also follows the system color scheme without JavaScript: the dark palette applies under `prefers-color-scheme: dark` unless `<html>` has the `light` class, and the `dark:` variant follows the same rule. To force light mode, your theme toggle must set `class="light"` on `<html>`; next-themes with `attribute="class"` already does this.
+
+## Use with AI agents
+
+The [shadcn MCP server](https://ui.shadcn.com/docs/mcp) reads every registry in your `components.json`, so an AI agent in your editor can browse, search and install Buril components. Add the registry:
+
+```json
+{
+  "registries": {
+    "@buril": "https://buril.site/r/{name}.json"
+  }
+}
+```
+
+Then set up the server for your client (`claude`, `cursor`, `vscode`, `opencode` or `codex`):
+
+```bash
+npx shadcn@latest mcp init --client claude
+```
+
+For agents that read the web, the docs are also published as plain text: [llms.txt](https://buril.site/llms.txt), an index of every page and registry item, and [llms-full.txt](https://buril.site/llms-full.txt), the whole docs in one file. The [AI agents page](https://buril.site/docs/ai-agents) has the setup for each client.
 
 ## Visual style
 

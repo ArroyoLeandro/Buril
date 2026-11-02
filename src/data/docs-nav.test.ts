@@ -37,6 +37,7 @@ describe("docsNav", () => {
     expect(first!.items.map(({ name, href }) => [name, href])).toEqual([
       ["Introduction", "/docs"],
       ["Installation", "/docs/installation"],
+      ["AI agents", "/docs/ai-agents"],
       ["Theming", "/docs/theming"],
       ["Accessibility", "/docs/accessibility"],
       ["Motion", "/docs/motion"],
@@ -63,6 +64,11 @@ describe("docsNav", () => {
     expect(names("Actions")).toEqual(["Button", "Icon Button", "Link"]);
     expect(names("Content")).toEqual(["Card", "Badge", "Avatar", "Separator"]);
     expect(names("Feedback")).toEqual(["Alert", "Spinner", "Skeleton"]);
+  });
+
+  it("lists the AI agents page in Spanish under Primeros pasos", () => {
+    const [first] = docsNav("es");
+    expect(first!.items).toContainEqual({ name: "Agentes de IA", href: "/es/docs/ai-agents" });
   });
 
   it("adds groups for new categories and keeps an entry's status", () => {

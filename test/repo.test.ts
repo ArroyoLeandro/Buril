@@ -92,12 +92,27 @@ describe.each(["README.md", "README.es.md"])("%s", (file) => {
   });
 
   it("shows the working install flow and the opt-in theme", () => {
-    expect(doc()).toContain("npx shadcn@latest add https://example.com/r/button.json");
+    expect(doc()).toContain("npx shadcn@latest add https://buril.site/r/button.json");
     expect(doc()).toContain(
-      "npx shadcn@latest registry add @buril=https://example.com/r/{name}.json",
+      "npx shadcn@latest registry add @buril=https://buril.site/r/{name}.json",
     );
     expect(doc()).toContain("npx shadcn@latest add @buril/button");
     expect(doc()).toContain("npx shadcn@latest add @buril/theme");
+  });
+
+  it("explains how AI agents install Buril, with the MCP setup and the llms.txt files", () => {
+    const es = file === "README.es.md";
+    expect(doc()).toContain(es ? "## Uso con agentes de IA" : "## Use with AI agents");
+    expect(doc()).toContain('"@buril": "https://buril.site/r/{name}.json"');
+    expect(doc()).toContain("npx shadcn@latest mcp init --client claude");
+    expect(doc()).toContain("https://buril.site/llms.txt");
+    expect(doc()).toContain("https://buril.site/llms-full.txt");
+    expect(doc()).toContain(`https://buril.site${es ? "/es" : ""}/docs/ai-agents`);
+  });
+
+  it("points at the hosted registry, with no placeholder domain left", () => {
+    expect(doc()).not.toContain("example.com");
+    expect(doc()).not.toMatch(/not hosted yet|todavía no está publicado/i);
   });
 
   it("describes the ink primary with red reserved for focus, decoration and destructive", () => {

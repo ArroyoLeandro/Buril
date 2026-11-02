@@ -175,7 +175,7 @@ describe.each(documentedComponents.map((entry) => [entry.slug, entry] as const))
 
     it("installs its registry item from a URL or by name", async () => {
       const visible = text(await render());
-      expect(visible).toContain(`npx shadcn@latest add https://example.com/r/${entry.item}.json`);
+      expect(visible).toContain(`npx shadcn@latest add https://buril.site/r/${entry.item}.json`);
       expect(visible).toContain(`npx shadcn@latest add @buril/${entry.item}`);
     });
 
@@ -526,10 +526,10 @@ describe("button page", () => {
   it("renders the Install section exactly once with URL and namespaced commands", async () => {
     const html = await container.renderToString(ButtonPage);
     expect(count(html, />Installation<\/h2>/g)).toBe(1);
-    expect(
-      count(text(html), /npx shadcn@latest add https:\/\/example\.com\/r\/button\.json/g),
-    ).toBe(1);
-    expect(count(text(html), /npx shadcn@latest registry add @buril=https:\/\/example\.com/g)).toBe(
+    expect(count(text(html), /npx shadcn@latest add https:\/\/buril\.site\/r\/button\.json/g)).toBe(
+      1,
+    );
+    expect(count(text(html), /npx shadcn@latest registry add @buril=https:\/\/buril\.site/g)).toBe(
       1,
     );
     expect(count(text(html), /npx shadcn@latest add @buril\/button/g)).toBe(1);

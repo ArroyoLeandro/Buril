@@ -6,6 +6,7 @@ import InstallCommand from "../../components/InstallCommand.astro";
 import { Link } from "../../../registry/ui/link";
 import { codeTheme } from "../../components/code-theme";
 import { applyFontsExample } from "../../data/snippets";
+import { registryItemUrl, registryUrl } from "../../data/site";
 ---
 
 <DocsLayout
@@ -33,7 +34,7 @@ import { applyFontsExample } from "../../data/snippets";
 
   <h2 class="mt-10 font-display text-xl">Install from a URL</h2>
   <p class="mt-4">Every component has its own JSON file in the registry. Pass its URL to add:</p>
-  <InstallCommand id="install-url" commands={["add https://example.com/r/button.json"]} />
+  <InstallCommand id="install-url" commands={[`add ${registryItemUrl("button")}`]} />
 
   <h2 class="mt-10 font-display text-xl">Install by name</h2>
   <p class="mt-4">
@@ -42,7 +43,7 @@ import { applyFontsExample } from "../../data/snippets";
   </p>
   <InstallCommand
     id="install-namespace"
-    commands={["registry add @buril=https://example.com/r/{name}.json", "add @buril/button"]}
+    commands={[`registry add @buril=${registryUrl}`, "add @buril/button"]}
   />
 
   <h2 class="mt-10 font-display text-xl">What the CLI adds</h2>
