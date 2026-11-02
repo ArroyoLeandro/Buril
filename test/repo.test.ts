@@ -100,6 +100,16 @@ describe.each(["README.md", "README.es.md"])("%s", (file) => {
     expect(doc()).toContain("npx shadcn@latest add @buril/theme");
   });
 
+  it("explains how AI agents install Buril, with the MCP setup and the llms.txt files", () => {
+    const es = file === "README.es.md";
+    expect(doc()).toContain(es ? "## Uso con agentes de IA" : "## Use with AI agents");
+    expect(doc()).toContain('"@buril": "https://buril.site/r/{name}.json"');
+    expect(doc()).toContain("npx shadcn@latest mcp init --client claude");
+    expect(doc()).toContain("https://buril.site/llms.txt");
+    expect(doc()).toContain("https://buril.site/llms-full.txt");
+    expect(doc()).toContain(`https://buril.site${es ? "/es" : ""}/docs/ai-agents`);
+  });
+
   it("points at the hosted registry, with no placeholder domain left", () => {
     expect(doc()).not.toContain("example.com");
     expect(doc()).not.toMatch(/not hosted yet|todavía no está publicado/i);

@@ -1,0 +1,112 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import InlineCode from "../../components/InlineCode.astro";
+import InstallCommand from "../../components/InstallCommand.astro";
+import { Link } from "../../../registry/ui/link";
+import { codeTheme } from "../../components/code-theme";
+import {
+  agentPrompts,
+  codexConfigExample,
+  mcpClients,
+  mcpInitCommand,
+  registriesExample,
+} from "../../data/agents";
+import { registryUrl } from "../../data/site";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="AI agents | Buril UI"
+  description="Let AI agents browse, search and install Buril components with the shadcn MCP server, or read the docs as plain text."
+>
+  <h1 class="font-display text-3xl">AI agents</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    An AI agent in your editor can browse, search and install Buril components for you, the same way
+    it does with shadcn/ui.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Why it works</h2>
+  <p class="mt-4">
+    Buril is a shadcn registry, and the shadcn MCP server reads every registry listed in your
+    <code>components.json</code>. Once <code>@buril</code> is there, an agent can list the Buril
+    items, search them, read their source and get the command that installs them. Buril needs no
+    server of its own.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Set up the shadcn MCP server</h2>
+  <p class="mt-4">
+    Your project needs a <code>components.json</code>; see
+    <Link href="/docs/installation">Installation</Link> if it does not have one yet. Add the Buril
+    registry to it:
+  </p>
+  <div class={code}>
+    <Code code={registriesExample} lang="json" theme={codeTheme} />
+  </div>
+  <p class="mt-4">Then set up the server for your client. For Claude Code:</p>
+  <InstallCommand id="mcp-init" commands={[mcpInitCommand("claude")]} />
+  <p class="mt-4">
+    Each client has its own value for <code>--client</code>:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {mcpClients.map(({ id, name, config, next }) => (
+      <li>
+        <strong>{name}</strong>: <code>--client {id}</code>, config file <code>{config}</code>.{" "}
+        <InlineCode text={next.en} />
+      </li>
+    ))}
+  </ul>
+  <p class="mt-4">
+    The entry Codex needs in <code>~/.codex/config.toml</code>:
+  </p>
+  <div class={code}>
+    <Code code={codexConfigExample} lang="toml" theme={codeTheme} />
+  </div>
+
+  <h3 class="mt-8 font-display text-lg">Try it</h3>
+  <p class="mt-4">Ask your agent, for example:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {agentPrompts.map((prompt) => (
+      <li>{prompt.en}</li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Install with the CLI</h2>
+  <p class="mt-4">
+    Without the MCP server, an agent can run the shadcn CLI, as you would. Register the namespace
+    once, then install by name:
+  </p>
+  <InstallCommand
+    id="install-namespace"
+    commands={[`registry add @buril=${registryUrl}`, "add @buril/button"]}
+  />
+
+  <h2 class="mt-10 font-display text-xl">Plain-text docs</h2>
+  <p class="mt-4">
+    The docs also come as Markdown text files, built with the site, for agents that read the web
+    instead of using the MCP server. Both are in English.
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/llms.txt">llms.txt</Link>: a short index of every page, component and registry
+      item, in the <Link href="https://llmstxt.org">llms.txt format</Link>.
+    </li>
+    <li>
+      <Link href="/llms-full.txt">llms-full.txt</Link>: the whole docs in one file, with each
+      component's usage, props and accessibility notes.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Next steps</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/docs/installation">Installation</Link>: every install option, and the optional
+      theme.
+    </li>
+    <li>
+      <Link href="/docs/components">Components</Link>: what your agent can install.
+    </li>
+  </ul>
+</DocsLayout>

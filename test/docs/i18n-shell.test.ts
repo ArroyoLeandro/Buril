@@ -193,6 +193,7 @@ describe("Spanish docs sidebar", () => {
     expect(docsNav("es")[0]!.items.map(({ name, href }) => [name, href])).toEqual([
       ["Introducción", expectedHref("/docs", "es")],
       ["Instalación", expectedHref("/docs/installation", "es")],
+      ["Agentes de IA", expectedHref("/docs/ai-agents", "es")],
       ["Temas", expectedHref("/docs/theming", "es")],
       ["Accesibilidad", expectedHref("/docs/accessibility", "es")],
       ["Movimiento", expectedHref("/docs/motion", "es")],

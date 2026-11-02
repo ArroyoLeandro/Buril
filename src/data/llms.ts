@@ -2,7 +2,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { accessibilityRules, knownLimits } from "./accessibility";
-import { agentPrompts, mcpClients, mcpInitCommand, registriesExample } from "./agents";
+import {
+  agentPrompts,
+  codexConfigExample,
+  mcpClients,
+  mcpInitCommand,
+  registriesExample,
+} from "./agents";
 import { componentDocs, type ApiDoc, type ComponentDocs } from "./component-docs";
 import { componentHref, documentedComponents, type DocumentedComponent } from "./components";
 import { gettingStarted, guideItems } from "./docs-nav";
@@ -253,13 +259,15 @@ function agents() {
     "The shadcn MCP server reads every registry in `components.json`, so with the `@buril` entry above an agent can list, search, view and install Buril items. Set the server up for your client:",
     "",
     ...mcpClients.map(
-      ({ id, name, config, manual }) =>
-        `- ${name}: \`${cli(mcpInitCommand(id))}\`${manual ? `, then add the server to \`${config}\` by hand` : `, which writes \`${config}\``}.`,
+      ({ id, name, config, next }) =>
+        `- ${name}: \`${cli(mcpInitCommand(id))}\` (config file: \`${config}\`). ${next.en}`,
     ),
+    "",
+    fence("toml", codexConfigExample),
     "",
     "Then ask, for example:",
     "",
-    ...agentPrompts.map((prompt) => `- ${prompt}`),
+    ...agentPrompts.map((prompt) => `- ${prompt.en}`),
   ];
 }
 

@@ -45,6 +45,26 @@ npx shadcn@latest add @buril/theme
 
 Reemplaza los tokens de color de shadcn por los valores de Buril para los modos claro y oscuro, y agrega dos tokens decorativos, `--decor` y `--grid`. Además, sigue el esquema de color del sistema sin JavaScript: la paleta oscura se aplica con `prefers-color-scheme: dark`, salvo que `<html>` tenga la clase `light`, y la variante `dark:` sigue la misma regla. Para forzar el modo claro, el selector de tema debe poner `class="light"` en `<html>`; next-themes con `attribute="class"` ya lo hace.
 
+## Uso con agentes de IA
+
+El [servidor MCP de shadcn](https://ui.shadcn.com/docs/mcp) lee todos los registries de tu `components.json`, así que un agente de IA en tu editor puede explorar, buscar e instalar componentes de Buril. Agrega el registry:
+
+```json
+{
+  "registries": {
+    "@buril": "https://buril.site/r/{name}.json"
+  }
+}
+```
+
+Después, configura el servidor para tu cliente (`claude`, `cursor`, `vscode`, `opencode` o `codex`):
+
+```bash
+npx shadcn@latest mcp init --client claude
+```
+
+Para los agentes que leen la web, la documentación también se publica como texto plano, en inglés: [llms.txt](https://buril.site/llms.txt), un índice de cada página e item del registry, y [llms-full.txt](https://buril.site/llms-full.txt), toda la documentación en un solo archivo. La [página de agentes de IA](https://buril.site/es/docs/ai-agents) explica la configuración de cada cliente.
+
 ## Estilo visual
 
 El tema por defecto tiene una estética de grabado sobre papel:

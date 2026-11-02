@@ -1,0 +1,113 @@
+---
+import { Code } from "astro:components";
+
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+import InlineCode from "../../../components/InlineCode.astro";
+import InstallCommand from "../../../components/InstallCommand.astro";
+import { Link } from "../../../../registry/ui/link";
+import { codeTheme } from "../../../components/code-theme";
+import {
+  agentPrompts,
+  codexConfigExample,
+  mcpClients,
+  mcpInitCommand,
+  registriesExample,
+} from "../../../data/agents";
+import { registryUrl } from "../../../data/site";
+
+const code = "mt-4 overflow-x-auto text-sm [&_pre]:p-4";
+---
+
+<DocsLayout
+  title="Agentes de IA | Buril UI"
+  description="Permite que los agentes de IA exploren, busquen e instalen componentes de Buril con el servidor MCP de shadcn, o que lean la documentación como texto plano."
+>
+  <h1 class="font-display text-3xl">Agentes de IA</h1>
+  <p class="mt-4 text-lg text-muted-foreground">
+    Un agente de IA en tu editor puede explorar, buscar e instalar componentes de Buril por ti,
+    igual que lo hace con shadcn/ui.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Por qué funciona</h2>
+  <p class="mt-4">
+    Buril es un registry de shadcn, y el servidor MCP de shadcn lee todos los registries que
+    aparecen en tu <code>components.json</code>. Cuando <code>@buril</code> está ahí, un agente
+    puede listar los items de Buril, buscarlos, leer su código fuente y obtener el comando que los
+    instala. Buril no necesita un servidor propio.
+  </p>
+
+  <h2 class="mt-10 font-display text-xl">Configurar el servidor MCP de shadcn</h2>
+  <p class="mt-4">
+    Tu proyecto necesita un <code>components.json</code>; consulta
+    <Link href="/es/docs/installation">Instalación</Link> si todavía no lo tiene. Agrégale el
+    registry de Buril:
+  </p>
+  <div class={code}>
+    <Code code={registriesExample} lang="json" theme={codeTheme} />
+  </div>
+  <p class="mt-4">Después, configura el servidor para tu cliente. Para Claude Code:</p>
+  <InstallCommand id="mcp-init" commands={[mcpInitCommand("claude")]} />
+  <p class="mt-4">
+    Cada cliente tiene su propio valor para <code>--client</code>:
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {mcpClients.map(({ id, name, config, next }) => (
+      <li>
+        <strong>{name}</strong>: <code>--client {id}</code>, archivo de configuración
+        <code>{config}</code>. <InlineCode text={next.es} />
+      </li>
+    ))}
+  </ul>
+  <p class="mt-4">
+    La entrada que Codex necesita en <code>~/.codex/config.toml</code>:
+  </p>
+  <div class={code}>
+    <Code code={codexConfigExample} lang="toml" theme={codeTheme} />
+  </div>
+
+  <h3 class="mt-8 font-display text-lg">Pruébalo</h3>
+  <p class="mt-4">Pídele a tu agente, por ejemplo:</p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    {agentPrompts.map((prompt) => (
+      <li>{prompt.es}</li>
+    ))}
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Instalar con la CLI</h2>
+  <p class="mt-4">
+    Sin el servidor MCP, un agente puede ejecutar la CLI de shadcn, como lo harías tú. Registra el
+    namespace una sola vez y después instala por nombre:
+  </p>
+  <InstallCommand
+    id="install-namespace"
+    commands={[`registry add @buril=${registryUrl}`, "add @buril/button"]}
+  />
+
+  <h2 class="mt-10 font-display text-xl">Documentación en texto plano</h2>
+  <p class="mt-4">
+    La documentación también está disponible como archivos de texto en Markdown, generados al
+    compilar el sitio, para los agentes que leen la web en lugar de usar el servidor MCP. Los dos
+    están en inglés.
+  </p>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/llms.txt">llms.txt</Link>: un índice breve de cada página, componente e item del
+      registry, en el <Link href="https://llmstxt.org">formato llms.txt</Link>.
+    </li>
+    <li>
+      <Link href="/llms-full.txt">llms-full.txt</Link>: toda la documentación en un solo archivo,
+      con el uso, las props y las notas de accesibilidad de cada componente.
+    </li>
+  </ul>
+
+  <h2 class="mt-10 font-display text-xl">Próximos pasos</h2>
+  <ul class="mt-4 list-disc space-y-2 pl-6">
+    <li>
+      <Link href="/es/docs/installation">Instalación</Link>: todas las opciones de instalación y el
+      tema opcional.
+    </li>
+    <li>
+      <Link href="/es/docs/components">Componentes</Link>: lo que tu agente puede instalar.
+    </li>
+  </ul>
+</DocsLayout>
