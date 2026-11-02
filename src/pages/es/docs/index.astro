@@ -10,11 +10,11 @@ const principles = [
   ],
   [
     "Accesible por defecto.",
-    "Todos los componentes apuntan a WCAG 2.2 AA y siguen su patrón de las WAI-ARIA Authoring Practices.",
+    "Todos los componentes apuntan a WCAG 2.2 AA, siguen su patrón de las WAI-ARIA Authoring Practices e incluyen tests de teclado y del árbol de accesibilidad.",
   ],
   [
     "La plataforma primero.",
-    "Los elementos nativos, el atributo popover y el HTML semántico van antes que cualquier solución en JavaScript.",
+    "Los elementos nativos, el atributo popover y el HTML semántico van antes que cualquier solución en JavaScript: un select sigue siendo un select y un enlace sigue siendo un enlace.",
   ],
   [
     "Construido desde cero.",
@@ -49,7 +49,7 @@ const principles = [
     shadcn/ui, así que conviven con los componentes de shadcn en el mismo proyecto.
   </p>
 
-  <h2 class="mt-10 font-display text-xl">Principios</h2>
+  <h2 class="mt-10 font-display text-xl">Por qué Buril</h2>
   <ul class="mt-4 list-disc space-y-2 pl-6">
     {principles.map(([title, body]) => (
       <li>

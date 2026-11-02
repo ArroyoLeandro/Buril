@@ -21,15 +21,20 @@ export const changelog: ChangelogEntry[] = [
   {
     branch: "landing-redesign",
     date: "2026-10-12",
-    title: { en: "Pointer cursor on buttons", es: "Cursor de puntero en los botones" },
+    title: {
+      en: "Pointer cursor on buttons, and a new landing page",
+      es: "Cursor de puntero en los botones y una página de inicio nueva",
+    },
     changes: {
       en: [
         "Button and IconButton show the pointer cursor, like Checkbox, Radio Group, Select and Switch. A loading button still shows the progress cursor, and a disabled one ignores the pointer.",
         "The docs site has a new logo and favicon, its own icons, package manager logos in the install tabs, a thin scrollbar in the theme colors, and in-page links that glide to their target and move focus there.",
+        "The landing page shows the components at work: a shorter hero, then seven blocks built from real Buril components, such as a team list, a settings Card and an Alert stack. Why Buril moved to the Introduction page.",
       ],
       es: [
         "Button e IconButton muestran el cursor de puntero, como Checkbox, Radio Group, Select y Switch. Un botón que carga sigue mostrando el cursor de progreso, y uno deshabilitado ignora el puntero.",
         "El sitio de documentación tiene un logo y un favicon nuevos, iconos propios, los logos de los gestores de paquetes en las pestañas de instalación, una barra de desplazamiento fina con los colores del tema y enlaces internos que se deslizan hasta su destino y le pasan el foco.",
+        "La página de inicio muestra los componentes en uso: un encabezado más corto y siete bloques hechos con componentes reales de Buril, como una lista de equipo, una Card de ajustes y una pila de Alerts. Por qué Buril pasó a la página de Introducción.",
       ],
     },
   },

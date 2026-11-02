@@ -23,6 +23,9 @@ const names = new Set([
   "Grace Hopper",
   "Katherine Johnson",
   "Dorothy Vaughan",
+  "Mary Jackson",
+  "Annie Easley",
+  "Margaret Hamilton",
   "Buril UI",
   "English",
   "Español",
@@ -137,13 +140,7 @@ describe("demo text dictionary", () => {
 
   it("covers the landing showcase panels and the component demos", () => {
     expect(localized.map(relative)).toEqual(
-      expect.arrayContaining([
-        "src/components/showcase/ButtonsPanel.tsx",
-        "src/components/showcase/SettingsPanel.tsx",
-        "src/components/showcase/SignInPanel.tsx",
-        "src/components/ButtonDemo.tsx",
-        "src/components/FieldDemo.tsx",
-      ]),
+      expect.arrayContaining(["src/components/ButtonDemo.tsx", "src/components/FieldDemo.tsx"]),
     );
   });
 
@@ -185,16 +182,12 @@ describe("demoHref", () => {
 
 describe("demoTranslator", () => {
   it("returns the English text as written and the Spanish one from the dictionary", () => {
-    expect(demoTranslator("en")("Sign in")).toBe("Sign in");
-    expect(demoTranslator("es")("Sign in")).toBe("Iniciar sesión");
+    expect(demoTranslator("en")("Draft saved")).toBe("Draft saved");
+    expect(demoTranslator("es")("Draft saved")).toBe("Borrador guardado");
   });
 
   it("fills placeholders in both languages", () => {
-    expect(demoTranslator("en")("Digest set to {value}.", { value: "daily" })).toBe(
-      "Digest set to daily.",
-    );
-    expect(demoTranslator("es")("Digest set to {value}.", { value: "diario" })).toBe(
-      "Resumen: diario.",
-    );
+    expect(demoTranslator("en")("Saved {count} times.", { count: "3" })).toBe("Saved 3 times.");
+    expect(demoTranslator("es")("Saved {count} times.", { count: "3" })).toBe("Guardado 3 veces.");
   });
 });

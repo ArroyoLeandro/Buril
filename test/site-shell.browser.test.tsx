@@ -57,13 +57,15 @@ describe.each([320, 1440])("site icons at %ipx", (width) => {
 });
 
 describe("Copy button icon", () => {
-  it.each(["/", "/es/"])("%s swaps the copy icon for a check while copied", async (path) => {
-    const { result } = await commands.probePage<{ before: string[]; after: string[] }>(
-      origin,
-      path,
-      {
-        width: 1440,
-        evaluate: `(() => {
+  it.each(["/docs/installation", "/es/docs/installation"])(
+    "%s swaps the copy icon for a check while copied",
+    async (path) => {
+      const { result } = await commands.probePage<{ before: string[]; after: string[] }>(
+        origin,
+        path,
+        {
+          width: 1440,
+          evaluate: `(() => {
           const button = document.querySelector("main [role=tabpanel]:not([hidden]) [data-copy]");
           const shown = () =>
             [...button.querySelectorAll("svg[data-icon]")]
@@ -73,10 +75,11 @@ describe("Copy button icon", () => {
           button.setAttribute("data-copy-done", "");
           return { before, after: shown() };
         })()`,
-      },
-    );
-    expect(result).toEqual({ before: ["copy"], after: ["check"] });
-  });
+        },
+      );
+      expect(result).toEqual({ before: ["copy"], after: ["check"] });
+    },
+  );
 });
 
 describe("install tab logos", () => {
@@ -85,7 +88,7 @@ describe("install tab logos", () => {
     async (colorScheme) => {
       const { result } = await commands.probePage<
         { name: string; width: number; fill: string; color: string }[]
-      >(origin, "/", {
+      >(origin, "/docs/installation", {
         width: 1440,
         colorScheme,
         evaluate: `[...document.querySelectorAll("main [role=tab] svg[data-logo]")].map((logo) => ({
@@ -95,7 +98,9 @@ describe("install tab logos", () => {
           color: getComputedStyle(logo.closest("[role=tab]")).color,
         }))`,
       });
-      expect(result.map(({ name }) => name)).toEqual(["npm", "pnpm", "yarn", "bun"]);
+      // Every install block on the page repeats the four managers in this order.
+      expect(result.length % 4).toBe(0);
+      expect(result.slice(0, 4).map(({ name }) => name)).toEqual(["npm", "pnpm", "yarn", "bun"]);
       for (const logo of result) {
         expect(logo.width, logo.name).toBe(14);
         expect(logo.fill, logo.name).toBe(logo.color);

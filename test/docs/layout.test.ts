@@ -30,7 +30,7 @@ const first = (html: string, pattern: RegExp) => pattern.exec(html)?.[0] ?? "";
 const headerRow = (html: string) =>
   first(html, /<header[^>]*>\s*<div[^>]*>/).replace(/^<header[^>]*>/, "");
 const footerRow = (html: string) =>
-  first(html, /<footer[^>]*>\s*<div[^>]*>/).replace(/^<footer[^>]*>/, "");
+  first(html, /<footer[^>]*>\s*<p[^>]*>/).replace(/^<footer[^>]*>/, "");
 const capped = (classes: string[]) => classes.filter((name) => /(^|:)max-w-/.test(name));
 
 describe("full-width frame", () => {

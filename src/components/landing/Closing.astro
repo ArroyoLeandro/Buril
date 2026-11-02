@@ -1,0 +1,39 @@
+---
+import Icon from "../icons/Icon.astro";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "../../../registry/ui/button";
+import { localizedHref } from "../../i18n/paths";
+import { getLocale, translator } from "../../i18n/ui";
+import { nudgeArrow } from "./nudge";
+
+/**
+ * The landing's closing strip: one line on how to start and a link to the installation guide. It
+ * shows no install command until the registry has its real URL, so the placeholder domain never
+ * reaches the landing.
+ */
+const locale = getLocale(Astro.url);
+const t = translator(locale);
+---
+
+<section
+  data-closing
+  aria-labelledby="closing-title"
+  class="border-t border-border px-4 py-14 sm:px-6"
+>
+  <div class="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
+    <h2
+      id="closing-title"
+      class="font-display text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-tight"
+    >
+      {t("landing.closingTitle")}
+    </h2>
+    <p class="text-pretty text-muted-foreground">{t("landing.closingBody")}</p>
+    <a
+      href={localizedHref("/docs/installation", locale)}
+      class={cn(buttonVariants({ size: "lg" }), "group mt-2")}
+    >
+      {t("landing.readDocs")}
+      <Icon name="arrow-right" class={cn("size-4", nudgeArrow)} />
+    </a>
+  </div>
+</section>

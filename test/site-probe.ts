@@ -5,7 +5,10 @@
  * (icons, the scrollbar, smooth scrolling, cursors, the favicon) use it instead of one command
  * each. The origin comes from `inject("docsOrigin")` (see `test/docs-site.ts`).
  */
+import { createRequire } from "node:module";
 import type { BrowserCommand } from "vitest/node";
+
+const axeSource = createRequire(import.meta.url).resolve("axe-core/axe.min.js");
 
 export type ProbeStep =
   | { focus: string }
@@ -22,14 +25,22 @@ export interface ProbeOptions {
   colorScheme?: "light" | "dark";
   reducedMotion?: "reduce" | "no-preference";
   forcedColors?: "active" | "none";
+  /** Loads axe-core into the page after the steps, so `evaluate` can call `axe.run()`. */
+  axe?: boolean;
+  /** Aborts requests whose URL matches this pattern, such as the web fonts. */
+  block?: string;
   steps?: ProbeStep[];
+  /** Presses `press` `times` times after the steps and evaluates `evaluate` after each press. */
+  trace?: { press: string; times: number; evaluate: string };
   /** A JavaScript expression evaluated in the page after the steps; it may return a promise. */
   evaluate: string;
 }
 
-export interface ProbeResult<T = unknown> {
+export interface ProbeResult<T = unknown, S = unknown> {
   status: number;
   result: T;
+  /** One `trace.evaluate` result per press, when `trace` is set. */
+  trace: S[];
 }
 
 export const probePage: BrowserCommand<
@@ -44,7 +55,10 @@ export const probePage: BrowserCommand<
     colorScheme = "light",
     reducedMotion = "no-preference",
     forcedColors = "none",
+    axe = false,
+    block,
     steps = [],
+    trace,
     evaluate,
   },
 ): Promise<ProbeResult> => {
@@ -54,6 +68,7 @@ export const probePage: BrowserCommand<
     await page.emulateMedia({ colorScheme, reducedMotion, forcedColors });
     // Tabs share storage: start every page from the system theme, whatever a test chose before.
     await page.addInitScript(() => localStorage.clear());
+    if (block) await page.route(new RegExp(block), (route) => route.abort());
     const response = await page.goto(new URL(path, origin).href, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     for (const step of steps) {
@@ -64,7 +79,17 @@ export const probePage: BrowserCommand<
       else if ("wait" in step) await page.waitForTimeout(step.wait);
       else await page.waitForFunction(step.until);
     }
-    return { status: response?.status() ?? 0, result: await page.evaluate(evaluate) };
+    const traced: unknown[] = [];
+    for (let i = 0; i < (trace?.times ?? 0); i++) {
+      await page.keyboard.press(trace!.press);
+      traced.push(await page.evaluate(trace!.evaluate));
+    }
+    if (axe) await page.addScriptTag({ path: axeSource });
+    return {
+      status: response?.status() ?? 0,
+      result: await page.evaluate(evaluate),
+      trace: traced,
+    };
   } finally {
     await page.close();
   }
@@ -72,10 +97,10 @@ export const probePage: BrowserCommand<
 
 declare module "vitest/browser" {
   interface BrowserCommands {
-    probePage: <T = unknown>(
+    probePage: <T = unknown, S = unknown>(
       origin: string,
       path: string,
       options: ProbeOptions,
-    ) => Promise<ProbeResult<T>>;
+    ) => Promise<ProbeResult<T, S>>;
   }
 }
